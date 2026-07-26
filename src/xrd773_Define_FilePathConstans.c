@@ -1,0 +1,35 @@
+#include "types.h"
+
+static char *AssetRootPath;
+static char *GameDataEditorPath;
+static char *ResourcesPath;
+static char *AssetResourcesPath;
+static char *ExcelDataPath;
+static char *DDS3DataPath;
+static char *FieldDataPath;
+static char *FieldSmallPath;
+static char *FieldSmallBinPath;
+static char *FieldCharPath;
+static char *FieldCharAPath;
+static char *FieldCharBPath;
+static char *FieldCharCPath;
+static char *FieldWpcPath;
+static char *LocalizeTextPath;
+static char *UIPath;
+static char *ParamDataAssetPath;
+static char *ParamDataAssetFullPath;
+static char *FieldCharactorAFullPath;
+static char *FieldCharactorBFullPath;
+static char *FieldCharactorCFullPath;
+static char *FieldWpcFullPath;
+static char *MsgDataAssetFullPath;
+static char *ButtonGuideAssetPath;
+static char *ButtonGuideAssetFullPath;
+static char *FieldCharaCeilingFullPath;
+static char *AutomapIconFullPath;
+static char *DebugSettingAssetFullPath;
+static char *DLC6DataAssetPath;
+static char *DLC6DataAssetFullPath;
+static char *DLC7DataAssetPath;
+static char *DLC7DataAssetFullPath;
+static char *ExcelAssetPath;

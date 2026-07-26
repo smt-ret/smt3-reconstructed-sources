@@ -1,0 +1,417 @@
+#include "types.h"
+
+typedef struct nbActionProcessData_t nbActionProcessData_t;
+typedef struct nbActionStack_t nbActionStack_t;
+typedef struct nbCommSelProcessData_t nbCommSelProcessData_t;
+typedef struct nbEventProcessData_t nbEventProcessData_t;
+typedef struct nbFormation_t nbFormation_t;
+typedef struct nbHelpProcessData_t nbHelpProcessData_t;
+typedef struct nbMainProcessData_t nbMainProcessData_t;
+typedef struct nbMakaProcessData_t nbMakaProcessData_t;
+typedef struct nbTarSelProcessData_t nbTarSelProcessData_t;
+
+// 0x15c09c0
+void nbActionProcessData_t__Clear(nbActionProcessData_t *this) {
+  struct System_String_o *v3;
+  struct nbTimeList_t_array *v4;
+  u32 *timelist;
+  u64 i;
+  u64 *v7;
+
+  this->newaddpresstype = 0;
+  *&this->skilltime = 0;
+  *&this->newpresstype = 0;
+  this->data = 0;
+  this->negotype = 0;
+  this->skillmidi = 0;
+  *&this->stat = 0;
+  *&this->seq = 0;
+  *&this->autoskill = 0;
+  *&this->allmpdamage = 0;
+  *&this->jyokyomes = 0;
+  *&this->jyo_varind = 0;
+  *&this->target = 0;
+  *&this->timer = 0;
+  this->work = 0;
+  *&this->partyindex = 0;
+  this->party = 0;
+  this->form = 0;
+  this->hSkillSe = 0;
+  this->hSkillMem = 0;
+  this->hEffBTL = 0;
+  this->hBed = 0;
+  v3 = StringLiteral_416;
+  this->se0_name = StringLiteral_416;
+  this->se1_name = v3;
+  v4 = NewSpecific(nbTimeList_t, 0x20u);
+  this->timelist = v4;
+  timelist = v4;
+  for (i = 0; ; ++i)
+  {
+    v7 = Allocate(nbTimeList_t);
+    _ctor(v7, 0);
+    *&timelist[2 * i + 8] = v7;
+    if (i == 31)
+      break;
+    timelist = this->timelist;
+  }
+  *&this->packettime = 0;
+  *&this->aiselect = 0;
+  this->aichktbl = NewSpecific(sbyte, 5u);
+  this->aisummonid = 0;
+}
+
+// 0x15c0b50
+void nbActionStack_t__Clear(nbActionStack_t *this) {
+  *&this->type = 0;
+  *&this->to = 0;
+}
+
+// 0x15c0b70
+void nbCommSelProcessData_t__Clear(nbCommSelProcessData_t *this) {
+  struct System_Int32_array *v3;
+  struct System_UInt16_array_array *v4;
+  struct System_UInt16_array_array *v5;
+  s64 *v6;
+  s64 *v7;
+  struct System_UInt16_array_array *commlist;
+  s64 *v10;
+  s64 *v11;
+  struct System_UInt16_array_array *v13;
+  s64 *v14;
+  s64 *v15;
+  struct System_UInt16_array_array *v17;
+  s64 *v18;
+  s64 *v19;
+  struct System_UInt16_array_array *v21;
+  s64 *v22;
+  s64 *v23;
+  struct System_UInt16_array_array *v25;
+  s64 *v26;
+  s64 *v27;
+  struct System_SByte_array_array *v29;
+  struct System_SByte_array_array *v30;
+  s64 *v31;
+  s64 *v32;
+  struct System_SByte_array_array *commdisable;
+  s64 *v35;
+  s64 *v36;
+  struct System_SByte_array_array *v38;
+  s64 *v39;
+  s64 *v40;
+  struct System_SByte_array_array *v42;
+  s64 *v43;
+  s64 *v44;
+  struct System_SByte_array_array *v46;
+  s64 *v47;
+  s64 *v48;
+  struct System_SByte_array_array *v50;
+  s64 *v51;
+  s64 *v52;
+
+  *&this->drawtype = 0;
+  this->drawlisty = 0;
+  *&this->nowstat = 0;
+  this->mem = 0;
+  this->data = 0;
+  this->act = 0;
+  this->nowcursor = NewSpecific(s32, 6u);
+  v3 = NewSpecific(s32, 6u);
+  this->my = 0;
+  this->partytarget = 0;
+  this->nowlisty = v3;
+  v4 = NewSpecific(ushort__, 6u);
+  this->commlist = v4;
+  v5 = v4;
+  v6 = NewSpecific(ushort, 0x120u);
+  v7 = v6;
+  v5->m_Items[0] = v7;
+  commlist = this->commlist;
+  v10 = NewSpecific(ushort, 0x120u);
+  v11 = v10;
+  commlist->m_Items[1] = v11;
+  v13 = this->commlist;
+  v14 = NewSpecific(ushort, 0x120u);
+  v15 = v14;
+  v13->m_Items[2] = v15;
+  v17 = this->commlist;
+  v18 = NewSpecific(ushort, 0x120u);
+  v19 = v18;
+  v17->m_Items[3] = v19;
+  v21 = this->commlist;
+  v22 = NewSpecific(ushort, 0x120u);
+  v23 = v22;
+  v21->m_Items[4] = v23;
+  v25 = this->commlist;
+  v26 = NewSpecific(ushort, 0x120u);
+  v27 = v26;
+  v25->m_Items[5] = v27;
+  this->commcnt = NewSpecific(s32, 6u);
+  v29 = NewSpecific(sbyte__, 6u);
+  this->commdisable = v29;
+  v30 = v29;
+  v31 = NewSpecific(sbyte, 0x120u);
+  v32 = v31;
+  v30->m_Items[0] = v32;
+  commdisable = this->commdisable;
+  v35 = NewSpecific(sbyte, 0x120u);
+  v36 = v35;
+  commdisable->m_Items[1] = v36;
+  v38 = this->commdisable;
+  v39 = NewSpecific(sbyte, 0x120u);
+  v40 = v39;
+  v38->m_Items[2] = v40;
+  v42 = this->commdisable;
+  v43 = NewSpecific(sbyte, 0x120u);
+  v44 = v43;
+  v42->m_Items[3] = v44;
+  v46 = this->commdisable;
+  v47 = NewSpecific(sbyte, 0x120u);
+  v48 = v47;
+  v46->m_Items[4] = v48;
+  v50 = this->commdisable;
+  v51 = NewSpecific(sbyte, 0x120u);
+  v52 = v51;
+  v50->m_Items[5] = v52;
+  this->ritu = 0.0;
+  *&this->oy = 0;
+  *&this->alpha = 0;
+  *&this->cnt = 0;
+  *&this->animeflag = 0;
+}
+
+// 0x15c11b0
+void nbEventProcessData_t__Clear(nbEventProcessData_t *this) {
+  this->uniqueid = 0;
+  this->pfile = 0;
+  this->mem = 0;
+  this->usershutdown = 0;
+  this->file = 0;
+  *&this->seq = 0;
+  this->userdata = 0;
+  this->data = 0;
+  *&this->eventrid = 0;
+}
+
+// 0x15c1b20
+void nbFormation_t__Clear(nbFormation_t *this) {
+}
+
+// 0x15c1e00
+void nbFormation_t__Copy(nbFormation_t *this, nbFormation_t *data) {
+  f32 z;
+  f32 w;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 v13;
+  f32 v14;
+  f32 v15;
+  f32 v16;
+  f32 v17;
+
+  z = data->orgpos.z;
+  w = data->orgpos.w;
+  *&this->orgpos.x = *&data->orgpos.x;
+  this->orgpos.z = z;
+  this->orgpos.w = w;
+  v5 = data->orgrot.z;
+  v6 = data->orgrot.w;
+  *&this->orgrot.x = *&data->orgrot.x;
+  this->orgrot.z = v5;
+  this->orgrot.w = v6;
+  v7 = data->pos.z;
+  v8 = data->pos.w;
+  *&this->pos.x = *&data->pos.x;
+  this->pos.z = v7;
+  this->pos.w = v8;
+  v9 = data->rot.z;
+  v10 = data->rot.w;
+  *&this->rot.x = *&data->rot.x;
+  this->rot.z = v9;
+  this->rot.w = v10;
+  v11 = data->center.z;
+  v12 = data->center.w;
+  *&this->center.x = *&data->center.x;
+  this->center.z = v11;
+  this->center.w = v12;
+  this->r = data->r;
+  this->h = data->h;
+  this->cr = data->cr;
+  this->scl = data->scl;
+  this->oneshotr = data->oneshotr;
+  this->allshotr = data->allshotr;
+  this->movey = data->movey;
+  this->movez = data->movez;
+  this->type = data->type;
+  this->time = data->time;
+  this->stat = data->stat;
+  this->flag = data->flag;
+  this->anime = data->anime;
+  this->basic = data->basic;
+  this->serial = data->serial;
+  this->hunit = data->hunit;
+  this->partyindex = data->partyindex;
+  this->formindex = data->formindex;
+  this->autotime = data->autotime;
+  this->badeff = data->badeff;
+  this->modelcol = data->modelcol;
+  this->motspeed = data->motspeed;
+  this->motendtype = data->motendtype;
+  this->motenddata = data->motenddata;
+  this->nexthokan = data->nexthokan;
+  this->nexthokanb = data->nexthokanb;
+  this->waitmot = data->waitmot;
+  this->motcate = data->motcate;
+  this->reserve4 = data->reserve4;
+  this->packh = data->packh;
+  this->akey = data->akey;
+  this->read_minor = data->read_minor;
+  this->modelobj = data->modelobj;
+  v13 = data->modelrot.z;
+  *&this->modelrot.x = *&data->modelrot.x;
+  this->modelrot.z = v13;
+  this->modelanm = data->modelanm;
+  this->tartime = data->tartime;
+  this->range = data->range;
+  this->addmovet = data->addmovet;
+  this->movet = data->movet;
+  this->data1 = data->data1;
+  this->data2 = data->data2;
+  v14 = data->tarpos.z;
+  v15 = data->tarpos.w;
+  *&this->tarpos.x = *&data->tarpos.x;
+  this->tarpos.z = v14;
+  this->tarpos.w = v15;
+  v16 = data->startpos.z;
+  v17 = data->startpos.w;
+  *&this->startpos.x = *&data->startpos.x;
+  this->startpos.z = v16;
+  this->startpos.w = v17;
+}
+
+// 0x15c1ff0
+void nbHelpProcessData_t__Clear(nbHelpProcessData_t *this) {
+  this->type = 0;
+  this->alpha = 0;
+  this->text1 = 0;
+  *&this->msgid = 0;
+  *&this->reqmsgid = 0;
+  this->wait_text1 = 0;
+  this->wait_text2 = 0;
+  *&this->textwidth = 0;
+  *&this->textcol = 0;
+  *&this->textframe = 0;
+  this->texthandle = 0;
+  this->text2 = 0;
+  this->text3 = 0;
+}
+
+// 0x15c2220
+void nbMainProcessData_t__Clear(nbMainProcessData_t *this) {
+  struct System_Byte_array *v3;
+  struct dds3ProcessID_t_array *v4;
+
+  *(&this->party + 6) = 0;
+  this->enemyunit = 0;
+  this->party = 0;
+  this->form = 0;
+  this->formationtype = 0;
+  *&this->encpackno = 0;
+  *&this->packindex = 0;
+  this->sound = 0;
+  this->sound_mem = 0;
+  this->actionstack = 0;
+  *&this->actionstackp = 0;
+  this->order = NewSpecific(sbyte, 0xCu);
+  this->orderindex = 0;
+  *(&this->flag + 2) = 0;
+  *&this->debug = 0;
+  *&this->previndex = 0;
+  *&this->press4_p = 0;
+  *&this->battletime = 0;
+  this->negoresult = 0;
+  *&this->eventrid = 0;
+  *&this->nakamayobi = 0;
+  *&this->StageMajor = 0;
+  this->item = NewSpecific(byte, 4u);
+  v3 = NewSpecific(byte, 4u);
+  this->StageProcessID = 0;
+  this->UnitProcessID = 0;
+  this->AtoProcessID = 0;
+  this->ResultProcessID = 0;
+  this->baselight = 0;
+  this->MainProcessID = 0;
+  this->MaeProcessID = 0;
+  this->niidacamera = 0;
+  this->eventcamera = 0;
+  this->niidalight = 0;
+  this->gamecamera = 0;
+  this->itemcnt = v3;
+  *&this->maka = 0;
+  v4 = NewSpecific(dds3ProcessID_t, 4u);
+  this->NowActionProcess = 0;
+  this->ActionProcessID = v4;
+  this->flymem = 0;
+  *&this->jyokyomsgid = 0;
+  this->flyh = 0;
+  this->hPnlTex3 = 0;
+  this->hPnlTex4 = 0;
+  this->hPnlTex1 = 0;
+  this->hPnlTex2 = 0;
+  this->EventProcessID = 0;
+  this->HatudoEff = 0;
+  this->AutoCommProcessID = 0;
+  this->EncProcessID = 0;
+  this->PanelProcessID = 0;
+  this->HelpProcessID = 0;
+  this->DebugProcessID = 0;
+  this->AiScriptProcessID = 0;
+  this->NegoProcessID = 0;
+  this->CameraProcessID = 0;
+  this->EffectProcessID = 0;
+  this->KoukaProcessID = 0;
+  this->CommSelProcessID = 0;
+  this->TarSelProcessID = 0;
+  *&this->d31_press_total = 0;
+  *&this->d31_andahansya = 0;
+}
+
+// 0x15c23b0
+void nbMakaProcessData_t__Clear(nbMakaProcessData_t *this) {
+  this->alpha = 0;
+  *&this->basey = 0;
+  *&this->ritu = 0;
+  *&this->stat = 0;
+  *&this->disp = 0;
+  *&this->targety = 0;
+}
+
+// 0x15c2580
+void nbTarSelProcessData_t__Clear(nbTarSelProcessData_t *this) {
+  Il2CppObject *v3;
+  u64 *v4;
+  struct System_SByte_array *v5;
+
+  v3 = Allocate(nbMainProcessData_t);
+  v3[29].monitor = StringLiteral_416;
+  _ctor(v3, 0);
+  this->data = v3;
+  v4 = Allocate(nbActionProcessData_t);
+  _ctor(v4, 0);
+  this->act = v4;
+  *&this->partyindex = 0;
+  *&this->carea = 0;
+  *&this->stat = 0;
+  this->friendno = NewSpecific(sbyte, 0xCu);
+  v5 = NewSpecific(sbyte, 0xCu);
+  *&this->alpha_a = 0;
+  *&this->scale_a = 0;
+  this->enemyno = v5;
+  *&this->jyokyotime = 0;
+}

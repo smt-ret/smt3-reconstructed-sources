@@ -1,0 +1,42 @@
+[project]
+name = "smt3dump"
+version = "0.1.0"
+description = "Reconstruct clean C headers/sources from an IDA IL2CPP dump of SMT3 HD"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1.380"]
+
+[project.scripts]
+smt3dump = "smt3.smt3dump:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["smt3/tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["."]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ANN"]
+
+[tool.ruff.lint.per-file-ignores]
+# Test fixtures embed real IL2CPP declaration lines that cannot be wrapped.
+"smt3/tests/*" = ["E501"]
+
+[tool.pyright]
+include = ["smt3"]
+# dump_il2cpp_binary.py runs inside IDA (imports idaapi/ida_*), unanalyzable off-host.
+exclude = ["smt3/dump_il2cpp_binary.py"]
+strict = ["smt3"]
+extraPaths = ["."]
+pythonVersion = "3.11"
