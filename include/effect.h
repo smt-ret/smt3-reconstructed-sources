@@ -869,8 +869,8 @@ struct effSpline_t {
     u32 numpoint;
     u16 islinear;
     u16 reserved;
-    sdfVector3_t mhcoef[UNKNOWN_ARRAY_SIZE];
-    sdfVector3_t ppoint[UNKNOWN_ARRAY_SIZE];
+    sdfVector3_t *mhcoef;
+    sdfVector3_t *ppoint;
     s32 pcoef0;
     s32 pcoef1;
     s32 pcoef2;
@@ -899,7 +899,7 @@ struct effPCPThunderSpherePolyParam_t {
 };
 
 struct effPCP_ThunderPolyParam_t {
-    sdfVector4_t pos[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pos;
     u32 blend;
     u32 number;
     u32 life;
@@ -974,7 +974,7 @@ struct effPCPMultiFilterExpParam_t {
 
 struct effPCPBlinkMultiBlurParam_t {
     u32 blink;
-    u32 blink_abgr[UNKNOWN_ARRAY_SIZE];
+    u32 *blink_abgr;
     f32 ratio;
     s32 area_min;
     dds3Effect_PartialMultiBlurParam_t *MultiBlur;
@@ -1020,12 +1020,12 @@ struct dds3BillResource_tag {
     sdfTexHandle_t *hTex;
     u16 type;
     u32 count;
-    sdfVector2_t uv[UNKNOWN_ARRAY_SIZE];
+    sdfVector2_t uv[4];
     f32 cx;
     f32 cy;
     f32 width;
     f32 height;
-    sdfDrawTag_t pBillTag[UNKNOWN_ARRAY_SIZE];
+    sdfDrawTag_t *pBillTag;
     u16 current_mode;
     sdfMemHandle_t *hMem;
     dds3BillResource_tag *next;
@@ -1055,10 +1055,10 @@ struct billHandle_t {
     u16 mode;
     dds3Billboard_Normal_tag3 *pNormal;
     dds3Billboard_P2A_tag3 *pP2A;
-    void texture[UNKNOWN_ARRAY_SIZE];
+    void *texture;
     f32 alf_raito;
     f32 bri_raito;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
     s32 use_tmx_idx;
     char *callname;
 };
@@ -1076,7 +1076,7 @@ struct dds3Billboard_P2A_tag3 {
     u32 mode;
     u32 number;
     u32 Anim_n;
-    dds3BillAnim_tag pAnim[UNKNOWN_ARRAY_SIZE];
+    dds3BillAnim_tag *pAnim;
     u32 abgr;
     f32 rot;
 };
@@ -1084,21 +1084,21 @@ struct dds3Billboard_P2A_tag3 {
 struct dds3BillAnimResource_tag {
     sdfMemHandle_t *hMem;
     P2A_HEAD_t *pHeader;
-    P2A_ANIMATION_tag pAnimTable[UNKNOWN_ARRAY_SIZE];
+    P2A_ANIMATION_tag *pAnimTable;
     u32 AnimNum;
     s32 TexNum;
     s32 count;
-    dds3BillResource_tag pResList[UNKNOWN_ARRAY_SIZE];
-    P2A_TEXANIM_tag *pTexAnimTable[UNKNOWN_ARRAY_SIZE];
-    u32 *pABGRTable[UNKNOWN_ARRAY_SIZE];
+    dds3BillResource_tag *pResList;
+    P2A_TEXANIM_tag **pTexAnimTable;
+    u32 **pABGRTable;
 };
 
 struct dds3MultiBillResource_tag {
-    dds3BillResource_tag hBillRes[UNKNOWN_ARRAY_SIZE];
+    dds3BillResource_tag *hBillRes;
     u16 type;
     u16 mode;
-    u32 abgr[UNKNOWN_ARRAY_SIZE];
-    sdfDrawTag_t pBillTag[UNKNOWN_ARRAY_SIZE];
+    u32 *abgr;
+    sdfDrawTag_t *pBillTag;
     dds3MultiBillResource_tag *next;
 };
 
@@ -1108,11 +1108,11 @@ struct P2A_HEAD_t {
 };
 
 struct dds3BillAnim_tag {
-    dds3BillAnimResource_tag hResource[UNKNOWN_ARRAY_SIZE];
+    dds3BillAnimResource_tag *hResource;
     s32 key;
     s32 wait;
     P2A_ANIMATION_tag *pAnim;
-    P2A_TEXANIM_tag pTexAnim[UNKNOWN_ARRAY_SIZE];
+    P2A_TEXANIM_tag *pTexAnim;
 };
 
 struct P2A_ANIMATION_tag {
@@ -1145,7 +1145,7 @@ struct effBTL_FieldColorTable_t {
 
 struct effBTL_FieldBaseColorTable_t {
     f32 disp;
-    sdfVector4_t light[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *light;
 };
 
 struct effBTL_SkillLight_t {
@@ -1272,7 +1272,7 @@ struct dds3EffectPCPData_Part_t {
 
 struct effPCPThunderSpherePolyLow_t {
     effPCPThunderSpherePolyParam_t *param;
-    effPCPThunderSpherePolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPThunderSpherePolyPart_t *pPart;
     u32 abgr;
     f32 width_base;
     f32 height_base;
@@ -1287,13 +1287,13 @@ struct dds3TrackPoly_t {
     s32 point;
     s32 rec;
     sdfMemHandle_t *hMem;
-    dds3TrackPolyList_t trackList[UNKNOWN_ARRAY_SIZE];
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    dds3TrackPolyList_t *trackList;
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     dds3TrackPoly_t *next;
     dds3TrackPoly_t *d_next;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
     f32 alf_raito;
 };
 
@@ -1308,27 +1308,27 @@ struct effPCPThunderSpherePolyPart_t {
 };
 
 struct dds3TrackPolyList_t {
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     s32 count;
     s32 rec;
     u32 color;
 };
 
 struct effAPPoint4Param_t {
-    sdfVector4_t point[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *point;
     u8 loop;
     u32 number;
     s32 life;
     s32 timing;
     s32 fade_in;
     s32 fade_out;
-    f32 radius[UNKNOWN_ARRAY_SIZE];
-    u32 reserve[UNKNOWN_ARRAY_SIZE];
+    f32 *radius;
+    u32 *reserve;
 };
 
 struct effBezier4P_t {
-    effBezier4PPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effBezier4PPart_t *pPart;
     u32 number;
     sdfMemHandle_t *hMem;
 };
@@ -1343,7 +1343,7 @@ struct effDistortionBlurHandle_t {
     dds3Effect_DistortionBlurParam_t *param;
     void *hAlphaTex;
     sdfMemHandle_t *hMem;
-    dds3Effect_DistBlurPart_tag pwork[UNKNOWN_ARRAY_SIZE];
+    dds3Effect_DistBlurPart_tag *pwork;
 };
 
 struct dds3Effect_DistortionBlurParam_t {
@@ -1362,7 +1362,7 @@ struct dds3Effect_DistortionBlurParam_t {
 struct dds3Effect_PartialMultiBlur_t {
     dds3Effect_PartialMultiBlurParam_t *param;
     sdfTexHandle_t *hAlphaTex;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
     void *rImage;
     s32 cntRT;
 };
@@ -1376,7 +1376,7 @@ struct dds3Effect_RippleBlur_t {
     dds3Effect_RippleBlurParam_t *param;
     sdfTexHandle_t *hAlphaTex;
     sdfMemHandle_t *hMem;
-    dds3Effect_RipBlurPart_tag pwork[UNKNOWN_ARRAY_SIZE];
+    dds3Effect_RipBlurPart_tag *pwork;
 };
 
 struct dds3Effect_RippleBlurParam_t {
@@ -1399,7 +1399,7 @@ struct effViewer_Menu_t {
     char *pName;
     sdfIVector2_t *pos;
     s32 cursor;
-    effViewer_Menu_Item_t pItem[UNKNOWN_ARRAY_SIZE];
+    effViewer_Menu_Item_t *pItem;
     s32 ItemNum;
     void *pParent;
     void *pParm;
@@ -1610,7 +1610,7 @@ struct effPCPDANTE_Thunder_Param_t {
 
 struct effPCP_ThunderPoly_t {
     effPCP_ThunderPolyParam_t *param;
-    effPCP_ThunderPolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderPolyPart_t *pPart;
     u32 abgr;
     u32 frame;
     dds3TrackPoly_t *hPoly;
@@ -1675,11 +1675,11 @@ struct dds3FlashPolyList_t {
     u32 abgr;
     s32 point;
     f32 scale;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
     f32 alf_raito;
 };
 
@@ -1844,7 +1844,7 @@ struct effPCPFlashPolyCircleParam_t {
 
 struct effPCPThunderSpherePoly_t {
     effPCPThunderSpherePolyParam_t *param;
-    effPCPThunderSpherePolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPThunderSpherePolyPart_t *pPart;
     u32 abgr;
     f32 width_base;
     f32 height_base;
@@ -1877,9 +1877,9 @@ struct effPCPBreathParam_t {
 
 struct effPCPAgiraoFireParam_t {
     sdfVector4_t pos;
-    sdfVector2_t offset[UNKNOWN_ARRAY_SIZE];
-    s32 timing[UNKNOWN_ARRAY_SIZE];
-    s32 part_timing[UNKNOWN_ARRAY_SIZE];
+    sdfVector2_t *offset;
+    s32 *timing;
+    s32 *part_timing;
 };
 
 struct dds3Effect_t {
@@ -2164,7 +2164,7 @@ struct effPCPWhirlwindPolyParam_t {
     u32 abgr;
     u32 repeat_u;
     u32 repeat_v;
-    u32 reserve[UNKNOWN_ARRAY_SIZE];
+    u32 *reserve;
 };
 
 struct effPCPWhirlwind2PolyParam_t {
@@ -2197,7 +2197,7 @@ struct effPCPWhirlwind2PolyParam_t {
     u32 abgr;
     u32 repeat_u;
     u32 repeat_v;
-    u32 reserve[UNKNOWN_ARRAY_SIZE];
+    u32 *reserve;
 };
 
 struct effPCPWhirlwind3PolyParam_t {
@@ -2232,7 +2232,7 @@ struct effPCPWhirlwind3PolyParam_t {
     u32 abgr_e;
     u32 repeat_u;
     u32 repeat_v;
-    u32 reserve[UNKNOWN_ARRAY_SIZE];
+    u32 *reserve;
 };
 
 struct effPCPWwSpherePolyParam_t {
@@ -2259,7 +2259,7 @@ struct effPCPWwSpherePolyParam_t {
     u32 abgr;
     u32 repeat_u;
     u32 repeat_v;
-    u32 reserve[UNKNOWN_ARRAY_SIZE];
+    u32 *reserve;
 };
 
 struct nbCamera_AllTable_t {
@@ -2324,20 +2324,20 @@ struct dds3Polygon_t {
     sdfMemHandle_t *hMem;
     sdf3DPrimPolyParm_t *parm;
     sdfMat_t *pMat;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    sdfVector2_t pUV[UNKNOWN_ARRAY_SIZE];
-    sdfVector4_t pNormal[UNKNOWN_ARRAY_SIZE];
-    u32 pVertexColor[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    sdfVector2_t *pUV;
+    sdfVector4_t *pNormal;
+    u32 *pVertexColor;
     dds3Polygon_t *next;
     dds3Polygon_t *d_next;
 };
 
 struct effEVECombParSmoke_t {
     effEVECombParSmokeParam_t *param;
-    effEVECombParSmokePart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effEVECombParSmokePart_t *pPart;
     u8 Ztest;
     sdfMemHandle_t *hMem;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
 };
 
 struct effEVECombParSmokePart_t {
@@ -2369,14 +2369,14 @@ struct dds3Billboard_Tex_t {
 struct effBTL_SkillPBFileHeader_t {
     u32 size;
     u32 reserve[3];
-    u8 pbData[UNKNOWN_ARRAY_SIZE];
+    u8 *pbData;
     void *oData;
 };
 
 struct effBezier_t {
     sdfMemHandle_t *mh;
     u32 numpoint;
-    sdfVector3_t ppoint[UNKNOWN_ARRAY_SIZE];
+    sdfVector3_t *ppoint;
     u32 segment;
     f32 weight;
     f32 step;
@@ -2402,8 +2402,8 @@ struct effSimpleBED_t {
 };
 
 struct effEveAPP4Point_t {
-    sdfVector4_t point[UNKNOWN_ARRAY_SIZE];
-    f32 radius[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *point;
+    f32 *radius;
 };
 
 struct effMagaSCArea_t {
@@ -2419,7 +2419,7 @@ struct effMagaP4Point_t {
 };
 
 struct effBezier7P_t {
-    effBezier7PPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effBezier7PPart_t *pPart;
     u32 number;
     sdfMemHandle_t *hMem;
 };
@@ -2445,7 +2445,7 @@ struct Eff_ModelTrackPolyParam_t {
 
 struct effSwordTrackParams_t {
     dds3ModelHandle_t *hModel;
-    u32 mark[UNKNOWN_ARRAY_SIZE];
+    u32 *mark;
     u32 frame_s;
     u32 frame_e;
     u32 point;
@@ -2464,8 +2464,8 @@ struct dds3HermitianTrackPoly_tag {
     s32 count;
     s32 current;
     s32 split;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
     XRD773Unity_CommonMesh *pMesh;
@@ -2480,7 +2480,7 @@ struct Eff_ModelTrackPoly_tag {
 };
 
 struct effMTPolyListHandle_t {
-    Eff_ModelTrackPoly_tag hPolyList[UNKNOWN_ARRAY_SIZE];
+    Eff_ModelTrackPoly_tag *hPolyList;
     u32 number;
     sdfMemHandle_t *hMem;
 };
@@ -2525,7 +2525,7 @@ struct dds3EffectPCPData_t {
     u32 param;
     u32 part;
     u32 reserve;
-    dds3EffectPCPData_Part_t pcpData[UNKNOWN_ARRAY_SIZE];
+    dds3EffectPCPData_Part_t *pcpData;
 };
 
 struct EffBTL_BillFireball_Part_t {
@@ -2566,7 +2566,7 @@ struct EffBTL_BillTrack_t {
     u32 simul;
     f32 scale;
     u32 point;
-    EffBTL_BillTrack_Part_t pPart[UNKNOWN_ARRAY_SIZE];
+    EffBTL_BillTrack_Part_t *pPart;
     sdfMemHandle_t *hMem;
 };
 
@@ -2600,7 +2600,7 @@ struct Eff_ThunderSpherePolyParam_t {
 
 struct Eff_ThunderSpherePoly_t {
     Eff_ThunderSpherePolyParam_t *param;
-    Eff_ThunderSpherePolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    Eff_ThunderSpherePolyPart_t *pPart;
     u32 abgr;
     dds3TrackPoly_t *hPoly;
     sdfMemHandle_t *hMem;
@@ -2630,7 +2630,7 @@ struct Eff_ThunderPolyParam_t {
 
 struct Eff_ThunderPoly_t {
     Eff_ThunderPolyParam_t *param;
-    Eff_ThunderPolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    Eff_ThunderPolyPart_t *pPart;
     u32 abgr;
     dds3TrackPoly_t *hPoly;
     dds3TrackPoly_t *hPoly_c;
@@ -2662,7 +2662,7 @@ struct Eff_ThunderRadiatePolyParam_t {
 
 struct Eff_ThunderRadiatePoly_t {
     Eff_ThunderRadiatePolyParam_t *param;
-    Eff_ThunderRadiatePolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    Eff_ThunderRadiatePolyPart_t *pPart;
     dds3TrackPoly_t *hPoly;
     sdfMemHandle_t *hMem;
 };
@@ -2679,7 +2679,7 @@ struct Eff_Ripple_t {
     sdfIVector2_t *center;
     s32 area;
     u32 abgr;
-    Eff_RippleSprite_t sprite[UNKNOWN_ARRAY_SIZE];
+    Eff_RippleSprite_t *sprite;
     effRippleBlurHandle_t *hRippleBlur;
     effDistortionBlurHandle_t *hDistortionBlur;
 };
@@ -2705,7 +2705,7 @@ struct Eff_FlashPolyParam_t {
 struct Eff_FlashPoly_t {
     Eff_FlashPolyParam_t *param;
     u32 frame;
-    Eff_FlashPolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    Eff_FlashPolyPart_t *pPart;
     dds3TrackPoly_t *hPoly;
     sdfMemHandle_t *hMem;
 };
@@ -2876,7 +2876,7 @@ struct effPCPBossThunderboltParam_t {
 };
 
 struct effPCPBossKAGUInvokeParam_t {
-    sdfVector4_t *point[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t **point;
     effPCP_ThunderPolyParam_t *TPParam;
     s32 life;
     s32 fade_in;
@@ -2937,7 +2937,7 @@ struct effPCPScreenCrackModelParam_t {
 };
 
 struct effPCP_object_Param_t {
-    u8 hData[UNKNOWN_ARRAY_SIZE];
+    u8 *hData;
     s32 offset;
 };
 
@@ -2962,7 +2962,7 @@ struct effPCPBossBUNSIN_t {
     sdfVector4_t pMat[4];
     f32 radian;
     s32 frame;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
 };
 
 struct effPCPBossBUNSIN2_t {
@@ -2988,12 +2988,12 @@ struct effPCPCrackPart_t {
     f32 rotate;
     s32 rotate_w;
     f32 rotate_add;
-    effPCPCrackPartFlash_t pSize[UNKNOWN_ARRAY_SIZE];
+    effPCPCrackPartFlash_t *pSize;
 };
 
 struct effPCPCrack_t {
     effPCPCrackParam_t *param;
-    effPCPCrackPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPCrackPart_t *pPart;
     sdfMemHandle_t *hPartMem;
     s32 MarkCount;
     u16 MarkLength;
@@ -3014,7 +3014,7 @@ struct effPCPBossBael_t {
 
 struct effPCPBossDengeki_t {
     effPCPBossDengekiParam_t *param;
-    effPCP_ThunderPolyList_t pTPList[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderPolyList_t *pTPList;
     effBTL_t *hBED;
     effEveBEDCutHandle_t *hBEDCut;
     s32 frame;
@@ -3023,13 +3023,13 @@ struct effPCPBossDengeki_t {
 
 struct effPCP_ThunderPolyList_t {
     effPCP_ThunderPolyListParam_t *param;
-    effPCP_ThunderPoly_t pTP[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderPoly_t *pTP;
     u32 abgr;
 };
 
 struct effPCPBossThunderbolt_t {
     effPCPBossThunderboltParam_t *param;
-    effPCP_ThunderPolyList_t pTPolyList[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderPolyList_t *pTPolyList;
     s32 frame;
     u32 abgr;
 };
@@ -3097,7 +3097,7 @@ struct EffTable_t {
 };
 
 struct dds3Particle_BlurBuffList_t {
-    sdfVector4_t pPos[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pPos;
     u16 count;
     u32 abgr;
     f32 scale;
@@ -3106,7 +3106,7 @@ struct dds3Particle_BlurBuffList_t {
 struct dds3Particle_BlurBuff_t {
     u16 number;
     u16 point;
-    dds3Particle_BlurBuffList_t blurList[UNKNOWN_ARRAY_SIZE];
+    dds3Particle_BlurBuffList_t *blurList;
     billHandle_t *pBill_Handle;
     sdfMemHandle_t *hMem;
 };
@@ -3215,7 +3215,7 @@ struct dds3Particle_Basic_t {
 
 struct dds3Particle_Physics_t {
     sdfMemHandle_t *hMem;
-    parPhysics_t pPhysics[UNKNOWN_ARRAY_SIZE];
+    parPhysics_t *pPhysics;
 };
 
 struct dds3Particle_Spiral_t3 {
@@ -3369,7 +3369,7 @@ struct dds3Particle_SmokeOffset_t3 {
     f32 accele;
     f32 up_s_r;
     f32 ampli_r;
-    sdfVector4_t pOffset[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pOffset;
     sdfMemHandle_t *hOffsetMem;
     u32 reserve[32];
 };
@@ -3389,7 +3389,7 @@ struct dds3Particle_SphereSpiral2_t3 {
 };
 
 struct dds3ParOffsetBuff_t {
-    dds3ParOffsetBuffParts_t pParts[UNKNOWN_ARRAY_SIZE];
+    dds3ParOffsetBuffParts_t *pParts;
     u32 length;
     sdfMemHandle_t *hMem;
 };
@@ -3407,7 +3407,7 @@ struct parPhysics_t {
 struct dds3ParOffsetBuffParts_t {
     u32 point;
     u32 count;
-    sdfVector3_t pPosBuff[UNKNOWN_ARRAY_SIZE];
+    sdfVector3_t *pPosBuff;
 };
 
 struct dds3Particle_Exp_t {
@@ -3420,8 +3420,8 @@ struct dds3Particle_Exp_t {
 struct dds3TrianglePoly_t {
     s32 number;
     u32 abgr;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
 };
@@ -3458,7 +3458,7 @@ struct dds3SpPoly_Ring_Old_t3 {
     u32 color_in;
     u32 color_out;
     dds3TrackPoly_t *hTrackPoly;
-    dds3SpPoly_Ring_Old_Physics_t pPhysics[UNKNOWN_ARRAY_SIZE];
+    dds3SpPoly_Ring_Old_Physics_t *pPhysics;
 };
 
 struct dds3SpPoly_Ring_t3 {
@@ -3476,7 +3476,7 @@ struct dds3SpPoly_Ring_t3 {
     u32 color;
     u32 color_edge_out;
     dds3TrackPoly_t *hTrackPoly;
-    dds3SpPoly_RingPhysics_t pPhysics[UNKNOWN_ARRAY_SIZE];
+    dds3SpPoly_RingPhysics_t *pPhysics;
     sdfMemHandle_t *hMem;
 };
 
@@ -3491,7 +3491,7 @@ struct dds3SpPoly_SphereRing_t3 {
     u32 color;
     u32 color_edge_out;
     dds3TrackPoly_t *hTrackPoly;
-    dds3SpPoly_SphereRingPhysics_t pPhysics[UNKNOWN_ARRAY_SIZE];
+    dds3SpPoly_SphereRingPhysics_t *pPhysics;
     sdfMemHandle_t *hMem;
 };
 
@@ -3511,7 +3511,7 @@ struct dds3SpPoly_RollRing_t3 {
     u32 color;
     u32 color_edge_out;
     dds3TrackPoly_t *hTrackPoly;
-    dds3SpPoly_RollRingPhysics_t pPhysics[UNKNOWN_ARRAY_SIZE];
+    dds3SpPoly_RollRingPhysics_t *pPhysics;
     sdfMemHandle_t *hMem;
 };
 
@@ -3576,14 +3576,14 @@ struct parToolMenu_tag {
     s32 width;
     s32 line;
     s32 cursor;
-    parToolItem_t pItem[UNKNOWN_ARRAY_SIZE];
+    parToolItem_t *pItem;
     s32 ItemNum;
     s32 ParentShow;
     parToolMenu_tag *pParent;
 };
 
 struct parToolColorTable_t {
-    u32 color[UNKNOWN_ARRAY_SIZE];
+    u32 *color;
     s32 type;
 };
 
@@ -3630,14 +3630,14 @@ struct effPCP_ThunderColumnPolyLowPart_t {
 
 struct effPCP_ThunderColumnPolyLow_t {
     effPCP_ThunderColumnPolyLowParam_t *param;
-    effPCP_ThunderColumnPolyLowPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderColumnPolyLowPart_t *pPart;
     u32 abgr;
     sdfMemHandle_t *hMem;
 };
 
 struct effPCP_ThunderPolyLow_t {
     effPCP_ThunderPolyParam_t *param;
-    effPCP_ThunderPolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderPolyPart_t *pPart;
     u32 abgr;
     dds3TrackPoly_t *hPoly;
     dds3TrackPoly_t *hPoly_c;
@@ -3652,7 +3652,7 @@ struct effPCP_ThunderRadiatePolyPart_t {
 
 struct effPCP_ThunderRadiatePoly_t {
     effPCP_ThunderRadiatePolyParam_t *param;
-    effPCP_ThunderRadiatePolyPart_t pPart[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderRadiatePolyPart_t *pPart;
     u32 abgr;
     dds3TrackPoly_t *hPoly;
     sdfMemHandle_t *hMem;
@@ -3660,7 +3660,7 @@ struct effPCP_ThunderRadiatePoly_t {
 
 struct dds3P2APolygonResource_tag {
     u32 type;
-    dds3BillResource_tag hResource[UNKNOWN_ARRAY_SIZE];
+    dds3BillResource_tag *hResource;
 };
 
 struct dds3P2APolygon_tag {

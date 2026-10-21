@@ -162,7 +162,7 @@ struct dds3BasicFunction_t {
 };
 
 struct dds3PoseSet_t {
-    sdfMatrix4_t *workTM;
+    sdfMatrix4_t workTM;
     sdfVector4_t pos;
     sdfVector4_t rot;
     sdfVector4_t scl;
@@ -213,7 +213,7 @@ struct dds3UnitAction_t {
 };
 
 struct dds3AreaBasicWorkData_t {
-    dds3BasicArrayHandle_t hBasicArray[UNKNOWN_ARRAY_SIZE];
+    dds3BasicArrayHandle_t *hBasicArray;
 };
 
 struct dds3BasicArrayHandle_t {
@@ -335,7 +335,7 @@ struct dds3SceneBasicTable_t {
 struct dds3SceneBasic_t {
     s32 mapno;
     sdfMemHandle_t *mem_hndl;
-    dds3SceneBasicTable_t basictable[UNKNOWN_ARRAY_SIZE];
+    dds3SceneBasicTable_t *basictable;
     dds3Basic_t *activecamera;
     dds3Basic_t *activeunit;
     sdfMemHandle_t *hFileHandle;
@@ -394,7 +394,7 @@ struct dds3WorldBasic_t {
     dds3Basic_t *activescene;
     dds3Basic_t *controlscene;
     sdfMemHandle_t *basicarray_hndl;
-    dds3BasicArray_t basicarray[UNKNOWN_ARRAY_SIZE];
+    dds3BasicArray_t *basicarray;
     u16 basicarraycnt;
     s16 firstempty;
     s16 lastempty;

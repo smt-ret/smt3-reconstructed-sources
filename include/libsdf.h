@@ -392,7 +392,7 @@ struct sdfModelDef_t {
     sdfMatDef_t *matDef_New;
     u32 morphCount;
     void *extraData;
-    sdfModelNodeDef_t nodeDef[UNKNOWN_ARRAY_SIZE];
+    sdfModelNodeDef_t *nodeDef;
 };
 
 struct sdfMemHandle_t {
@@ -409,7 +409,7 @@ struct sdfModelNodeList_t {
     s16 capacity;
     s16 elemSize;
     s16 growStep;
-    sdfModelNode_t items[UNKNOWN_ARRAY_SIZE];
+    sdfModelNode_t *items;
 };
 
 struct sdfModelNode_t {
@@ -423,7 +423,7 @@ struct sdfModelNode_t {
     u32 id;
     u32 color;
     sdfMemHandle_t *drawPacketMemHandle[2];
-    sdfModelPacketHeader_tag drawPacket[UNKNOWN_ARRAY_SIZE];
+    sdfModelPacketHeader_tag *drawPacket;
     void *tmPacket;
     f32 bounds;
     sdfModelNodeDef_t *shape;
@@ -443,7 +443,7 @@ struct sdfMatList_t {
     s16 capacity;
     s16 elemSize;
     s16 growStep;
-    sdfMat_t items[UNKNOWN_ARRAY_SIZE];
+    sdfMat_t *items;
 };
 
 struct sdfModelMorphList_t {
@@ -453,14 +453,14 @@ struct sdfModelMorphList_t {
     s16 elemSize;
     s16 growStep;
     sdfModelMorph_t *items;
-    sdfModelMorph_t items2[UNKNOWN_ARRAY_SIZE];
+    sdfModelMorph_t *items2;
 };
 
 struct sdfMotionPlayBook_t {
     u16 numOfCut;
     u16 numOfNode;
-    sdfMotionCutDef_t cutList[UNKNOWN_ARRAY_SIZE];
-    sdfMotionNodeDef_t nodeDefList[UNKNOWN_ARRAY_SIZE];
+    sdfMotionCutDef_t *cutList;
+    sdfMotionNodeDef_t nodeDefList[1];
 };
 
 struct sdfMotionNodeList_t {
@@ -469,7 +469,7 @@ struct sdfMotionNodeList_t {
     s16 capacity;
     s16 elemSize;
     s16 growStep;
-    sdfMotionNode_t items[UNKNOWN_ARRAY_SIZE];
+    sdfMotionNode_t *items;
 };
 
 struct sdf3DLight_t {
@@ -507,14 +507,14 @@ struct sdfTexHandle_t {
     u8 texWrapMode;
     u32 texId;
     u32 clutId;
-    void packet[UNKNOWN_ARRAY_SIZE];
+    void *packet;
     void *packetCtx2;
     void *clutData;
     u32 clutDataSize;
     u32 clutColor;
     u8 monoClutData;
     char *hashname;
-    void image[UNKNOWN_ARRAY_SIZE];
+    void *image;
 };
 
 struct sdfMatDef_t {
@@ -537,7 +537,7 @@ struct sdfModelNodeDef_t {
 };
 
 struct sdfModelMorph_t {
-    sdfModelMorphParm_t *target[2];
+    sdfModelMorphParm_t target[2];
 };
 
 struct sdfDrawTag_t {
@@ -594,7 +594,7 @@ struct sdfMat_t {
 
 struct sdfMotionCutDef_t {
     u32 frameLength;
-    sdfMotionCutChunk_t cutChunk[UNKNOWN_ARRAY_SIZE];
+    sdfMotionCutChunk_t *cutChunk;
 };
 
 struct sdfMotionNodeDef_t {
@@ -610,8 +610,8 @@ struct sdfMotionNode_t {
 
 struct sdfGrPacketHeader_t {
     sdfDmaTag_t *dmatag;
-    sdfGifTag_t *giftag;
-    sdfPrm primitive[UNKNOWN_ARRAY_SIZE];
+    sdfGifTag_t giftag;
+    sdfPrm *primitive;
 };
 
 struct sdfMatUvwParm_t {
@@ -639,7 +639,7 @@ struct sdfMotionCutChunk_t {
     u16 numOfKey;
     u16 keyElemSize;
     u32 pad;
-    u16 keyFrameList[UNKNOWN_ARRAY_SIZE];
+    u16 *keyFrameList;
 };
 
 struct sdfDmaTag_t {
@@ -697,19 +697,18 @@ struct sdfMatPacket_t {
     u64 mtexTex1Data;
     u64 mtexTex0Data;
     u64 mtexClampData;
-    f32 **texTm[UNKNOWN_ARRAY_SIZE];
+    f32 ***texTm;
     u32 cmd_call_spec;
     u32 cmd_call_kind;
 };
 
 struct sdfGrTagStdReg_t {
-    void *tex;
     u64 data;
     u64 reg;
 };
 
 struct sdf3DLightParallelPacket_t {
-    sdfDmaTag_t *dmatag;
+    sdfDmaTag_t dmatag;
     sdfVector4_t normal[3];
     sdfVector4_t colorBase;
     sdfVector4_t color[5];
@@ -758,7 +757,7 @@ struct sdfFileCmdHandle_t {
     sdfFileCmdHandle_t *prev;
     sdfFileCmdHandle_t *deviceNext;
     sdfFileCmdHandle_t *devicePrev;
-    u16 filename[UNKNOWN_ARRAY_SIZE];
+    u16 *filename;
     u8 device;
     u8 cmd;
     s8 stat;
@@ -792,7 +791,7 @@ struct sdfPacStdBlockHeader_t {
     u32 magicCode;
     u32 realSize;
     u32 head_addr;
-    u8 compdata[UNKNOWN_ARRAY_SIZE];
+    u8 *compdata;
 };
 
 struct sdfIVector2_t {
@@ -825,19 +824,19 @@ struct sdfGrStdDrawEnv_t {
 };
 
 struct sdfGrDrawEnv_t {
-    sdfGrPacketHeader_t *header;
-    sdfGrDrawDefParmPacket_t *defParm;
-    sdfGrDrawFramePacket_t *frame1;
-    sdfGrDrawFramePacket_t *frame2;
-    sdfGrClearPacket_t *clear;
-    sdfGrTagStdReg_t *test1;
-    sdfGrTagStdReg_t *alpha1;
-    sdfGrTagStdReg_t *test2;
-    sdfGrTagStdReg_t *alpha2;
+    sdfGrPacketHeader_t header;
+    sdfGrDrawDefParmPacket_t defParm;
+    sdfGrDrawFramePacket_t frame1;
+    sdfGrDrawFramePacket_t frame2;
+    sdfGrClearPacket_t clear;
+    sdfGrTagStdReg_t test1;
+    sdfGrTagStdReg_t alpha1;
+    sdfGrTagStdReg_t test2;
+    sdfGrTagStdReg_t alpha2;
 };
 
 struct sdfModelDrawEnv_t {
-    sdfModelDrawEnv_t_AnonymousClass *set[4];
+    sdfModelDrawEnv_t_AnonymousClass set[4];
     sdfModelDrawEnv_t_AnonymousClass2 *term;
 };
 
@@ -849,25 +848,25 @@ struct sdfPreDrawHook_t {
 };
 
 struct sdfGrDrawDefParmPacket_t {
-    sdfGrTagStdReg_t *prmodecont;
-    sdfGrTagStdReg_t *colclamp;
-    sdfGrTagStdReg_t *dthe;
-    sdfGrTagStdReg_t *texa;
+    sdfGrTagStdReg_t prmodecont;
+    sdfGrTagStdReg_t colclamp;
+    sdfGrTagStdReg_t dthe;
+    sdfGrTagStdReg_t texa;
 };
 
 struct sdfGrDrawFramePacket_t {
-    sdfGrTagStdReg_t *frame;
-    sdfGrTagStdReg_t *zbuf;
-    sdfGrTagStdReg_t *xyoffset;
-    sdfGrTagStdReg_t *scissor;
+    sdfGrTagStdReg_t frame;
+    sdfGrTagStdReg_t zbuf;
+    sdfGrTagStdReg_t xyoffset;
+    sdfGrTagStdReg_t scissor;
 };
 
 struct sdfGrClearPacket_t {
-    sdfGrTagStdReg_t *test;
-    sdfGrTagStdReg_t *prim;
-    sdfGrTagStdReg_t *rgbaq;
-    sdfGrTagStdReg_t *xyzA;
-    sdfGrTagStdReg_t *xyzB;
+    sdfGrTagStdReg_t test;
+    sdfGrTagStdReg_t prim;
+    sdfGrTagStdReg_t rgbaq;
+    sdfGrTagStdReg_t xyzA;
+    sdfGrTagStdReg_t xyzB;
 };
 
 struct sdfGrStdDrawEnv_t_AnonymousClass {
@@ -887,10 +886,10 @@ struct sdfGrStdDrawEnv_t_AnonymousClass_AnonymousClass2 {
 };
 
 struct sdfTexPacket_t {
-    sdfGifTag_t *giftag;
-    sdfGrTagStdReg_t *tex1;
-    sdfGrTagStdReg_t *tex0;
-    sdfGrTagStdReg_t *clamp;
+    sdfGifTag_t giftag;
+    sdfGrTagStdReg_t tex1;
+    sdfGrTagStdReg_t tex0;
+    sdfGrTagStdReg_t clamp;
 };
 
 struct sdfModelDrawEnv_t_AnonymousClass {
@@ -899,13 +898,13 @@ struct sdfModelDrawEnv_t_AnonymousClass {
 };
 
 struct sdfPrimTransPacket_t {
-    sdfGrPacketHeader_t *header;
+    sdfGrPacketHeader_t header;
     sdfPrimTransElem_t *trans;
 };
 
 struct sdfPrimTransElem_t {
-    sdfGrTagStdReg_t *test;
-    sdfGrTagStdReg_t *alpha;
+    sdfGrTagStdReg_t test;
+    sdfGrTagStdReg_t alpha;
 };
 
 struct sdf3DPrimPolyParm_t {
@@ -914,12 +913,12 @@ struct sdf3DPrimPolyParm_t {
     u16 attr;
     u16 attrInhibit;
     u32 color;
-    u32 faceIndex[UNKNOWN_ARRAY_SIZE];
-    sdfVector4_t vertex[UNKNOWN_ARRAY_SIZE];
-    sdfVector4_t normal[UNKNOWN_ARRAY_SIZE];
-    sdfVector2_t uv[UNKNOWN_ARRAY_SIZE];
-    sdfVector2_t multiUv[UNKNOWN_ARRAY_SIZE];
-    u32 vertexColor[UNKNOWN_ARRAY_SIZE];
+    u32 *faceIndex;
+    sdfVector4_t *vertex;
+    sdfVector4_t *normal;
+    sdfVector2_t *uv;
+    sdfVector2_t *multiUv;
+    u32 *vertexColor;
     void *allocator;
     f32 zBias;
 };
@@ -978,7 +977,7 @@ struct sdfDecompCb_t {
     u8 stat;
     u8 direc;
     u16 direcLeng;
-    u8 dstPtr[UNKNOWN_ARRAY_SIZE];
+    u8 *dstPtr;
     void *srcPtr;
     u32 srcRemain;
     u8 sdOfs;
@@ -987,10 +986,10 @@ struct sdfDecompCb_t {
 };
 
 struct sdf3DFogPacket_t {
-    sdfDmaTag_t *dmatag;
+    sdfDmaTag_t dmatag;
     f32 fogParm[4];
-    sdfGifTag_t *giftag;
-    sdfGrTagStdReg_t *fogColor;
+    sdfGifTag_t giftag;
+    sdfGrTagStdReg_t fogColor;
     u32 mscal;
     u32 pad[3];
 };
@@ -1009,7 +1008,7 @@ struct sdfDelayedResrcCB_t {
 struct sdfDelayedResrcChunk_t {
     sdfDelayedResrcChunk_t *next;
     sdfDelayedResrcCB_t *owner;
-    sdfDelayedResrcItems_t items[UNKNOWN_ARRAY_SIZE];
+    sdfDelayedResrcItems_t *items;
     s32 itemsFreeCount;
 };
 
@@ -1284,8 +1283,8 @@ struct sdfGrTagFOG_t {
 
 struct SpecularTex2 {
     TMX_HEADER_t *header;
-    u32 clut[UNKNOWN_ARRAY_SIZE];
-    u8 *pixel[UNKNOWN_ARRAY_SIZE];
+    u32 *clut;
+    u8 **pixel;
 };
 
 struct TMX_HEADER_t {
@@ -1304,8 +1303,8 @@ struct TMX_HEADER_t {
     u16 mipmapParam;
     u8 flags;
     u8 texWrapMode;
-    u8 userArea[UNKNOWN_ARRAY_SIZE];
-    u8 comment[UNKNOWN_ARRAY_SIZE];
+    u8 *userArea;
+    u8 *comment;
 };
 
 struct sdfModelExtraChunk_t {
@@ -1317,20 +1316,20 @@ struct sdfModelExtraChunk_t {
 };
 
 struct sdfPrimTexflushPacket_t {
-    sdfGrPacketHeader_t *header;
-    sdfGrTagStdReg_t *texflush;
+    sdfGrPacketHeader_t header;
+    sdfGrTagStdReg_t texflush;
 };
 
 struct sdfPrimBitBltElem_t {
-    sdfGrTagStdReg_t *bitbltbuf;
-    sdfGrTagStdReg_t *trxpos;
-    sdfGrTagStdReg_t *trxreg;
-    sdfGrTagStdReg_t *trxdir;
+    sdfGrTagStdReg_t bitbltbuf;
+    sdfGrTagStdReg_t trxpos;
+    sdfGrTagStdReg_t trxreg;
+    sdfGrTagStdReg_t trxdir;
 };
 
 struct sdfPrimBitBltPacket_t {
-    sdfGrPacketHeader_t *header;
-    sdfPrimBitBltElem_t *bitblt;
+    sdfGrPacketHeader_t header;
+    sdfPrimBitBltElem_t bitblt;
 };
 
 struct sdfPrimFrameMovePacket_t {
@@ -1578,7 +1577,7 @@ struct sdfBillBoardTMPacket_t {
     u8 dma_id;
     u32 dma_addr;
     u32 vif_unpack;
-    f32 *tm[3];
+    f32 tm[6];
     u32 vif_itop;
     u32 vif_mscal;
     u32 pad[3];
@@ -1603,7 +1602,7 @@ struct sdfBillBoard1Packet_t {
     u32 vif_unpack5;
     u32 uv[4];
     u32 vif_unpack6;
-    f32 *xyOffset[2];
+    f32 xyOffset[8];
     u32 vif_itop;
     u32 vif_mscal;
     u32 pad;
@@ -1628,7 +1627,7 @@ struct sdfMultiBillBoard1Packet_t {
     u32 vif_unpack5;
     u32 uv[8];
     u32 vif_unpack6;
-    f32 *xyOffset[2];
+    f32 xyOffset[8];
     u32 vif_itop;
     u32 vif_mscal;
 };
@@ -1652,7 +1651,7 @@ struct sdfBillBoardVc1Packet_t {
     u32 vif_unpack5;
     u32 uv[4];
     u32 vif_unpack6;
-    f32 *xyOffset[2];
+    f32 xyOffset[8];
     u32 vif_itop;
     u32 vif_mscal;
     u32 pad[2];
@@ -1676,7 +1675,7 @@ struct sdfMultiBillBoardVc1Packet_t {
     u32 vif_unpack5;
     u32 uv[8];
     u32 vif_unpack6;
-    f32 *xyOffset[2];
+    f32 xyOffset[8];
     u32 vif_itop;
     u32 vif_mscal;
     u32 pad[2];
@@ -1777,7 +1776,7 @@ struct sdfItemArray_t {
     s16 capacity;
     s16 elemSize;
     s16 growStep;
-    s32 items[UNKNOWN_ARRAY_SIZE];
+    s32 *items;
 };
 
 struct MB_HEADER_t {

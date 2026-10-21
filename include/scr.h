@@ -94,7 +94,7 @@ struct scrHeader_t {
     u8 FileFormat;
     u16 UserID;
     s32 FileSize;
-    u16 MagicCode[UNKNOWN_ARRAY_SIZE];
+    u16 *MagicCode;
     s32 ExpandSize;
     s32 TypeTableCount;
     u16 LocalIntCount;
@@ -106,16 +106,16 @@ struct scrHeader_t {
 struct scrProcessWork_s {
     u8 Name[24];
     scrHeader_t Header;
-    scrTypeTable_t TypeTable[UNKNOWN_ARRAY_SIZE];
-    scrProcTable_t ProcTable[UNKNOWN_ARRAY_SIZE];
-    scrLabelTable_t LabelTable[UNKNOWN_ARRAY_SIZE];
-    scrCode_t Code[UNKNOWN_ARRAY_SIZE];
-    u8 MessageData[UNKNOWN_ARRAY_SIZE];
-    u8 StringData[UNKNOWN_ARRAY_SIZE];
+    scrTypeTable_t *TypeTable;
+    scrProcTable_t *ProcTable;
+    scrLabelTable_t *LabelTable;
+    scrCode_t *Code;
+    u8 *MessageData;
+    u8 *StringData;
     s32 CP;
     s32 SP;
     u8 StackType[28];
-    scrStackData_u *StackData[28];
+    scrStackData_u StackData[28];
     s32 StartProc;
     s32 MesHandle;
     s32 ScriptTimer;
@@ -123,8 +123,8 @@ struct scrProcessWork_s {
     f32 ScriptTimerF;
     f32 CommandTimerF;
     sdfMemHandle_t *MemHandle;
-    u32 LocalInt[UNKNOWN_ARRAY_SIZE];
-    f32 LocalFloat[UNKNOWN_ARRAY_SIZE];
+    u32 *LocalInt;
+    f32 *LocalFloat;
     dds3ProcessID_t *ProcessID;
     scrProcessWork_s *prev;
     scrProcessWork_s *next;
@@ -139,13 +139,13 @@ struct scrTypeTable_t {
 };
 
 struct scrProcTable_t {
-    u8 Name[UNKNOWN_ARRAY_SIZE];
+    u8 Name[24];
     s32 CodeAddress;
     s32 Reserve1;
 };
 
 struct scrLabelTable_t {
-    u8 Name[UNKNOWN_ARRAY_SIZE];
+    u8 Name[24];
     s32 CodeAddress;
     s32 Reserve1;
 };

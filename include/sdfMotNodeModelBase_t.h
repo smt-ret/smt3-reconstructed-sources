@@ -6,6 +6,6 @@ typedef struct sdfMotNodeModelBase_t sdfMotNodeModelBase_t;
 typedef struct sdfMotionNode_t sdfMotionNode_t;
 
 struct sdfMotNodeModelBase_t {
-    sdfMotionNode_t *nodeBase;
+    sdfMotionNode_t nodeBase;
     sdfModelNode_t *modelNode;
 };
