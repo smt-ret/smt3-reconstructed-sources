@@ -649,8 +649,8 @@ struct datDevilFormat_s {
 struct datDevilAI_s {
     u16 scriptid;
     u16 ailevel;
-    datDevilAIChk_s aichk[UNKNOWN_ARRAY_SIZE];
-    datDevilAITbl_s *aitable[UNKNOWN_ARRAY_SIZE];
+    datDevilAIChk_s *aichk;
+    datDevilAITbl_s **aitable;
     u16 deadscriptid;
     u16 deadeventno;
 };
@@ -670,9 +670,9 @@ struct datDevilNegoFormat_s {
     u8 binjotype;
     u16 mukantype;
     u16 mukanindex;
-    datNegoPresent_s itema[UNKNOWN_ARRAY_SIZE];
-    datNegoPresent_s itemb[UNKNOWN_ARRAY_SIZE];
-    datNegoPresent_s stone[UNKNOWN_ARRAY_SIZE];
+    datNegoPresent_s *itema;
+    datNegoPresent_s *itemb;
+    datNegoPresent_s *stone;
 };
 
 struct datEncount_s {
@@ -681,7 +681,7 @@ struct datEncount_s {
     u8 item;
     u8 itemcnt;
     u8 formationtype;
-    u16 devil[UNKNOWN_ARRAY_SIZE];
+    u16 *devil;
     u16 stageid;
     u16 areaid;
     u16 flag;
@@ -698,8 +698,8 @@ struct datEncountPack_s {
     u16 table2;
     u16 eventbit1;
     u16 eventbit2;
-    u8 table1[UNKNOWN_ARRAY_SIZE];
-    datEncountTbl_s enctable[UNKNOWN_ARRAY_SIZE];
+    u8 *table1;
+    datEncountTbl_s *enctable;
 };
 
 struct datDevilAIChk_s {
@@ -720,7 +720,7 @@ struct datNegoPresent_s {
 
 struct datEncountTbl_s {
     s32 normalritu;
-    datEncountRitu_s ritu[UNKNOWN_ARRAY_SIZE];
+    datEncountRitu_s *ritu;
 };
 
 struct datEncountRitu_s {
@@ -749,7 +749,7 @@ struct datUnitVisual_s {
     u16 shadowsize;
     u16 badframe;
     u16 autowait;
-    datUnitMotion_s motion[UNKNOWN_ARRAY_SIZE];
+    datUnitMotion_s *motion;
     u32 reserve1;
     u32 reserve2;
     u32 reserve3;
@@ -772,8 +772,8 @@ struct datUnitMotion_s {
 
 struct datEncountFld_t {
     s32 flag;
-    s16 Encount1[UNKNOWN_ARRAY_SIZE];
-    s16 Encount2[UNKNOWN_ARRAY_SIZE];
+    s16 *Encount1;
+    s16 *Encount2;
 };
 
 struct datTakaraSagasi_s {
@@ -800,9 +800,9 @@ struct datTakaraSagasiI_s {
 
 struct datNegoSkill_s {
     u32 type;
-    u8 rate[UNKNOWN_ARRAY_SIZE];
-    datNegoAisyo_s killeraisyo[UNKNOWN_ARRAY_SIZE];
-    datNegoAisyo_s ngaisyo[UNKNOWN_ARRAY_SIZE];
+    u8 *rate;
+    datNegoAisyo_s *killeraisyo;
+    datNegoAisyo_s *ngaisyo;
 };
 
 struct datNegoAisyo_s {
@@ -816,7 +816,7 @@ struct datInnenNegoTable_s {
     u16 id1;
     u16 id2;
     u16 result;
-    u16 *item[UNKNOWN_ARRAY_SIZE];
+    u16 **item;
     u16 mainmes;
     u16 mescnt;
     u16 winmes;
@@ -826,8 +826,8 @@ struct datInnenNegoTable_s {
 };
 
 struct datInfoSelectTable_s {
-    s16 flagcheck[UNKNOWN_ARRAY_SIZE];
-    s16 fieldno[UNKNOWN_ARRAY_SIZE];
+    s16 *flagcheck;
+    s16 *fieldno;
 };
 
 struct datNegoNormalQuesInfo_s {

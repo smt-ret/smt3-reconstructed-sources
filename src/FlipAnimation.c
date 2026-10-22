@@ -17,7 +17,7 @@ void Start(FlipAnimation *this) {
   max_length = Images->max_length;
   this->StartFlag = 0;
   this->max = max_length;
-  SetTexture(sharedMaterial, StringLiteral_3558, Images->m_Items[0], 0);
+  SetTexture(sharedMaterial, "_MainTex", Images->m_Items[0], 0);
 }
 
 // 0x113d5d0
@@ -36,6 +36,6 @@ void Update(FlipAnimation *this) {
   {
     mat = this->mat;
     Images = this->Images;
-    SetTexture(mat, StringLiteral_3558, Images->m_Items[v5], 0);
+    SetTexture(mat, "_MainTex", Images->m_Items[v5], 0);
   }
 }

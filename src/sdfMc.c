@@ -38,13 +38,16 @@ s32 sdfMcChkUnformatedCard(sdfMcCtrlWork_tag *mccb, sdfMcCb_tag *cb, s32 result)
 s32 sdfMcCmdSync(s32 type, s32 port, s32 mode) {
   struct sdfMcCb_tag_o *cbLink;
 
+LABEL_7:
   cbLink = sdfMcCtrlWork->cbLink;
   if (cbLink->mediaType == type)
+    goto LABEL_12;
   do
   {
     do
       cbLink = cbLink->next;
     while (cbLink->mediaType != type);
+LABEL_12:
     ;
   }
   while ((port & 0xF) != cbLink->port || port >> 4 != cbLink->slot);
@@ -197,9 +200,11 @@ void sdfMcFuncWrite3(sdfMcCtrlWork_tag *mccb, sdfMcCb_tag *cb) {
 s32 sdfMcGetFileInfoCount(s32 type, s32 port) {
   struct sdfMcCb_tag_o *cbLink;
 
+LABEL_7:
   cbLink = sdfMcCtrlWork->cbLink;
   if (!cbLink)
     return 0;
+LABEL_10:
   while (cbLink->mediaType != type || (port & 0xF) != cbLink->port || port >> 4 != cbLink->slot)
   {
     cbLink = cbLink->next;
@@ -218,13 +223,16 @@ void sdfMcGetFileInfoSub(sdfMcCtrlWork_tag *mccb, sdfMcCb_tag *cb) {
 s32 sdfMcGetStatus(s32 type, s32 port) {
   struct sdfMcCb_tag_o *cbLink;
 
+LABEL_7:
   cbLink = sdfMcCtrlWork->cbLink;
   if (cbLink->mediaType == type)
+    goto LABEL_12;
   do
   {
     do
       cbLink = cbLink->next;
     while (cbLink->mediaType != type);
+LABEL_12:
     ;
   }
   while ((port & 0xF) != cbLink->port || port >> 4 != cbLink->slot);

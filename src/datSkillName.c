@@ -1,6 +1,6 @@
 #include "types.h"
 
-static char txt[UNKNOWN_ARRAY_SIZE];
+static char *txt;
 
 char *GetLocalizeText(char *ID);
 bool IsZensyoMode(void);
@@ -10,41 +10,47 @@ bool evtBitCheck(s32 no);
 char *Get(s32 id, s32 Devilid) {
   s64 *v6;
 
+LABEL_7:
   if (!IsZensyoMode())
+    goto LABEL_19;
+LABEL_10:
   if (Devilid != 192)
+    goto LABEL_20;
+LABEL_11:
   switch (id)
   {
     case 262:
-      v6 = &StringLiteral_14196;
+      v6 = &"SKILLMC_L0262";
       break;
     case 263:
-      v6 = &StringLiteral_14197;
+      v6 = &"SKILLMC_L0263";
       break;
     case 264:
-      v6 = &StringLiteral_14198;
+      v6 = &"SKILLMC_L0264";
       break;
     case 266:
-      v6 = &StringLiteral_14199;
+      v6 = &"SKILLMC_L0266";
       break;
     case 267:
-      v6 = &StringLiteral_14200;
+      v6 = &"SKILLMC_L0267";
       break;
     case 268:
-      v6 = &StringLiteral_14201;
+      v6 = &"SKILLMC_L0268";
       break;
     case 269:
-      v6 = &StringLiteral_14202;
+      v6 = &"SKILLMC_L0269";
       break;
     case 274:
-      v6 = &StringLiteral_14203;
+      v6 = &"SKILLMC_L0274";
       break;
     case 360:
-      v6 = &StringLiteral_14204;
+      v6 = &"SKILLMC_L0360";
       break;
     case 361:
-      v6 = &StringLiteral_14205;
+      v6 = &"SKILLMC_L0361";
       break;
     default:
+      goto LABEL_20;
   }
   return GetLocalizeText(*v6);
 }

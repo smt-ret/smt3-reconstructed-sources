@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 from collections import Counter
 from collections.abc import Iterable, Iterator
@@ -37,7 +38,7 @@ _PRIMITIVE = re.compile(
     r"^(?:u?int(?:8|16|32|64)_t|u?intptr_t|size_t|float|double|bool|char|void)$"
 )
 
-# System.* value types -> decomp-friendly C (s8/u32/f32/..., see il2cpp_common.h).
+# System.* value types -> decomp-friendly C (s8/u32/f32/..., see types.h).
 # System_String/_Object resolve through their pointer.
 _IL2CPP_TYPE_TO_DECOMP_TYPE: dict[str, str] = {
     "System_SByte": "s8",
@@ -69,7 +70,7 @@ _STDINT_TYPE_TO_DECOMP_TYPE: dict[str, str] = {
 }
 
 # The port replaced the game's math types with UnityEngine ones; map them back to inferred
-# original sdf names (concrete typedefs in il2cpp_common.h). Best-guess reconstructions.
+# original sdf names (concrete typedefs in types.h). Best-guess reconstructions.
 _UNITY_TO_SDF_TYPE: dict[str, str] = {
     "UnityEngine_Vector2": "sdfVector2_t",
     "UnityEngine_Vector3": "sdfVector3_t",
@@ -92,12 +93,12 @@ VALUE_TYPES: frozenset[str] = frozenset(
     }
 )
 
-# Names il2cpp_common.h defines concretely. A real `_H_` type with one of these names (e.g.
+# Names types.h defines concretely. A real `_H_` type with one of these names (e.g.
 # libsdf's sdfMatrix4_t, which wraps the Unity matrix) is skipped to avoid a duplicate
 # definition, and such names are never forward-declared.
 MATH_PROVIDED: frozenset[str] = frozenset(_UNITY_TO_SDF_TYPE.values())
 
-COMMON_HEADER = "il2cpp_common.h"
+COMMON_HEADER = "types.h"
 
 _COMMON_BODY = """\
 #pragma once
@@ -280,11 +281,7 @@ _CALL = re.compile(r"\b([A-Za-z_]\w*)\s*\(")
 _ADDR_SEP = re.compile(r"^//----- \(0*([0-9A-Fa-f]+)\)")
 
 def function_addresses(lines: Iterable[str]) -> dict[str, int]:
-    """Parse Hex-Rays ``//----- (ADDR) ----`` separators to ``{function name: address}``.
-
-    Each separator precedes a function definition; the address is the symbol's location in
-    the binary, recovered here as a linkage reference.
-    """
+    """Parse Hex-Rays ``//----- (ADDR) ----`` separators to ``{function name: address}``."""
     out: dict[str, int] = {}
     pending: int | None = None
     for raw in lines:
@@ -304,8 +301,8 @@ _MAP_SYM = re.compile(r"^ ([0-9A-Fa-f]{8}):([0-9A-Fa-f]{16})\s+(\S+)$")
 def map_symbols(lines: Iterable[str]) -> dict[str, tuple[int, str]]:
     """Parse an IDA ``.map`` to ``{mangled name: (address, linker symbol)}`` for code symbols.
 
-    The authoritative address source: the linker ``Class$$method`` / ``Namespace.Type`` name
-    is transformed to the Hex-Rays ``__`` / ``_`` spelling the rest of the tool keys on.
+    The linker ``Class$$method`` / ``Namespace.Type`` spelling is converted to the Hex-Rays
+    ``__`` / ``_`` form the rest of the tool keys on.
     """
     out: dict[str, tuple[int, str]] = {}
     for raw in lines:
@@ -352,13 +349,33 @@ _META_GUARD = re.compile(
     r"\n[ \t]*if \( \(byte_[0-9A-F]+ & 1\) == 0 \)\n[ \t]*\{"
     r"\n(?:[^\n]*\n)*?[ \t]*byte_[0-9A-F]+ = 1;\n[ \t]*\}"
 )
+# The braceless forms. `_strip_typeinit_blocks` cuts the braced one by counting braces: a
+# non-greedy regex stops at a nested `}` and leaves the body unbalanced.
 _TYPEINIT = re.compile(
-    r"\n[ \t]*if \([^\n]*cctor_finished \)\n[ \t]*(?:\{\n(?:[^\n]*\n)*?[ \t]*\}"
-    r"|il2cpp::TypeInitializer\([^\n]*\);)"
+    r"\n[ \t]*if \([^\n]*cctor_finished \)\n[ \t]*il2cpp::TypeInitializer\([^\n]*\);"
     r"|\n[ \t]*il2cpp::TypeInitializer\([^\n]*\);"
 )
-# A body too tangled for a naive strip: an inlined unnamed helper, or a real goto/label the
-# cleaner could not remove (irreducible control flow). Kept as a call-graph stub instead.
+_TYPEINIT_GUARD = re.compile(r"\n([ \t]*)if \([^\n]*cctor_finished \)\n[ \t]*\{")
+
+
+def _strip_typeinit_blocks(b: str) -> str:
+    """Remove `if (... cctor_finished) { ... }` blocks, matching braces properly."""
+    while (m := _TYPEINIT_GUARD.search(b)) is not None:
+        i = b.index("{", m.start())
+        depth = 0
+        for j in range(i, len(b)):
+            if b[j] == "{":
+                depth += 1
+            elif b[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    b = b[: m.start()] + b[j + 1 :]
+                    break
+        else:
+            return b  # unterminated: leave it alone rather than cut something wrong
+    return b
+# A body too tangled for a naive strip: an inlined unnamed helper, or irreducible control
+# flow the cleaner could not remove. Reported by `clean_bodies`, but still emitted.
 _COMPLEX = re.compile(r"\bsub_[0-9A-Fa-f]+|\bgoto\b|\bLABEL_")
 
 # Whole-line IL2CPP scaffolding to delete (metadata init, cctor/type-info, exception throws).
@@ -368,8 +385,14 @@ _JUNK_LINE = re.compile(
     r"InitializeMethodMetadata|TypeInitializer|cctor_finished|_TypeInfo->_"
     r"|\*\w+_TypeInfo;|\w+_TypeInfo = |= :*\w+_TypeInfo;"
     r"|Il2CppExceptionWrapper|\w*Exception\w*\(|::Throw|Codegen"
-    r"|const MethodInfo \*\w+;|byte_[0-9A-F]+ = 1;|goto LABEL_\d+;|LABEL_\d+:"
+    r"|const MethodInfo \*\w+;|byte_[0-9A-F]+ = 1;"
 )
+# `goto LABEL_n;` / `LABEL_n:` are control flow, not scaffolding: deleting them takes whole
+# branches with them (a braceless `if (!dlc) goto LABEL_14;` loses its condition).
+
+# A control statement with no `{`: its body is the single next statement, so deleting that
+# statement as scaffolding leaves the guard standing over unrelated code.
+_BRACELESS_CTRL = re.compile(r"^[ \t]*(?:\}[ \t]*)?(?:else[ \t]+)?(?:if|for|while)[ \t]*\(.*\)[ \t]*$")
 
 _HEXRAYS_TYPE_TO_DECOMP_TYPE = [
     ("unsigned __int64", "u64"), ("unsigned __int32", "u32"),
@@ -383,6 +406,41 @@ _BASIC_C_TYPE_TO_DECOMP_TYPE = [
     ("unsigned int", "u32"), ("unsigned short", "u16"), ("unsigned char", "u8"),
     ("signed char", "s8"), ("int", "s32"), ("short", "s16"),
 ]
+
+# Hex-Rays often lifts the class pointer into a local (`v = X->static_fields;`) instead of
+# writing `X->static_fields->G` inline, which the inline collapse below cannot see.
+_STATIC_BASE_LOCAL = re.compile(r"(?m)^[ \t]*(\w+) = &?[\w>.\-]+->static_fields;[ \t]*$\n?")
+
+_STRING_LITERAL_REF = re.compile(r"\bStringLiteral_(\d+)\b")
+
+
+def _c_string(text: str) -> str:
+    """Render metadata text as a C string literal."""
+    out = text.replace("\\", "\\\\").replace('"', '\\"')
+    out = out.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+    return f'"{out}"'
+
+
+def _resolve_string_literals(b: str, strings: dict[int, str] | None) -> str:
+    """`StringLiteral_4529` -> the text it names, or the placeholder if it is unmapped."""
+    if not strings:
+        return b
+    def sub(m: re.Match[str]) -> str:
+        text = strings.get(int(m.group(1)))
+        return _c_string(text) if text is not None else m.group(0)
+    return _STRING_LITERAL_REF.sub(sub, b)
+
+
+def _collapse_static_field_locals(b: str) -> str:
+    """`v = X->static_fields; ... v->G` -> `G`. Runs after the inline collapse; the `->`
+    lookbehind stops it eating `X->static_fields->G` when the local is named `static_fields`.
+    """
+    while (m := _STATIC_BASE_LOCAL.search(b)) is not None:
+        local = m.group(1)
+        b = b[: m.start()] + b[m.end() :]
+        b = re.sub(rf"(?<![>\w]){re.escape(local)}->", "", b)
+    return b
+
 
 def _strip_empty_ifs(b: str) -> str:
     """Remove `if (cond) {}` guards left after their metadata/throw body was deleted."""
@@ -407,11 +465,7 @@ _DECL_KEYWORDS = frozenset(
 )
 
 def _drop_unused_locals(b: str) -> str:
-    """Remove pure local declarations (`TYPE name;`, no initializer) never referenced again.
-
-    Hex-Rays spills the receiver/context and dead temporaries into a decl block the body
-    never uses; the surviving code reads better without them.
-    """
+    """Remove local declarations (`TYPE name;`, no initializer) never referenced again."""
     uses: Counter[str] = Counter(re.findall(r"[A-Za-z_]\w*", b))
     kept: list[str] = []
     for ln in b.split("\n"):
@@ -425,9 +479,9 @@ def _drop_unused_locals(b: str) -> str:
 def _fix_call_arity(b: str, arity: dict[str, int]) -> str:
     """Drop the trailing IL2CPP context arg the cleaned prototypes already shed.
 
-    A call keeps the ``MethodInfo`` pointer the prototype dropped, so its arg count is one
-    past the real arity; when the extra tail is that context (``0`` or a ``Method_*``
-    literal), remove it. Only flat arg lists (no nested call) are touched, to stay safe.
+    The call keeps the ``MethodInfo`` the prototype dropped, so its arity is one too high;
+    the tail goes only when it is that context (``0`` or ``Method_*``) and the arg list is
+    flat.
     """
     method = re.compile(r"Method_\w+$")
 
@@ -445,16 +499,25 @@ def _fix_call_arity(b: str, arity: dict[str, int]) -> str:
 
 
 def _clean_body(
-    body: str, names: dict[str, str] | None = None, arity: dict[str, int] | None = None
+    body: str,
+    names: dict[str, str] | None = None,
+    arity: dict[str, int] | None = None,
+    strings: dict[int, str] | None = None,
 ) -> str:
     b = _META_GUARD.sub("", body) 
-    b = _TYPEINIT.sub("", b) 
+    b = _strip_typeinit_blocks(b)
+    b = _TYPEINIT.sub("", b)
     temps = set(re.findall(r"const MethodInfo \*(\w+);", b)) | {"method"}
     kept: list[str] = []
     for raw in b.split("\n"):
         ln = re.sub(r"[ \t]*//.*$", "", raw)
         if not _JUNK_LINE.search(ln):
             kept.append(ln)
+            continue
+        # The deleted line was the single statement under a braceless guard, so the guard
+        # now covers whatever follows. Drop it too, and repeat for a nested chain.
+        while kept and _BRACELESS_CTRL.match(kept[-1]):
+            kept.pop()
     b = "\n".join(kept)
     for t in temps:
         b = re.sub(rf",\s*{re.escape(t)}\b", "", b)
@@ -462,7 +525,9 @@ def _clean_body(
         b = re.sub(rf"\(\s*{re.escape(t)}\s*\)", "()", b)
     b = re.sub(r"\bj_(?=[A-Za-z_])", "", b)  # Hex-Rays jump-thunk prefix (j_Allocate -> Allocate)
     b = b.replace("il2cpp::", "").replace("->fields.", "->").replace(".fields.", ".")
+    b = _resolve_string_literals(b, strings)
     b = re.sub(r"\b\w+->static_fields->", "", b)  # `x->static_fields->G` is a global `G`
+    b = _collapse_static_field_locals(b)
 
     def _call(m: re.Match[str]) -> str:
         full = m.group(1)
@@ -505,8 +570,9 @@ def clean_bodies(
     lines: Iterable[str],
     names: dict[str, str] | None = None,
     arity: dict[str, int] | None = None,
+    strings: dict[int, str] | None = None,
 ) -> tuple[dict[str, str], dict[str, str]]:
-    """Reconstruct simple bodies from the .c; return (bodies, reason-kept-as-stub)."""
+    """Reconstruct bodies from the .c; return (bodies, reason-the-body-is-approximate)."""
     bodies: dict[str, str] = {}
     reasons: dict[str, str] = {}
     cur: str | None = None
@@ -525,10 +591,13 @@ def clean_bodies(
                 buf, state = [], "body"
         elif raw.startswith("}"):
             if cur:
-                cleaned = _clean_body("\n".join(buf), names, arity)
+                cleaned = _clean_body("\n".join(buf), names, arity, strings)
+                # Even a tangled body carries arithmetic, constants and field offsets a
+                # stub throws away. Only a brace-unbalanced one is dropped: it would not
+                # parse and would swallow the rest of the file.
                 if reason := _complexity(cleaned):
                     reasons[cur] = reason
-                else:
+                if cleaned.count("{") == cleaned.count("}"):
                     bodies[cur] = cleaned
             state, cur = "top", None
         else:
@@ -581,10 +650,10 @@ def _module_of(base: str, modules: frozenset[str] | None) -> str:
 def route(
     name: str, *, nonempty: bool, modules: frozenset[str] | None = None
 ) -> tuple[str, str, str] | None:
-    """Map a struct name to ``(file, kind, cleanname)`` or ``None`` if not emitted.
+    """Map a struct name to ``(file, kind, cleanname)``, or ``None`` if not emitted.
 
-    ``_H_`` marks a type declared in a shared header (``<hdr>.h``); everything else is local
-    to a module (``<module>.c``). ``kind`` is "struct", "extern", "static", or "define".
+    ``_H_`` marks a shared header (``<hdr>.h``); anything else is module-local. ``kind`` is
+    "struct", "extern", "static", or "define".
     """
     if name.endswith("_StaticFields"):
         if not nonempty:
@@ -627,8 +696,8 @@ def _strip_wrapper(token: str) -> str:
 def resolve_base(token: str) -> Resolved:
     """Resolve a bare type token (no ``struct``/pointer/``_array``) to a clean C type.
 
-    Enums and structs both keep their clean name as ``ref``; the caller splits them by the
-    known enum set (enums are pulled in by ``#include``, structs are forward-declared).
+    Enums and structs both come back with their name in ``ref``; the caller separates them
+    by the known enum set.
     """
     token = _strip_wrapper(token)
     if _PRIMITIVE.match(token):
@@ -677,9 +746,11 @@ def rewrite_member(
         inner = "*" * (depth - 1)
         return (f"{resolved.text} {inner}{name}[{count}];", refs)
 
-    if depth:  # dimension not recovered: grep-able sentinel (inner levels stay pointers)
+    if depth:
+        # No recoverable count: emit a pointer so the field stays one word wide and the
+        # offsets after it hold.
         inner = "*" * (depth - 1)
-        return (f"{resolved.text} {inner}{name}[UNKNOWN_ARRAY_SIZE];", refs)
+        return (f"{resolved.text} {inner}*{name};", refs)
     ptr = " " + "*" * stars if stars else " "
     return (f"{resolved.text}{ptr}{name};", refs)
 
@@ -753,8 +824,7 @@ def _route_function(name: str, modules: frozenset[str]) -> str | None:
 def display_map(protos: Iterable[str], modules: frozenset[str]) -> dict[str, str]:
     """Map each kept function's mangled name to its display name.
 
-    The owning-class prefix is stripped for readability, except when two functions with the
-    same stripped name land in the same file (a real collision), which keep their full names.
+    The owning-class prefix is stripped, except where that would collide inside one file.
     """
     kept: list[tuple[str, str]] = []
     for n in protos:
@@ -806,10 +876,8 @@ def symbol_map(
     modules: frozenset[str],
     linker: dict[str, str] | None = None,
 ) -> str:
-    """A linkage reference: every emitted function, ordered by its binary address.
-
-    Each row is ``<address>  <symbol>  <source>  [<linker symbol>]`` so a reconstructed
-    symbol can be matched back to its location and original name in the binary.
+    """Every emitted function by binary address, as
+    ``<address>  <symbol>  <source>  [<linker symbol>]``.
     """
     display = display_map(protos, modules)
     linker = linker or {}
@@ -868,7 +936,6 @@ def build(
     protos: dict[str, tuple[str, str, set[str]]] | None = None,
     graph: dict[str, list[str]] | None = None,
     bodies: dict[str, str] | None = None,
-    reasons: dict[str, str] | None = None,
     addresses: dict[str, int] | None = None,
 ) -> tuple[
     dict[str, _FileModel], Counter[str], dict[str, str],
@@ -946,12 +1013,12 @@ def build(
             model.enum_refs |= crefs & enums  # forward-decl the callee's param/return types
             model.refs |= crefs - enums
         banner = f"// {addr:#x}\n" if (addr := (addresses or {}).get(fname)) else ""
-        if bodies and fname in bodies:  # simple function -> cleaned real body
+        if bodies and fname in bodies:  # cleaned real body
             sep = "" if ret.endswith("*") else " "
             model.stubs.append(
                 (display, f"{banner}{ret}{sep}{display}({sig}) {{\n{bodies[fname]}\n}}")
             )
-        else:  # complex -> call-graph stub
+        else:  # no body in the .c at all -> call-graph stub
             model.stubs.append(
                 (display, banner + _assemble_stub(ret, display, sig, callees, enums))
             )
@@ -963,11 +1030,10 @@ def build(
 
 
 def _promote_struct_headers(files: dict[str, _FileModel]) -> dict[str, _FileModel]:
-    """A .c that only declares struct layouts (no functions or data) is really a header.
+    """Route a .c that only declares struct layouts to ``<base>.h``.
 
-    IL2CPP keeps the original C struct tag (``foo_tag``/``foo_t``/``foo_s``) without the
-    ``_H_`` shared-header marker, so a pure type-definition base lands as a ``.c`` that no
-    other module can include. Route it to ``<base>.h`` instead.
+    IL2CPP keeps the struct tag without the ``_H_`` marker, so a pure type-definition base
+    would otherwise land as a ``.c`` no other module can include.
     """
     promoted: dict[str, _FileModel] = {}
     for file, model in files.items():
@@ -989,10 +1055,10 @@ def _promote_struct_headers(files: dict[str, _FileModel]) -> dict[str, _FileMode
 
 
 def _struct_aliases(files: dict[str, _FileModel]) -> dict[str, str]:
-    """Map a referenced-but-undefined ``X_t`` to the defined struct tag it typedefs (``X_s``).
+    """Map a referenced-but-undefined ``X_t`` to the struct tag it typedefs (``X_s``).
 
-    IL2CPP keeps only the tag (``foo_s``/``foo_tag``) as a real struct while code uses the
-    typedef name (``foo_t``); pair them so the typedef resolves to a complete type.
+    IL2CPP keeps only the tag as a real struct while code uses the typedef name, so pairing
+    them is what makes the typedef resolve to a complete type.
     """
     defined: set[str] = set[str]().union(*(m.defined for m in files.values())) if files else set()
     base_of = re.compile(r"_(?:s|t|tag)$")
@@ -1092,17 +1158,37 @@ def generate(
     protos: dict[str, tuple[str, str, set[str]]] | None = None,
     graph: dict[str, list[str]] | None = None,
     bodies: dict[str, str] | None = None,
-    reasons: dict[str, str] | None = None,
     addresses: dict[str, int] | None = None,
 ) -> dict[str, str]:
     """Full transformation: dump text -> ``{filename: contents}`` (incl. common header)."""
     files, _, enum_header, func_sig, alias = build(
-        text, sizes, meta, protos, graph, bodies, reasons, addresses
+        text, sizes, meta, protos, graph, bodies, addresses
     )
     out: dict[str, str] = {COMMON_HEADER: _COMMON_BODY}
     for file, model in files.items():
         out[file] = _render_file(file, model, enum_header, func_sig, alias)
     return out
+
+def _load_array_lengths(input_path: Path) -> ArraySizes:
+    """Array counts observed at runtime, for fields whose allocation had no constant count."""
+    p = input_path.parent / "array_lengths.json"
+    if not p.is_file():
+        return {}
+    raw = json.loads(p.read_text(encoding="utf-8"))
+    return {
+        (struct, member): (count, is_value)
+        for struct, members in raw.items()
+        for member, (count, is_value) in members.items()
+    }
+
+
+def _load_literal_map(input_path: Path) -> dict[int, str] | None:
+    """The recovered `StringLiteral_<n>` -> text map, if it sits beside the dump."""
+    p = input_path.parent / "stringliteral_map.json"
+    if not p.is_file():
+        return None
+    return {int(k): v for k, v in json.loads(p.read_text(encoding="utf-8")).items()}
+
 
 def run(
     input_path: Path,
@@ -1120,11 +1206,13 @@ def run(
     ``symbol_map_path`` is an IDA ``.map`` (authoritative function addresses).
     """
     text = input_path.read_text(encoding="utf-8", errors="replace")
+    meta = Metadata.from_file(metadata) if metadata is not None else None
+    literals = _load_literal_map(input_path)
     sizes: ArraySizes | None = None
     protos: dict[str, tuple[str, str, set[str]]] | None = None
     graph: dict[str, list[str]] | None = None
     bodies: dict[str, str] | None = None
-    reasons: dict[str, str] | None = None
+
     addresses: dict[str, int] = {}
     linker: dict[str, str] = {}
     modules = _module_bases(list(parse_blocks(text)))
@@ -1136,6 +1224,8 @@ def run(
     if source_c is not None:
         with source_c.open("r", encoding="utf-8", errors="replace") as fh:
             sizes = array_sizes(fh)
+        # Constructor counts win; runtime observations only fill in what they did not resolve.
+        sizes = _load_array_lengths(input_path) | sizes
         with source_c.open("r", encoding="utf-8", errors="replace") as fh:
             protos = function_prototypes(fh)
         if not addresses:  # fall back to the Hex-Rays separators when no .map is given
@@ -1148,10 +1238,10 @@ def run(
             dmap = display_map(protos, modules)
             aritymap = arity_map(protos, dmap)
             with source_c.open("r", encoding="utf-8", errors="replace") as fh:
-                bodies, reasons = clean_bodies(fh, dmap, aritymap)
-    meta = Metadata.from_file(metadata) if metadata is not None else None
+                bodies, reasons = clean_bodies(fh, dmap, aritymap, literals)
+
     files, dropped, enum_header, func_sig, alias = build(
-        text, sizes, meta, protos, graph, bodies, reasons, addresses
+        text, sizes, meta, protos, graph, bodies, addresses
     )
     include_dir = outdir / "include"
     include_dir.mkdir(parents=True, exist_ok=True)

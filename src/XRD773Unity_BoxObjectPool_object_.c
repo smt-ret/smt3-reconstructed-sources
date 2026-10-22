@@ -23,10 +23,12 @@ void *_Get(XRD773Unity_BoxObjectPool_object_ *this) {
     m_ActionOnGet = this->m_ActionOnGet;
     if (!m_ActionOnGet)
       return v4;
+    goto LABEL_3;
   }
   v4 = (method->klass->rgctx_data->_7_System_Collections_Generic_Stack_T__Pop->methodPointer)(this->m_Stack);
   m_ActionOnGet = this->m_ActionOnGet;
   if (m_ActionOnGet)
+LABEL_3:
     (method->klass->rgctx_data->_8_UnityEngine_Events_UnityAction_T__Invoke->methodPointer)(m_ActionOnGet, v4);
   return v4;
 }
@@ -38,7 +40,7 @@ void _Release(XRD773Unity_BoxObjectPool_object_ *this, void *element) {
   if ((method->klass->rgctx_data->_2_System_Collections_Generic_Stack_T__get_Count->methodPointer)(this->m_Stack) >= 1
     && (method->klass->rgctx_data->_9_System_Collections_Generic_Stack_T__Peek->methodPointer)(this->m_Stack) == element)
   {
-    LogError(StringLiteral_22558);
+    LogError("Internal error. Trying to destroy object that is already released to pool.");
   }
   m_ActionOnRelease = this->m_ActionOnRelease;
   if (m_ActionOnRelease)

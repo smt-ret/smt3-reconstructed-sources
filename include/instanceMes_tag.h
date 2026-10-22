@@ -24,7 +24,7 @@ struct instanceMes_tag {
     variable_tag *variable;
     curctr_tag *curctr;
     instanceMes_tag_func_kutiDelegate *func_kuti;
-    char master_text[UNKNOWN_ARRAY_SIZE];
+    char *master_text;
     char *key;
     s32 id;
 };

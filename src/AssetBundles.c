@@ -71,6 +71,8 @@ bool IsLoad(AssetBundles *this, char *key) {
       v23 = m_Items[v20];
         break;
       if ((byte_3F5879B & 1) == 0)
+        goto LABEL_35;
+LABEL_36:
       if (!IsLoad(_Ctrl_k__BackingField, v23))
         return 0;
       LODWORD(max_length) = v19->max_length;
@@ -78,6 +80,9 @@ bool IsLoad(AssetBundles *this, char *key) {
         return 1;
     }
     if ((byte_3F5879B & 1) != 0)
+      goto LABEL_36;
+LABEL_35:
+    goto LABEL_36;
   }
   return v18;
 }
@@ -106,6 +111,7 @@ void Load(AssetBundles *this, char *key, char *filename) {
     _Add(stock, &v25);
     return;
   }
+LABEL_8:
   Ctrl_k__BackingField = _Ctrl_k__BackingField;
   v10 = ToLower(filename, 0);
   LoadDirect(Ctrl_k__BackingField, key, v10, -1);
@@ -121,6 +127,8 @@ void Load(AssetBundles *this, char *key, char *filename) {
       v19 = m_Items[v16];
         break;
       if ((byte_3F5879B & 1) == 0)
+        goto LABEL_20;
+LABEL_21:
       v21 = _Ctrl_k__BackingField;
       v22 = ToLower(v19, 0);
       LoadDirect(v21, v19, v22, -1);
@@ -129,16 +137,68 @@ void Load(AssetBundles *this, char *key, char *filename) {
         return;
     }
     if ((byte_3F5879B & 1) != 0)
+      goto LABEL_21;
+LABEL_20:
+    goto LABEL_21;
   }
 }
 
 // 0xfdc5b0
 bool LoadManifest(AssetBundles *this) {
-    IsLoad(0, 0);
-    UnloadAB(0, 0);
-    Load(0, 0);
-    Load_16632688(0, 0, 0, 0);
-    return 0;
+  UnityEngine_Object_o *manifest;
+  Il2CppObject *v9;
+  struct AssetBundleCtrl_o *Ctrl_k__BackingField;
+  UnityEngine_AssetBundle_o *v11;
+  _BOOL8 v12;
+  System_Collections_Generic_List_Enumerator_T__o v18;
+  s64 v19;
+  s64 v20;
+  System_Collections_Generic_List_Enumerator_T__o v21;
+  s64 v22;
+  s64 v23;
+
+  v22 = 0;
+  v23 = 0;
+  memset(&v21, 0, sizeof(v21));
+  manifest = this->manifest;
+  if (!op_Equality(manifest, 0, 0))
+    return &xmmword_0 + 1;
+  if (IsLoad(_Ctrl_k__BackingField, "Switch"))
+  {
+    v9 = "Switch";
+    Ctrl_k__BackingField = _Ctrl_k__BackingField;
+    if (Animator___ContainsKey(Ctrl_k__BackingField->assetbundle, v9))
+    {
+      v11 = *(object___get_Item(Ctrl_k__BackingField->assetbundle, v9)[1].monitor
+            + 4);
+    }
+    else
+    {
+      v11 = 0;
+    }
+    this->manifest = LoadAsset_object_(v11, "AssetBundleManifest");
+    UnloadAB(_Ctrl_k__BackingField, "Switch");
+    _GetEnumerator(
+      &v18,
+      this->stock);
+    v23 = v20;
+    v21 = v18;
+    v22 = v19;
+    while ((sub_1A0F450(&v21) & 1) != 0)
+    {
+      sub_1A0F5B0(&v21, &v18);
+      if ((v18.current & 0x80000000) != 0)
+        Load(this, v18.list, *&v18.index, *&v18.index);
+      else
+        Load_16632688(this, v18.list, v18.current, *&v18.index);
+    }
+    nullsub_107(&v21);
+    _Clear(this->stock);
+    this->stock = 0;
+    return &xmmword_0 + 1;
+  }
+  LOBYTE(v12) = 0;
+  return v12;
 }
 
 // 0xfdcb70
@@ -167,6 +227,7 @@ void Load_16632688(AssetBundles *this, char *key, s32 dlc_id, char *filename) {
     _Add(stock, &v30);
     return;
   }
+LABEL_8:
   Load(v11, key, dlc_id, filename);
   AllDependencies = GetAllDependencies(this->manifest, filename);
   max_length = AllDependencies->max_length;
@@ -184,6 +245,8 @@ void Load_16632688(AssetBundles *this, char *key, s32 dlc_id, char *filename) {
         if (!Exists(v21))
           break;
         if ((byte_3F5879B & 1) == 0)
+          goto LABEL_22;
+LABEL_23:
         Ctrl_k__BackingField = _Ctrl_k__BackingField;
         v26 = ToLower(v20, 0);
         LoadDirect(Ctrl_k__BackingField, v20, v26, -1);
@@ -193,12 +256,17 @@ void Load_16632688(AssetBundles *this, char *key, s32 dlc_id, char *filename) {
       }
         break;
       if ((byte_3F5879D & 1) == 0)
+        goto LABEL_31;
+LABEL_32:
       Load(v28, v20, dlc_id, v20);
       LODWORD(max_length) = v15->max_length;
       if (++v16 >= max_length)
         return;
     }
     if ((byte_3F5879D & 1) != 0)
+      goto LABEL_32;
+LABEL_31:
+    goto LABEL_32;
   }
 }
 
@@ -252,12 +320,17 @@ void UnloadDependencies(AssetBundles *this, char *filename) {
         v13 = m_Items[v11];
           break;
         if ((byte_3F5879B & 1) == 0)
+          goto LABEL_13;
+LABEL_14:
         UnloadAB(_Ctrl_k__BackingField, v13);
         LODWORD(max_length) = v10->max_length;
         if (++v11 >= max_length)
           return;
       }
       if ((byte_3F5879B & 1) != 0)
+        goto LABEL_14;
+LABEL_13:
+      goto LABEL_14;
     }
   }
 }

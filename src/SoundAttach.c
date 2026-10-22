@@ -9,16 +9,29 @@ void _PlayVoice(SoundManager *this, char *name);
 
 // 0x13352c0
 void CallBGM(SoundAttach *this, char *name) {
-    PlayBGM(0);
+  System_String_o *v4;
+
+  else
+  {
+    v4 = name;
+  }
+  PlayBGM(v4, name);
 }
 
 // 0x13353f0
 void CallSE(SoundAttach *this, char *name) {
-    PlaySE(0);
+  System_String_o *v4;
+
+  else
+  {
+    v4 = name;
+  }
+  PlaySE(v4, name);
 }
 
 // 0x1335570
 void CallVoice(SoundAttach *this, char *name) {
+LABEL_7:
   _PlayVoice(Instance, name);
 }
 
@@ -28,10 +41,11 @@ void CallVoiceE728(SoundAttach *this) {
   System_String_o *v5;
 
   if (this->VoiceNo)
-    v4 = &StringLiteral_12141;
+    v4 = &"E728_L0018_ADD_F";
   else
-    v4 = &StringLiteral_12142;
+    v4 = &"E728_L0014_ADD_F";
   v5 = *v4;
+LABEL_10:
   _PlayVoice(Instance, v5);
 }
 
@@ -41,10 +55,11 @@ void CallVoiceE730(SoundAttach *this) {
   System_String_o *v5;
 
   if (this->VoiceNo)
-    v4 = &StringLiteral_12143;
+    v4 = &"E730_L0025_ADD_F";
   else
-    v4 = &StringLiteral_12144;
+    v4 = &"E730_L0022_ADD_F";
   v5 = *v4;
+LABEL_10:
   _PlayVoice(Instance, v5);
 }
 

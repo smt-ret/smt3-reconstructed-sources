@@ -1,0 +1,872 @@
+{
+"C_Debug_status": {
+"currentKey": [
+16,
+true
+],
+"oldKey": [
+16,
+true
+],
+"oneShotKey": [
+16,
+true
+]
+},
+"ChangeTex": {
+"changePath": [
+16,
+true
+]
+},
+"CounterCtr": {
+"image": [
+2,
+false
+],
+"number": [
+10,
+false
+]
+},
+"SAVEDATA": {
+"saveVer7": [
+20,
+false
+],
+"suspendVer7": [
+32,
+true
+]
+},
+"SAVEDATA_dds3SystemVer7_tag": {
+"reserved": [
+276,
+true
+]
+},
+"SAVEDATA_dds3WorkVer7_tag": {
+"amap31": [
+32,
+true
+],
+"amapEX": [
+32,
+true
+],
+"autoMapOpen": [
+36,
+true
+],
+"autoMapOpenEX": [
+2,
+true
+],
+"fldRunWork": [
+107,
+true
+],
+"reserved": [
+147,
+true
+]
+},
+"SAVEDATA_fclencyceelem_tag": {
+"keiattr": [
+24,
+true
+],
+"keisyoskill": [
+24,
+true
+],
+"levelupparam": [
+6,
+true
+],
+"mitamaparam": [
+6,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+24,
+true
+],
+"skillparam": [
+6,
+true
+]
+},
+"SAVEDATA_fldAutoMapBuff31_tag": {
+"blkOpenFlg01": [
+32,
+true
+],
+"blkOpenFlg02": [
+32,
+true
+],
+"blkOpenFlg03": [
+32,
+true
+],
+"blkOpenFlg04": [
+32,
+true
+],
+"blkOpenFlg05": [
+32,
+true
+],
+"blkOpenFlg06": [
+32,
+true
+],
+"blkOpenFlg07": [
+32,
+true
+]
+},
+"SAVEDATA_fldAutoMapBuffEX_tag": {
+"blkOpenFlg01": [
+32,
+true
+]
+},
+"SAVEDATA_fldAutoMapBuff_tag": {
+"blkOpenFlg01": [
+32,
+true
+],
+"blkOpenFlg02": [
+32,
+true
+],
+"blkOpenFlg03": [
+32,
+true
+],
+"blkOpenFlg04": [
+32,
+true
+],
+"blkOpenFlg05": [
+32,
+true
+],
+"blkOpenFlg06": [
+32,
+true
+],
+"blkOpenFlg07": [
+32,
+true
+],
+"blkOpenFlg08": [
+32,
+true
+],
+"blkOpenFlg09": [
+32,
+true
+],
+"blkOpenFlg10": [
+32,
+true
+],
+"blkOpenFlg11": [
+32,
+true
+],
+"blkOpenFlg12": [
+32,
+true
+],
+"blkOpenFlg13": [
+32,
+true
+],
+"blkOpenFlg14": [
+32,
+true
+],
+"blkOpenFlg15": [
+32,
+true
+],
+"blkOpenFlg16": [
+32,
+true
+],
+"blkOpenFlg17": [
+32,
+true
+],
+"blkOpenFlg18": [
+32,
+true
+],
+"blkOpenFlg19": [
+32,
+true
+],
+"blkOpenFlg20": [
+32,
+true
+],
+"blkOpenFlg21": [
+32,
+true
+],
+"blkOpenFlg22": [
+32,
+true
+],
+"blkOpenFlg23": [
+32,
+true
+],
+"blkOpenFlg24": [
+32,
+true
+],
+"blkOpenFlg25": [
+32,
+true
+],
+"blkOpenFlg26": [
+32,
+true
+],
+"blkOpenFlg27": [
+32,
+true
+],
+"blkOpenFlg28": [
+32,
+true
+],
+"blkOpenFlg29": [
+32,
+true
+]
+},
+"SoundCoroutine": {
+"bgmCoroutineList": [
+2,
+false
+]
+},
+"SoundManager": {
+"_3DSE_atandim": [
+32,
+true
+],
+"_channelBgmArray": [
+2,
+false
+],
+"_channelSeArray": [
+16,
+false
+],
+"_sourceBgmArray": [
+2,
+false
+],
+"_sourceSeArray": [
+16,
+false
+],
+"_sourceVoiceArray": [
+2,
+false
+]
+},
+"System_LocalDataStoreMgr": {
+"m_SlotInfoTable": [
+64,
+true
+]
+},
+"System_NumberFormatter": {
+"_cbuf": [
+8,
+true
+]
+},
+"System_Random": {
+"SeedArray": [
+56,
+true
+]
+},
+"System_TimeZoneInfo": {
+"adjustmentRules": [
+122,
+false
+]
+},
+"TMPro_TMP_FontAsset": {
+"fontWeights": [
+10,
+false
+],
+"m_AtlasTextures": [
+1,
+false
+],
+"m_FontWeightTable": [
+10,
+false
+]
+},
+"TMPro_TMP_Text": {
+"m_currentMaterial": [
+32,
+false
+],
+"m_materialReferenceIndexLookup": [
+16,
+false
+]
+},
+"TMPro_TMP_TextInfo": {
+"pageInfo": [
+4,
+false
+]
+},
+"TextManager": {
+"dmytext": [
+2,
+true
+],
+"fontsize": [
+7,
+true
+],
+"fonttype": [
+9,
+true
+],
+"game_objects": [
+5,
+false
+],
+"msgcount": [
+5,
+true
+],
+"sdfDevConsColorTable": [
+15,
+true
+]
+},
+"UnityEngine_UI_MaskableGraphic": {
+"m_ShouldRecalculate": [
+4,
+true
+]
+},
+"XRD773Unity_GraphicManager": {
+"commonmesh_mat": [
+32,
+false
+]
+},
+"basic_H_dds3Basic_t": {
+"pad": [
+3,
+true
+]
+},
+"basic_H_dds3WorldBasic_t": {
+"basicarray": [
+10000,
+false
+]
+},
+"dds3GlobalWork_H_dds3GlobalWork_t": {
+"EventBit": [
+128,
+true
+],
+"FloatVariable": [
+256,
+true
+],
+"IntVariable": [
+256,
+true
+],
+"boss_press": [
+40,
+false
+],
+"cname_code": [
+4,
+false
+],
+"cname_nums": [
+4,
+true
+],
+"config_data": [
+14,
+true
+],
+"hearts": [
+64,
+true
+],
+"hearts_sk": [
+32,
+false
+],
+"hearts_up_param": [
+32,
+false
+],
+"heartsskcnt": [
+64,
+true
+],
+"item": [
+160,
+true
+],
+"kotowari": [
+4,
+true
+],
+"name_code": [
+4,
+false
+],
+"name_nums": [
+4,
+false
+],
+"negoques": [
+4,
+true
+],
+"stocklist": [
+16,
+true
+],
+"syakkincnt": [
+64,
+true
+],
+"unitwork": [
+16,
+false
+]
+},
+"effect_H_billHandle_t": {
+"texture": [
+1,
+false
+]
+},
+"effect_H_dds3BillResource_tag": {
+"uv": [
+2,
+true
+]
+},
+"effect_H_dds3Effect_Blur_t": {
+"xy": [
+2,
+false
+]
+},
+"effect_H_dds3Effect_RippleBlur_t": {
+"pwork": [
+40,
+false
+]
+},
+"facility_H_fclEncycRecord_t": {
+"pelem": [
+185,
+false
+]
+},
+"facility_H_fclencyceelem_t": {
+"keiattr": [
+24,
+true
+],
+"keisyoskill": [
+24,
+true
+],
+"levelupparam": [
+6,
+true
+],
+"mitamaparam": [
+6,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+24,
+true
+],
+"skillparam": [
+6,
+true
+]
+},
+"field_H_DLCAmIcon_t": {
+"fldAmIcon": [
+1,
+false
+]
+},
+"field_H_GameFileInfo_t": {
+"autoMapOpen": [
+36,
+true
+],
+"autoMapOpenEX": [
+2,
+true
+],
+"end_list": [
+7,
+true
+],
+"verstr": [
+3,
+true
+]
+},
+"field_H_dds3AdditionWork_t": {
+"dummy": [
+5,
+true
+]
+},
+"field_H_dds3SystemWork_t": {
+"dlcflg": [
+8,
+true
+],
+"dummy": [
+20,
+true
+]
+},
+"field_H_fldAutoMapBuff31_t": {
+"blkOpenFlg": [
+8,
+false
+]
+},
+"field_H_fldAutoMapBuffEX_t": {
+"blkOpenFlg": [
+2,
+false
+]
+},
+"field_H_fldAutoMapBuff_t": {
+"blkOpenFlg": [
+30,
+false
+]
+},
+"field_H_fldBlockBuff_t": {
+"EanimeCngID": [
+16,
+true
+]
+},
+"field_H_fldGlobalWork_t": {
+"dmy6": [
+2,
+true
+]
+},
+"field_H_fldSave_t": {
+"PushBlock": [
+40,
+false
+],
+"pub": [
+11,
+true
+],
+"takara": [
+32,
+true
+],
+"takara2": [
+12,
+true
+]
+},
+"frFontTable_t": {
+"DestroyHandleList": [
+2,
+false
+],
+"GsClutAddr": [
+6,
+true
+],
+"pFont": [
+9,
+false
+]
+},
+"kernel_H_dds3AdminiData_t": {
+"FlagHistory": [
+8,
+true
+],
+"SequenceHistory": [
+8,
+true
+]
+},
+"kernel_H_dds3DrawEnv_t": {
+"ModelDrawEnv": [
+11,
+false
+]
+},
+"kernel_H_dds3ProcessID_t": {
+"name": [
+24,
+true
+],
+"workdata": [
+8,
+false
+]
+},
+"libsdf_H_sdf3DLightParallelPacket_t": {
+"color": [
+5,
+true
+],
+"normal": [
+3,
+true
+]
+},
+"libsdf_H_sdf3DLight_t": {
+"param": [
+4,
+true
+]
+},
+"libsdf_H_sdf3DViewportPacket_t": {
+"TM": [
+4,
+true
+],
+"cameraTm": [
+4,
+true
+],
+"hooter": [
+4,
+true
+]
+},
+"libsdf_H_sdfDrawTag_t": {
+"texPacket": [
+2,
+false
+]
+},
+"libsdf_H_sdfIVector2_t": {
+"pm": [
+2,
+true
+]
+},
+"libsdf_H_sdfIpuDecodeCb_t": {
+"pad": [
+2,
+true
+]
+},
+"libsdf_H_sdfModelDrawEnv_t": {
+"set": [
+4,
+false
+]
+},
+"libsdf_H_sdfRandCB_t": {
+"v": [
+4,
+true
+]
+},
+"manager_tag": {
+"pmesflow": [
+128,
+false
+]
+},
+"newdata_H_datDevilFormat_s": {
+"dropitem": [
+2,
+true
+],
+"droppoint": [
+2,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+8,
+true
+]
+},
+"newdata_H_datEncountPack_s": {
+"enctable": [
+4,
+false
+],
+"table1": [
+4,
+true
+]
+},
+"newdata_H_datEncountTbl_s": {
+"ritu": [
+12,
+false
+]
+},
+"newdata_H_datEncount_s": {
+"devil": [
+11,
+true
+]
+},
+"newdata_H_datUnitVisual_s": {
+"motion": [
+26,
+false
+]
+},
+"newdata_H_datUnitWork_s": {
+"fullnamecode": [
+8,
+true
+],
+"getdevilhearts": [
+4,
+true
+],
+"keiattr": [
+24,
+true
+],
+"keisyoskill": [
+24,
+true
+],
+"levelupparam": [
+6,
+true
+],
+"mitamaparam": [
+6,
+true
+],
+"namecode": [
+8,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+24,
+true
+],
+"skillparam": [
+6,
+true
+]
+},
+"result2_H_fclSkill_t": {
+"Event": [
+24,
+false
+],
+"GrowParamTbl": [
+6,
+true
+]
+},
+"scr_H_scrProcessWork_s": {
+"Name": [
+24,
+true
+],
+"StackData": [
+28,
+false
+],
+"StackType": [
+28,
+true
+]
+},
+"sdfPadCb_t": {
+"actData": [
+2,
+true
+],
+"actDataBack": [
+2,
+true
+],
+"analog": [
+2,
+false
+],
+"press": [
+12,
+true
+]
+},
+"typeFLDAREABGMTBL": {
+"id0": [
+32,
+true
+],
+"id1": [
+32,
+true
+]
+},
+"typeFLDBGMTBL": {
+"Trans": [
+16,
+true
+]
+}
+}

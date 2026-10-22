@@ -9,5 +9,5 @@ struct effPCPZiodin03_tag {
     f32 radius;
     f32 scale;
     u32 abgr;
-    effPCP_ThunderPoly_t pThunderPoly[UNKNOWN_ARRAY_SIZE];
+    effPCP_ThunderPoly_t *pThunderPoly;
 };

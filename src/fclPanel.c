@@ -54,7 +54,30 @@ s32 fclDefaultMoverCoreFunc(s32 MaxOfs, s32 Rate) {
 
 // 0x13c97f0
 void fclDefaultMoverFunc(void *pMover) {
-    fclDefaultMoverCoreFunc(0, 0);
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  s32 klass_high;
+  u64 v10[3];
+
+  if (pMover)
+  {
+    klass = pMover->klass;
+    if (pMover->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanelMover_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclPanelMover_t, v10);
+      if ((v10[0] & 1) != 0)
+        v6 = v10[2];
+      else
+        v6 = v10 + 1;
+      v7 = sub_8C4940(v6);
+    }
+  }
+  klass_high = HIDWORD(pMover[2].klass);
+  HIDWORD(pMover[1].klass) = fclDefaultMoverCoreFunc(HIDWORD(pMover[1].monitor), klass_high);
+  LODWORD(pMover[1].monitor) = fclDefaultMoverCoreFunc(pMover[2].klass, klass_high);
 }
 
 // 0x13cd9e0
@@ -133,15 +156,20 @@ void fclDrawArrowCursor(fclPanel_t *pPanel, u32 Z, s32 OfsX, u32 OtNo) {
     v26 = 0;
     v27 = v79;
     if ((Flag & 2) != 0)
+      goto LABEL_19;
+LABEL_38:
     if (v26)
     {
       if (!v12[6])
+        goto LABEL_84;
     }
     else
     {
       pPanel->Timer = 0;
       if (!v12[6])
+        goto LABEL_84;
     }
+    goto LABEL_40;
   }
   ++v8[8];
   *(v9 + 8) = -1;
@@ -150,10 +178,17 @@ void fclDrawArrowCursor(fclPanel_t *pPanel, u32 Z, s32 OfsX, u32 OtNo) {
   v26 = 1;
   v27 = v79;
   if ((pPanel->Flag & 2) == 0)
+    goto LABEL_38;
+LABEL_19:
   ++v8[9];
   v80[9] = -1;
   v27[9] = 48;
   v12[9] = v24 | 0x80808000;
+  if (!v12[6])
+  {
+LABEL_84:
+  }
+LABEL_40:
   v36 = v12[8];
   max_length = v11->max_length;
   v11->m_Items[0] = v36;
@@ -330,9 +365,166 @@ void fclDrawPanelGradDouble(fclPanel_t *pPanel, u32 Color, u32 OtNo) {
 
 // 0x13cb690
 void fclDrawPanelType0(void *pPanel, u32 OtNo) {
-    SDF_GS_SET_ALPHA(0, 0, 0, 0, 0);
-    CMP_Y(0);
-    fclDrawPanelType0Grad(0, 0);
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  System_UInt32_array *v10;
+  s32 monitor_high;
+  u32 v12;
+  s64 monitor_low;
+  s32 v14;
+  u32 v15;
+  u64 v17;
+  s32 klass_high;
+  s32 v20;
+  s32 v21;
+  s32 v22;
+  il2cpp_array_size_t max_length;
+  s32 v25;
+  u64 v27;
+  s32 v28;
+  u64 v29;
+  s32 v30;
+  u64 v31;
+  s32 v32;
+  u32 monitor;
+  u32 v34;
+  u32 v35;
+  u32 v36;
+  s32 v37;
+  u64 v44;
+  u32 v45;
+  u32 v46;
+  u32 v47;
+  u64 v52;
+  s32 v53;
+  s32 v54;
+  s32 v55;
+  il2cpp_array_size_t v56;
+  s32 v57;
+  s32 v58;
+  u64 v61;
+  s32 v62;
+  u64 v63;
+  s32 v64;
+  u64 v65;
+  s32 v66;
+  u32 v67;
+  s32 v68;
+  u64 v75;
+  u64 v76;
+  s32 v78;
+  u64 v79[3];
+
+  if (pPanel)
+  {
+    klass = pPanel->klass;
+    if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclPanel_t, v79);
+      if ((v79[0] & 1) != 0)
+        v7 = v79[2];
+      else
+        v7 = v79 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  v10 = NewSpecific(uint, 4u);
+  monitor_high = HIWORD(pPanel[1].monitor);
+  v12 = 80 * monitor_high / 0x64u;
+  monitor_low = SLODWORD(pPanel[2].monitor);
+  v14 = monitor_high - 8;
+  v78 = v12 * (256 - monitor_low) + -((v12 * (256 - monitor_low)) < 0);
+  v15 = (102 * monitor_low / 256) | 0x11171800;
+  v17 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v17, OtNo);
+  klass_high = HIDWORD(pPanel[1].klass);
+  v20 = CMP_Y(4);
+  cmpDrawBoxF(0, v20 + klass_high, pPanel[1].monitor, 512, v14, v15, OtNo);
+  v21 = HIDWORD(pPanel[1].klass);
+  v22 = CMP_Y(22);
+  max_length = v10->max_length;
+  v10->m_Items[0] = 34411008;
+  v25 = v21 - v22;
+  v10->m_Items[1] = 34411008;
+  v10->m_Items[2] = 34411072;
+  v10->m_Items[3] = 34411072;
+  v27 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v27, OtNo);
+  cmpDrawBoxG(0, v25, pPanel[1].monitor, 512, 22, v10, OtNo);
+  v28 = CMP_Y(22) + v25;
+  v29 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v29, OtNo);
+  cmpDrawBoxF(0, v28, pPanel[1].monitor, 512, 4, 0x80u, OtNo);
+  v30 = CMP_Y(4) + v28;
+  v31 = SDF_GS_SET_ALPHA(0, 2u, 0, 1u, 0);
+  cmpSetRegALPHA(v31, OtNo);
+  cmpDrawBoxF(0, v30, pPanel[1].monitor, 512, 4, 0x1F252B80u, OtNo);
+  v32 = CMP_Y(4);
+  monitor = pPanel[2].monitor;
+  if (monitor <= 0x100)
+    v34 = 256 - monitor;
+  else
+    v34 = monitor + 256;
+  v35 = ((256 - v34) << 9) & 0xFFFF0000 | (37 * (256 - v34)) & 0xFFFFFF00 | (393216 * (256 - v34)) & 0xFF000000 | 0x3C;
+  v36 = v10->max_length;
+  v10->m_Items[0] = v35;
+  v37 = v32 + v30;
+  v10->m_Items[1] = v35;
+  v10->m_Items[2] = 60;
+  v10->m_Items[3] = 60;
+  v44 = SDF_GS_SET_ALPHA(0, 2u, 0, 1u, 0);
+  cmpSetRegALPHA(v44, OtNo);
+  cmpDrawBoxG(0, v37, pPanel[1].monitor, 512, 34, v10, OtNo);
+  v45 = pPanel[2].monitor;
+  if (v45 > 0x100)
+    v45 = 512 - v45;
+  v46 = ((256 - v45) << 9) & 0xFFFF0000 | (37 * (256 - v45)) & 0xFFFFFF00 | (393216 * (256 - v45)) & 0xFF000000 | 0x3C;
+  v47 = v10->max_length;
+  v10->m_Items[0] = v46;
+  v10->m_Items[1] = v46;
+  v10->m_Items[2] = 60;
+  v10->m_Items[3] = 60;
+  v52 = SDF_GS_SET_ALPHA(0, 2u, 0, 1u, 0);
+  cmpSetRegALPHA(v52, OtNo);
+  cmpDrawBoxG(0, v37, pPanel[1].monitor, 512, v12 - (v78 >> 8) + 34, v10, OtNo, 0);
+  v53 = HIDWORD(pPanel[1].klass);
+  v54 = CMP_Y(HIWORD(pPanel[1].monitor) - 8, 0);
+  v55 = CMP_Y(34);
+  v56 = v10->max_length;
+  v10->m_Items[0] = 60;
+  v57 = v54 + v53;
+  v58 = v57 - v55;
+  v10->m_Items[1] = 60;
+  v10->m_Items[2] = 100803900;
+  v10->m_Items[3] = 100803900;
+  v61 = SDF_GS_SET_ALPHA(0, 2u, 0, 1u, 0);
+  cmpSetRegALPHA(v61, OtNo);
+  cmpDrawBoxG(0, v58, pPanel[1].monitor, 512, 34, v10, OtNo);
+  v62 = CMP_Y(34) + v58;
+  v63 = SDF_GS_SET_ALPHA(0, 2u, 0, 1u, 0);
+  cmpSetRegALPHA(v63, OtNo);
+  cmpDrawBoxF(0, v62, pPanel[1].monitor, 512, 4, 0x1F252B80u, OtNo);
+  v64 = CMP_Y(4) + v62;
+  v65 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v65, OtNo);
+  cmpDrawBoxF(0, v64, pPanel[1].monitor, 512, 4, 0x80u, OtNo);
+  v66 = CMP_Y(4);
+  v67 = v10->max_length;
+  v10->m_Items[0] = 34411072;
+  v68 = v66 + v64;
+  v10->m_Items[1] = 34411072;
+  v10->m_Items[2] = 34411008;
+  v10->m_Items[3] = 34411008;
+  v75 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v75, OtNo);
+  cmpDrawBoxG(0, v68, pPanel[1].monitor, 512, 22, v10, OtNo);
+  CMP_Y(22);
+  v76 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v76, OtNo);
+  fclDrawPanelType0Grad(pPanel, OtNo);
 }
 
 // 0x13cae00
@@ -386,6 +578,8 @@ void fclDrawPanelType0Grad(fclPanel_t *pPanel, u32 OtNo) {
   cmpSetRegALPHA(v14, OtNo);
   max_length = v12->max_length;
   if (!max_length)
+    goto LABEL_87;
+LABEL_17:
   v12->m_Items[0] = 1416465203;
   v12->m_Items[1] = 51;
   v12->m_Items[2] = LOBYTE(v12->m_Items[0]);
@@ -439,30 +633,245 @@ void fclDrawPanelType0Grad(fclPanel_t *pPanel, u32 OtNo) {
 
 // 0x13cc250
 void fclDrawPanelType1(void *pPanel, u32 OtNo) {
-    SDF_GS_SET_ALPHA(0, 0, 0, 0, 0);
-    CMP_X(0);
-    fclDrawPartsEx3(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    CMP_Y(0);
-    fclDrawPartsEx6(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    fclDrawArrowCursor(0, 0, 0, 0);
+  u32 v3;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  s32 v9;
+  s32 v10;
+  s32 monitor;
+  s32 v12;
+  u64 v14;
+  s32 v16;
+  s32 v17;
+  s32 v18;
+  s32 v20;
+  s32 klass_high;
+  u32 v25;
+  sdfTexHandle_t_array *cmpTex;
+  fclSprTblArry_t_array *pSprTblArry;
+  s32 v28;
+  s32 v29;
+  s32 v30;
+  s32 v31;
+  s32 v32;
+  s32 v33;
+  s32 v34;
+  s32 v35;
+  s32 v36;
+  s32 v37;
+  u64 v39[3];
+
+  v3 = OtNo;
+  if (pPanel)
+  {
+    klass = pPanel->klass;
+    if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclPanel_t, v39);
+      if ((v39[0] & 1) != 0)
+        v7 = v39[2];
+      else
+        v7 = v39 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  if ((BYTE2(pPanel[3].klass) & 1) != 0)
+    v9 = 24;
+  else
+    v9 = 6;
+  v10 = WORD2(pPanel[1].monitor) - 19;
+  monitor = pPanel[1].monitor;
+  v12 = v10 - v9;
+  v14 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v14, v3);
+  cmpDrawBoxF(
+    pPanel[1].klass,
+    HIDWORD(pPanel[1].klass),
+    pPanel[1].monitor,
+    v9,
+    HIWORD(pPanel[1].monitor),
+    0x13141559u,
+    v3,
+    0);
+  v16 = pPanel[1].klass;
+  v17 = CMP_X(v9 + 19);
+  cmpDrawBoxF(
+    v17 + v16,
+    HIDWORD(pPanel[1].klass),
+    pPanel[1].monitor,
+    v12,
+    HIWORD(pPanel[1].monitor),
+    0x13141559u,
+    v3,
+    0);
+  v18 = pPanel[1].klass;
+  v20 = CMP_X(v9);
+  klass_high = HIDWORD(pPanel[1].klass);
+  v25 = 16 * monitor;
+  pSprTblArry = cmpSprTblArry;
+  fclDrawPartsEx3(v20 + v18, klass_high, v25, 0, 0, 0xAu, 3u, cmpTex, pSprTblArry, v3);
+  v28 = pPanel[1].klass;
+  v29 = CMP_X(v9);
+  v30 = HIDWORD(pPanel[1].klass);
+  v31 = v29;
+  v32 = CMP_Y(25);
+  fclDrawPartsEx6(
+    v31 + v28,
+    v32 + v30,
+    v25,
+    19,
+    HIWORD(pPanel[1].monitor) - 50,
+    0,
+    0,
+    0xAu,
+    5u,
+    cmpTex,
+    cmpSprTblArry,
+    v3,
+    0);
+  v33 = pPanel[1].klass;
+  v34 = CMP_X(v9);
+  v35 = HIDWORD(pPanel[1].klass);
+  v36 = v34;
+  v37 = CMP_Y(HIWORD(pPanel[1].monitor) - 25, 0);
+  fclDrawPartsEx3(v36 + v33, v37 + v35, v25, 0, 0, 0xAu, 4u, cmpTex, cmpSprTblArry, v3);
+  fclDrawArrowCursor(pPanel, v25, v9, v3);
 }
 
 // 0x13cc740
 void fclDrawPanelType2(void *pPanel, u32 OtNo) {
-    SDF_GS_SET_ALPHA(0, 0, 0, 0, 0);
-    CMP_Y(0);
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  u32 v9;
+  u64 v11;
+  s32 v13;
+  s32 klass_high;
+  s32 monitor_high;
+  s32 v16;
+  u64 v17[3];
+
+  if (pPanel)
+  {
+    klass = pPanel->klass;
+    if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclPanel_t, v17);
+      if ((v17[0] & 1) != 0)
+        v7 = v17[2];
+      else
+        v7 = v17 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  v9 = pPanel[2].klass;
+  v11 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v11, OtNo);
+  cmpDrawBoxF(
+    pPanel[1].klass,
+    HIDWORD(pPanel[1].klass),
+    pPanel[1].monitor,
+    WORD2(pPanel[1].monitor),
+    HIWORD(pPanel[1].monitor) - 26,
+    v9,
+    OtNo,
+    0);
+  v13 = pPanel[1].klass;
+  klass_high = HIDWORD(pPanel[1].klass);
+  monitor_high = HIWORD(pPanel[1].monitor);
+  v16 = CMP_Y(monitor_high - 26);
+  cmpDrawBoxF(v13, v16 + klass_high, pPanel[1].monitor, WORD2(pPanel[1].monitor), 26, 0x3151A40u, OtNo, 0);
 }
 
 // 0x13cd180
 void fclDrawPanelType3(void *pPanel, u32 OtNo) {
-    fclDrawPanelType3BackGrad(0, 0);
-    fclDrawPanelType3Line(0, 0);
-    fclDrawPanelType3Base(0, 0);
-    CMP_X(0);
-    CMP_Y(0);
-    fclDrawPartsEx3(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    fclDrawPartsEx6(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    fclDrawArrowCursor(0, 0, 0, 0);
+  u32 v3;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  s32 monitor;
+  s32 v12;
+  s32 v13;
+  s32 klass_high;
+  s32 v15;
+  s32 v17;
+  sdfTexHandle_t_array *cmpTex;
+  u32 v21;
+  fclSprTblArry_t_array *pSprTblArry;
+  s32 v23;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  s32 v27;
+  s32 v28;
+  s32 v29;
+  s32 v30;
+  s32 v31;
+  s32 v32;
+  u64 v34[3];
+
+  v3 = OtNo;
+  if (pPanel)
+  {
+    klass = pPanel->klass;
+    if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclPanel_t, v34);
+      if ((v34[0] & 1) != 0)
+        v7 = v34[2];
+      else
+        v7 = v34 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  monitor = pPanel[1].monitor;
+  if (pPanel[4].klass)
+  {
+    fclDrawPanelType3BackGrad(pPanel, v3);
+    fclDrawPanelType3Line(pPanel, v3);
+    fclDrawPanelType3Base(pPanel, v3);
+  }
+  v12 = pPanel[1].klass;
+  v13 = CMP_X(23);
+  klass_high = HIDWORD(pPanel[1].klass);
+  v15 = v13;
+  v17 = CMP_Y(6);
+  v21 = 16 * monitor;
+  pSprTblArry = cmpSprTblArry;
+  fclDrawPartsEx3(v15 + v12, v17 + klass_high, v21, 0, 0, 0xAu, 0xDu, cmpTex, pSprTblArry, v3);
+  v23 = pPanel[1].klass;
+  v24 = CMP_X(23);
+  v25 = HIDWORD(pPanel[1].klass);
+  v26 = v24;
+  v27 = CMP_Y(31);
+  fclDrawPartsEx6(
+    v26 + v23,
+    v27 + v25,
+    v21,
+    19,
+    HIWORD(pPanel[1].monitor) - 62,
+    0,
+    0,
+    0xAu,
+    0xFu,
+    cmpTex,
+    cmpSprTblArry,
+    v3,
+    0);
+  v28 = pPanel[1].klass;
+  v29 = CMP_X(23);
+  v30 = HIDWORD(pPanel[1].klass);
+  v31 = v29;
+  v32 = CMP_Y(HIWORD(pPanel[1].monitor) - 31, 0);
+  fclDrawPartsEx3(v31 + v28, v32 + v30, v21, 0, 0, 0xAu, 0xEu, cmpTex, cmpSprTblArry, v3);
+  fclDrawArrowCursor(pPanel, v21, 23, v3);
 }
 
 // 0x13ccc70
@@ -577,7 +986,40 @@ void fclDrawPanelType3Line(fclPanel_t *pPanel, u32 OtNo) {
 
 // 0x13cab90
 void fclDrawPanelTypeDef(void *pPanel, u32 OtNo) {
-    SDF_GS_SET_ALPHA(0, 0, 0, 0, 0);
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  u32 v9;
+  u64 v11;
+  u64 v12[3];
+
+  if (pPanel)
+  {
+    klass = pPanel->klass;
+    if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclPanel_t, v12);
+      if ((v12[0] & 1) != 0)
+        v7 = v12[2];
+      else
+        v7 = v12 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  v9 = pPanel[2].klass;
+  v11 = SDF_GS_SET_ALPHA(0, 1u, 0, 1u, 0);
+  cmpSetRegALPHA(v11, OtNo);
+  cmpDrawBoxF(
+    pPanel[1].klass,
+    HIDWORD(pPanel[1].klass),
+    pPanel[1].monitor,
+    WORD2(pPanel[1].monitor),
+    HIWORD(pPanel[1].monitor),
+    v9,
+    OtNo,
+    0);
 }
 
 // 0x13c96e0
@@ -734,7 +1176,9 @@ s32 fclUpdatePanelMover(fclPanelMover_t *pMover) {
   {
     p_Rate = &pMover->Rate;
     v5 = (pMover->Rate - pMover->Spd) & ~((pMover->Rate - pMover->Spd) >> 31);
+LABEL_6:
     *p_Rate = v5;
+    goto LABEL_7;
   }
   if (Mode == 1)
   {
@@ -742,27 +1186,146 @@ s32 fclUpdatePanelMover(fclPanelMover_t *pMover) {
     v5 = pMover->Spd + pMover->Rate;
     if (v5 >= 512)
       v5 = 512;
+    goto LABEL_6;
   }
+LABEL_7:
   fclPanelMoverFunc_t__Invoke(pMover->MoverFunc, pMover);
   return pMover->Rate;
 }
 
 // 0x13cc150
 void fclUpdatePanelType0(void *pPanel) {
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 v5;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  klass = pPanel->klass;
+  if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclPanel_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  v5 = LODWORD(pPanel[2].monitor) + BYTE4(pPanel[2].klass);
+  if (v5 >= 256)
+    v5 = 256;
+  LODWORD(pPanel[2].monitor) = v5;
 }
 
 // 0x13cc640
 void fclUpdatePanelType1(void *pPanel) {
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 v5;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  klass = pPanel->klass;
+  if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclPanel_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  v5 = LODWORD(pPanel[2].monitor) + BYTE4(pPanel[2].klass);
+  if (v5 > 512)
+    v5 = 0;
+  LODWORD(pPanel[2].monitor) = v5;
 }
 
 // 0x13cc930
 void fclUpdatePanelType2(void *pPanel) {
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 v5;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  klass = pPanel->klass;
+  if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclPanel_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  v5 = LODWORD(pPanel[2].monitor) + BYTE4(pPanel[2].klass);
+  if (v5 >= 256)
+    v5 = 256;
+  LODWORD(pPanel[2].monitor) = v5;
 }
 
 // 0x13cd4c0
 void fclUpdatePanelType3(void *pPanel) {
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 monitor_high;
+  s32 v6;
+  s32 v7;
+  char *v8;
+  s64 *v9;
+  u64 v10[3];
+
+  klass = pPanel->klass;
+  if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclPanel_t, v10);
+    if ((v10[0] & 1) != 0)
+      v8 = v10[2];
+    else
+      v8 = v10 + 1;
+    v9 = sub_8C4940(v8);
+  }
+  monitor_high = HIDWORD(pPanel[2].monitor);
+  v6 = LODWORD(pPanel[2].monitor) + BYTE4(pPanel[2].klass);
+  if (v6 >= 513)
+    v6 = 0;
+  LODWORD(pPanel[2].monitor) = v6;
+  v7 = monitor_high + 32;
+  if (monitor_high + 32 >= 512)
+    v7 = 512;
+  HIDWORD(pPanel[2].monitor) = v7;
 }
 
 // 0x13cad00
 void fclUpdatePanelTypeDef(void *pPanel) {
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 v5;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  klass = pPanel->klass;
+  if (pPanel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclPanel_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclPanel_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  v5 = LODWORD(pPanel[2].monitor) + BYTE4(pPanel[2].klass);
+  if (v5 >= 256)
+    v5 = 256;
+  LODWORD(pPanel[2].monitor) = v5;
 }

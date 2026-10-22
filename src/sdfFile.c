@@ -41,6 +41,7 @@ s32 sdfFileCheckExist(char *aFilename) {
   Filename = sdfFileMakeFilename(aFilename);
   if (get_Chars(Filename, 0) != 47)
     return 1;
+LABEL_11:
   return sdfCdImageSearchFile(Filename, v4, v5) != 0;
 }
 
@@ -61,7 +62,22 @@ s32 sdfFileChkHostFile(char *aFilename) {
 
 // 0x17eb890
 void sdfFileClose(sdfFileCmdHandle_t *aHandle) {
-    sdfFileCmdReleaseHandle(0);
+  s32 stat;
+
+  else
+  {
+    stat = aHandle->stat;
+    if (stat != 7)
+      goto LABEL_6;
+  }
+  aHandle->cmd = 7;
+  if ((byte_3F5A8EE & 1) == 0)
+    goto LABEL_14;
+LABEL_7:
+  if ((stat - 7) > 1)
+    return;
+LABEL_8:
+  sdfFileCmdReleaseHandle(aHandle);
 }
 
 // 0x17ebe60
@@ -72,7 +88,9 @@ char *sdfFileGetHostRoot(void) {
 // 0x17ebb30
 s32 sdfFileLength(sdfFileCmdHandle_t *aHandle) {
   if (aHandle->stat == 7)
+LABEL_6:
     aHandle->cmd = 4;
+LABEL_7:
   return sdfFileLengthWork;
 }
 
@@ -92,17 +110,21 @@ char *sdfFileMakeFilename(char *aFilename) {
   u32 v22;
   System_String_o *aDst;
 
-  aDst = StringLiteral_416;
+  aDst = "";
   get_Length(aFilename);
   if (StrChr(aFilename, 0x3Au))
   {
     aDst = aFilename;
-    if (Compare_5254944(aFilename, 0, StringLiteral_21959, 0, 5))
+    if (Compare_5254944(aFilename, 0, "cdrom", 0, 5))
       return aDst;
     v5 = Substring(aFilename, 5);
     v6 = ToCharArray(v5);
     v7 = 0;
     m_Items = v6->m_Items;
+    if (!LODWORD(v6->max_length))
+    {
+LABEL_8:
+    }
     while (1)
     {
       v10 = m_Items[v7];
@@ -121,11 +143,14 @@ char *sdfFileMakeFilename(char *aFilename) {
       if ((v10 - 97) <= 0x19)
       {
         v11 = v10 - 32;
+LABEL_16:
         m_Items[v7] = v11;
       }
       if (++v7 >= LODWORD(v6->max_length))
+        goto LABEL_8;
     }
     v11 = 92;
+    goto LABEL_16;
   }
   {
           v14 = sdfFile,
@@ -138,7 +163,7 @@ char *sdfFileMakeFilename(char *aFilename) {
   }
   if (sdfFileDefaultSrcType == 2)
   {
-    return Concat_5224608(StringLiteral_22006, aFilename);
+    return Concat_5224608("pfs0:", aFilename);
   }
   else if (sdfFileDefaultSrcType == 1)
   {
@@ -167,8 +192,13 @@ sdfFileCmdHandle_t *sdfFileOpen(char *aFileName) {
 
   v3 = Allocate(sdfFileCmdHandle_t);
   sdfFileCmdHandle_t___ctor(v3);
-  else  Sema = sdfCreateSema(0, 128, 0);
+  else if ((sdfFileSemaId & 0x80000000) == 0)
+  {
+    goto LABEL_14;
+  }
+  Sema = sdfCreateSema(0, 128, 0);
   sdfFileSemaId = Sema;
+LABEL_14:
   v8 = Allocate(sdfFileCmdCallback_t);
   sdfFileCmdCallback_t___ctor(v8, 0, Method_sdfFile_sdfFileCallback__);
   result = sdfFileCmdReadOpen(aFileName, v9, v10);
@@ -201,10 +231,12 @@ s32 sdfFileSeek(sdfFileCmdHandle_t *aHandle, s32 aPos, s32 aWhence) {
   v5 = aPos;
   if (aHandle->stat == 7)
   {
+LABEL_6:
     aHandle->cmd = 3;
     aHandle->offset = v5;
     aHandle->cmdParm = aWhence;
   }
+LABEL_7:
   return sdfFileSeekWork;
 }
 
@@ -220,12 +252,16 @@ void sdfFileSetCdFilename(char **aDst, u16 **aSrc) {
   u64 v13;
   u32 max_length;
 
-  v5 = StringLiteral_22004;
-  *aDst = StringLiteral_22004;
+  v5 = "cdrom0:";
+  *aDst = "cdrom0:";
   v6 = Substring(v5, 7);
   v7 = ToCharArray(v6);
   v8 = 0;
   m_Items = aSrc->m_Items;
+  if (!LODWORD(aSrc->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     v11 = m_Items[v8];
@@ -240,6 +276,7 @@ void sdfFileSetCdFilename(char **aDst, u16 **aSrc) {
     v13 = v8 + 1;
     v7->m_Items[v8++] = v12;
     if (v13 >= LODWORD(aSrc->max_length))
+      goto LABEL_6;
   }
   max_length = v7->max_length;
   v7->m_Items[0] = 59;
@@ -253,6 +290,7 @@ void sdfFileSetDefaultSrc(s32 aType) {
 
   v2 = aType;
   sdfFileDefaultSrcType = v2;
+LABEL_10:
   sdfFileCmdDefaultDevice = v2;
 }
 
@@ -260,8 +298,8 @@ void sdfFileSetDefaultSrc(s32 aType) {
 void sdfFileSetHddFilename(char **aDst, char *aSrc) {
   System_String_o *v5;
 
-  v5 = StringLiteral_22006;
-  *aDst = StringLiteral_22006;
+  v5 = "pfs0:";
+  *aDst = "pfs0:";
   *aDst = Concat_5224608(v5, aSrc);
 }
 
@@ -270,7 +308,7 @@ void sdfFileSetHostFilename(char **aDst, char *aSrc) {
   System_String_o *sdfFileHostRootPath;
 
   {
-    sdfFileHostRootPath = StringLiteral_22005;
+    sdfFileHostRootPath = "host0:";
   }
   *aDst = sdfFileHostRootPath;
   *aDst = Concat_5224608(sdfFileHostRootPath, aSrc);
@@ -281,24 +319,21 @@ void sdfFileSetHostRoot(char *aRootPath) {
   s32 Length;
   System_String_o *v5;
   s32 Chars;
-  sdfFile_c *v9;
   struct sdfFile_StaticFields **p_static_fields;
   s32 v11;
   struct System_String_o *v12;
 
   Length = get_Length(aRootPath);
-  v5 = Concat_5224608(StringLiteral_22005, aRootPath);
+  v5 = Concat_5224608("host0:", aRootPath);
   sdfFileHostRootPath = v5;
   Chars = get_Chars(aRootPath, Length - 1);
   if (Chars == 0x2F)
   {
-    p_static_fields = &v9->static_fields;
     v11 = 6;
   }
   else
   {
     v12 = ChangeCharacter(sdfFileHostRootPath, Length + 6, 0x2Fu);
-    p_static_fields = &sdfFile->static_fields;
     sdfFileHostRootPath = v12;
     v11 = 7;
   }

@@ -17,7 +17,7 @@ void AnimStart(FlipAnimation2 *this) {
 // 0x113dc80
 void AnimStop(FlipAnimation2 *this) {
   this->trigger = 0;
-  SetTexture(this->mat, StringLiteral_3558, 0, 0);
+  SetTexture(this->mat, "_MainTex", 0, 0);
 }
 
 // 0x113d690
@@ -50,7 +50,7 @@ void Start(FlipAnimation2 *this) {
   this->img_len = Images->max_length;
   if (Images->max_length)
   {
-    SetTexture(this->mat, StringLiteral_3558, 0, 0);
+    SetTexture(this->mat, "_MainTex", 0, 0);
     v7 = this->Images;
     stepcnt = this->stepcnt;
     v10 = (v7->m_Items[stepcnt]->klass->vtable._4_get_width.methodPtr)(
@@ -71,12 +71,14 @@ void Start(FlipAnimation2 *this) {
     if (x == 0.0)
     {
       this->uvset = 0;
+LABEL_10:
       this->Count = this->Images->max_length;
       return;
     }
     y = this->Uv.y;
     this->uvset = y != 0.0;
     if (y == 0.0)
+      goto LABEL_10;
     if (this->Pattern)
     {
       v18 = v14;
@@ -130,6 +132,7 @@ void update_texture(FlipAnimation2 *this) {
   struct UnityEngine_Texture_array *Images;
 
   if (!this->uvset)
+    goto LABEL_22;
   seekx = this->seekx;
   x = this->tex_off.x;
   v5 = this->tex_off.y * this->seeky;
@@ -158,16 +161,20 @@ void update_texture(FlipAnimation2 *this) {
     if (v20 + lcnt * seeky >= Count)
     {
       if (!this->Loop)
+        goto LABEL_28;
       seeky = 0;
       v20 = 0;
       this->stepcnt = 0;
       *&this->seekx = 0;
     }
     if ((this->Uv.x * v20) < this->width)
+      goto LABEL_22;
     v23 = seeky + 1;
     this->seekx = 0;
     this->seeky = v23;
     if (lcnt * v23 < Count)
+      goto LABEL_22;
+    goto LABEL_15;
   }
   v14 = this->seekx;
   v15 = this->seeky + 1;
@@ -177,6 +184,7 @@ void update_texture(FlipAnimation2 *this) {
   if (v15 + v16 * v14 >= v17)
   {
     if (!this->Loop)
+      goto LABEL_28;
     v14 = 0;
     v15 = 0;
     this->stepcnt = 0;
@@ -188,11 +196,14 @@ void update_texture(FlipAnimation2 *this) {
     *&this->seekx = v18;
     if ((v16 * v18) >= v17)
     {
+LABEL_15:
       if (!this->Loop)
+        goto LABEL_28;
       this->stepcnt = 0;
       *&this->seekx = 0;
     }
   }
+LABEL_22:
   img_len = this->img_len;
   v25 = this->stepcnt + 1;
   this->stepcnt = v25;
@@ -202,11 +213,14 @@ void update_texture(FlipAnimation2 *this) {
     {
       v25 = 0;
       this->stepcnt = 0;
+      goto LABEL_25;
     }
+LABEL_28:
     this->finished = 1;
     return;
   }
+LABEL_25:
   mat = this->mat;
   Images = this->Images;
-  SetTexture(mat, StringLiteral_3558, Images->m_Items[v25], 0);
+  SetTexture(mat, "_MainTex", Images->m_Items[v25], 0);
 }

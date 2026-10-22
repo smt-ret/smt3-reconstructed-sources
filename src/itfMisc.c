@@ -67,29 +67,52 @@ char *CheckPictureID715(char *filename) {
   v13 = 0;
   result = 0;
   if (!IsDLC())
+    goto LABEL_18;
+LABEL_6:
   IndexOf = LastIndexOf(filename, 0x2Fu, 0);
   if (IndexOf == -1)
+    goto LABEL_18;
   v4 = IndexOf;
   Length = get_Length(filename);
   v6 = Substring_5248048(filename, v4 + 1, Length + ~v4);
   v7 = Substring_5248048(v6, 1, 3);
   if (!TryParse(v7, &result, 0))
+    goto LABEL_18;
   v13 = 0;
   v8 = Substring_5248048(v6, 6, 3);
   v9 = TryParse(v8, &v13, 0);
-  v10 = &StringLiteral_416;
+  v10 = &"";
   if (v9)
   {
-    v10 = &StringLiteral_4735;
+    v10 = &"m";
     if ((result != 715 || v13 != 6) && (v13 != 22 || result != 716))
-      v10 = &StringLiteral_416;
+      v10 = &"";
   }
   return *v10;
 }
 
 // 0x1599f60
 sdfColor_t UintToColor(u32 color) {
-    return (sdfColor_t){0};
+  f32 v2;
+  f32 v3;
+  f32 v4;
+  f32 v5;
+  s64 v10;
+  s64 v11;
+  UnityEngine_Color_o result;
+
+  v10 = 0;
+  v11 = 0;
+  v2 = color;
+  v3 = HIBYTE(color);
+  v4 = BYTE2(color);
+  v5 = BYTE1(color);
+  sub_19EC630(&v10, v3 / 255.0, v4 / 255.0, v5 / 255.0, v2 / 255.0);
+  result.g = *(&v10 + 1);
+  LODWORD(result.r) = v10;
+  result.a = *(&v11 + 1);
+  LODWORD(result.b) = v11;
+  return result;
 }
 
 // 0x1599eb0
@@ -106,15 +129,77 @@ s32 itfCamp(void) {
 void itfCampStartProcess(void) {
   if (dds3AdminiGetActiveSequence() != 7)
     dds3AdminiExitSequence();
-  Write(StringLiteral_17055, 0);
+  Write("Camp process halted.\n", 0);
 }
 
 // 0x1596150
 void itfMiscChangeFontAlpha(_FRQ *pfont, u32 alpha) {
+  struct _TEXT_o *str;
+  _TEXT_c *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  u64 v10[3];
+
+  for (; pfont; pfont = pfont->prev)
+  {
+    str = pfont->str;
+    if (str)
+    {
+      klass = str->klass;
+      if (str->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != _TEXT)
+      {
+        sub_8FC2C0(klass->_1.element_class, _TEXT, v10);
+        if ((v10[0] & 1) != 0)
+          v8 = v10[2];
+        else
+          v8 = v10 + 1;
+        v9 = sub_8C4940(v8);
+      }
+      do
+      {
+        str->color = str->color & 0xFFFFFF00 | alpha;
+        str = str->next;
+      }
+      while (str);
+    }
+  }
 }
 
 // 0x1596030
 void itfMiscChangeFontVertexColor(_FRQ *pfont, u32 color) {
+  struct _TEXT_o *str;
+  _TEXT_c *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  u64 v10[3];
+
+  for (; pfont; pfont = pfont->prev)
+  {
+    str = pfont->str;
+    if (str)
+    {
+      klass = str->klass;
+      if (str->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != _TEXT)
+      {
+        sub_8FC2C0(klass->_1.element_class, _TEXT, v10);
+        if ((v10[0] & 1) != 0)
+          v8 = v10[2];
+        else
+          v8 = v10 + 1;
+        v9 = sub_8C4940(v8);
+      }
+      do
+      {
+        str->color = color;
+        str = str->next;
+      }
+      while (str);
+    }
+  }
 }
 
 // 0x1598c70
@@ -137,9 +222,51 @@ void itfMiscDrawAlphaPrim(sdfDrawTag_t *pdrawtag, s32 tp, s32 context) {
 
 // 0x1598d90
 void itfMiscDrawClampPrim(sdfDrawTag_t *pdrawtag, s32 context, s32 wms, s32 wmt, s32 min_u, s32 max_u, s32 min_v, s32 max_v) {
-    sdf2DMakeStdPacket(0, 0);
-    SDF_GS_SET_CLAMP(0, 0, 0, 0, 0, 0);
-    sdfDrawTagLink(0, 0);
+  u16 v9;
+  u16 v10;
+  u16 v11;
+  u16 v12;
+  u8 v13;
+  u8 v14;
+  u64 *v16;
+  Il2CppObject *v17;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  u64 *monitor;
+  Il2CppObject *v21;
+  s64 v23;
+  char *v24;
+  s64 *v25;
+  u64 v27[3];
+
+  v9 = max_v;
+  v10 = min_v;
+  v11 = max_u;
+  v12 = min_u;
+  v13 = wmt;
+  v14 = wms;
+  v16 = Allocate(packetregist_tag);
+  _ctor(v16, 0);
+  v17 = sdf2DMakeStdPacket(v16, 0);
+  klass = v17->klass;
+  if (v17->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != packetregist_tag)
+  {
+    sub_8FC2C0(klass->_1.element_class, packetregist_tag, v27);
+    if ((v27[0] & 1) != 0)
+      v24 = v27[2];
+    else
+      v24 = v27 + 1;
+    v25 = sub_8C4940(v24);
+  }
+  monitor = v17[2].monitor;
+  v21 = v17;
+  monitor[3] = SDF_GS_SET_CLAMP(v14, v13, v12, v11, v10, v9);
+  v23 = 8;
+  if (context)
+    v23 = 9;
+  *(v21[2].monitor + 4) = v23;
+  sdfDrawTagLink(pdrawtag, v16);
 }
 
 // 0x1598f40
@@ -187,10 +314,7 @@ void itfMiscDrawGauge(s32 portion, s32 entire, s32 shadow, sdfIVector4_t *pos, u
   struct System_Int32_array *v91;
   s32 v93;
   Il2CppObject *v95;
-  itfMisc_c *v99;
-  struct itfMisc_StaticFields *static_fields;
   struct System_Byte_array_array *itfMiscDrawGauge_ppidxvert;
-  struct itfMisc_StaticFields *v104;
   struct System_Byte_array_array *v105;
   s32 v108;
   s32 v109;
@@ -198,11 +322,9 @@ void itfMiscDrawGauge(s32 portion, s32 entire, s32 shadow, sdfIVector4_t *pos, u
   s32 v111;
   struct System_Int32_array *v116;
   s32 v119;
-  struct itfMisc_StaticFields *v120;
   struct System_Byte_array_array *itfMiscDrawGauge_ppidxlinevert;
   System_Byte_array *v122;
   struct System_Byte_array_array *itfMiscDrawGauge_ppidxlinecolor;
-  struct itfMisc_StaticFields *v124;
   struct System_Byte_array_array *v125;
   struct System_Byte_array_array *v127;
   sdfIVector4_t_array *v144;
@@ -218,12 +340,17 @@ void itfMiscDrawGauge(s32 portion, s32 entire, s32 shadow, sdfIVector4_t *pos, u
   {
     v145 = 0;
     v16 = pos->pm;
+    if (!LODWORD(v16->max_length))
+    {
+LABEL_6:
+    }
   }
   else
   {
     v145 = (((v15 - pos->pm->m_Items[0]) >> 4) * ((portion << 16) / entire)) >> 12;
     v16 = pos->pm;
     if (!LODWORD(v16->max_length))
+      goto LABEL_6;
   }
   v18 = v16->m_Items[0];
   v19 = Allocate(sdfIVector2_t);
@@ -297,12 +424,9 @@ void itfMiscDrawGauge(s32 portion, s32 entire, s32 shadow, sdfIVector4_t *pos, u
   v95[1].klass = NewSpecific(s32, 4u);
   _ctor(v95, 0);
   v144->m_Items[0] = v95;
-  static_fields = v99->static_fields;
-  itfMiscDrawGauge_ppidxvert = static_fields->itfMiscDrawGauge_ppidxvert;
-  itfMiscDrawRectanglePrim(v13, 0, pcolor_portion, itfMiscDrawGauge_ppidxvert->m_Items[0], static_fields->itfMiscDrawGauge_pidxcolor, z, pdrawtag);
-  v104 = itfMisc->static_fields;
-  v105 = v104->itfMiscDrawGauge_ppidxvert;
-  itfMiscDrawRectanglePrim(v13, 0, pcolor_entire, v105->m_Items[1], v104->itfMiscDrawGauge_pidxcolor, z, pdrawtag);
+  itfMiscDrawRectanglePrim(v13, 0, pcolor_portion, itfMiscDrawGauge_ppidxvert->m_Items[0], itfMiscDrawGauge_pidxcolor, z, pdrawtag);
+  v105 = itfMiscDrawGauge_ppidxvert;
+  itfMiscDrawRectanglePrim(v13, 0, pcolor_entire, v105->m_Items[1], itfMiscDrawGauge_pidxcolor, z, pdrawtag);
   if (shadow && v145 >= 3)
   {
     v110 = pcolor_portion->m_Items[0]->pm;
@@ -310,14 +434,10 @@ void itfMiscDrawGauge(s32 portion, s32 entire, s32 shadow, sdfIVector4_t *pos, u
     v116 = pcolor_portion->m_Items[0]->pm;
     v119 = v116->m_Items[3];
     itfMiscSetRatioRGB(&pout, 0, v111, v108, v109, v119, itfMiscDrawGauge_pcolorratio, 4);
-    v120 = itfMisc->static_fields;
-    itfMiscDrawGauge_ppidxlinevert = v120->itfMiscDrawGauge_ppidxlinevert;
     v122 = itfMiscDrawGauge_ppidxlinevert->m_Items[0];
-    itfMiscDrawGauge_ppidxlinecolor = v120->itfMiscDrawGauge_ppidxlinecolor;
     itfMiscDrawLineStripPrim(v13, 0, v144, v122, itfMiscDrawGauge_ppidxlinecolor->m_Items[0], 3, z, pdrawtag);
-    v124 = itfMisc->static_fields;
-    v125 = v124->itfMiscDrawGauge_ppidxlinevert;
-    v127 = v124->itfMiscDrawGauge_ppidxlinecolor;
+    v125 = itfMiscDrawGauge_ppidxlinevert;
+    v127 = itfMiscDrawGauge_ppidxlinecolor;
     itfMiscDrawLineStripPrim(v13, 0, v144, v125->m_Items[1], v127->m_Items[1], 3, z, pdrawtag);
   }
 }
@@ -624,8 +744,6 @@ void itfMiscDrawSpritePrim(sdfIVector4_t *pos, sdfIVector4_t *uv, sdfIVector4_t 
   s32 v13;
   u64 v14;
   struct System_Int32_array *pm;
-  itfMisc_c *v18;
-  struct itfMisc_StaticFields *static_fields;
   struct System_Int32_array *v20;
   u32 max_length;
   s32 v23;
@@ -662,16 +780,13 @@ void itfMiscDrawSpritePrim(sdfIVector4_t *pos, sdfIVector4_t *uv, sdfIVector4_t 
   sdf2DMakePrimPacketHeader(v12, v13, 5, v14, 1);
   pm = pos->pm;
   v51 = pm->m_Items[0];
-  static_fields = v18->static_fields;
   v20 = pos->pm;
-  ITF_MISC_SCREEN_OFFSET_X = static_fields->ITF_MISC_SCREEN_OFFSET_X;
   max_length = v20->max_length;
   v52 = uv;
   v23 = v20->m_Items[1];
-  ITF_MISC_SCREEN_OFFSET_Y = static_fields->ITF_MISC_SCREEN_OFFSET_Y;
-  v48 = static_fields->ITF_MISC_SCREEN_OFFSET_X;
+  v48 = ITF_MISC_SCREEN_OFFSET_X;
   v49 = pos->pm->m_Items[2];
-  v27 = static_fields->ITF_MISC_SCREEN_OFFSET_Y;
+  v27 = ITF_MISC_SCREEN_OFFSET_Y;
   v47 = pos->pm->m_Items[3];
   primitive = v12->primitive;
   index = 0;
@@ -706,8 +821,6 @@ void itfMiscDrawSpritePrim2(sdfIVector4_t *pos, sdfIVector4_t *uv, sdfIVector4_t
   s32 v12;
   u64 v13;
   struct System_Int32_array *pm;
-  itfMisc_c *v17;
-  struct itfMisc_StaticFields *static_fields;
   struct System_Int32_array *v19;
   u32 max_length;
   struct System_Int32_array *v21;
@@ -743,16 +856,13 @@ void itfMiscDrawSpritePrim2(sdfIVector4_t *pos, sdfIVector4_t *uv, sdfIVector4_t
   sdf2DMakePrimPacketHeader(v11, v12, 5, v13, 1);
   pm = pos->pm;
   v50 = pm->m_Items[0];
-  static_fields = v17->static_fields;
   v19 = pos->pm;
-  ITF_MISC_SCREEN_OFFSET_X = static_fields->ITF_MISC_SCREEN_OFFSET_X;
   max_length = v19->max_length;
   v21 = pos->pm;
   v23 = v19->m_Items[1];
-  ITF_MISC_SCREEN_OFFSET_Y = static_fields->ITF_MISC_SCREEN_OFFSET_Y;
-  v47 = static_fields->ITF_MISC_SCREEN_OFFSET_X;
+  v47 = ITF_MISC_SCREEN_OFFSET_X;
   v48 = v21->m_Items[2];
-  v27 = static_fields->ITF_MISC_SCREEN_OFFSET_Y;
+  v27 = ITF_MISC_SCREEN_OFFSET_Y;
   v46 = v21->m_Items[3];
   klass = v53[2].klass;
   index = 0;
@@ -781,19 +891,111 @@ void itfMiscDrawSpritePrim2(sdfIVector4_t *pos, sdfIVector4_t *uv, sdfIVector4_t
 
 // 0x1598b00
 void itfMiscDrawTestPrim(sdfDrawTag_t *pdrawtag, u64 para, s32 context) {
-    sdf2DMakeStdPacket(0, 0);
-    sdfDrawTagLink(0, 0);
+  u64 *v7;
+  Il2CppObject *v8;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s64 v12;
+  char *v13;
+  s64 *v14;
+  u64 v15[3];
+
+  v7 = Allocate(packetregist_tag);
+  _ctor(v7, 0);
+  v8 = sdf2DMakeStdPacket(v7, 0);
+  klass = v8->klass;
+  if (v8->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != packetregist_tag)
+  {
+    sub_8FC2C0(klass->_1.element_class, packetregist_tag, v15);
+    if ((v15[0] & 1) != 0)
+      v13 = v15[2];
+    else
+      v13 = v15 + 1;
+    v14 = sub_8C4940(v13);
+  }
+  *(v8[2].monitor + 3) = para;
+  v12 = 71;
+  if (context)
+    v12 = 72;
+  *(v8[2].monitor + 4) = v12;
+  sdfDrawTagLink(pdrawtag, v7);
 }
 
 // 0x1596f70
 void itfMiscDrawTexPoly(sdfIVector2_t **pvertex, sdfVector4_t pstq, sdfIVector4_t **pcolor, u32 z, s32 context, sdfDrawTag_t *pdrawtag) {
-    SDF_GS_SET_PRIM(0, 0, 0, 0, 0, 0, 0, 0, 0);
-    SDF_GIFTAG_REGS3(0, 0, 0);
-    sdf2DMakePrimPacketHeader(0, 0, 0, 0, 0);
-    SDF_GIF_SET_STQ(0, 0, 0, 0, 0);
-    SDF_GIF_SET_RGBA(0, 0, 0, 0, 0);
-    SDF_GIF_SET_XYZ2(0, 0, 0, 0, 0);
-    sdfDrawTagLink(0, 0);
+  sdf2DTexPacket_t_o *v9;
+  s32 v10;
+  u64 v11;
+  sdfPrm_array *primitive;
+  u64 v13;
+  sdfIVector2_t_o **m_Items;
+  sdfIVector4_t_o **v15;
+  f32 v16;
+  f32 v17;
+  f32 v18;
+  f32 v19;
+  f32 v20;
+  struct System_Int32_array *pm;
+  s32 v22;
+  struct System_Int32_array *v24;
+  s32 v26;
+  struct System_Int32_array *v28;
+  s32 v30;
+  struct System_Int32_array *v32;
+  struct System_Int32_array *v35;
+  s32 v37;
+  struct System_Int32_array *v43;
+  Il2CppObject *v46;
+  u16 za;
+  s32 index;
+  UnityEngine_Vector4_o v51;
+
+  za = z;
+  v51 = pstq;
+  v9 = Allocate(sdf2DTexPacket_t);
+  _ctor(v9, 0);
+  v9->primitive = NewSpecific(sdfPrm, 0x18u);
+  v10 = SDF_GS_SET_PRIM(5u, 1u, 1u, 0, 1u, 0, 0, context, 0);
+  v11 = SDF_GIFTAG_REGS3(2, 1, 5);
+  sdf2DMakePrimPacketHeader(v9, v10, 3, v11, 4);
+  v46 = v9;
+  primitive = v9->primitive;
+  index = 0;
+  v13 = 0;
+  m_Items = pvertex->m_Items;
+  v15 = pcolor->m_Items;
+  do
+  {
+    sub_854710(&v51, 0);
+    v17 = v16;
+    sub_854710(&v51, 1u);
+    v19 = v18;
+    sub_854710(&v51, 2u);
+    SDF_GIF_SET_STQ(primitive, &index, v17, v19, v20);
+    pm = v15[v13]->pm;
+    v22 = pm->m_Items[0];
+    v24 = v15[v13]->pm;
+    v26 = v24->m_Items[1];
+    v28 = v15[v13]->pm;
+    v30 = v28->m_Items[2];
+    v32 = v15[v13]->pm;
+    SDF_GIF_SET_RGBA(primitive, &index, v22, v26, v30, v32->m_Items[3], 0);
+    v35 = m_Items[v13]->pm;
+    v37 = v35->m_Items[0];
+    v43 = m_Items[v13]->pm;
+    SDF_GIF_SET_XYZ2(
+      primitive,
+      &index,
+      ITF_MISC_SCREEN_OFFSET_X + v37,
+      ITF_MISC_SCREEN_OFFSET_Y + v43->m_Items[1],
+      za,
+      0,
+      0);
+    ++v13;
+  }
+  while (v13 != 4);
+  sdfDrawTagLink(pdrawtag, v46);
 }
 
 // 0x1596ba0
@@ -889,6 +1091,81 @@ void itfMiscDrawTriangleStripPrim(sdfIVector2_t **pvertex_top, s32 off, sdfIVect
 
 // 0x1595b90
 void itfMiscLinkGive(mesflow_tag *pelem, itfmisclinkstack_t *pstack) {
+  struct itfmisclinkheader_t_o *linkheader;
+  Il2CppObject *pprev;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v9;
+  s64 *v10;
+  struct mesflow_tag_o *pnext;
+  mesflow_tag_c *v12;
+  s64 v13;
+  char *v14;
+  s64 *v15;
+  struct mesflow_tag_o **p_fields;
+  Il2CppObject *pdisuse_tail;
+  struct mesflow_tag_o *pdisuse_top;
+  u64 v19[2];
+  char *v20;
+
+  linkheader = pelem->linkheader;
+  pprev = linkheader->pprev;
+  if (pprev)
+  {
+    klass = pprev->klass;
+    if (pprev->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+    {
+      sub_8FC2C0(klass->_1.element_class, mesflow_tag, v19);
+      if ((v19[0] & 1) != 0)
+        v9 = v20;
+      else
+        v9 = v19 + 1;
+      v10 = sub_8C4940(v9);
+    }
+  }
+  pnext = linkheader->pnext;
+  if (pnext)
+  {
+    v12 = pnext->klass;
+    if (pnext->klass->_2.typeHierarchyDepth < v13 || v12->_2.typeHierarchy[v13 - 1] != mesflow_tag)
+    {
+      sub_8FC2C0(v12->_1.element_class, mesflow_tag, v19);
+      if ((v19[0] & 1) != 0)
+        v14 = v20;
+      else
+        v14 = v19 + 1;
+      v15 = sub_8C4940(v14);
+    }
+  }
+  if (pprev)
+  {
+    pprev[1].klass->_1.namespaze = pnext;
+    if (pnext)
+    {
+LABEL_19:
+      p_fields = &pnext->linkheader->fields;
+      goto LABEL_22;
+    }
+  }
+  else
+  {
+    pstack->puse_top = pnext;
+    if (pnext)
+      goto LABEL_19;
+  }
+  p_fields = &pstack->puse_tail;
+LABEL_22:
+  *p_fields = pprev;
+  pelem->linkheader->pnext = 0;
+  pdisuse_tail = pstack->pdisuse_tail;
+  pelem->linkheader->pprev = pdisuse_tail;
+  if (pdisuse_tail)
+    pdisuse_tail[1].klass->_1.namespaze = pelem;
+  pdisuse_top = pstack->pdisuse_top;
+  pstack->pdisuse_tail = pelem;
+  if (!pdisuse_top)
+    pstack->pdisuse_top = pelem;
 }
 
 // 0x1595840
@@ -930,7 +1207,63 @@ void itfMiscLinkInitialize(itfmisclinkstack_t *pstack, mesflow_tag ***ptop, s32 
 
 // 0x15959f0
 mesflow_tag *itfMiscLinkTake(itfmisclinkstack_t *pstack) {
-    return 0;
+  Il2CppObject *pdisuse_top;
+  Il2CppClass *klass;
+  struct mesflow_tag_o *namespaze;
+  mesflow_tag_c *v6;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  u64 v11[3];
+
+  pdisuse_top = pstack->pdisuse_top;
+  if (pdisuse_top)
+  {
+    klass = pdisuse_top[1].klass;
+    namespaze = klass->_1.namespaze;
+    if (namespaze)
+    {
+      v6 = namespaze->klass;
+      if (namespaze->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || v6->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+      {
+        sub_8FC2C0(v6->_1.element_class, mesflow_tag, v11);
+        if ((v11[0] & 1) != 0)
+          v8 = v11[2];
+        else
+          v8 = v11 + 1;
+        v9 = sub_8C4940(v8);
+      }
+    }
+    if (pstack->puse_top)
+    {
+      klass->_1.name = pstack->puse_tail;
+      pstack->puse_tail->linkheader->pnext = pdisuse_top;
+      pdisuse_top[1].klass->_1.namespaze = 0;
+      pstack->puse_tail = pdisuse_top;
+      if (namespaze)
+      {
+LABEL_13:
+        namespaze->linkheader->pprev = 0;
+LABEL_20:
+        pstack->pdisuse_top = namespaze;
+        return pdisuse_top;
+      }
+    }
+    else
+    {
+      klass->_1.name = 0;
+      pstack->puse_top = pdisuse_top;
+      pdisuse_top[1].klass->_1.namespaze = 0;
+      pstack->puse_tail = pdisuse_top;
+      if (namespaze)
+        goto LABEL_13;
+    }
+    pstack->pdisuse_tail = 0;
+    goto LABEL_20;
+  }
+  Write("未使用がもうない\n", 0);
+  return pdisuse_top;
 }
 
 // 0x15962a0
@@ -981,17 +1314,18 @@ sdfTexHandle_t *itfMiscLoadTexture(char *filename) {
   sdfTexHandle_t___ctor(v3);
   IndexOf = LastIndexOf(filename, 0x2Fu, 0);
   v5 = LastIndexOf(filename, 0x2Eu, 0);
-  DLCTag = StringLiteral_416;
+  DLCTag = "";
   Length = v5;
-  v8 = IndexOf_5260400(filename, StringLiteral_74, 1);
-  v9 = &StringLiteral_4611;
+  v8 = IndexOf_5260400(filename, "/", 1);
+  v9 = &"common";
   if (v8 == -1)
+    goto LABEL_33;
   v10 = v8;
   v11 = Substring_5248048(filename, 1, v8 - 1);
   v12 = ToUpper(v11, 0);
-  if (!Equals_5234480(v12, StringLiteral_17052))
+  if (!Equals_5234480(v12, "FLD"))
   {
-    if (Equals_5234480(v12, StringLiteral_15666))
+    if (Equals_5234480(v12, "EVENT"))
     {
       v20 = Substring_5248048(filename, v10 + 1, 4);
       result = 0;
@@ -1002,39 +1336,44 @@ sdfTexHandle_t *itfMiscLoadTexture(char *filename) {
         DLCTag = GetDLCTag(v23);
       }
       if (result == 714)
-        DLCTag = StringLiteral_416;
+        DLCTag = "";
       if (result == 715)
       {
         DLCTag = CheckPictureID715(filename);
       }
       v19 = v20;
+      goto LABEL_28;
     }
-    if (Equals_5234480(v12, StringLiteral_17053))
-      v9 = &StringLiteral_15951;
+    if (Equals_5234480(v12, "BATTLE"))
+      v9 = &"extrar_o";
+LABEL_33:
     v24 = *v9;
     v25 = filename;
+    goto LABEL_34;
   }
-  v14 = IndexOf_5260400(filename, StringLiteral_74, v10 + 1);
+  v14 = IndexOf_5260400(filename, "/", v10 + 1);
   fieldID = fldGb->fieldID;
   IsDLCField = IsDLCField(fieldID);
-  v18 = &StringLiteral_4735;
+  v18 = &"m";
   if (!IsDLCField)
-    v18 = &StringLiteral_416;
+    v18 = &"";
   DLCTag = *v18;
   v19 = Substring_5248048(filename, v14 + 1, 4);
+LABEL_28:
   v24 = Concat_5224608(v19, DLCTag);
   if (Length == -1)
     Length = get_Length(filename);
   v25 = Substring_5248048(filename, IndexOf + 1, Length + ~IndexOf);
+LABEL_34:
   v3->hashname = v25;
-  v26 = Concat_5224608(StringLiteral_14724, filename);
+  v26 = Concat_5224608("dds3data", filename);
   v27 = LastIndexOf(v26, 0x2Eu, 0);
   if (v27 != -1)
     v26 = Substring_5248048(v26, 0, v27);
   v28 = LastIndexOf(v26, 0x2Fu, 0);
   if (v28 == -1)
   {
-    v30 = StringLiteral_416;
+    v30 = "";
   }
   else
   {
@@ -1044,11 +1383,11 @@ sdfTexHandle_t *itfMiscLoadTexture(char *filename) {
   v31 = get_Length(v26);
   v32 = Substring_5248048(v26, v28 + 1, v31 + ~v28);
   v33 = NewSpecific(string, 6u);
-  v33->m_Items[0] = StringLiteral_17054;
+  v33->m_Items[0] = "LoadEventPicture : ";
   v33->m_Items[1] = v24;
-  v33->m_Items[2] = StringLiteral_100;
+  v33->m_Items[2] = ",";
   v33->m_Items[3] = v30;
-  v33->m_Items[4] = StringLiteral_100;
+  v33->m_Items[4] = ",";
   v33->m_Items[5] = v32;
   v40 = Concat_5271600(v33);
   v42 = Empty_string_();

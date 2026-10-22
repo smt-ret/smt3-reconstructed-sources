@@ -29,6 +29,7 @@ void sdfThEnterIdle(void) {
 void sdfThExit(void) {
   struct sdfThCB_t_o *thCBLinkHead;
 
+LABEL_7:
   else
   {
     if (!thCBLinkHead)

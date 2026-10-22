@@ -13,7 +13,7 @@ struct DlcFileCtr {
 struct DlcFileCtr_Data {
     s32 id;
     char *mount;
-    u8 buf[UNKNOWN_ARRAY_SIZE];
+    u8 *buf;
 };
 
 struct DlcFileCtr__LoadCoroutine_d__9 {
@@ -22,7 +22,7 @@ struct DlcFileCtr__LoadCoroutine_d__9 {
     DlcFileCtr *__4__this;
     s32 dlc_id;
     char *aname;
-    void req[UNKNOWN_ARRAY_SIZE];
+    void *req;
 };
 
 void LoadDirect(AssetBundleCtrl *this, char *key, char *aname, s32 dlc_id);
@@ -82,6 +82,7 @@ void Load(DlcFileCtr *this, char *key, s32 id, char *aname) {
   AssetBundleCtrl_o *Ctrl_k__BackingField;
   System_String_o *v10;
 
+LABEL_7:
   Ctrl_k__BackingField = _Ctrl_k__BackingField;
   v10 = ToLower(aname, 0);
   LoadDirect(Ctrl_k__BackingField, key, v10, id);
@@ -103,7 +104,54 @@ void *LoadCoroutine(DlcFileCtr *this, char *aname, s32 dlc_id, void **req) {
 
 // 0xfe5e90
 bool Mount(DlcFileCtr *this, s32 id) {
+  s32 Count;
+  s32 v6;
+  s32 v7;
+  System_WeakReference_o *Item;
+  System_Byte_array *v10;
+  System_String_o *v11;
+  System_String_o *v12;
+  u16 v13;
+  s64 pOutValue;
+  u32 innerValue;
+
+  innerValue = 0;
+  pOutValue = 0;
+  v13 = 0;
+  Count = _get_Count(this->contents);
+  if (Count < 1)
     return 0;
+  v6 = Count;
+  v7 = 0;
+  while (*&_get_Item(
+              this->contents,
+              v7)->isLongReference != id)
+  {
+    if (++v7 >= v6)
+      return 0;
+  }
+  Item = _get_Item(
+           this->contents,
+           v7);
+  if (op_Equality(Item[1].klass, Empty, 0))
+  {
+    pOutValue = 0;
+    innerValue = QueryMountCacheSize(&pOutValue, id).innerValue;
+    sub_15C5000(&innerValue);
+    v10 = NewSpecific(byte, pOutValue);
+    v13 = v7 + 65;
+    v11 = sub_3C3A80(&v13, 0);
+    v12 = Concat_5224608("dlc", v11);
+    innerValue = Mount(v12, id, v10, pOutValue, 0).innerValue;
+    sub_15C5000(&innerValue);
+    _get_Item(
+      this->contents,
+      v7)[1].klass = v12;
+    _get_Item(
+      this->contents,
+      v7)[1].monitor = v10;
+  }
+  return 1;
 }
 
 // 0xfe6070

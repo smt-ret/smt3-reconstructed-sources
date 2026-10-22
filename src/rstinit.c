@@ -68,16 +68,16 @@ void SetPointAnime(s32 point) {
   {
     if (point < 1)
     {
-      SetInteger(_statusUIScr->pointAnim, StringLiteral_21942, 1);
+      SetInteger(_statusUIScr->pointAnim, "slvup_numglow", 1);
     }
     else
     {
-      SetInteger(_statusUIScr->pointAnim, StringLiteral_21942, 0);
+      SetInteger(_statusUIScr->pointAnim, "slvup_numglow", 0);
     }
   }
   else
   {
-    SetInteger(_statusUIScr->pointAnim, StringLiteral_21942, 5);
+    SetInteger(_statusUIScr->pointAnim, "slvup_numglow", 5);
   }
 }
 
@@ -109,7 +109,7 @@ u8 rstCalcLevelFromExp(u8 Index, u32 Exp) {
 
 // 0x1567af0
 s8 rstChkEvoAct(void) {
-  if (dds3SearchProcessName(StringLiteral_21934))
+  if (dds3SearchProcessName("e809_main"))
     return 1;
   evtBitOff(3717);
   return 0;
@@ -124,16 +124,14 @@ s32 rstChkLevelUpTarget(datUnitWork_t **pStock) {
 
 // 0x1569320
 s8 rstChkResult2Process(void) {
-  struct rstinit_StaticFields *static_fields;
   s32 gProcessStat;
 
-  static_fields = rstinit->static_fields;
-  gProcessStat = static_fields->gProcessStat;
   if (gProcessStat == 1)
     return 1;
+LABEL_6:
   if (gProcessStat != 2)
     return 0;
-  static_fields->gProcessStat = 0;
+  gProcessStat = 0;
   return 0;
 }
 
@@ -152,6 +150,8 @@ s8 rstChkResultEntry(void) {
     v7 = unitwork->m_Items[v3];
     pStock = v7;
     if ((byte_3F59DE7 & 1) == 0)
+      goto LABEL_14;
+LABEL_15:
     if ((v7->flag & 1) != 0 && (v7->badstatus & 0x800) == 0)
     {
       if (cmbGetLevelUpCount(&pStock, 0) > 0)
@@ -164,6 +164,98 @@ s8 rstChkResultEntry(void) {
 
 // 0x1568200
 void rstCreateTargetList(rstData_t **pData) {
+  struct datUnitWork_t_array *unitwork;
+  datUnitWork_t_o **m_Items;
+  s32 v7;
+  s64 v8;
+  u64 v10;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  struct System_Int32_array *stocklist;
+  s64 v14;
+  struct datUnitWork_t_array *v15;
+  datUnitWork_t_o *v17;
+  s64 TargetCnt;
+  struct datUnitWork_t_array *pTargetList;
+  rstData_t_o *v22;
+  u32 TargetPos;
+  struct datUnitWork_t_array *v24;
+  s32 id;
+  s32 v28;
+  datUnitWork_t_o *pStock;
+
+  pStock = 0;
+  unitwork = DDS3_GBWK->unitwork;
+  if (!LODWORD(unitwork->max_length))
+    goto LABEL_62;
+LABEL_9:
+  m_Items = unitwork->m_Items;
+  v7 = 1;
+  if (((*m_Items)->flag & 1) != 0)
+  {
+    if (((*m_Items)->badstatus & 0x800) != 0)
+      goto LABEL_21;
+    if (cmbGetLevelUpCount(m_Items, 0) < 1)
+    {
+LABEL_21:
+      v7 = 1;
+    }
+    else
+    {
+      cmpModelPrepare(6, 0, 1);
+      v7 = 0;
+    }
+  }
+  v28 = v7;
+  (*pData)->TargetCnt = 0;
+  (*pData)->TargetPos = 0;
+  v8 = 9;
+  v10 = 1;
+  {
+LABEL_23:
+  }
+  while (1)
+  {
+    if (v10 >= DDS3_GBWK->stockcnt)
+      break;
+    else
+    {
+      stocklist = DDS3_GBWK->stocklist;
+      if (v10 >= LODWORD(stocklist->max_length))
+        goto LABEL_30;
+    }
+    v14 = *(&stocklist->obj.klass + v8);
+    v15 = DDS3_GBWK->unitwork;
+    v17 = v15->m_Items[v14];
+    pStock = v17;
+    if ((byte_3F59DE7 & 1) == 0)
+      goto LABEL_36;
+LABEL_37:
+    if ((v17->flag & 1) != 0 && (v17->badstatus & 0x800) == 0)
+    {
+      if (cmbGetLevelUpCount(&pStock, 0) >= 1)
+      {
+        TargetCnt = (*pData)->TargetCnt;
+        pTargetList = (*pData)->pTargetList;
+        (*pData)->TargetCnt = TargetCnt + 1;
+        pTargetList->m_Items[TargetCnt] = v17;
+      }
+    }
+    ++v8;
+    v10 = v8 - 8;
+      goto LABEL_23;
+  }
+  if (v28)
+  {
+    v22 = *pData;
+    if ((*pData)->TargetCnt)
+    {
+      TargetPos = v22->TargetPos;
+      v24 = v22->pTargetList;
+      ++v22->TargetPos;
+      id = v24->m_Items[TargetPos]->id;
+      cmpModelPrepare(6, id, 1);
+    }
+  }
 }
 
 // 0x1568ba0
@@ -191,19 +283,19 @@ void *rstDestroyResult2(dds3ProcessID_t *PID) {
     p2sdFadeOut(2818048);
     if (evtBitCheck(3712))
     {
-      v14 = &StringLiteral_21939;
+      v14 = &"GIFTD";
     }
     else
     {
-      v14 = &StringLiteral_21940;
+      v14 = &"GIFT";
     }
     Remove(*v14, 0);
-    Remove(StringLiteral_5047, 0);
-    Remove(StringLiteral_21941, 0);
-    Remove(StringLiteral_16177, 0);
-    Remove(StringLiteral_12292, 0);
+    Remove("DATSKILLHELP", 0);
+    Remove("RESULT2_MES_DATA", 0);
+    Remove("BIRTH", 0);
+    Remove("CAMP", 0);
     PlatformStr = GetPlatformStr();
-    v17 = Concat_5224608(StringLiteral_12292, PlatformStr);
+    v17 = Concat_5224608("CAMP", PlatformStr);
     Remove(v17, 0);
   }
   CampDispOff(kernelObject, 0);
@@ -252,15 +344,15 @@ rstData_t *rstInit(cmpSeqInfo_t *pParentSeqInfo) {
   cmpModelInit();
   Clear(v4[16], 0, *(v4[16] + 24), 0);
   cmpStatResetRaceEffect();
-  sdfDevLoadFileUnity(StringLiteral_21936, v4 + 22, 0, StringLiteral_5039);
-  sdfDevLoadFileUnity_25061072(StringLiteral_21937, v4 + 24, 0, StringLiteral_5039);
+  sdfDevLoadFileUnity("dds3data/result2/scr/message.bf.bytes", v4 + 22, 0, "battle");
+  sdfDevLoadFileUnity_25061072("dds3data/result2/mes_data.bmd.bytes", v4 + 24, 0, "battle");
   v13 = v4[24];
   fclInitMessage(v13);
   fclSetSelMessagePos(0);
   cmpStartProcessPanelEff(0);
   cmpSetModelMoveMode(1);
   v16 = v4[26];
-  Texture = fclLoadTexture(StringLiteral_21938);
+  Texture = fclLoadTexture("/result2/tmx/lvup_02.tmx");
   v19 = Texture;
   *(v16 + 32) = v19;
   v20 = v4[26];
@@ -274,23 +366,23 @@ rstData_t *rstInit(cmpSeqInfo_t *pParentSeqInfo) {
   cmpSetupObjUI(-1, 0);
   if (evtBitCheck(3712))
   {
-    v29 = StringLiteral_4611;
-    v30 = &StringLiteral_21939;
+    v29 = "common";
+    v30 = &"GIFTD";
   }
   else
   {
-    v29 = StringLiteral_4611;
-    v30 = &StringLiteral_21940;
+    v29 = "common";
+    v30 = &"GIFT";
   }
   LoadLocalizeText(v29, *v30);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_5047);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_21941);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_16177);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_12292);
+  LoadLocalizeText("common", "DATSKILLHELP");
+  LoadLocalizeText("common", "RESULT2_MES_DATA");
+  LoadLocalizeText("common", "BIRTH");
+  LoadLocalizeText("common", "CAMP");
   PlatformStr = GetPlatformStr();
-  v33 = Concat_5224608(StringLiteral_4611, PlatformStr);
+  v33 = Concat_5224608("common", PlatformStr);
   v34 = GetPlatformStr();
-  v35 = Concat_5224608(StringLiteral_12292, v34);
+  v35 = Concat_5224608("CAMP", v34);
   LoadLocalizeText(v33, v35);
   return v4;
 }
@@ -330,14 +422,21 @@ void rstInitParamOfs(rstData_t **pData) {
 // 0x1567b90
 void rstKillEvoAct(void) {
   fclFreeStage();
-  Write(StringLiteral_21935, 0);
+  Write("Destroy evo act!!!\n", 0);
 }
 
 // 0x1569140
 void rstResult2ProcessEnd(void) {
-    dds3KillProcessName(0, 0);
-    rstDestroyResult2(0);
-    ClearResult2UI();
+  Il2CppObject *v3;
+
+  dds3KillProcessName("result2", 1);
+  dds3KillProcessName("result2_draw", 1);
+  dds3KillProcessName("result2_update", 1);
+  else
+  {
+    v3 = rstDestroyResult2(rstinit);
+  }
+  ClearResult2UI(v3);
 }
 
 // 0x1568f00
@@ -359,14 +458,14 @@ void rstResult2ProcessStart(void) {
     0,
     Method_rstcalc_rstCalc__);
   data = GBWK;
-  dds3StartProcess(StringLiteral_21943, 0x405u, 1, 1, v3, 0, 0, 0, data, 0);
+  dds3StartProcess("result2", 0x405u, 1, 1, v3, 0, 0, 0, data, 0);
   v6 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v6,
     0,
     Method_rstdraw_rstDraw__);
   dds3StartProcess(
-    StringLiteral_21944,
+    "result2_draw",
     0x2B15u,
     1,
     1,
@@ -387,7 +486,7 @@ void rstResult2ProcessStart(void) {
     0,
     Method_rstinit_rstDestroyResult2__);
   dds3StartProcess(
-    StringLiteral_21945,
+    "result2_update",
     0x5211u,
     1,
     1,

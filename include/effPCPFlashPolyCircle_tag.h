@@ -8,7 +8,7 @@ typedef struct effPCPFlashPolyCircle_tag effPCPFlashPolyCircle_tag;
 
 struct effPCPFlashPolyCircle_tag {
     effPCPFlashPolyCircleParam_t *param;
-    effPCPFlashPolyCirclePart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPFlashPolyCirclePart_tag *pPart;
     u32 frame;
     u32 abgr;
     f32 scale;

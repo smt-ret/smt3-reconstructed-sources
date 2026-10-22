@@ -163,13 +163,77 @@ dds3Basic_t *nbCreateBasicEffect(void **p, sdfVector4_t pos, sdfVector4_t rot) {
 
 // 0x17097c0
 nbE *nbEventGetPrefabTbl(s32 event_no, s32 index) {
-    return 0;
+  u64 v5;
+  struct nbE_array *nbEtbl;
+  u64 max_length_low;
+  nbE_o *result;
+
+  v5 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(nbEtbl->max_length);
+    if (v5 >= max_length_low)
+      return 0;
+    else if (v5 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    result = nbEtbl->m_Items[v5];
+    if (result->event_no == event_no && result->index == index)
+      return result;
+    ++v5;
+      goto LABEL_6;
+  }
 }
 
 // 0x16f1430
 void nbEventPbRead(s32 event_no, s32 index) {
-    LoadPrefab_16624656(0, 0, 0, 0);
-    SetPbList(0);
+  System_String_o *v4;
+  System_String_o *v6;
+  u64 v7;
+  struct nbE_array *nbEtbl;
+  u64 max_length_low;
+  nbE_o *v12;
+  AssetBundleCtrl_o *asset_bc;
+  UnityEngine_Object_o *Prefab_16624656;
+  SOBED_PB_LIST_o *pb_list;
+  s32 v19;
+
+  v19 = event_no;
+  v4 = sub_232A70(&v19, "d3");
+  v6 = Concat_5224608("e", v4);
+  v7 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(nbEtbl->max_length);
+    if (v7 >= max_length_low)
+      break;
+    else if (v7 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    v12 = nbEtbl->m_Items[v7];
+    if (v19 == v12->event_no && v12->index == index)
+    {
+      asset_bc = get_asset_bc();
+      Prefab_16624656 = LoadPrefab_16624656(asset_bc, v6, v12->path, v12->prefab);
+      if (op_Inequality(Prefab_16624656, 0, 0))
+      {
+        pb_list->gobj = Prefab_16624656;
+        pb_list->reversePB = 0;
+        SetPbList(pb_list);
+      }
+      return;
+    }
+    ++v7;
+      goto LABEL_6;
+  }
 }
 
 // 0x16ec260
@@ -191,39 +255,327 @@ void nbEventPrefabDelete(dds3Basic_t **pathbasic) {
 
 // 0x16eba20
 void nbEventPrefabRead(dds3Basic_t **pathbasic, s32 event_no, s32 index) {
-    LoadPrefab_16624656(0, 0, 0, 0);
-    mdlSetHD(0, 0, 0, 0);
-    SetUpDateDI(0);
-    dds3GetUnitHandleObjectBasic(0);
-    LoadFileByte(0, 0, 0);
-    sdfModelMakeUnity(0, 0, 0);
+  System_String_o *v6;
+  System_String_o *v8;
+  u64 v9;
+  struct nbE_array *nbEtbl;
+  u64 max_length_low;
+  nbE_o *v14;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  UnityEngine_GameObject_o *v18;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *v21;
+  UnityEngine_Transform_o *v23;
+  f32 *p_SDF_CC_NDNM;
+  f32 v26;
+  f32 v27;
+  f32 v28;
+  f32 v29;
+  UnityEngine_Transform_o *v30;
+  FieldChrHD_o *v33;
+  evtUnitHandle_t_o *UnitHandleObjectBasic;
+  System_String_o *v37;
+  AssetBundleCtrl_o *v38;
+  System_Byte_array *FileByte;
+  struct dds3ModelHandle_t_o *Model;
+  System_Byte_array *v41;
+  s32 v42;
+  UnityEngine_Quaternion_o rotation;
+  UnityEngine_Quaternion_o v44;
+  UnityEngine_Quaternion_o v45;
+
+  v42 = event_no;
+  v6 = sub_232A70(&v42, "d3");
+  v8 = Concat_5224608("e", v6);
+  v9 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(nbEtbl->max_length);
+    if (v9 >= max_length_low)
+      break;
+    else if (v9 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    v14 = nbEtbl->m_Items[v9];
+    if (v42 == v14->event_no && v14->index == index)
+    {
+      asset_bc = get_asset_bc();
+      Prefab_16624656 = LoadPrefab_16624656(asset_bc, v8, v14->path, v14->prefab);
+      if (op_Inequality(Prefab_16624656, 0, 0))
+      {
+        v18 = Find("Character", 0);
+        transform = get_transform(v18, 0);
+        v21 = Instantiate_object__425664(Prefab_16624656, transform, 0);
+        v23 = get_transform(v21, 0);
+        p_SDF_CC_NDNM = &SDF_CC_NDNM;
+        v26 = p_SDF_CC_NDNM[2];
+        v27 = p_SDF_CC_NDNM[3];
+        v28 = p_SDF_CC_NDNM[4];
+        v29 = p_SDF_CC_NDNM[5];
+        v30 = get_transform(v21, 0);
+        rotation = get_rotation(v30);
+        {
+        }
+        v44.x = v26;
+        v44.y = v27;
+        v44.z = v28;
+        v44.w = v29;
+        v45 = op_Multiply(v44, rotation, 0);
+        set_rotation(v23, v45);
+        v33 = mdlSetHD(v21, 2, 0, 15);
+        SetUpDateDI(v33);
+        UnitHandleObjectBasic = dds3GetUnitHandleObjectBasic(pathbasic);
+        v37 = Concat_5271136(v14->path, "/", v14->prefab, ".pb.bytes");
+        v38 = get_asset_bc();
+        FileByte = LoadFileByte(v38, v8, v37);
+        Model = UnitHandleObjectBasic->Model;
+        v41 = FileByte;
+        Model->modelRoot = sdfModelMakeUnity(0, FileByte, 0);
+        UnitHandleObjectBasic->Model->resrc->effectData = &v41->obj;
+        (*pathbasic)->gameObject = v21;
+        UnitHandleObjectBasic->Model->modelRoot->modelobj = v21;
+      }
+      return;
+    }
+    ++v9;
+      goto LABEL_6;
+  }
 }
 
 // 0x17091d0
 void *nbEventProcess1(dds3ProcessID_t *id) {
-    nbGetMainProcessData();
-    dds3GetProcessData(0);
-    btlEve_BloomDof_Set(0);
-    return 0;
+  nbMainProcessData_t_o *MainProcessData;
+  Il2CppObject *ProcessData;
+  Il2CppObject *v5;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  u64 *v11;
+  struct nbEventFuncList_t_array *eventfunclist;
+  s64 eventno;
+  s32 resource;
+  s32 v18;
+  u64 *v19;
+  dds3ProcessID_t_o *v21;
+  u64 v22[3];
+
+  v21 = id;
+  MainProcessData = nbGetMainProcessData();
+  ProcessData = dds3GetProcessData(&v21);
+  v5 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v22);
+      if ((v22[0] & 1) != 0)
+        v8 = v22[2];
+      else
+        v8 = v22 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  LODWORD(v22[0]) = MainProcessData->eventno;
+  v11 = sub_8D3950(s32, v22);
+  Write_2930400("イベント起動 -> {0:D}\n", v11);
+  eventno = MainProcessData->eventno;
+  resource = eventfunclist->m_Items[eventno]->resource;
+  MainProcessData->eventrid = resource;
+  if (resource >= 1)
+    LODWORD(v5[1].monitor) = resource;
+  v18 = MainProcessData->eventno;
+  btlEve_BloomDof_Set(v18 + 900);
+  v19 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v19,
+    0,
+    Method_nbEventProcess_nbEventProcess3__);
+  return v19;
 }
 
 // 0x1708c50
 void *nbEventProcess3(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbGetUnitWorkFromFormindex(0);
-    nbMakeBadKaifukuPacket(0, 0, 0);
-    ResetWaitMotion(0);
-    nbStartBattleEventSound(0);
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_c *v3;
+  Il2CppObject *v4;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  nbMainProcessData_t_o *v9;
+  s64 i;
+  datUnitWork_t_o *UnitWorkFromFormindex;
+  struct nbFormation_t_array *form;
+  struct nbFormation_t_array *v15;
+  struct nbFormation_t_array *v17;
+  struct nbFormation_t_array *v19;
+  struct nbFormation_t_array *v21;
+  struct nbFormation_t_array *v23;
+  struct nbFormation_t_array *v25;
+  struct nbFormation_t_array *v27;
+  struct nbFormation_t_array *v29;
+  struct nbFormation_t_array *v31;
+  struct nbFormation_t_array *v33;
+  struct nbFormation_t_array *v35;
+  struct nbFormation_t_array *v37;
+  struct nbFormation_t_array *v39;
+  struct nbFormation_t_array *v41;
+  struct nbEventFuncList_t_array *eventfunclist;
+  s64 eventno;
+  struct nbEventFuncList_t_array *v47;
+  s64 v48;
+  nbFormation_t_o *v51;
+  nbEventProcessData_t_o *ed;
+  nbMainProcessData_t_o *data;
+  dds3ProcessID_t_o *v54[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ed = 0;
+  data = 0;
+  v51 = 0;
+  ProcessData = dds3GetProcessData(&ida);
+  v4 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v54);
+      if ((v54[0] & 1) != 0)
+        v7 = v54[2];
+      else
+        v7 = v54 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  v9 = ProcessData[1].klass;
+  ed = ProcessData;
+  data = v9;
+  for (i = 8; i != 18; ++i)
+  {
+    form = v9->form;
+    v51 = *(&form->obj.klass + i);
+    if ((v51->stat & 1) != 0)
+    {
+      else
+      {
+        UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(i - 4);
+        if (!UnitWorkFromFormindex)
+          continue;
+      }
+      if ((UnitWorkFromFormindex->badstatus & 0xFFF) != 0)
+        nbMakeBadKaifukuPacket(0, 0, &v51);
+    }
+  }
+  ResetWaitMotion(&ed, v3);
+  v15 = v9->form;
+  v15->m_Items[0]->stat &= ~8u;
+  v17 = v9->form;
+  v17->m_Items[1]->stat &= ~8u;
+  v19 = v9->form;
+  v19->m_Items[2]->stat &= ~8u;
+  v21 = v9->form;
+  v21->m_Items[3]->stat &= ~8u;
+  v23 = v9->form;
+  v23->m_Items[4]->stat &= ~8u;
+  v25 = v9->form;
+  v25->m_Items[5]->stat &= ~8u;
+  v27 = v9->form;
+  v27->m_Items[6]->stat &= ~8u;
+  v29 = v9->form;
+  v29->m_Items[7]->stat &= ~8u;
+  v31 = v9->form;
+  v31->m_Items[8]->stat &= ~8u;
+  v33 = v9->form;
+  v33->m_Items[9]->stat &= ~8u;
+  v35 = v9->form;
+  v35->m_Items[10]->stat &= ~8u;
+  v37 = v9->form;
+  v37->m_Items[11]->stat &= ~8u;
+  v39 = v9->form;
+  v39->m_Items[12]->stat &= ~8u;
+  v41 = v9->form;
+  v41->m_Items[13]->stat &= ~8u;
+  eventno = v9->eventno;
+  if (eventfunclist->m_Items[eventno]->func)
+  {
+    v4[3].klass = 0;
+    nbStartBattleEventSound(&data);
+    v47 = eventfunclist;
+    v48 = v9->eventno;
+    return v47->m_Items[v48]->func;
+  }
+  else
+  {
+    ida->func_ans = -1;
     return 0;
+  }
 }
 
 // 0x1709440
 void *nbEventShutdown(dds3ProcessID_t *id) {
-    nbGetMainProcessData();
-    nbStopBattleEventSound(0);
-    dds3GetProcessData(0);
-    SetWaitMotion(0);
-    return 0;
+  nbMainProcessData_t_o *MainProcessData;
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_c *v6;
+  Il2CppObject *v7;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  nbEventProcessData_t_usershutdownDelegate_o *v12;
+  nbEventProcessData_t_o *ed;
+  nbMainProcessData_t_o *data;
+  dds3ProcessID_t_o *v16[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  data = 0;
+  ed = 0;
+  MainProcessData = nbGetMainProcessData();
+  data = MainProcessData;
+  nbStopBattleEventSound(&data);
+  MainProcessData->stat &= ~0x1000u;
+  MainProcessData->eventno = 0;
+  MainProcessData->EventProcessID = 0;
+  ProcessData = dds3GetProcessData(&ida);
+  v7 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v16);
+      if ((v16[0] & 1) != 0)
+        v10 = v16[2];
+      else
+        v10 = v16 + 1;
+      v11 = sub_8C4940(v10);
+    }
+  }
+  ed = ProcessData;
+  SetWaitMotion(&ed, v6);
+  if (v7[4].monitor)
+    v7[4].monitor = 0;
+  if (v7[3].monitor)
+    v7[3].monitor = 0;
+  if (v7[4].klass)
+    v7[4].klass = 0;
+  v12 = v7[3].klass;
+  if (v12)
+    nbEventProcessData_t_usershutdownDelegate__Invoke(v12, ida);
+  ida->func_ans = -1;
+  return 0;
 }
 
 // 0x1708ad0
@@ -278,6 +630,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 4)
       return v24->m_Items[v23];
+LABEL_37:
   }
   v5 = MainProcessData->form;
   if ((v5->m_Items[5]->stat & 1) != 0)
@@ -286,6 +639,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 5)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v7 = MainProcessData->form;
   if ((v7->m_Items[6]->stat & 1) != 0)
@@ -294,6 +648,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 6)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v9 = MainProcessData->form;
   if ((v9->m_Items[7]->stat & 1) != 0)
@@ -302,6 +657,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 7)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v10 = MainProcessData->form;
   if ((v10->m_Items[8]->stat & 1) != 0)
@@ -310,6 +666,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 8)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v12 = MainProcessData->form;
   if ((v12->m_Items[9]->stat & 1) != 0)
@@ -318,6 +675,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 9)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v14 = MainProcessData->form;
   if ((v14->m_Items[10]->stat & 1) != 0)
@@ -326,6 +684,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 0xA)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v16 = MainProcessData->form;
   if ((v16->m_Items[11]->stat & 1) != 0)
@@ -334,6 +693,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 0xB)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v18 = MainProcessData->form;
   if ((v18->m_Items[12]->stat & 1) != 0)
@@ -342,6 +702,7 @@ nbFormation_t *nbGetEventForm(void) {
     v24 = MainProcessData->form;
     if (LODWORD(v24->max_length) > 0xC)
       return v24->m_Items[v23];
+    goto LABEL_37;
   }
   v20 = MainProcessData->form;
   if ((v20->m_Items[13]->stat & 1) == 0)
@@ -349,6 +710,7 @@ nbFormation_t *nbGetEventForm(void) {
   v23 = 13;
   v24 = MainProcessData->form;
   if (LODWORD(v24->max_length) <= 0xD)
+    goto LABEL_37;
   return v24->m_Items[v23];
 }
 
@@ -385,17 +747,91 @@ void nbInitEventProcess(nbMainProcessData_t *data) {
     v7,
     0,
     Method_nbEventProcess_nbEventShutdown__);
-  target = dds3StartProcess(StringLiteral_21345, 0x3F9u, 1, 1, v6, 0, v7, 0, v3, 0);
+  target = dds3StartProcess("nb_event", 0x3F9u, 1, 1, v6, 0, v7, 0, v3, 0);
   dds3LinkProcess(&data->MainProcessID, &target);
   data->EventProcessID = target;
 }
 
 // 0x17082b0
 bool nbLoadBattleEventPack(nbMainProcessData_t **data) {
-    evtLoadEventPack(0);
-    dds3LinkProcess(0, 0);
-    dds3GetProcessData(0);
-    return 0;
+  s32 v4;
+  s32 ep_phase;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 klass_high;
+  s64 ep_index;
+  struct nbEventFuncList_t_array *eventfunclist;
+  struct nbEventFuncList_t_array *v18;
+  s32 resource;
+  dds3ProcessID_t_o *EventPack;
+  dds3ProcessID_t_o **p_MainProcessID;
+  char *v26;
+  s64 *v27;
+  u64 v28[3];
+
+  {
+    else
+    {
+      if (ep_phase)
+        goto LABEL_5;
+    }
+LABEL_24:
+    if (eventfunclist->m_Items[ep_index]->encno)
+    {
+      if (eventfunclist->m_Items[ep_index]->encno == (*data)->encno)
+      {
+        v18 = eventfunclist;
+        resource = v18->m_Items[ep_index]->resource;
+        if (resource)
+        {
+          EventPack = evtLoadEventPack(resource);
+          ep_id2 = EventPack;
+          p_MainProcessID = &(*data)->MainProcessID;
+          dds3LinkProcess(p_MainProcessID, &ep_id2);
+          ep_phase = 1;
+        }
+      }
+    }
+    else
+    {
+      if (ep_phase)
+        goto LABEL_58;
+    }
+      goto LABEL_57;
+LABEL_21:
+LABEL_57:
+    ++ep_index;
+    goto LABEL_58;
+  }
+  v4 = 0;
+  if (!ep_phase)
+    goto LABEL_24;
+LABEL_5:
+  else if (ep_phase != 1)
+  {
+    goto LABEL_58;
+  }
+  ProcessData = dds3GetProcessData(&ep_id2);
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != evtPackProcessData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, evtPackProcessData_t, v28);
+    if ((v28[0] & 1) != 0)
+      v26 = v28[2];
+    else
+      v26 = v28 + 1;
+    v27 = sub_8C4940(v26);
+  }
+  klass_high = HIDWORD(ProcessData[1].klass);
+  if (klass_high == 2)
+  {
+    ep_phase = 0;
+    goto LABEL_21;
+  }
+LABEL_58:
+  return ep_index < 16;
 }
 
 // 0x1708240
@@ -436,7 +872,7 @@ void nbStartBattleEventSound(nbMainProcessData_t **data) {
   System_String_o *seid;
 
   eventno = (*data)->eventno;
-  if (op_Inequality(eventfunclist->m_Items[eventno]->seid, StringLiteral_416, 0))
+  if (op_Inequality(eventfunclist->m_Items[eventno]->seid, "", 0))
   {
     v9 = eventfunclist;
     v10 = (*data)->eventno;
@@ -454,7 +890,7 @@ void nbStopBattleEventSound(nbMainProcessData_t **data) {
   System_String_o *seid;
 
   eventno = (*data)->eventno;
-  if (op_Inequality(eventfunclist->m_Items[eventno]->seid, StringLiteral_416, 0))
+  if (op_Inequality(eventfunclist->m_Items[eventno]->seid, "", 0))
   {
     v9 = eventfunclist;
     v10 = (*data)->eventno;
@@ -465,5 +901,30 @@ void nbStopBattleEventSound(nbMainProcessData_t **data) {
 
 // 0x16ed770
 void nbUpdateEventProcessData(dds3ProcessID_t **id) {
-    dds3GetProcessData(0);
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  else
+  {
+    ProcessData = dds3GetProcessData(id);
+    if (!ProcessData)
+      return;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  ++HIDWORD(ProcessData[1].monitor);
+  ++HIDWORD(ProcessData[2].klass);
 }

@@ -209,15 +209,11 @@ void *ProcAmCheck(void) {
   struct fldGlobalWork_t_o *v21;
   struct fldGlobalWork_t_o *v22;
   struct fldGlobalWork_t_o *v23;
-  fldProcess_c *v24;
   s16 v25;
   s32 v26;
   struct fldProcess_StaticFields **p_static_fields;
-  struct fldProcess_StaticFields *static_fields;
   s32 fldProcAmWait;
-  fldGlobal_c *v37;
   struct fldGlobal_StaticFields **v38;
-  struct fldGlobal_StaticFields *v39;
   dds3Basic_t_o *scene;
 
   scene = 0;
@@ -228,42 +224,54 @@ void *ProcAmCheck(void) {
       return 0;
     }
     if (fldProcAmWait > 0)
+      goto LABEL_32;
     if (fldAutoMapChkMode())
+      goto LABEL_32;
     if ((fldProcessFlag & 0x40) != 0)
     {
+LABEL_32:
       AutomapRapid = fldDbg->AutomapRapid;
       if ((AutomapRapid & (fldProcessFlag >> 6) & 1) != 0)
       {
         v10 = DDS3_PADCHECK_PRESS(2);
+          goto LABEL_56;
       }
       else
       {
         v10 = DDS3_PADCHECK_TRIG(2);
+          goto LABEL_56;
       }
+LABEL_56:
       fieldID = fldGb->fieldID;
       if (fieldID == 38)
+        goto LABEL_199;
       if (fieldID == 44)
       {
         areaID = fldGb->areaID;
         if (areaID >= 11)
         {
           if (areaID < 27)
+            goto LABEL_199;
         }
       }
       v21 = fldGb;
       if (v21->fieldID == 44)
       {
         if (v21->areaID == 30)
+          goto LABEL_199;
       }
       v22 = fldGb;
       if (v22->fieldID == 45)
       {
         if (v22->areaID == 29)
+          goto LABEL_199;
       }
       v23 = fldGb;
       if (v23->fieldID != 45)
+        goto LABEL_123;
       if (v23->areaID == 30)
       {
+LABEL_199:
         if (!fldGb->NoInpAmCnt)
         {
           if ((fldProcessFlag & 0x40) != 0 && v10)
@@ -273,12 +281,13 @@ void *ProcAmCheck(void) {
             fldReleaseUnitPad();
             scene = dds3GetActiveScene();
             fldPlayerEventStop(0);
-            dds3SceneBasicStartScript(&scene, StringLiteral_16725);
+            dds3SceneBasicStartScript(&scene, "hirakenai_label");
           }
         }
       }
       else
       {
+LABEL_123:
         if ((v25 & 0x200) != 0)
         {
           v26 = v25 & 0x200;
@@ -287,9 +296,6 @@ void *ProcAmCheck(void) {
         {
           v26 = 0;
         }
-        p_static_fields = &v24->static_fields;
-        static_fields = v24->static_fields;
-        fldProcAmWait = static_fields->fldProcAmWait;
         if (fldProcAmWait < 1)
         {
           if (fldProcAmWait <= 0)
@@ -302,11 +308,9 @@ void *ProcAmCheck(void) {
                 {
                   if (v10)
                   {
-                    v38 = &v37->static_fields;
-                    v39 = v37->static_fields;
-                    if (!v39->fldDbg->EncountBtnOn)
+                    if (!fldDbg->EncountBtnOn)
                     {
-                      v39->fldGb->NoInpAmCnt = 4;
+                      fldGb->NoInpAmCnt = 4;
                       (*v38)->fldGb->NoInpPlCnt = 8;
                       fldReleaseUnitPad();
                       fldPlayerPosRot();
@@ -324,7 +328,7 @@ void *ProcAmCheck(void) {
         }
         else
         {
-          static_fields->fldProcAmWait = fldProcAmWait - 1;
+          fldProcAmWait = fldProcAmWait - 1;
           if (!(*p_static_fields)->fldProcAmWait)
           {
             scene = dds3GetActiveScene();
@@ -341,11 +345,9 @@ void *ProcAmCheck(void) {
 
 // 0x15f4b50
 void *ProcCampCheck(void) {
-  fldProcess_c *v3;
   s16 v4;
   s32 v5;
   struct fldProcess_StaticFields **p_static_fields;
-  struct fldProcess_StaticFields *static_fields;
   s32 fldProcCampWait;
   u64 v12;
   s32 v13;
@@ -363,12 +365,9 @@ void *ProcCampCheck(void) {
     {
       v5 = 0;
     }
-    p_static_fields = &v3->static_fields;
-    static_fields = v3->static_fields;
-    fldProcCampWait = static_fields->fldProcCampWait;
     if (fldProcCampWait >= 1)
     {
-      static_fields->fldProcCampWait = fldProcCampWait - 1;
+      fldProcCampWait = fldProcCampWait - 1;
       if (!(*p_static_fields)->fldProcCampWait)
       {
         basic = dds3GetActiveScene();
@@ -380,7 +379,7 @@ void *ProcCampCheck(void) {
     }
     else if ((fldProcessFlag & 0x20) == 0)
     {
-      if ((*(v12 + 295) & 2) != 0 && !*(v12 + 216))
+LABEL_38:
       v13 = fldProcCampChk(v12);
       if (v13 == 3)
       {
@@ -416,7 +415,6 @@ void *ProcCampCheck(void) {
         return 0;
       }
     }
-    if ((*(v12 + 295) & 2) != 0 && !*(v12 + 216))
     if ((fldProcessFlag & 0x20) != 0)
     {
       if ((fldProcessFlag & 0x40) != 0)
@@ -456,150 +454,1255 @@ void *ProcCampCheck(void) {
 
 // 0x15fefd0
 dds3ProcessFunc_t *ProcDraw(dds3ProcessID_t *id) {
-    dds3AdminiGetNextSequence();
+  struct fldSequenceControl_t_o *fldSequenceControl;
+  u64 v8;
+  s32 fieldID;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v26;
+  u64 *v28;
+  struct fldGlobalWork_t_o *fldGb;
+  struct System_Int32_array *v31;
+  struct System_Int32_array *v33;
+  struct fldGlobalWork_t_o *v35;
+  s32 areaID;
+  struct System_Int32_array *v38;
+  struct System_Int32_array *v40;
+  s32 v42;
+  struct System_Int32_array *v44;
+  struct System_Int32_array *v46;
+  struct System_Int32_array *v49;
+  struct System_Int32_array *v51;
+  struct fldGlobalWork_t_o *v53;
+  struct System_Int32_array *v55;
+  struct System_Int32_array *v57;
+  struct fldGlobalWork_t_o *v60;
+  s32 v61;
+  struct dds3Effect_Blur_t_o *fldAmaraBlurBuff;
+  s32 v64;
+  struct System_Int32_array *v65;
+  struct System_Int32_array *v67;
+  struct fldGlobalWork_t_o *v70;
+  struct System_Int32_array *v72;
+  struct System_Int32_array *v74;
+  struct fldGlobalWork_t_o *v76;
+  s32 v77;
+  struct fldGlobalWork_t_o *v78;
+  s32 v79;
+  struct System_Int32_array *v81;
+  struct System_Int32_array *v83;
+  struct fldGlobalWork_t_o *v85;
+  struct fldGlobalWork_t_o *v86;
+  struct fldGlobalWork_t_o *v87;
+  struct System_Int32_array *v89;
+  struct System_Int32_array *v91;
+  struct fldGlobalWork_t_o *v93;
+  s32 v94;
+  struct System_Int32_array *v96;
+  struct System_Int32_array *v98;
+  struct fldGlobalWork_t_o *v100;
+  struct System_Int32_array *v102;
+  struct System_Int32_array *v104;
+  struct fldGlobalWork_t_o *v106;
+  struct System_Int32_array *v108;
+  struct System_Int32_array *v110;
+  struct fldGlobalWork_t_o *v112;
+  struct System_Int32_array *v114;
+  struct System_Int32_array *v116;
+  struct fldGlobalWork_t_o *v118;
+  s32 v119;
+  struct fldGlobalWork_t_o *v122;
+  s32 v123;
+  dds3Effect_Filter_t_o *pFilter;
+
+  pFilter = 0;
+  if (dds3AdminiGetNextSequence() != -1)
+  {
     fldPlayer_Enc_Correction_Unity();
-    fldLoadNextGetStatus();
-    encChk();
-    fmProcessChk();
-    fldProcCampChk();
-    fldAutoMapChkMode();
-    fldNpcDraw();
+    return 0;
+  }
+  else if (fldLoadNextGetStatus() != 1)
+  {
+    goto LABEL_20;
+  }
+  if (fldSequenceControl->phase)
+  {
+LABEL_20:
+    if (encChk())
+      return 0;
+    if (fmProcessChk())
+      return 0;
+    if ((*(*(*(v8 + 184) + 16LL) + 16LL) & 2) != 0)
+      return 0;
+    if (fldProcCampChk(v8) == 1)
+      return 0;
+    if (!fldAutoMapChkMode())
+    {
+      if (!fldProcCampChk())
+      {
+        fldNpcDraw();
+      }
+    }
     fldWaveTask();
     fldAutoMapDraw();
     fldSnowTask();
     fldElvFloorTask();
+    if (fldSequenceControl->phase < 4)
+      return 0;
     fldPlayer_Correction_Unity();
-    fldEve_BloomDof_AfterEnd();
-    fldEventUpdateEx_Unity_2();
-    fldEve_BloomDof_Set();
-    dds3EffectBlur(0, 0, 0);
-    dds3EffectFilter(0);
-    dds3EffectDistortionBlurDraw(0, 0, 0);
-    dds3EffectDistortionBlur_SetFldEvent(0);
-    return 0;
+    if ((fldProcessFlag & 0x40) != 0)
+    {
+      fldEve_BloomDof_AfterEnd();
+      if (fldSequenceControl->phase < 4)
+        return 0;
+    }
+    else
+    {
+      fldEventUpdateEx_Unity_2();
+      fldEve_BloomDof_Set();
+      if (fldSequenceControl->phase < 4)
+        return 0;
+    }
+    if (fldDbg->ExBlurOn != 1)
+      return 0;
+    if (encChk())
+      return 0;
+    fieldID = fldGb->fieldID;
+    if (fieldID == 18)
+      goto LABEL_107;
+    if (fieldID == 28)
+      goto LABEL_107;
+    if (fieldID == 30)
+    {
+LABEL_107:
+      fldAmaraBlurBuff->abgr = 947945642;
+      fldAmaraBlurBuff->blend = 1;
+      fldAmaraBlurBuff->rotate = 0.002;
+      fldAmaraBlurBuff->scale = 0.993;
+      pm = fldAmaraBlurBuff->center->pm;
+      pm->m_Items[0] = 0;
+      v26 = fldAmaraBlurBuff->center->pm;
+      v26->m_Items[1] = 0;
+      dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      v28 = Allocate(dds3Effect_Filter_t);
+      dds3Effect_Filter_t___ctor(v28);
+      pFilter = v28;
+      v28[2] = 0x210403080LL;
+      dds3EffectFilter(&pFilter, 0, 0);
+    }
+    if (fldGb->fieldID == 12)
+    {
+      if (!fldGb->areaID)
+      {
+        fldAmaraBlurBuff->abgr = 810046080;
+        fldAmaraBlurBuff->blend = 1;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v31 = fldAmaraBlurBuff->center->pm;
+        v31->m_Items[0] = 0;
+        v33 = fldAmaraBlurBuff->center->pm;
+        v33->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v35 = fldGb;
+    if (v35->fieldID == 15)
+    {
+      areaID = v35->areaID;
+      if (areaID == 19)
+        goto LABEL_149;
+      if (areaID == 20)
+      {
+LABEL_149:
+        fldAmaraBlurBuff->abgr = 407392896;
+        fldAmaraBlurBuff->blend = 1;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v38 = fldAmaraBlurBuff->center->pm;
+        v38->m_Items[0] = 0;
+        v40 = fldAmaraBlurBuff->center->pm;
+        v40->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+      v42 = fldGb->areaID;
+      if (v42 == 2)
+        goto LABEL_172;
+      if (v42 == 3)
+        goto LABEL_172;
+      if (v42 == 4)
+      {
+LABEL_172:
+        fldAmaraBlurBuff->abgr = 676878464;
+        fldAmaraBlurBuff->blend = 2;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 0.995;
+        v44 = fldAmaraBlurBuff->center->pm;
+        v44->m_Items[0] = 0;
+        v46 = fldAmaraBlurBuff->center->pm;
+        v46->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    if (fldGb->fieldID == 16)
+    {
+      fldAmaraBlurBuff->abgr = 516469960;
+      fldAmaraBlurBuff->blend = 1;
+      fldAmaraBlurBuff->rotate = 0.0;
+      fldAmaraBlurBuff->scale = 1.0;
+      v49 = fldAmaraBlurBuff->center->pm;
+      v49->m_Items[0] = 0;
+      v51 = fldAmaraBlurBuff->center->pm;
+      v51->m_Items[1] = 0;
+      dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+    }
+    v53 = fldGb;
+    if (v53->fieldID == 17)
+    {
+      if (!v53->areaID)
+      {
+        fldAmaraBlurBuff->abgr = 545292486;
+        fldAmaraBlurBuff->blend = 1;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v55 = fldAmaraBlurBuff->center->pm;
+        v55->m_Items[0] = 0;
+        v57 = fldAmaraBlurBuff->center->pm;
+        v57->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+        Postblur_AccumTex_NowMode = 1;
+      }
+    }
+    v60 = fldGb;
+    if (v60->fieldID == 23)
+    {
+      v61 = v60->areaID;
+      if (v61)
+      {
+        if (v61 == 1)
+        {
+          v64 = 138457308;
+        }
+        else
+        {
+          if (v61 != 6)
+            goto LABEL_256;
+          v64 = 276865244;
+        }
+      }
+      else
+      {
+        v64 = 201367772;
+      }
+      fldAmaraBlurBuff->abgr = v64;
+      fldAmaraBlurBuff->blend = 1;
+      fldAmaraBlurBuff->rotate = 0.0;
+      fldAmaraBlurBuff->scale = 0.996;
+      v65 = fldAmaraBlurBuff->center->pm;
+      v65->m_Items[0] = 0;
+      v67 = fldAmaraBlurBuff->center->pm;
+      v67->m_Items[1] = 0;
+      dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+    }
+LABEL_256:
+    v70 = fldGb;
+    if (v70->fieldID == 24)
+    {
+      if (v70->areaID == 17)
+      {
+        fldAmaraBlurBuff->abgr = 813864628;
+        fldAmaraBlurBuff->blend = 1;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 0.99;
+        v72 = fldAmaraBlurBuff->center->pm;
+        v72->m_Items[0] = 0;
+        v74 = fldAmaraBlurBuff->center->pm;
+        v74->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v76 = fldGb;
+    if (v76->fieldID == 25)
+    {
+      v77 = v76->areaID;
+      if (v77 == 16)
+        goto LABEL_505;
+      if (v77 == 17)
+        goto LABEL_505;
+      if (v77 == 18)
+        goto LABEL_505;
+      if (v77 == 19)
+        goto LABEL_505;
+      if (v77 == 20)
+        goto LABEL_505;
+      if (v77 == 24)
+      {
+LABEL_505:
+        dds3EffectDistortionBlurDraw(&fldBlurKabuki, 0, 0);
+      }
+    }
+    v78 = fldGb;
+    if (v78->fieldID == 27)
+    {
+      v79 = v78->areaID;
+      if (!v79)
+        goto LABEL_334;
+      if (v79 == 1)
+        goto LABEL_334;
+      if (v79 == 2)
+        goto LABEL_334;
+      if (v79 == 3)
+        goto LABEL_334;
+      if (v79 == 4)
+      {
+LABEL_334:
+        fldAmaraBlurBuff->abgr = 813864628;
+        fldAmaraBlurBuff->blend = 1;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 0.997;
+        v81 = fldAmaraBlurBuff->center->pm;
+        v81->m_Items[0] = 0;
+        v83 = fldAmaraBlurBuff->center->pm;
+        v83->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v85 = fldGb;
+    if (v85->fieldID == 32)
+    {
+      if (v85->areaID == 19)
+        goto LABEL_369;
+    }
+    v86 = fldGb;
+    if (v86->fieldID == 36)
+    {
+      if (v86->areaID == 20)
+        goto LABEL_369;
+    }
+    v87 = fldGb;
+    if (v87->fieldID == 37)
+    {
+      if (v87->areaID == 25)
+      {
+LABEL_369:
+        fldAmaraBlurBuff->abgr = 949256320;
+        fldAmaraBlurBuff->blend = 2;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v89 = fldAmaraBlurBuff->center->pm;
+        v89->m_Items[0] = 0;
+        v91 = fldAmaraBlurBuff->center->pm;
+        v91->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v93 = fldGb;
+    if (v93->fieldID == 34)
+    {
+      v94 = v93->areaID;
+      if (v94 == 1)
+        goto LABEL_392;
+      if (v94 == 2)
+      {
+LABEL_392:
+        fldAmaraBlurBuff->abgr = 812677248;
+        fldAmaraBlurBuff->blend = 2;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v96 = fldAmaraBlurBuff->center->pm;
+        v96->m_Items[0] = 0;
+        v98 = fldAmaraBlurBuff->center->pm;
+        v98->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v100 = fldGb;
+    if (v100->fieldID == 36)
+    {
+      if (v100->areaID == 16)
+      {
+        fldAmaraBlurBuff->abgr = 813204138;
+        fldAmaraBlurBuff->blend = 1;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v102 = fldAmaraBlurBuff->center->pm;
+        v102->m_Items[0] = 0;
+        v104 = fldAmaraBlurBuff->center->pm;
+        v104->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v106 = fldGb;
+    if (v106->fieldID == 37)
+    {
+      if (v106->areaID == 23)
+      {
+        fldAmaraBlurBuff->abgr = 595100330;
+        fldAmaraBlurBuff->blend = 2;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v108 = fldAmaraBlurBuff->center->pm;
+        v108->m_Items[0] = 0;
+        v110 = fldAmaraBlurBuff->center->pm;
+        v110->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v112 = fldGb;
+    if (v112->fieldID == 37)
+    {
+      if (v112->areaID == 26)
+      {
+        fldAmaraBlurBuff->abgr = 427986080;
+        fldAmaraBlurBuff->blend = 2;
+        fldAmaraBlurBuff->rotate = 0.0;
+        fldAmaraBlurBuff->scale = 1.0;
+        v114 = fldAmaraBlurBuff->center->pm;
+        v114->m_Items[0] = 0;
+        v116 = fldAmaraBlurBuff->center->pm;
+        v116->m_Items[1] = 0;
+        dds3EffectBlur(&fldAmaraBlurBuff, 0, 0);
+      }
+    }
+    v118 = fldGb;
+    if (v118->fieldID == 42)
+    {
+      v119 = v118->areaID;
+      if (v119 == 13)
+        goto LABEL_506;
+      if (v119 == 25)
+      {
+LABEL_506:
+        dds3EffectDistortionBlur_SetFldEvent(67137540);
+        dds3EffectDistortionBlurDraw(&fldBlurKabuki, 0, 0);
+      }
+    }
+    v122 = fldGb;
+    if (v122->fieldID == 44)
+    {
+      v123 = v122->areaID;
+      if (v123 == 2)
+        goto LABEL_507;
+      if (v123 == 4)
+        goto LABEL_507;
+      if (v123 == 24)
+      {
+LABEL_507:
+        dds3EffectDistortionBlur_SetFldEvent(67137540);
+        dds3EffectDistortionBlurDraw(&fldBlurKabuki, 0, 0);
+      }
+    }
+  }
+  return 0;
 }
 
 // 0x15f2cb0
 void *ProcRandomEncountCheck(void) {
-    dds3GetActiveScene();
-    dds3GetActiveUnitSceneBasic(0);
-    dds3GetPosPoseSet(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__STOREVECTOR(0);
-    SDF_VU0__SUBVECTOR();
-    SDF_VU0__GETLENGTH();
-    evtGetAgeOfMoon16();
-    evtMoonAddMove(0);
-    fldReleaseUnitPad();
-    fldPlayerEventStop(0);
-    dds3SceneBasicStartScript(0, 0);
-    fldPlayerPosRot();
-    datPartyDamageFld(0);
-    datFieldSkillKaifuku();
-    fldLoadNextGetStatus();
-    fldEveHitProcess_Chk();
-    datCheckSkillTakaraSagasi();
-    fldRunEncountChk();
-    fldDLCEncountCheck(0);
-    nbEncountCalc(0, 0);
-    nbResetEncountCount();
-    dds3FadeIn(0, 0, 0, 0);
-    fldEveHit_End();
-    evtKillFieldScript();
-    CallBattleSub(0, 0);
+  struct fldEncountContol_t_o *fldEncountControl;
+  struct fldGlobalWork_t_o *fldGb;
+  s32 NoInpAmCnt;
+  struct fldGlobalWork_t_o *v7;
+  s32 NoInpPlCnt;
+  struct fldGlobalWork_t_o *v9;
+  s32 NoEncountCnt;
+  Il2CppObject *result;
+  dds3Basic_t_o *v14;
+  UnityEngine_Vector4_o *p_unitPos;
+  f32 x;
+  f32 v19;
+  f32 v21;
+  s32 AgeOfMoon16;
+  struct fldGlobalWork_t_o *v24;
+  f32 v27;
+  s32 flag;
+  s32 v32;
+  fldGlobal_c *v33;
+  struct fldGlobalWork_t_o *v34;
+  struct fldGlobalWork_t_o *v35;
+  struct fldGlobalWork_t_o *v36;
+  struct fldGlobalWork_t_o *v37;
+  struct fldGlobalWork_t_o *v38;
+  struct fldGlobal_StaticFields **p_static_fields;
+  f32 v48;
+  struct fldGlobalWork_t_o *v49;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  s32 v54;
+  s32 Status;
+  bool v59;
+  s32 takarasagasi_oldmoon;
+  s32 v66;
+  char v72;
+  s32 areaID;
+  s32 v79;
+  struct fldGlobalWork_t_o *v83;
+  s32 encountpack;
+  s32 v88;
+  char v96;
+  s32 v98;
+  s32 v104;
+  s32 v107;
+  s32 v108;
+  s32 encpid;
+  dds3Basic_t_o *pBasic;
+  dds3Basic_t_o *scene;
+  UnityEngine_Vector4_o v112;
+
+  scene = 0;
+  pBasic = 0;
+  encpid = 0;
+  NoInpAmCnt = fldGb->NoInpAmCnt;
+  if (NoInpAmCnt >= 1)
+  {
+    fldGb->NoInpAmCnt = NoInpAmCnt - 1;
+  }
+  v7 = fldGb;
+  NoInpPlCnt = v7->NoInpPlCnt;
+  if (NoInpPlCnt >= 1)
+  {
+    v7->NoInpPlCnt = NoInpPlCnt - 1;
+  }
+  v9 = fldGb;
+  NoEncountCnt = v9->NoEncountCnt;
+  if (NoEncountCnt >= 1)
+  {
+    v9->NoEncountCnt = NoEncountCnt - 1;
+  }
+LABEL_34:
+  else if ((fldProcessFlag & 0x40) == 0)
+  {
     return 0;
+  }
+  if ((fldSequenceControl->flag & 1) != 0)
+    return 0;
+LABEL_45:
+  result = dds3GetActiveScene();
+  scene = result;
+  if (!result)
+    return result;
+  v14 = result;
+  result = dds3GetActiveUnitSceneBasic(v14);
+  pBasic = result;
+  if (!result)
+    return result;
+  dds3GetPosPoseSet(&pBasic);
+  x = fldEncountControl->unitPos.x;
+  p_unitPos = &fldEncountControl->unitPos;
+  v112.x = x;
+  v112.w = p_unitPos->w;
+  v112.y = p_unitPos->y;
+  v112.z = p_unitPos->z;
+  SDF_VU0__LOADVECTOR_B(v112);
+  SDF_VU0__STOREVECTOR(p_unitPos);
+  SDF_VU0__SUBVECTOR();
+  v19 = SDF_VU0__GETLENGTH();
+  if (v19 >= 0.2)
+    v21 = v19;
+  else
+    v21 = 0.0;
+  fldGb->LastMoveLeng = v21;
+  AgeOfMoon16 = evtGetAgeOfMoon16();
+  v24 = fldGb;
+  if (v24->NoEncountCnt >= 1)
+  {
+    dds3GetPosPoseSet(&pBasic);
+    SDF_VU0__STOREVECTOR(p_unitPos);
+    fldGb->LastMoveLeng = 0.0;
+    return 0;
+  }
+  if (v24->fieldID <= 9)
+  {
+    v27 = v21 * 4.0;
+  }
+  else
+  {
+    v27 = v21;
+  }
+  evtMoonAddMove(v27);
+  flag = fldGb->flag;
+  if ((flag & 1) != 0)
+    goto LABEL_463;
+  if ((flag & 2) != 0)
+    goto LABEL_463;
+  if ((flag & 4) != 0)
+    goto LABEL_463;
+  if ((flag & 8) != 0)
+  {
+LABEL_463:
+    fldReleaseUnitPad();
+    scene = dds3GetActiveScene();
+    fldPlayerEventStop(0);
+    dds3SceneBasicStartScript(&scene, "kireta_label");
+    fldPlayerPosRot();
+    return 0;
+  }
+  v32 = evtGetAgeOfMoon16();
+  v34 = fldGb;
+  if (v34->fieldID == 42)
+  {
+    if (v34->areaID == 13)
+      goto LABEL_464;
+  }
+  v35 = fldGb;
+  if (v35->fieldID == 42)
+  {
+    if (v35->areaID == 25)
+      goto LABEL_464;
+  }
+  v36 = fldGb;
+  if (v36->fieldID == 44)
+  {
+    if (v36->areaID == 2)
+      goto LABEL_464;
+  }
+  v37 = fldGb;
+  if (v37->fieldID == 44)
+  {
+    if (v37->areaID == 4)
+      goto LABEL_464;
+  }
+  v38 = fldGb;
+  if (v38->fieldID == 44)
+  {
+    if (v38->areaID == 24)
+    {
+LABEL_464:
+      if (fldDbg->SpProcOn)
+      {
+        fldGb->DmgLeng = v21 + fldGb->DmgLeng;
+        if ((*p_static_fields)->fldGb->DmgLeng > 450.0)
+        {
+          fldProcessFlag &= ~0x40u;
+          fldGb->NoroiDamegeCnt = 60;
+          fldGb->DmgLeng = 0.0;
+          datPartyDamageFld(4);
+          return 0;
+        }
+      }
+LABEL_251:
+      if (AgeOfMoon16 == v32)
+        goto LABEL_256;
+      goto LABEL_252;
+    }
+  }
+  if (fldGb->DmgOn)
+    goto LABEL_465;
+  if ((fldDbg->PlayerStatus & 1) != 0)
+  {
+LABEL_465:
+    fldGb->DmgLeng = v21 + fldGb->DmgLeng;
+    if (fldGb->DmgOn)
+    {
+      v48 = 450.0;
+      if ((v33->_2.bitflags2 & 2) == 0)
+      {
+LABEL_213:
+        v49 = fldGb;
+        if (v49->DmgLeng <= v48)
+          goto LABEL_251;
+        if (v49->DmgOn)
+        {
+          if ((DDS3_GBWK->stat & 4) != 0)
+          {
+            gfldPlayerDamegeCnt = 0;
+            fldGb->DmgLeng = 0.0;
+            goto LABEL_251;
+          }
+          gfldPlayerDamegeCnt = 60;
+          fldGb->DmgLeng = 0.0;
+          v54 = 2;
+        }
+        else
+        {
+          gfldPlayerDamegeCnt = 60;
+          fldGb->DmgLeng = 0.0;
+          v54 = 1;
+        }
+        datPartyDamageFld(v54);
+        if (AgeOfMoon16 == v32)
+          goto LABEL_256;
+LABEL_252:
+        datFieldSkillKaifuku();
+        goto LABEL_256;
+      }
+    }
+    else
+    {
+      v48 = flt_32C3180[(fldDbg->PlayerStatus & 1) == 0];
+      if ((v33->_2.bitflags2 & 2) == 0)
+        goto LABEL_213;
+    }
+    goto LABEL_213;
+  }
+  fldGb->DmgLeng = 450.0;
+  if (AgeOfMoon16 != v32)
+    goto LABEL_252;
+LABEL_256:
+  Status = fldLoadNextGetStatus();
+  result = 0;
+  if (Status != 1)
+  {
+    v59 = cfgGetBit(9u) == 0;
+    if (v59)
+      v21 = v21 * 0.3;
+    if (fldGb->fieldID <= 9)
+    {
+      if (!fldEveHitProcess_Chk())
+      {
+        if (takarasagasi_oldmoon != evtGetAgeOfMoon16())
+        {
+          if (!DDS3_GBWK->Moon->TakaraCnt)
+          {
+            v98 = datCheckSkillTakaraSagasi();
+            gFldTakaraAkumaId = v98;
+            if (gFldTakaraAkumaId)
+            {
+              fldReleaseUnitPad();
+              scene = dds3GetActiveScene();
+              fldPlayerEventStop(0);
+              dds3SceneBasicStartScript(&scene, "takarasagasi_label");
+              v104 = evtGetAgeOfMoon16();
+              v107 = v104;
+              takarasagasi_oldmoon = v107;
+              return 0;
+            }
+          }
+        }
+      }
+    }
+    v66 = evtGetAgeOfMoon16();
+    takarasagasi_oldmoon = v66;
+    if (!fldDbg->EncountOn)
+      goto LABEL_466;
+    if (!fldRunEncountChk())
+      goto LABEL_466;
+    if (!fldDbg->SpProcOn)
+    {
+LABEL_466:
+      if (v21 < 9998.0)
+      {
+        if (!fldDbg->EncountOn)
+          return 0;
+      }
+      if ((fldProcessFlag & 0x10) == 0)
+        return 0;
+      v83 = fldGb;
+      encpid = v83->EncPIDUpper;
+      if (!encpid)
+      {
+        encpid = v83->EncPID;
+      }
+      fldDLCEncountCheck(&encpid);
+      fldBattleData.encountpack = encpid;
+      encountpack = fldBattleData.encountpack;
+      v88 = nbEncountCalc(encountpack, v21);
+      fldBattleData.encounttbl = v88;
+      if (!fldBattleData.encounttbl)
+        return 0;
+      if (v21 <= 9998.0 && fldDbg->EncountOn != 1)
+      {
+        nbResetEncountCount();
+        dds3FadeIn(0x80u, 0x80u, 0x80u, 6u);
+        ++gEncountRireki;
+        return 0;
+      }
+      fldEveHit_End();
+      else
+      {
+        v96 = 1;
+      }
+      fldSequenceControl->flag |= 1u;
+      fldSequenceControl->flag |= 2u;
+      fldReleaseUnitPad();
+      evtKillFieldScript();
+LABEL_460:
+      v108 = -1;
+      return sub_8D3950(s32, &v108);
+    }
+    fldEveHit_End();
+    else
+    {
+      v72 = 1;
+    }
+    fldSequenceControl->flag |= 1u;
+    fldSequenceControl->flag |= 2u;
+    fldReleaseUnitPad();
+    evtKillFieldScript();
+    fldBattleData.encountpack = 0;
+    fldBattleData.encounttbl = 1034;
+    areaID = fldGb->areaID;
+    if ((areaID - 7) >= 4)
+    {
+      if ((areaID - 4) >= 2)
+      {
+        if (areaID != 3)
+          goto LABEL_456;
+        else
+        {
+          v79 = 200;
+        }
+      }
+      else
+      {
+        else
+        {
+          v79 = 201;
+        }
+      }
+    }
+    else
+    {
+      v79 = 202;
+    }
+    fldNext_fld = 43;
+    fldNext_eveno = v79;
+LABEL_456:
+    CallBattleSub(1034, 0);
+    goto LABEL_460;
+  }
+  return result;
 }
 
 // 0x15f6890
 dds3ProcessFunc_t *ProcSequence(dds3ProcessID_t *id) {
-    dds3AdminiGetNextSequence();
-    fmProcessChk();
+  struct fldSequenceControl_t_o *fldSequenceControl;
+  s32 bgmMode;
+  u64 v11;
+  u32 v14;
+  s32 CamTableIdx;
+  dds3Basic_t_o *ControlScene;
+  struct fldGlobal_StaticFields **p_static_fields;
+  s32 SkyTblID;
+  u64 *v39;
+  s64 v41;
+  s64 v43;
+  effDistortionBlurHandle_t_o *v45;
+  s32 fieldID;
+  u64 *v48;
+  s64 v50;
+  s64 v52;
+  effDistortionBlurHandle_t_o *v54;
+  struct fldGlobalWork_t_o *fldGb;
+  s32 v62;
+  s32 areaID;
+  s32 v79;
+  struct fldGlobalWork_t_o *v84;
+  fldUnitControl_t_o *UnitControl;
+  dds3Basic_t_o *player;
+  s32 fldSeLastBgm;
+  struct fldGlobalWork_t_o *v109;
+  s32 AllPanelCnt;
+  s32 v111;
+  s32 v112;
+  u64 *v137;
+  fldGlobal_c *v139;
+  dds3Basic_t_o *v152;
+  s64 *achievementTbl;
+  System_String_o *v155;
+  struct nbNewBattleSeqData_t_o fldBattleData;
+  dds3Basic_t_o *basic;
+
+  basic = 0;
+  bgmMode = fldSceneParam.bgmMode;
+  if (dds3AdminiGetNextSequence() == -1)
+  {
+    else if (fmProcessChk())
+    {
+      return 0;
+    }
     fldLoadNextTask();
-    fldLoadNextGetStatus();
-    fldBgmSisetuLoadChk();
-    fldProcCampChk();
-    ProcCampCheck();
-    fldPlayerPosRot();
-    SetBoostFrameRate(0);
-    SetShadowMode(0, 0);
-    FldDataLoadRequest();
-    IsFldDataLoaded();
-    fldDispOn();
-    fldGbInit_Field();
-    evtEnableMoonCalc();
-    fldReadyScene();
-    dds3GetControlScene();
-    dds3SetActiveScene(0);
-    fldInitInputPanel();
-    evtEnableMoonDraw();
-    fldInitAddressProcess();
-    fldSkySetTbl(0, 0);
-    fldSkySetTableAnime(0);
-    dds3EffectDistortionBlurCreate(0);
-    dds3FadeOut2(0);
-    fldCamResetNpc();
-    fldSnowSeedInit();
-    fldSnowSeedReset();
-    fldStatusSet();
-    fldPPSV2_Set(0, 0);
-    LoadEventModel();
-    fldEventDataLoadChk();
-    fldFootSeLoadChk();
-    fldCmnBgmSeLoadChk();
-    IsStartModelLoaded();
-    fldProcStartScript();
-    fldCamMain();
-    fldBgmLoad();
-    fldGetRestoreMode();
-    fldBgmContinue();
-    fldBgmPlay2();
-    fldBgmPlay();
-    SetNormalFrameRate(0);
-    fldSnowInit();
-    dds3FadeCheck();
-    dds3FadeIn2(0);
-    dds3SearchProcessPriority(0);
-    fldRegistUnitPad();
-    fldGetUnitControl();
-    dds3ObjectBaseOffFlag(0, 0);
-    fldTitleMiniStart2();
-    fldRunView();
-    fldEveHit_ChkEveHitAfter();
-    fldEveHit_ChkEveHit(0);
-    evtBitCheck(0);
-    DDS3_PADCHECK_TRIG(0);
-    evtBitOff(0);
-    evtBitOn(0);
-    ProcAmCheck();
-    fldPanelSet(0);
-    ProcRandomEncountCheck();
-    encStart(0);
-    fldPlayerCalc();
-    fldLightMaTask();
-    fldSkyCalcTable();
-    fldSkyCalcFilter();
-    fldHitWM_Mask();
-    fldSe_Task();
-    fldBgmBitChk();
-    fldAutoMapProc();
-    fldAutoMapChkMode();
-    scrSearchScriptName(0);
-    fldNpcCalc();
-    fldItemBoxCalcTask();
-    CheckTypeClose();
-    Unlock_16599376(0);
-    dds3GetActiveScene();
-    dds3VisibleSceneBasic(0, 0);
-    p2sdPause(0);
-    p2sdPlaySE(0);
-    fldEventDataUnload();
-    fldFootSeUnload();
-    fldCmnBgmSeUnload();
-    fldFreeNextFile();
-    fldLoadNextFile_SetId_BtlRet(0, 0);
-    nbNoDestroy_MoveCache_Field_F_ModeOn();
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    return 0;
+    if (fldSequenceControl->phase)
+      goto LABEL_637;
+    if (fldLoadNextGetStatus() != 1)
+    {
+LABEL_637:
+      if (*(*(v11 + 184) + 96LL) != -1)
+      {
+        fldBgmSisetuLoadChk(v11);
+      }
+      v14 = fldProcCampChk() - 1;
+      if (v14 <= 1)
+      {
+        ProcCampCheck();
+        return 0;
+      }
+      if ((fldProcessFlag & 0x40) == 0)
+      {
+        fldPlayerPosRot();
+      }
+      switch (fldSequenceControl->phase)
+      {
+        case 0:
+          SetBoostFrameRate(kernelObject);
+          SetShadowMode(kernelObject, 1);
+          FldDataLoadRequest();
+          fldSequenceControl->phase = 1;
+          goto LABEL_395;
+        case 1:
+          if (!IsFldDataLoaded())
+            goto LABEL_395;
+          if (!fldDispOn())
+            return 0;
+          gFldRndEncBtl = 0;
+          gFldStart = 1;
+          fldGbInit_Field();
+          dds3BackColor = 0x80000000;
+          evtEnableMoonCalc();
+          gfldSkyHokan = 0;
+          CamTableIdx = fldGb->CamTableIdx;
+          if (CamTableIdx == 6)
+            goto LABEL_638;
+          if (CamTableIdx == 7)
+            goto LABEL_638;
+          if (CamTableIdx == 1)
+          {
+LABEL_638:
+            fldGb->CamTableIdx = 0;
+          }
+          fldReadyScene();
+          ControlScene = dds3GetControlScene();
+          dds3SetActiveScene(ControlScene);
+          fldInitInputPanel();
+          evtEnableMoonDraw();
+          fldInitAddressProcess();
+          if (fldGb->fieldID >= 200)
+          {
+            fldDbg->SkyTblID = 0;
+            (*p_static_fields)->fldDbg->SkyTblAnm = 0;
+            SkyTblID = (*p_static_fields)->fldDbg->SkyTblID;
+            fldSkySetTbl(SkyTblID, 0);
+            fldSkySetTableAnime(fldDbg->SkyTblAnm);
+          }
+          if (fldGb->fieldID == 25)
+          {
+            v39 = Allocate(dds3Effect_DistortionBlurParam_t);
+            dds3Effect_DistortionBlurParam_t___ctor(v39);
+            v39[2] = 0x3200000023LL;
+            v39[3] = 0x508080803D4CCCCDLL;
+            *(v39 + 8) = 1;
+            *(v39 + 36) = 0x3EAE147B3CCCCCCDLL;
+            v41 = *(v39[6] + 16);
+            *(v41 + 32) = 0;
+            v43 = *(v39[6] + 16);
+            *(v43 + 36) = 0;
+            v39[7] = 0x5000000096LL;
+            v45 = dds3EffectDistortionBlurCreate(v39);
+            fldBlurKabuki = v45;
+          }
+          fieldID = fldGb->fieldID;
+          if (fieldID == 42)
+            goto LABEL_147;
+          if (fieldID == 44)
+          {
+LABEL_147:
+            v48 = Allocate(dds3Effect_DistortionBlurParam_t);
+            dds3Effect_DistortionBlurParam_t___ctor(v48);
+            v48[2] = 0x1400000014LL;
+            v48[3] = 0x403000803E4CCCCDLL;
+            *(v48 + 8) = 1;
+            *(v48 + 36) = 0x3E4CCCCD3F800000LL;
+            v50 = *(v48[6] + 16);
+            *(v50 + 32) = 0;
+            v52 = *(v48[6] + 16);
+            *(v52 + 36) = 0;
+            v48[7] = 0x6400000096LL;
+            v54 = dds3EffectDistortionBlurCreate(v48);
+            fldBlurKabuki = v54;
+          }
+          dds3FadeOut2(0);
+          fldCamResetNpc();
+          fldSnowSeedInit();
+          fldSnowSeedReset();
+          fldStatusSet();
+          v62 = fldGb->fieldID;
+          areaID = fldGb->areaID;
+          fldPPSV2_Set(v62, areaID + 1);
+          goto LABEL_250;
+        case 2:
+          LoadEventModel();
+          if (!fldEventDataLoadChk())
+            goto LABEL_395;
+          if (!fldFootSeLoadChk())
+            goto LABEL_395;
+          if (!fldCmnBgmSeLoadChk())
+            goto LABEL_395;
+          if (!IsStartModelLoaded())
+            goto LABEL_395;
+          LODWORD(v68[2].klass->_1.namespaze) &= ~0x40u;
+          fldProcStartScript();
+          fldCamMain();
+          fldBgmLoad();
+          gFldFootSeLoadPhase = 0;
+          gFldCmnBgmSeLoadPhase = 0;
+          gFldEventDataLoadPhase = 0;
+          goto LABEL_250;
+        case 3:
+          gFldBgmLoadPhase = -1;
+          gFldStart = 0;
+          if (fldGetRestoreMode() == 1)
+            goto LABEL_243;
+          if (fldGetRestoreMode() == 4)
+            goto LABEL_243;
+          if (fldGetRestoreMode() == 6)
+            goto LABEL_243;
+          if (fldBgmTokusyu)
+          {
+LABEL_243:
+            fldBgmContinue();
+            {
+LABEL_247:
+            }
+          }
+          else
+          {
+            if (bgmMode)
+            {
+              fldBgmPlay2();
+                goto LABEL_247;
+            }
+            else
+            {
+              fldBgmPlay();
+                goto LABEL_247;
+            }
+          }
+          fldBgmTokusyu = 0;
+          goto LABEL_250;
+        case 4:
+          v79 = 5;
+          goto LABEL_394;
+        case 5:
+          SetNormalFrameRate(kernelObject);
+          fldSnowInit();
+          v84 = fldGb;
+          if (!v84->FukiTalk)
+          {
+            if (v84->fieldID != 11)
+              goto LABEL_639;
+            if (v84->areaID != 1)
+            {
+LABEL_639:
+              if (!dds3FadeCheck())
+              {
+                if (!gfldPlayerAnaCnt)
+                {
+                  dds3FadeIn2(8u);
+                }
+              }
+            }
+          }
+          ++fldSequenceControl->phase;
+          if (!dds3SearchProcessPriority(1002))
+          {
+            fldRegistUnitPad();
+          }
+          UnitControl = fldGetUnitControl();
+          dds3ObjectBaseOffFlag(&UnitControl->handle, 0x40u);
+          if (!KagPuzNow)
+          {
+            fldProcessFlag |= 0x10u;
+          }
+          fldProcessFlag |= 0x20u;
+          fldTitleMiniStart2();
+          goto LABEL_395;
+        case 6:
+          if (fldDbg->SpProcOn)
+          {
+            fldRunView();
+          }
+          gfldSkyHokan = 1;
+          if ((fldProcessFlag & 0x40) == 0)
+            goto LABEL_343;
+          if (fldEveHit_ChkEveHitAfter())
+            return 0;
+LABEL_343:
+          if ((fldProcessFlag & 0x40) != 0)
+          {
+            if (fldGb->FukiTalk)
+            {
+              fldEveHit_ChkEveHit(player);
+              goto LABEL_395;
+            }
+          }
+          if (!evtBitCheck(2208) && !evtBitCheck(2225))
+            goto LABEL_532;
+          if ((fldProcessFlag & 0x40) == 0)
+            goto LABEL_532;
+          if (!DDS3_PADCHECK_TRIG(13))
+            goto LABEL_532;
+          if (evtBitCheck(2800))
+          {
+            evtBitOff(2800);
+              goto LABEL_535;
+            goto LABEL_533;
+          }
+          evtBitOn(2800);
+LABEL_532:
+          {
+LABEL_533:
+          }
+LABEL_535:
+          if (fldDbg->MenuOn)
+          {
+            if ((v139->_2.bitflags2 & 2) == 0)
+              goto LABEL_559;
+LABEL_537:
+LABEL_559:
+            if (fldDbg->MenuOn)
+              goto LABEL_564;
+LABEL_560:
+            ProcAmCheck();
+LABEL_564:
+            if ((fldProcessFlag & 0x40) != 0)
+            {
+              fldPanelSet(1);
+              ProcRandomEncountCheck();
+            }
+            if ((fldSequenceControl->flag & 2) != 0)
+            {
+              encStart(1);
+LABEL_250:
+              v79 = fldSequenceControl->phase + 1;
+LABEL_394:
+              fldSequenceControl->phase = v79;
+              goto LABEL_395;
+            }
+            fldPlayerCalc();
+            if ((fldProcessFlag & 0x40) == 0)
+            {
+LABEL_395:
+              v109 = fldGb;
+              switch (v109->AllPanelMode)
+              {
+                case 2:
+                case 6:
+                  AllPanelCnt = v109->AllPanelCnt;
+                  if (AllPanelCnt >= 1)
+                  {
+                    v111 = AllPanelCnt - 1;
+                    goto LABEL_415;
+                  }
+                  break;
+                case 3:
+                case 7:
+                  v112 = v109->AllPanelCnt;
+                  if (v112 <= 14)
+                  {
+                    v111 = v112 + 1;
+LABEL_415:
+                    v109->AllPanelCnt = v111;
+                  }
+                  break;
+                default:
+                  break;
+              }
+              if (fldProcCampChk() != 1)
+              {
+                fldLightMaTask();
+                fldSkyCalcTable();
+                fldSkyCalcFilter();
+                if (fldGb->fieldID == 1)
+                {
+                  fldHitWM_Mask();
+                }
+              }
+              if (fldSequenceControl->phase >= 6)
+              {
+                fldSe_Task();
+                fldBgmBitChk();
+                if (!fldDbg->MenuOn)
+                {
+                  fldAutoMapProc();
+                  fldAutoMapChkMode();
+                }
+                if (!fldAutoMapChkMode())
+                {
+                  if (!fldProcCampChk())
+                  {
+                    {
+                    }
+                    if (!scrSearchScriptName("kireta_label"))
+                    {
+                      {
+                      }
+                      if (!scrSearchScriptName("hirakenai_label"))
+                      {
+                        if (!fldGb->NoroiDamegeCnt)
+                        {
+                          fldNpcCalc();
+                          fldItemBoxCalcTask();
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              if (fldProcCampChk() != 1)
+              {
+                fldCamMain();
+              }
+              return 0;
+            }
+            if (fldGb->fieldID <= 9)
+            {
+              if (fldWmWarpMode == 3)
+                goto LABEL_617;
+            }
+            v152 = player;
+            fldEveHit_ChkEveHit(v152);
+LABEL_617:
+            if (!fldGb->NoInpPlCnt)
+            {
+              if (CheckTypeClose())
+              {
+                achievementTbl = get_achievementTbl();
+                v155 = sub_B7950(0x17u, DefineAchievementID_string_, achievementTbl);
+                Unlock_16599376(v155);
+              }
+            }
+            goto LABEL_395;
+          }
+          ProcCampCheck();
+          if ((fldSequenceControl->flag & 2) == 0)
+          {
+            if ((fldProcessFlag & 0x20) == 0)
+              goto LABEL_395;
+              goto LABEL_559;
+            goto LABEL_537;
+          }
+          break;
+        case 7:
+          basic = dds3GetActiveScene();
+          dds3VisibleSceneBasic(&basic, 0);
+          fldPanelSet(0);
+          p2sdPause(fldSeLastBgm);
+          fldSeLastBgm = 0;
+          p2sdPlaySE(15);
+          gEncountBlurCnt = 0;
+          v79 = 8;
+          goto LABEL_394;
+        case 8:
+          ++gEncountBlurCnt;
+          v79 = 9;
+          goto LABEL_394;
+        case 9:
+          fldEventDataUnload();
+          fldFootSeUnload();
+          fldCmnBgmSeUnload();
+          fldFreeNextFile();
+          fldLoadNextFile_SetId_BtlRet(fldGb->fieldID, fldGb->areaID + 1);
+          fldSequenceControl->phase = 0;
+          Log("!!!!!!!!!!!!!!!!!Fight!!!!!!!!!!!!!!!!!!!!", 0);
+          nbNoDestroy_MoveCache_Field_F_ModeOn();
+          ++gEncountRireki;
+          gFldRndEncBtl = 1;
+          v137 = sub_8D3950(nbNewBattleSeqData_t, &fldBattleData);
+          dds3AdminiCallSequence(20, v137, 0, 1);
+          id->func_ans = -1;
+          return 0;
+        default:
+          goto LABEL_395;
+      }
+    }
+  }
+  return 0;
 }
 
 // 0x15f6820
@@ -654,6 +1757,7 @@ void fldDLCEncountCheck(s32 *encpid) {
     v14 = poseset[19];
     v16 = poseset[20];
     v15 = poseset[21];
+      goto LABEL_21;
   }
   else
   {
@@ -662,6 +1766,7 @@ void fldDLCEncountCheck(s32 *encpid) {
     v16 = poseset[8];
     v15 = poseset[9];
     {
+LABEL_21:
     }
   }
   v25.x = v13;
@@ -694,20 +1799,27 @@ void fldDLCEncountCheck(s32 *encpid) {
       case 0:
       case 1:
         if (v24.y < -200.0)
+          goto LABEL_51;
         if (v24.y > 100.0)
+          goto LABEL_33;
+        goto LABEL_48;
       case 2:
       case 0xA:
       case 0xB:
       case 0xC:
       case 0xD:
+        goto LABEL_51;
       case 3:
       case 4:
       case 7:
       case 0xE:
         if (v24.y < -200.0)
+          goto LABEL_51;
         if (v24.y > 100.0)
+LABEL_33:
           v22 = 256;
         else
+LABEL_50:
           v22 = 257;
         break;
       case 5:
@@ -715,11 +1827,15 @@ void fldDLCEncountCheck(s32 *encpid) {
       case 9:
       case 0x10:
       case 0x15:
+        goto LABEL_33;
       case 8:
         if (v24.x < -1000.0)
+          goto LABEL_50;
+LABEL_51:
         v22 = 259;
         break;
       default:
+LABEL_48:
         v22 = 258;
         break;
     }
@@ -729,12 +1845,115 @@ void fldDLCEncountCheck(s32 *encpid) {
 
 // 0x15f8910
 bool fldDispOn(void) {
-    IsDLCField(0);
-    IsLoad(0, 0);
-    Load(0, 0);
-    LoadAssetExt(0, 0, 0);
-    FldDispOn(0);
-    return 0;
+  s32 loadField;
+  System_Text_StringBuilder_o *m_head;
+  bool IsDLCField;
+  s64 *v8;
+  System_Text_StringBuilder_o *m_akey2;
+  u64 *v12;
+  System_Text_StringBuilder_o *v14;
+  System_String_o *v15;
+  AssetBundleCtrl_o *asset_bc;
+  System_String_o *v20;
+  AssetBundleCtrl_o *v23;
+  System_String_o *v25;
+  System_String_o *v26;
+  AssetBundleCtrl_o *v29;
+  System_String_o *v31;
+  System_String_o *v34;
+  System_String_o *v35;
+  System_String_o *v37;
+  AssetBundleCtrl_o *v39;
+  System_String_o *v41;
+  AssetBundleCtrl_o *v47;
+  System_String_o *v49;
+  s32 v52;
+
+  loadField = fldSceneParam.loadField;
+  Clear(m_akey1, 0);
+  Append_5380272(m_akey1, "fldplayer");
+  Clear(m_head, 0);
+  IsDLCField = IsDLCField(loadField);
+  v8 = &"m";
+  if (!IsDLCField)
+    v8 = &"";
+  Append_5380272(m_head, *v8);
+  Clear(m_akey2, 0);
+  v52 = loadField;
+  v12 = sub_8D3950(s32, &v52);
+  AppendFormat(m_akey2, "f{0:D3}", v12);
+  v14 = m_akey2;
+  v15 = (m_head->klass->vtable._3_ToString.methodPtr)(
+          m_head,
+          m_head->klass->vtable._3_ToString.method);
+  Append_5380272(v14, v15);
+  switch (fldInitCnt)
+  {
+    case 0:
+      asset_bc = get_asset_bc();
+      v20 = (m_akey1->klass->vtable._3_ToString.methodPtr)(
+              m_akey1,
+              m_akey1->klass->vtable._3_ToString.method);
+      if (IsLoad(asset_bc, v20))
+        goto LABEL_70;
+      v23 = get_asset_bc();
+      v25 = (m_akey1->klass->vtable._3_ToString.methodPtr)(
+              m_akey1,
+              m_akey1->klass->vtable._3_ToString.method);
+      v26 = (m_akey1->klass->vtable._3_ToString.methodPtr)(
+              m_akey1,
+              m_akey1->klass->vtable._3_ToString.method);
+      Load(v23, v25, v26, 0);
+        goto LABEL_71;
+      goto LABEL_32;
+    case 1:
+      v29 = get_asset_bc();
+      v31 = (m_akey1->klass->vtable._3_ToString.methodPtr)(
+              m_akey1,
+              m_akey1->klass->vtable._3_ToString.method);
+      if (!IsLoad(v29, v31))
+        return 0;
+      v34 = (m_akey2->klass->vtable._3_ToString.methodPtr)(
+              m_akey2,
+              m_akey2->klass->vtable._3_ToString.method);
+      v35 = (m_akey2->klass->vtable._3_ToString.methodPtr)(
+              m_akey2,
+              m_akey2->klass->vtable._3_ToString.method);
+      v37 = (m_head->klass->vtable._3_ToString.methodPtr)(
+              m_head,
+              m_head->klass->vtable._3_ToString.method);
+      LoadAssetExt(v34, v35, v37);
+      goto LABEL_48;
+    case 2:
+      v39 = get_asset_bc();
+      v41 = (m_akey2->klass->vtable._3_ToString.methodPtr)(
+              m_akey2,
+              m_akey2->klass->vtable._3_ToString.method);
+      if (!IsLoad(v39, v41))
+        return 0;
+      FldDispOn(kernelObject);
+      ++fldInitCnt;
+      ++fldInitCnt;
+      return 1;
+    case 3:
+      v47 = get_asset_bc();
+      v49 = (m_akey2->klass->vtable._3_ToString.methodPtr)(
+              m_akey2,
+              m_akey2->klass->vtable._3_ToString.method);
+      if (!IsLoad(v47, v49))
+        return 0;
+LABEL_70:
+        goto LABEL_71;
+LABEL_32:
+LABEL_71:
+      ++fldInitCnt;
+      return 0;
+    case 4:
+      FldDispOn(kernelObject);
+      return 1;
+    default:
+      return 0;
+  }
 }
 
 // 0x15f5e00
@@ -769,12 +1988,12 @@ s8 fldProcCheckFlag(u32 flag) {
 
 // 0x15f4980
 s32 fldProcHirakenaiChk(void) {
-  return scrSearchScriptName(StringLiteral_16725) != 0;
+  return scrSearchScriptName("hirakenai_label") != 0;
 }
 
 // 0x15f4900
 s32 fldProcKiretaChk(void) {
-  return scrSearchScriptName(StringLiteral_16723) != 0;
+  return scrSearchScriptName("kireta_label") != 0;
 }
 
 // 0x15f4550
@@ -789,11 +2008,22 @@ void fldProcNext(s32 fld, s32 eveno) {
 
 // 0x1601820
 s32 fldProcNextJump(void) {
-    dds3AdminiGetNextSequence();
-    dds3AdminiGetPrevHistoryFlag();
-    fldCheckNextFile(0);
-    fldDoor_EveBtlExit(0, 0);
-    return 0;
+  s32 fldNext_fld;
+
+  if (!fldNext_fld)
+    return 1;
+LABEL_6:
+  if (dds3AdminiGetNextSequence() > 0
+    || dds3AdminiGetNextSequence() < 0
+    && (dds3AdminiGetPrevHistoryFlag() & 1) != 0)
+  {
+    return 1;
+  }
+  else if (fldCheckNextFile(fldNext_fld))
+  {
+    goto LABEL_16;
+  }
+  return 0;
 }
 
 // 0x15f4450
@@ -813,34 +2043,81 @@ void fldProcSetTerminal(s32 type, s32 idx) {
 
 // 0x1601080
 void fldProcShutDown(void) {
-    fldSnowFree();
-    dds3KillProcessName(0, 0);
-    SetEnemyUI(0, 0, 0, 0, 0, 0, 0, 0, 0);
-    SetRadarUI(0, 0, 0, 0, 0);
-    fldFreeInputPanel();
-    evtDisableMoonDraw();
-    fldFreeAddressProcess();
-    dds3EffectDistortionBlurDelete(0);
+  fldProcess_c *v5;
+  char v7;
+  char v8;
+
+  else
+  {
+    if (!fldProcShutDownFlg)
+      return;
+  }
+  fldProcShutDownFlg = 0;
+  fldSnowFree();
+  else
+  {
+    fldProcessFlag &= ~0x10u;
+  }
+  if ((v5->_2.bitflags2 & 2) == 0)
+  {
+LABEL_19:
+    fldProcessFlag &= ~0x20u;
+    goto LABEL_20;
+  }
+LABEL_18:
+    goto LABEL_19;
+  v7 = byte_3F5A16D;
+  fldProcessFlag &= ~0x20u;
+  if ((v7 & 1) != 0)
+  {
+LABEL_20:
+    if ((v5->_2.bitflags2 & 2) != 0)
+      goto LABEL_21;
+    goto LABEL_30;
+  }
+  {
+LABEL_21:
+  }
+LABEL_30:
+  fldProcessFlag &= ~0x80u;
+  else
+  {
+    v8 = 1;
+  }
+  fldSequenceControl->flag |= 1u;
+  fldSequenceControl->flag |= 2u;
+  dds3KillProcessName("fldProcSequence", 1);
+  dds3KillProcessName("fldProcDraw", 1);
+  SetEnemyUI(kernelObject, 0, 0, 0, 0, 0, 0, 0.0, 0.0);
+  SetRadarUI(kernelObject, 0, 0, 0, 0);
+  fldFreeInputPanel();
+  evtDisableMoonDraw();
+  fldFreeAddressProcess();
+  if (fldBlurKabuki)
+  {
+    dds3EffectDistortionBlurDelete(&fldBlurKabuki);
+    fldBlurKabuki = 0;
+  }
+  else
+  {
     scrAllReleaseScript();
+  }
 }
 
 // 0x16014d0
 s8 fldProcShutDown2(void) {
+LABEL_10:
   sdfDelayedResrcCheck();
   return 1;
 }
 
 // 0x15f28a0
 s32 fldProcStartScript(void) {
-  fldMain_c *v2;
-  struct fldMain_StaticFields *static_fields;
   s32 mode;
   struct System_Char_array *FoceScript;
-  struct fldWap_StaticFields *v7;
   struct System_Char_array *gFldWap_after_scr;
   System_String_o *String_5280336;
   System_String_o *v15;
-  struct fldWap_StaticFields *v17;
   System_String_o *startPro;
   dds3Basic_t_o **p_ControlScene;
   dds3Basic_t_o *v27;
@@ -850,30 +2127,31 @@ s32 fldProcStartScript(void) {
   ControlScene = 0;
   scene = 0;
   v27 = 0;
-  static_fields = v2->static_fields;
-  mode = static_fields->fldSceneParam.mode;
-  FoceScript = static_fields->fldSceneParam.FoceScript;
+  mode = fldSceneParam.mode;
+  FoceScript = fldSceneParam.FoceScript;
   else
   {
-    v7 = fldWap->static_fields;
-    if ((v7->gFldWap_after_flag & 2) == 0)
+    if ((gFldWap_after_flag & 2) == 0)
+      goto LABEL_35;
   }
   if (!LODWORD(gFldWap_after_scr->max_length))
+    goto LABEL_17;
+LABEL_12:
   if (gFldWap_after_scr->m_Items[0])
   {
     scene = dds3GetControlScene();
     fldPlayerEventStop(0);
     String_5280336 = CreateString_5280336(0, gFldWap_after_scr);
-    v15 = Replace_5267216(String_5280336, StringLiteral_859, StringLiteral_416);
+    v15 = Replace_5267216(String_5280336, " ", "");
     dds3SceneBasicStartScript(&scene, v15);
-    v17 = fldWap->static_fields;
-    if ((v17->gFldWap_after_flag & 1) == 0)
+    if ((gFldWap_after_flag & 1) == 0)
     {
-      Clear(v17->gFldWap_after_scr, 0, 15, 0);
+      Clear(gFldWap_after_scr, 0, 15, 0);
       gFldWap_after_flag &= 0xFDu;
     }
     return 1;
   }
+LABEL_35:
   if (!mode)
   {
     if (FoceScript->m_Items[0])
@@ -882,14 +2160,17 @@ s32 fldProcStartScript(void) {
       fldPlayerEventStop(0);
       startPro = CreateString_5280336(0, FoceScript);
       p_ControlScene = &ControlScene;
+      goto LABEL_65;
     }
   }
   if (!fldGb->startPro)
     return 0;
+LABEL_39:
   v27 = dds3GetControlScene();
   fldPlayerEventStop(0);
   startPro = fldGb->startPro;
   p_ControlScene = &v27;
+LABEL_65:
   dds3SceneBasicStartScript(p_ControlScene, startPro);
   return 1;
 }
@@ -906,6 +2187,7 @@ void fldProcTrigSequence(fldSceneParam_t *srcParam, s32 mode) {
   {
     fldSceneParam.mode = mode;
     if (mode)
+      goto LABEL_17;
   }
   fldSceneParam.noUnit = srcParam->noUnit;
   fldSceneParam.pointResrcID = srcParam->pointResrcID;
@@ -923,18 +2205,19 @@ void fldProcTrigSequence(fldSceneParam_t *srcParam, s32 mode) {
   memcpy(dest, &fldSceneParam, sizeof(dest));
   memcpy(&v13, dest, sizeof(v13));
   MakeWarpIndex_21490048(&v13);
+LABEL_17:
   v8 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v8,
     0,
     Method_fldProcess_ProcSequence__);
-  dds3StartProcess(StringLiteral_16586, 0x3F7u, 0, 0, v8, 0, 0, 0, 0, 0);
+  dds3StartProcess("fldProcSequence", 0x3F7u, 0, 0, v8, 0, 0, 0, 0, 0);
   v10 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v10,
     0,
     Method_fldProcess_ProcDraw__);
-  dds3StartProcess(StringLiteral_16727, 0x2B0Au, 0, 0, v10, 0, 0, 0, 0, 0);
+  dds3StartProcess("fldProcDraw", 0x2B0Au, 0, 0, v10, 0, 0, 0, 0, 0);
   fldProcShutDownFlg = 1;
   InitOoyTest();
 }
@@ -944,7 +2227,8 @@ bool fldProc_CallSisetuReturn(void) {
   u64 v2;
 
   if (!fldNext_fld)
-  if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
+    goto LABEL_11;
+LABEL_6:
   return fldProcNextJump(v2) != 0;
 }
 
@@ -952,6 +2236,7 @@ bool fldProc_CallSisetuReturn(void) {
 void fldProc_SisetuReturnPoint(s32 fld, s32 area, u16 **pName) {
   s32 fldSeLastBgm;
 
+LABEL_7:
   p2sdPause(fldSeLastBgm);
   fldSeLastBgm = 0;
 }

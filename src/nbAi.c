@@ -132,6 +132,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         count = PartyFromFormindex->count;
         v7 = count->m_Items[4];
+        goto LABEL_155;
       }
       break;
     case 1:
@@ -148,6 +149,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v10 = PartyFromFormindex->count;
         v7 = v10->m_Items[5];
+        goto LABEL_155;
       }
       break;
     case 3:
@@ -164,6 +166,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v14 = PartyFromFormindex->count;
         v7 = v14->m_Items[6];
+        goto LABEL_155;
       }
       break;
     case 5:
@@ -180,6 +183,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v18 = PartyFromFormindex->count;
         v7 = v18->m_Items[7];
+        goto LABEL_155;
       }
       break;
     case 7:
@@ -196,6 +200,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v22 = PartyFromFormindex->count;
         v7 = v22->m_Items[8];
+        goto LABEL_155;
       }
       break;
     case 9:
@@ -212,6 +217,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v26 = PartyFromFormindex->count;
         v7 = v26->m_Items[9];
+        goto LABEL_155;
       }
       break;
     case 12:
@@ -220,6 +226,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v28 = PartyFromFormindex->count;
         v7 = v28->m_Items[10];
+        goto LABEL_155;
       }
       break;
     case 13:
@@ -228,6 +235,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v30 = PartyFromFormindex->count;
         v7 = v30->m_Items[11];
+        goto LABEL_155;
       }
       break;
     case 14:
@@ -236,6 +244,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v32 = PartyFromFormindex->count;
         v7 = v32->m_Items[12];
+        goto LABEL_155;
       }
       break;
     case 15:
@@ -244,6 +253,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v34 = PartyFromFormindex->count;
         v7 = v34->m_Items[13];
+        goto LABEL_155;
       }
       break;
     case 16:
@@ -252,6 +262,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v36 = PartyFromFormindex->count;
         v7 = v36->m_Items[14];
+        goto LABEL_155;
       }
       break;
     case 17:
@@ -260,6 +271,7 @@ s32 ChkAiHojo(s32 formindex, s32 n) {
       {
         v38 = PartyFromFormindex->count;
         v7 = v38->m_Items[15];
+LABEL_155:
         LODWORD(PartyFromFormindex) = v7 > 0;
       }
       break;
@@ -302,6 +314,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         count = PartyFromFormindex->count;
         v7 = count->m_Items[4] <= 3;
+        goto LABEL_157;
       }
       break;
     case 1:
@@ -310,6 +323,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v8 = PartyFromFormindex->count;
         v10 = v8->m_Items[4];
+        goto LABEL_92;
       }
       break;
     case 2:
@@ -318,6 +332,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v11 = PartyFromFormindex->count;
         v7 = v11->m_Items[5] <= 3;
+        goto LABEL_157;
       }
       break;
     case 3:
@@ -326,6 +341,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v13 = PartyFromFormindex->count;
         v10 = v13->m_Items[5];
+        goto LABEL_92;
       }
       break;
     case 4:
@@ -334,6 +350,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v15 = PartyFromFormindex->count;
         v7 = v15->m_Items[6] <= 3;
+        goto LABEL_157;
       }
       break;
     case 5:
@@ -342,6 +359,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v17 = PartyFromFormindex->count;
         v10 = v17->m_Items[6];
+        goto LABEL_92;
       }
       break;
     case 6:
@@ -350,6 +368,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v19 = PartyFromFormindex->count;
         v7 = v19->m_Items[7] <= 3;
+        goto LABEL_157;
       }
       break;
     case 7:
@@ -358,6 +377,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v21 = PartyFromFormindex->count;
         v10 = v21->m_Items[7];
+        goto LABEL_92;
       }
       break;
     case 8:
@@ -366,6 +386,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v23 = PartyFromFormindex->count;
         v7 = v23->m_Items[8] <= 3;
+        goto LABEL_157;
       }
       break;
     case 9:
@@ -374,6 +395,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v25 = PartyFromFormindex->count;
         v10 = v25->m_Items[8];
+LABEL_92:
         LODWORD(PartyFromFormindex) = v10 < -3;
       }
       break;
@@ -383,6 +405,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v27 = PartyFromFormindex->count;
         v29 = v27->m_Items[9];
+        goto LABEL_156;
       }
       break;
     case 12:
@@ -391,6 +414,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v30 = PartyFromFormindex->count;
         v29 = v30->m_Items[10];
+        goto LABEL_156;
       }
       break;
     case 13:
@@ -399,6 +423,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v32 = PartyFromFormindex->count;
         v29 = v32->m_Items[11];
+        goto LABEL_156;
       }
       break;
     case 14:
@@ -407,6 +432,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v34 = PartyFromFormindex->count;
         v29 = v34->m_Items[12];
+        goto LABEL_156;
       }
       break;
     case 15:
@@ -415,6 +441,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v36 = PartyFromFormindex->count;
         v29 = v36->m_Items[13];
+        goto LABEL_156;
       }
       break;
     case 16:
@@ -423,6 +450,7 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v38 = PartyFromFormindex->count;
         v29 = v38->m_Items[14];
+        goto LABEL_156;
       }
       break;
     case 17:
@@ -431,7 +459,9 @@ s32 ChkAiHojoMax(s32 formindex, s32 n) {
       {
         v40 = PartyFromFormindex->count;
         v29 = v40->m_Items[15];
+LABEL_156:
         v7 = v29 <= 0;
+LABEL_157:
         LODWORD(PartyFromFormindex) = !v7;
       }
       break;
@@ -485,11 +515,13 @@ s32 ChkCost(nbActionProcessData_t **a) {
   if (!work->nowcommand)
   {
     if (nbCheckSkillCost(v4->form->formindex, 0))
+      goto LABEL_10;
     return 0;
   }
   v7 = nowcommand == 5 || nowcommand == 1;
   if (!v7 || !nbCheckSkillCost(v4->form->formindex, work->nowindex))
     return 0;
+LABEL_10:
   id = (*a)->work->id;
   return Get(id, 0)->ailevel - 1 < 2;
 }
@@ -509,6 +541,10 @@ s32 Chk_BA(nbActionProcessData_t **a, s32 n) {
     return 0;
   v5 = 0;
   party = data->party;
+  if (!LODWORD(party->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     if ((party->m_Items[v5]->flag & 1) != 0)
@@ -533,6 +569,7 @@ s32 Chk_BA(nbActionProcessData_t **a, s32 n) {
     ++v5;
     party = (*a)->data->party;
     if (v5 >= LODWORD(party->max_length))
+      goto LABEL_6;
   }
 }
 
@@ -553,19 +590,25 @@ s32 Chk_CHKCNT(nbActionProcessData_t **a, s32 n) {
   formindex = (*a)->form->formindex;
   PartyFromFormindex = nbGetPartyFromFormindex(formindex);
   if (!PartyFromFormindex)
+    goto LABEL_11;
+LABEL_6:
   v9 = aijokentbl + 1;
   count = PartyFromFormindex->count;
   v12 = count->m_Items[v9];
   if (v12 <= 126)
+    goto LABEL_12;
+LABEL_13:
   v13 = (*a)->aijokentbl;
   v14 = (*a)->form->formindex;
   else
   {
     v15 = nbGetPartyFromFormindex(v14);
     if (!v15)
+      goto LABEL_21;
   }
   v16 = v15->count;
   v16->m_Items[v13 + 1] = v12;
+LABEL_21:
   if (v12 < n)
     return 0;
   (*a)->aiselect = 1 << (*a)->form->formindex;
@@ -574,8 +617,21 @@ s32 Chk_CHKCNT(nbActionProcessData_t **a, s32 n) {
 
 // 0xf9d710
 s32 Chk_DMGCNT(nbActionProcessData_t **a, s32 n) {
-    nbGetPartyFromFormindex(0);
+  s32 formindex;
+  nbParty_t_o *PartyFromFormindex;
+
+  formindex = (*a)->form->formindex;
+  else
+  {
+    PartyFromFormindex = nbGetPartyFromFormindex(formindex);
+    if (PartyFromFormindex)
+      goto LABEL_6;
+  }
+  if (n > 0)
     return 0;
+LABEL_12:
+  (*a)->aiselect = 1 << (*a)->form->formindex;
+  return 1;
 }
 
 // 0xf9e300
@@ -694,6 +750,10 @@ s32 Chk_ENCNT(nbActionProcessData_t **a, s32 n) {
     return 0;
   v5 = 0;
   party = data->party;
+  if (!LODWORD(party->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     if ((party->m_Items[v5]->flag & 1) != 0)
@@ -718,6 +778,7 @@ s32 Chk_ENCNT(nbActionProcessData_t **a, s32 n) {
     ++v5;
     party = (*a)->data->party;
     if (v5 >= LODWORD(party->max_length))
+      goto LABEL_6;
   }
 }
 
@@ -859,12 +920,17 @@ s32 Chk_ENHOJO(nbActionProcessData_t **a, s32 n) {
           {
             v16 = (*a)->data->party;
             formindex = v16->m_Items[i]->formindex;
-            else            v19 = (*a)->data->party;
+            else if (!ChkAiHojo(formindex, n))
+            {
+              goto LABEL_26;
+            }
+            v19 = (*a)->data->party;
             (*a)->aiselect |= 1 << v19->m_Items[i]->formindex;
           }
         }
       }
     }
+LABEL_26:
     v5 = *a;
   }
   return v5->aiselect != 0;
@@ -899,12 +965,17 @@ s32 Chk_ENHOJOMAX(nbActionProcessData_t **a, s32 n) {
           {
             v16 = (*a)->data->party;
             formindex = v16->m_Items[i]->formindex;
-            else            v19 = (*a)->data->party;
+            else if (!ChkAiHojoMax(formindex, n))
+            {
+              goto LABEL_26;
+            }
+            v19 = (*a)->data->party;
             (*a)->aiselect |= 1 << v19->m_Items[i]->formindex;
           }
         }
       }
     }
+LABEL_26:
     v5 = *a;
   }
   return v5->aiselect != 0;
@@ -1129,12 +1200,17 @@ s32 Chk_FRHOJO(nbActionProcessData_t **a, s32 n) {
           {
             v17 = (*a)->data->party;
             formindex = v17->m_Items[i + 4]->formindex;
-            else            v20 = (*a)->data->party;
+            else if (!ChkAiHojo(formindex, n))
+            {
+              goto LABEL_26;
+            }
+            v20 = (*a)->data->party;
             (*a)->aiselect |= 1 << v20->m_Items[i + 4]->formindex;
           }
         }
       }
     }
+LABEL_26:
     v5 = *a;
   }
   return v5->aiselect != 0;
@@ -1171,12 +1247,17 @@ s32 Chk_FRHOJOMAX(nbActionProcessData_t **a, s32 n) {
           {
             v17 = (*a)->data->party;
             formindex = v17->m_Items[i + 4]->formindex;
-            else            v20 = (*a)->data->party;
+            else if (!ChkAiHojoMax(formindex, n))
+            {
+              goto LABEL_26;
+            }
+            v20 = (*a)->data->party;
             (*a)->aiselect |= 1 << v20->m_Items[i + 4]->formindex;
           }
         }
       }
     }
+LABEL_26:
     v5 = *a;
   }
   return v5->aiselect != 0;
@@ -1326,6 +1407,7 @@ s32 Chk_POW(nbActionProcessData_t **a, s32 n) {
   struct System_Int16_array *count;
 
   formindex = (*a)->form->formindex;
+LABEL_7:
   else
   {
     PartyFromFormindex = nbGetPartyFromFormindex(formindex);
@@ -1365,6 +1447,10 @@ s32 Chk_SENSEI(nbActionProcessData_t **a, s32 n) {
     return 0;
   v5 = 0;
   party = data->party;
+  if (!LODWORD(party->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     if ((party->m_Items[v5]->flag & 1) != 0)
@@ -1389,6 +1475,7 @@ s32 Chk_SENSEI(nbActionProcessData_t **a, s32 n) {
     ++v5;
     party = (*a)->data->party;
     if (v5 >= LODWORD(party->max_length))
+      goto LABEL_6;
   }
 }
 
@@ -1448,6 +1535,7 @@ s32 GetKoudou(nbActionProcessData_t **a, s32 tbl) {
       if (aichktbl->m_Items[v7] <= 0)
         break;
       if (++v7 == 5)
+        goto LABEL_19;
     }
     *(v6 + v8 + 8) = v7;
     v9 += v15->ritu;
@@ -1455,10 +1543,11 @@ s32 GetKoudou(nbActionProcessData_t **a, s32 tbl) {
     ++v7;
   }
   while (v7 != 5);
+LABEL_19:
   result = -1;
   if (v9 && v8)
   {
-    RandIntA = dds3GetRandIntA(v9, StringLiteral_21089);
+    RandIntA = dds3GetRandIntA(v9, "GetKoudou");
     if (v8 < 1)
     {
       return -1;
@@ -1532,6 +1621,8 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
   {
     nowindex = 0;
     if (ailevel != 2)
+      goto LABEL_9;
+LABEL_24:
     v22 = 0;
     v21 = 0;
     while (1)
@@ -1544,6 +1635,7 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
         || (VirtualKoukaPoint = nbGetVirtualKoukaPoint(nowindex, (*a)->form->formindex, v22)) == 0)
       {
         if (v22 == 15)
+          goto LABEL_53;
       }
       else
       {
@@ -1551,6 +1643,7 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
         ++v21;
         *(v7 + v27 + 8) = VirtualKoukaPoint;
         if (v22 == 15)
+          goto LABEL_53;
       }
       v12 = *a;
       ++v22;
@@ -1558,11 +1651,13 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
   }
   if (work->nowcommand != 1)
   {
-    Write(StringLiteral_21090, 0);
+    Write("no skill\n", 0);
     return 0;
   }
   nowindex = work->nowindex;
   if (ailevel == 2)
+    goto LABEL_24;
+LABEL_9:
   if (ailevel == 1)
   {
     v29 = 0;
@@ -1577,8 +1672,13 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
         ++v21;
         *(v7 + v33 + 8) = v32;
         if (v29 == 15)
+          goto LABEL_53;
       }
-      else      v12 = *a;
+      else if (v29 == 15)
+      {
+        goto LABEL_53;
+      }
+      v12 = *a;
       ++v29;
     }
   }
@@ -1604,6 +1704,7 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
   v21 = 0;
   if ((ailevel - 1) > 1)
     return 0;
+LABEL_53:
   if (v21)
   {
     if (!gr)
@@ -1624,12 +1725,14 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
             if (v42 < *(v7 + v41 + 8))
               break;
             if (v21 == ++v41)
+              goto LABEL_81;
           }
           v43 = v41;
           v42 = *(v7 + v41++ + 8);
         }
         while (v21 != v41);
       }
+LABEL_81:
       v46 = 0;
       for (j = 4; ; ++j)
       {
@@ -1664,7 +1767,7 @@ s32 Sel_AI(nbActionProcessData_t **a, s32 n, s32 gr) {
     }
     return 0;
   }
-  Write(StringLiteral_21091, 0);
+  Write("taisyo nashi!!!\n", 0);
   return -1;
 }
 
@@ -1815,6 +1918,7 @@ void Sel_LIFEMIN(nbActionProcessData_t **a, s32 n) {
       if ((form->m_Items[v4]->stat & 4) != 0)
         break;
       if (++v4 == 16)
+        goto LABEL_15;
     }
     hp = nbGetUnitWorkFromFormindex(v4)->hp;
     if (v6 > hp)
@@ -1825,6 +1929,7 @@ void Sel_LIFEMIN(nbActionProcessData_t **a, s32 n) {
     ++v4;
   }
   while (v4 != 16);
+LABEL_15:
   if ((v5 & 0x80000000) == 0)
   {
     v10 = (*a)->data->form;
@@ -1881,6 +1986,7 @@ void Sel_LVMIN(nbActionProcessData_t **a, s32 n) {
       if ((form->m_Items[v4]->stat & 4) != 0)
         break;
       if (++v4 == 16)
+        goto LABEL_15;
     }
     level = nbGetUnitWorkFromFormindex(v4)->level;
     if (v6 > level)
@@ -1891,6 +1997,7 @@ void Sel_LVMIN(nbActionProcessData_t **a, s32 n) {
     ++v4;
   }
   while (v4 != 16);
+LABEL_15:
   if ((v5 & 0x80000000) == 0)
   {
     v10 = (*a)->data->form;
@@ -1961,10 +2068,12 @@ s32 SetGroupTarget2(nbActionProcessData_t **a, s32 code, s32 n) {
         if ((*(*(&form->obj.klass + i) + 136LL) & 4) != 0)
           break;
         if (++i == 20)
+          goto LABEL_14;
       }
       v10 = (*a)->data->form;
       *(*(&v10->obj.klass + i) + 136LL) |= 8u;
     }
+LABEL_14:
     v6 = code;
   }
   v12 = 0;
@@ -2047,7 +2156,9 @@ void SetKoudou(nbActionProcessData_t **a, s32 tbl, s32 kou) {
             v19 = 229;
             break;
           default:
+            goto LABEL_37;
         }
+        goto LABEL_36;
       }
       if (v17 <= 0xD000)
       {
@@ -2059,21 +2170,26 @@ void SetKoudou(nbActionProcessData_t **a, s32 tbl, s32 kou) {
         else
         {
           if (v17 != 53248)
+            goto LABEL_37;
           v18 = (*a)->work;
           v19 = 252;
         }
+        goto LABEL_36;
       }
       if (v17 == 57344)
       {
         (*a)->work->nowcommand = 9;
         (*a)->data->eventno = v13->skill & 0xFFF;
+        goto LABEL_37;
       }
       if (v16 >= 0xF000)
       {
         v18 = (*a)->work;
         v19 = 222;
+LABEL_36:
         v18->nowindex = v19;
       }
+LABEL_37:
       (*a)->aisummonid = v13->skill & 0xFFF;
       return;
   }
@@ -2105,29 +2221,40 @@ s32 SetSingleTarget2(nbActionProcessData_t **a, s32 code, s32 n) {
   {
     case 1:
       Sel_LIFEMIN(a, v7);
+      goto LABEL_54;
     case 2:
       Sel_BAD(a, n);
+      goto LABEL_54;
     case 3:
       Sel_ID(a, n);
+      goto LABEL_54;
     case 4:
       Sel_LIGHT(a, v7);
+      goto LABEL_54;
     case 5:
       Sel_DARK(a, v7);
+      goto LABEL_54;
     case 6:
       Sel_PLAYER(a, v7);
+      goto LABEL_54;
     case 7:
       Sel_JOKEN(a, v7);
+      goto LABEL_54;
     case 8:
       v12 = 4;
       v11 = 10;
       break;
     case 9:
       Sel_BAARLV(a, v7);
+      goto LABEL_54;
     case 10:
       Sel_LVMIN(a, v7);
+LABEL_54:
       v11 = 10;
+      goto LABEL_55;
     default:
       v11 = 0;
+      goto LABEL_55;
   }
   do
   {
@@ -2137,11 +2264,13 @@ s32 SetSingleTarget2(nbActionProcessData_t **a, s32 code, s32 n) {
       if ((*(*(&form->obj.klass + v12) + 136LL) & 4) != 0)
         break;
       if (++v12 == 20)
+        goto LABEL_55;
     }
     v15 = (*a)->data->form;
     *(*(&v15->obj.klass + v12++) + 136LL) |= 8u;
   }
   while (v12 != 20);
+LABEL_55:
   v17 = 0;
   while (1)
   {
@@ -2173,15 +2302,17 @@ s32 SetSingleTarget2(nbActionProcessData_t **a, s32 code, s32 n) {
       if ((v25->m_Items[v23]->stat & 8) != 0)
         break;
       if (++v23 == 16)
+        goto LABEL_78;
     }
     v27 = v24;
     ++v24;
     *(v10 + v27 + 32) = v23++;
   }
   while (v23 != 16);
+LABEL_78:
   if (v24 >= 1)
   {
-    RandIntA = dds3GetRandIntA(v24, StringLiteral_21092);
+    RandIntA = dds3GetRandIntA(v24, "SetSingleTarget2");
     v31 = 0;
     v32 = *(v10 + RandIntA + 32) & 0xFFFFFFFFLL;
     do
@@ -2222,22 +2353,112 @@ s32 nbAiChkJoken(nbActionProcessData_t **a, u32 jo) {
 
 // 0xfa4570
 s32 nbRunAi(nbActionProcessData_t **a) {
-    AiChk(0, 0);
-    Get(0);
-    nbRunAiSub(0, 0);
-    return 0;
+  s64 v6;
+  s32 id;
+  struct datDevilAIChk_s_array *aichk;
+  s32 table;
+  u64 *v13;
+  s32 v17;
+
+  v6 = 0;
+  if (AiChk(a, 0))
+    goto LABEL_15;
+  v6 = 1;
+  if (AiChk(a, 1))
+    goto LABEL_15;
+  v6 = 2;
+  if (AiChk(a, 2))
+  {
+LABEL_15:
+    id = (*a)->work->id;
+    aichk = Get(id, 0)->aichk;
+    table = aichk->m_Items[v6]->table;
+  }
+  else
+  {
+    table = 0;
+  }
+  v17 = table;
+  v13 = sub_8D3950(s32, &v17);
+  Write_2930400("AItbl = {0:D}\n", v13);
+  nbRunAiSub(a, table);
+  return 0;
 }
 
 // 0xfa41d0
 s32 nbRunAiSub(nbActionProcessData_t **a, s32 tbl) {
-    GetKoudou(0, 0);
-    SetKoudou(0, 0, 0);
-    ChkCost(0);
-    ChkClose(0);
-    Get(0);
-    nbSetAiTarget(0, 0, 0);
-    nbGetSelectBit(0);
-    return 0;
+  struct System_SByte_array *aichktbl;
+  struct System_SByte_array *v7;
+  struct System_SByte_array *v9;
+  struct System_SByte_array *v11;
+  struct System_SByte_array *v13;
+  s32 Koudou;
+  u64 *v18;
+  s32 id;
+  struct datDevilAITbl_s_array_array *aitable;
+  datDevilAITbl_s_array *v27;
+  u32 target;
+  s32 v30;
+  s32 v31;
+  struct System_SByte_array *v32;
+  nbActionProcessData_t_o *v36;
+  nbMainProcessData_t_o *data;
+  s32 v38;
+
+  aichktbl = (*a)->aichktbl;
+  aichktbl->m_Items[0] = 0;
+  v7 = (*a)->aichktbl;
+  v7->m_Items[1] = 0;
+  v9 = (*a)->aichktbl;
+  v9->m_Items[2] = 0;
+  v11 = (*a)->aichktbl;
+  v11->m_Items[3] = 0;
+  v13 = (*a)->aichktbl;
+  v13->m_Items[4] = 0;
+  {
+LABEL_16:
+    goto LABEL_18;
+  }
+  while (1)
+  {
+LABEL_18:
+    Koudou = GetKoudou(a, tbl);
+    v38 = Koudou;
+    v18 = sub_8D3950(s32, &v38);
+    Write_2930400("Koukatbl = {0:D}\n", v18);
+    if (Koudou < 0)
+    {
+      (*a)->select = 0;
+      (*a)->work->nowcommand = 3;
+      (*a)->work->nowindex = 0;
+      return 0;
+    }
+    SetKoudou(a, tbl, Koudou);
+    if (ChkCost(a))
+      goto LABEL_40;
+      break;
+    if (ChkClose(a, *&tbl))
+      goto LABEL_29;
+LABEL_40:
+    v32 = (*a)->aichktbl;
+    v32->m_Items[Koudou] = 1;
+      goto LABEL_16;
+  }
+  if (!ChkClose(a))
+    goto LABEL_40;
+LABEL_29:
+  id = (*a)->work->id;
+  aitable = Get(id, 0)->aitable;
+  v27 = aitable->m_Items[tbl];
+  target = v27->m_Items[Koudou]->target;
+  v30 = HIWORD(target);
+  v31 = target;
+  if (nbSetAiTarget(a, v30, v31))
+    goto LABEL_40;
+  v36 = *a;
+  data = (*a)->data;
+  v36->select = nbGetSelectBit(data);
+  return 0;
 }
 
 // 0xfa3fe0
@@ -2288,6 +2509,7 @@ s32 nbSetAiTarget(nbActionProcessData_t **a, s32 code, s32 n) {
     result = SetSingleTarget2(a, v5, n);
     if (!result)
       return result;
+LABEL_27:
     (*a)->work->nowcommand = 3;
     (*a)->work->nowindex = 0;
     return result;
@@ -2296,5 +2518,6 @@ s32 nbSetAiTarget(nbActionProcessData_t **a, s32 code, s32 n) {
     return 0;
   result = SetGroupTarget2(a, v5, n);
   if (result)
+    goto LABEL_27;
   return result;
 }

@@ -54,10 +54,12 @@ s32 Flow16_2(nbNegoProcessData_t **n) {
   id = (*n)->ework->id;
   v5 = id > 0x1E || ((1 << id) & 0x61012538) == 0;
   if (!v5 || id == 150 || id == 153)
+    goto LABEL_7;
   AgeOfMoon = evtGetAgeOfMoon();
   v3 = *n;
   if (AgeOfMoon != 8)
   {
+LABEL_7:
     flowmsg = v3->flowmsg;
     ekucyo = v3->ekucyo;
     v9 = flowmsg->m_Items[ekucyo];

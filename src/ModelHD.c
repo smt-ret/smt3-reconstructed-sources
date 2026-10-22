@@ -135,11 +135,93 @@ void CallLateUpdate(ModelHD *this) {
 
 // 0x129fae0
 void CallOnDestroy(ModelHD *this) {
+  System_Collections_Generic_List_WeakReference_EtwSession___o *mat_list;
+  UnityEngine_Object_o *v5;
+  System_Collections_Generic_List_Enumerator_T__o v6;
+
+  memset(&v6, 0, sizeof(v6));
+  mat_list = this->mat_list;
+  if (mat_list)
+  {
+    __GetEnumerator(&v6, mat_list);
+    while ((sub_1A11200(&v6) & 1) != 0)
+    {
+      v5 = sub_1A11350(&v6);
+      Destroy_27360000(v5);
+    }
+    nullsub_111(&v6);
+    _Clear(this->mat_list);
+    this->mat_list = 0;
+  }
 }
 
 // 0x12a1710
 bool ChangeRenderQueue(ModelHD *this) {
-    return 0;
+  struct System_Collections_Generic_List_Material__o *mat_list;
+  s32 v4;
+  s32 renderqueue_semi;
+  f32 Item;
+  System_WeakReference_o *v7;
+  System_WeakReference_o *v8;
+  s32 v10;
+
+  v10 = 0;
+  mat_list = this->mat_list;
+  if (mat_list)
+  {
+    if (_get_Count(mat_list) >= 1)
+    {
+      v4 = 0;
+      do
+      {
+        renderqueue_semi = this->renderqueue_semi;
+        Item = _get_Item(
+                 this->modeop_list,
+                 v4);
+        v10 = -1082130432;
+        if (!sub_4FDAD0(&v10, Item))
+        {
+          v10 = 0;
+          if (!sub_4FDAD0(&v10, Item))
+          {
+            v10 = 1065353216;
+            if (!sub_4FDAD0(&v10, Item))
+            {
+              v10 = 1082130432;
+              if (sub_4FDAD0(&v10, Item))
+              {
+                renderqueue_semi = this->renderqueue_add;
+              }
+              else
+              {
+                v10 = 1084227584;
+                if (sub_4FDAD0(&v10, Item)
+                  || (v10 = 1088421888, sub_4FDAD0(&v10, Item))
+                  || (v10 = 1090519040, sub_4FDAD0(&v10, Item)))
+                {
+                  renderqueue_semi = this->renderqueue_sub;
+                }
+              }
+              v7 = _get_Item(
+                     this->mat_list,
+                     v4);
+              if ((get_renderQueue(v7) - 3000) <= 0x3E7)
+              {
+                v8 = _get_Item(
+                       this->mat_list,
+                       v4);
+                set_renderQueue(v8, renderqueue_semi);
+              }
+            }
+          }
+        }
+        ++v4;
+      }
+      while (v4 < _get_Count(this->mat_list));
+    }
+    LOBYTE(mat_list) = 1;
+  }
+  return mat_list;
 }
 
 // 0x129ff80
@@ -156,14 +238,14 @@ void *GetGameObjectByName(ModelHD *this, char *aName) {
   {
     if (!Animator___ContainsKey(result, aName))
     {
-      aName = Replace_5267216(aName, StringLiteral_212, StringLiteral_558);
+      aName = Replace_5267216(aName, " ", "_");
       if (!Animator___ContainsKey(this->allobject, aName))
       {
-        v9 = Replace_5267216(aName, StringLiteral_5202, StringLiteral_5203);
+        v9 = Replace_5267216(aName, "脊椎", "spine");
         if (Animator___ContainsKey(this->allobject, v9)
-          || (v9 = Replace_5267216(aName, StringLiteral_5202, StringLiteral_5204),
+          || (v9 = Replace_5267216(aName, "脊椎", "Spine"),
               Animator___ContainsKey(this->allobject, v9))
-          || (v9 = Replace_5267216(aName, StringLiteral_5205, StringLiteral_5206),
+          || (v9 = Replace_5267216(aName, "首", "neck"),
               Animator___ContainsKey(this->allobject, v9)))
         {
           allobject = this->allobject;
@@ -171,7 +253,7 @@ void *GetGameObjectByName(ModelHD *this, char *aName) {
           v8 = v9;
           return object___get_Item(allobject, v8, v7);
         }
-        aName = Replace_5267216(aName, StringLiteral_5205, StringLiteral_5207);
+        aName = Replace_5267216(aName, "首", "Neck");
         v10 = Animator___ContainsKey(this->allobject, aName);
         result = 0;
         if (!v10)
@@ -188,7 +270,50 @@ void *GetGameObjectByName(ModelHD *this, char *aName) {
 
 // 0x12a1eb0
 bool GetListMatelial(ModelHD *this, void *list, void **mat) {
-    return 0;
+  UnityEngine_Object_o *v7;
+  System_String_o *name;
+  System_String_o *v9;
+  System_String_o *v10;
+  UnityEngine_Object_o *v11;
+  System_String_o *v12;
+  _BOOL8 v13;
+  Il2CppObject *v15;
+  Il2CppObject *v16;
+  System_Collections_Generic_List_Enumerator_T__o v18;
+
+  memset(&v18, 0, sizeof(v18));
+  v7 = *mat;
+  if (op_Inequality(v7, 0, 0))
+  {
+    name = get_name(*mat);
+    v9 = (this->klass->vtable._18_GetMatelialKey.methodPtr)(this, this->klass->vtable._18_GetMatelialKey.method);
+    v10 = Concat_5224608(name, v9);
+    __GetEnumerator(&v18, list);
+    while ((sub_1A11200(&v18) & 1) != 0)
+    {
+      v11 = sub_1A11350(&v18);
+      v12 = get_name(v11);
+      if (op_Equality(v12, v10, 0))
+      {
+        *mat = v11;
+        nullsub_111(&v18);
+        goto LABEL_11;
+      }
+    }
+    nullsub_111(&v18);
+    v15 = *mat;
+    v16 = Instantiate_object_(v15);
+    *mat = v16;
+    set_name(v16, v10);
+    _Add(list, *mat);
+    return &xmmword_0 + 1;
+  }
+  else
+  {
+LABEL_11:
+    LOBYTE(v13) = 0;
+  }
+  return v13;
 }
 
 // 0x12a1980
@@ -233,7 +358,7 @@ sdfModelExtraChunkMarkPos_t *GetMPosData(ModelHD *this, s32 id) {
 
 // 0x12a2100
 char *GetMatelialKey(ModelHD *this) {
-  return StringLiteral_5209;
+  return "(mHD)";
 }
 
 // 0x12a2240
@@ -510,10 +635,12 @@ void SetMPosCount(ModelHD *this, s32 count) {
   {
     if (this->mpos)
       return;
+LABEL_5:
     this->mpos = NewSpecific(sdfModelExtraChunkMarkPos_t, count);
     return;
   }
   if (!this->mpos)
+    goto LABEL_5;
 }
 
 // 0x12a19a0
@@ -526,10 +653,168 @@ void SetMPosData(ModelHD *this, s32 index, sdfModelExtraChunkMarkPos_t *data) {
 
 // 0x12a1ac0
 void SetMatInit(ModelHD *this, void *rootobj) {
+  struct System_Collections_Generic_Dictionary_string__GameObject__o *allobject;
+  System_String_o *name;
+  struct System_Collections_Generic_Dictionary_string__GameObject__o *v7;
+  System_String_o *v8;
+  UnityEngine_Object_o *animator;
+  Il2CppObject *Component_object;
+  UnityEngine_Material_array *sharedMaterials;
+  il2cpp_array_size_t max_length;
+  u32 *v14;
+  u64 v15;
+  s64 **m_Items;
+  s64 *v19;
+  UnityEngine_Transform_o *transform;
+  s64 *Enumerator;
+  UnityEngine_Component_o *v23;
+  UnityEngine_Component_c *klass;
+  s64 typeHierarchyDepth;
+  char *v26;
+  s64 *v27;
+  UnityEngine_GameObject_o *gameObject;
+  s64 *Interface;
+  u64 v30[3];
+  s64 *v31;
+
+  v31 = 0;
+  allobject = this->allobject;
+  if (allobject)
+  {
+    name = get_name(rootobj);
+    if (!Animator___ContainsKey(allobject, name))
+    {
+      v7 = this->allobject;
+      v8 = get_name(rootobj);
+      PropertySheet___Add(v7, v8, rootobj);
+    }
+  }
+  animator = this->animator;
+  if (op_Equality(animator, 0, 0))
+    this->animator = GetComponent_object_(rootobj);
+  Component_object = GetComponent_object_(rootobj);
+  if (op_Inequality(Component_object, 0, 0))
+  {
+    sharedMaterials = get_sharedMaterials(Component_object);
+    max_length = sharedMaterials->max_length;
+    v14 = sharedMaterials;
+    if (max_length >= 1)
+    {
+      v15 = 0;
+      m_Items = sharedMaterials->m_Items;
+      do
+      {
+        v31 = *m_Items;
+        if (((this->klass->vtable._17_GetListMatelial.methodPtr)(
+                this,
+                this->mat_list,
+                &v31,
+                this->klass->vtable._17_GetListMatelial.method)
+            & 1) != 0)
+          (this->klass->vtable._19_AddMatList.methodPtr)(this, v31, this->klass->vtable._19_AddMatList.method);
+        v19 = v31;
+        max_length = v14[6];
+        ++v15;
+        *m_Items++ = v19;
+      }
+      while (v15 < max_length);
+    }
+    set_sharedMaterials(Component_object, v14);
+  }
+  transform = get_transform(rootobj, 0);
+  Enumerator = GetEnumerator(transform);
+  while ((sub_69BB0(0, System_Collections_IEnumerator, Enumerator) & 1) != 0)
+  {
+    v23 = sub_69A60(1u, System_Collections_IEnumerator, Enumerator);
+    if (v23)
+    {
+      klass = v23->klass;
+      if (v23->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != UnityEngine_Transform)
+      {
+        sub_8FC2C0(klass->_1.element_class, UnityEngine_Transform, v30);
+        if ((v30[0] & 1) != 0)
+          v26 = v30[2];
+        else
+          v26 = v30 + 1;
+        v27 = sub_8C4940(v26);
+      }
+    }
+    gameObject = get_gameObject(v23);
+    (this->klass->vtable._16_SetMatInit.methodPtr)(this, gameObject, this->klass->vtable._16_SetMatInit.method);
+  }
+  Interface = QueryInterface(Enumerator, System_IDisposable);
+  if (Interface)
+    sub_22F10(0, System_IDisposable, Interface);
 }
 
 // 0x12a0400
 void SetRGB(ModelHD *this, sdfVector4_t rgb) {
+  f32 z;
+  f32 y;
+  f32 x;
+  System_Collections_Generic_List_WeakReference_EtwSession___o *mat_list;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  bool v11;
+  UnityEngine_Material_o *v14;
+  UnityEngine_Material_o *v20;
+  System_Collections_Generic_List_Enumerator_T__o v23;
+  System_Collections_Generic_List_Enumerator_T__o v24;
+
+  z = rgb.z;
+  y = rgb.y;
+  x = rgb.x;
+  memset(&v24, 0, sizeof(v24));
+  mat_list = this->mat_list;
+  if (mat_list)
+  {
+    v9 = this->adjcol.x;
+    v8 = this->adjcol.y;
+    v10 = this->adjcol.z;
+    v11 = v9 == x && v8 == y;
+    if (!v11 || v10 != z)
+    {
+      __GetEnumerator(&v23, mat_list);
+      v24 = v23;
+      if (v9 == x)
+      {
+        while ((sub_1A11200(&v24) & 1) != 0)
+        {
+          v20 = sub_1A11350(&v24);
+          if (v8 != y)
+          {
+            SetFloat_27246832(v20, id_Adj_ColorG, y);
+          }
+          if (v10 != z)
+          {
+            SetFloat_27246832(v20, id_Adj_ColorB, z);
+          }
+        }
+      }
+      else
+      {
+        while ((sub_1A11200(&v24) & 1) != 0)
+        {
+          v14 = sub_1A11350(&v24);
+          SetFloat_27246832(v14, id_Adj_ColorR, x);
+          if (v8 != y)
+          {
+            SetFloat_27246832(v14, id_Adj_ColorG, y);
+          }
+          if (v10 != z)
+          {
+            SetFloat_27246832(v14, id_Adj_ColorB, z);
+          }
+        }
+      }
+      nullsub_111(&v24);
+      this->adjcol.x = x;
+      this->adjcol.y = y;
+      this->adjcol.z = z;
+    }
+  }
 }
 
 // 0x12a0750
@@ -547,6 +832,177 @@ void SetRGB_19531600(ModelHD *this, u32 rgb) {
 
 // 0x12a0bb0
 void SetupMaterialWithBlendOp(ModelHD *this, void *material, f32 blendOp) {
+  s32 renderqueue_semi;
+  UnityEngine_Material_o *v15;
+  s32 id_BlendOp;
+  s32 v17;
+  s32 id_ZWrite;
+  UnityEngine_Material_o *v21;
+  s32 v22;
+  s32 id_SrcBlend;
+  s32 v28;
+  UnityEngine_Material_o *v29;
+  s32 id_DstBlend;
+  UnityEngine_Material_o *v31;
+  s32 v32;
+  s32 v44;
+
+  v44 = 0;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "");
+    SetInt_27247136(material, id_BlendOp, 0);
+    SetInt_27247136(material, id_SrcBlend, 1);
+    SetInt_27247136(material, id_DstBlend, 0);
+    SetInt_27247136(material, id_ZWrite, 1);
+    DisableKeyword(material, "_ALPHATEST_ON");
+    DisableKeyword(material, "_ALPHABLEND_ON");
+    DisableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+    DisableKeyword(material, "_ALPHAMODULATE_ON");
+    renderqueue_semi = -1;
+    goto LABEL_27;
+  }
+  v44 = 1065353216;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "TransparentCutout");
+    SetInt_27247136(material, id_BlendOp, 0);
+    SetInt_27247136(material, id_SrcBlend, 1);
+    SetInt_27247136(material, id_DstBlend, 0);
+    SetInt_27247136(material, id_ZWrite, 1);
+    EnableKeyword(material, "_ALPHATEST_ON");
+    DisableKeyword(material, "_ALPHABLEND_ON");
+    DisableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+    DisableKeyword(material, "_ALPHAMODULATE_ON");
+    renderqueue_semi = 2450;
+    goto LABEL_27;
+  }
+  v44 = 0x40000000;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    v15 = material;
+    v17 = 0;
+LABEL_18:
+    SetInt_27247136(v15, id_BlendOp, v17);
+    SetInt_27247136(material, id_SrcBlend, 5);
+    SetInt_27247136(material, id_DstBlend, 10);
+    SetInt_27247136(material, id_ZWrite, 0);
+    DisableKeyword(material, "_ALPHATEST_ON");
+    EnableKeyword(material, "_ALPHABLEND_ON");
+    DisableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+LABEL_25:
+    DisableKeyword(material, "_ALPHAMODULATE_ON");
+LABEL_26:
+    renderqueue_semi = this->renderqueue_semi;
+LABEL_27:
+    set_renderQueue(material, renderqueue_semi);
+    return;
+  }
+  v44 = 1077936128;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 0);
+    SetInt_27247136(material, id_SrcBlend, 1);
+    SetInt_27247136(material, id_DstBlend, 10);
+    v21 = material;
+    v22 = 0;
+LABEL_24:
+    SetInt_27247136(v21, id_ZWrite, v22);
+    DisableKeyword(material, "_ALPHATEST_ON");
+    DisableKeyword(material, "_ALPHABLEND_ON");
+    EnableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+    goto LABEL_25;
+  }
+  v44 = 1082130432;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 0);
+    SetInt_27247136(material, id_SrcBlend, 5);
+    SetInt_27247136(material, id_DstBlend, 1);
+    SetInt_27247136(material, id_ZWrite, 0);
+    DisableKeyword(material, "_ALPHATEST_ON");
+    EnableKeyword(material, "_ALPHABLEND_ON");
+    DisableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+    DisableKeyword(material, "_ALPHAMODULATE_ON");
+    renderqueue_semi = this->renderqueue_add;
+    goto LABEL_27;
+  }
+  v44 = 1084227584;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 2);
+    v28 = 5;
+    v29 = material;
+LABEL_39:
+    SetInt_27247136(v29, id_SrcBlend, v28);
+    v31 = material;
+    v32 = 1;
+LABEL_40:
+    SetInt_27247136(v31, id_DstBlend, v32);
+    SetInt_27247136(material, id_ZWrite, 0);
+    DisableKeyword(material, "_ALPHATEST_ON");
+    EnableKeyword(material, "_ALPHABLEND_ON");
+    DisableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+    DisableKeyword(material, "_ALPHAMODULATE_ON");
+    renderqueue_semi = this->renderqueue_sub;
+    goto LABEL_27;
+  }
+  v44 = 1086324736;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 0);
+    SetInt_27247136(material, id_SrcBlend, 2);
+    SetInt_27247136(material, id_DstBlend, 10);
+    SetInt_27247136(material, id_ZWrite, 0);
+    DisableKeyword(material, "_ALPHATEST_ON");
+    DisableKeyword(material, "_ALPHABLEND_ON");
+    DisableKeyword(material, "_ALPHAPREMULTIPLY_ON");
+    EnableKeyword(material, "_ALPHAMODULATE_ON");
+    goto LABEL_26;
+  }
+  v44 = 1088421888;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 2);
+    v29 = material;
+    v28 = 2;
+    goto LABEL_39;
+  }
+  v44 = 1090519040;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 2);
+    SetInt_27247136(material, id_SrcBlend, 5);
+    v32 = 10;
+    v31 = material;
+    goto LABEL_40;
+  }
+  v44 = 1091567616;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    v15 = material;
+    v17 = 1;
+    goto LABEL_18;
+  }
+  v44 = 1092616192;
+  if (sub_4FDAD0(&v44, blendOp))
+  {
+    SetOverrideTag(material, "RenderType", "Transparent");
+    SetInt_27247136(material, id_BlendOp, 0);
+    SetInt_27247136(material, id_SrcBlend, 1);
+    SetInt_27247136(material, id_DstBlend, 10);
+    v21 = material;
+    v22 = 1;
+    goto LABEL_24;
+  }
 }
 
 // 0x129feb0
@@ -572,4 +1028,20 @@ void StepFrame(ModelHD *this) {
 
 // 0x12a2250
 void UpdateOption(ModelHD *this) {
+  struct System_Collections_Generic_List_ChildHD__o *option;
+  s64 v4;
+  System_Collections_Generic_List_Enumerator_T__o v5;
+
+  memset(&v5, 0, sizeof(v5));
+  option = this->option;
+  if (option)
+  {
+    __GetEnumerator(&v5, option);
+    while ((sub_1A11200(&v5) & 1) != 0)
+    {
+      v4 = sub_1A11350(&v5);
+      (*(*v4 + 632LL))(v4, *(*v4 + 640LL));
+    }
+    nullsub_111(&v5);
+  }
 }

@@ -16,6 +16,7 @@ s8 fmDestroyFontMemControl(fmgslCont *this) {
 
   if (!gFGC->root)
     return 0;
+LABEL_6:
   gFGC->root = 0;
   return 1;
 }
@@ -94,6 +95,8 @@ s8 fmInitFontMemControl(fmgslCont *this, u32 GSLocalAddr, s32 X_FontNums, s32 Y_
   gFGC->unit_num_max = gFGC->unit_nums;
   v16 = *&v12->_2.bitflags1;
   if ((v16 & 0x200) == 0)
+    goto LABEL_16;
+LABEL_12:
   for (i = v16 & 0x200; ; i = 0)
   {
     v19 = gFGC;
@@ -107,11 +110,15 @@ s8 fmInitFontMemControl(fmgslCont *this, u32 GSLocalAddr, s32 X_FontNums, s32 Y_
     v24->next = *(v18 + 40);
     v16 = *&v12->_2.bitflags1;
     if ((v16 & 0x200) != 0)
+      goto LABEL_12;
+LABEL_16:
     ;
   }
   v26 = gFGC->root;
   max_length = v26->max_length;
   if (v15 >= max_length)
+    goto LABEL_31;
+LABEL_28:
   v26->m_Items[v15]->next = v26->m_Items[0];
   unit_nums = gFGC->unit_nums;
   v31 = (v12->_2.bitflags2 >> 1) & 1;
@@ -138,6 +145,7 @@ s8 fmInitFontMemControl(fmgslCont *this, u32 GSLocalAddr, s32 X_FontNums, s32 Y_
   v45->prev = v42->m_Items[v44 - 1];
   if (Y_FontNums < 1)
   {
+LABEL_74:
     this->fmInitFontMemControl_first_flag = 1;
     return 1;
   }
@@ -151,7 +159,9 @@ s8 fmInitFontMemControl(fmgslCont *this, u32 GSLocalAddr, s32 X_FontNums, s32 Y_
     v73 = Y_FontNums;
     while (X_FontNums < 1)
     {
+LABEL_73:
       if (++v47 >= Y_FontNums)
+        goto LABEL_74;
     }
     v50 = v77 * v47;
     v51 = 0;
@@ -186,6 +196,7 @@ s8 fmInitFontMemControl(fmgslCont *this, u32 GSLocalAddr, s32 X_FontNums, s32 Y_
         this = v74;
         Y_FontNums = v73;
         v47 = v76;
+        goto LABEL_73;
       }
     }
     v72 = gFGC;
@@ -213,5 +224,40 @@ FontMem_t *fmRentFontMem(fmgslCont *this) {
 
 // 0x1398d90
 u32 fmRetFontMem(FontMem_t *pFontArea) {
-    return 0;
+  struct FontMem_t_array *root;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  struct FontMem_t_o *next;
+  struct FontMem_t_o *v12;
+  u64 v13[3];
+
+  root = gFGC->root;
+  if (!root)
+    goto LABEL_15;
+LABEL_6:
+  klass = root->obj.klass;
+  if (root->obj.klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != FontMem_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, FontMem_t, v13);
+    if ((v13[0] & 1) != 0)
+      v7 = v13[2];
+    else
+      v7 = v13 + 1;
+    v8 = sub_8C4940(v7);
+  }
+  v12 = root;
+  if (!LODWORD(root->max_length))
+  {
+LABEL_12:
+  }
+LABEL_13:
+  next = root->m_Items[0]->next;
+  pFontArea->prev = v12;
+  pFontArea->next = next;
+  v12->next = pFontArea;
+  next->prev = pFontArea;
+  return ++gFGC->unit_nums;
 }

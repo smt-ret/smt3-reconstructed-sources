@@ -161,9 +161,16 @@ void rstAddSkill(void) {
     {
       GetHeartsSkill = GBWK->GetHeartsSkill;
       if ((v2->_2.bitflags2 & 2) == 0)
+        goto LABEL_20;
     }
+    goto LABEL_13;
   }
   GetHeartsSkill = GBWK->EventParam;
+  if ((v2->_2.bitflags2 & 2) != 0)
+  {
+LABEL_13:
+  }
+LABEL_20:
   --GBWK->LevelUpCnt;
   pCurrentStock = GBWK->pCurrentStock;
   cmbAddSkill(GetHeartsSkill, pCurrentStock);
@@ -189,16 +196,23 @@ s8 rstChkSkillAct(void) {
     return 0;
   else if (DDS3_PADCHECK_TRIG(1))
   {
+LABEL_10:
     cmpStatResetFlashFlag(1);
     GBWK->MessageWait = 1;
     v5 = *&v4->_2.bitflags1;
     if ((v5 & 0x200) != 0)
+      goto LABEL_17;
+    goto LABEL_23;
   }
   if ((v5 & 0x200) != 0)
   {
+LABEL_17:
     v6 = v5 & 0x200;
+    goto LABEL_24;
   }
+LABEL_23:
   v6 = 0;
+LABEL_24:
   MessageWait = GBWK->MessageWait;
   if (MessageWait == 1)
   {
@@ -253,8 +267,69 @@ u16 rstGetCursorPosSkillID(datUnitWork_t **pStock, cmpCursorInfo_t **pCursorInfo
 
 // 0x156e3f0
 s8 rstGetHeartsSkill(s8 Mode) {
-    rstChkHeartsSkill(0);
+  struct datUnitWork_t_array *unitwork;
+  datUnitWork_t_o *v6;
+  u16 v7;
+  u16 v9;
+  s64 skillcnt;
+  struct System_Int32_array *skill;
+  s64 heartsequip;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  struct System_Byte_array *heartsskcnt;
+  s64 v19;
+  struct System_UInt16_array_array *hearts_sk;
+  s64 v21;
+  s64 v22;
+  System_UInt16_array *v24;
+  struct dds3GlobalWork_t_o *v26;
+  struct System_Byte_array *v27;
+  s64 v28;
+  u64 *v32;
+  u16 v35;
+  datUnitWork_t_o *pStock;
+
+  pStock = 0;
+  unitwork = DDS3_GBWK->unitwork;
+  v6 = unitwork->m_Items[0];
+  pStock = v6;
+  v7 = rstChkHeartsSkill(&pStock);
+  if (!v7)
     return 0;
+LABEL_11:
+  v9 = v7;
+  if (!Mode)
+  {
+    skillcnt = v6->skillcnt;
+    skill = v6->skill;
+    v6->skillcnt = skillcnt + 1;
+    skill->m_Items[skillcnt] = v7;
+      goto LABEL_18;
+    goto LABEL_13;
+  }
+  {
+LABEL_13:
+  }
+LABEL_18:
+  heartsequip = DDS3_GBWK->heartsequip;
+  heartsskcnt = DDS3_GBWK->heartsskcnt;
+  v19 = heartsskcnt + heartsequip;
+  hearts_sk = DDS3_GBWK->hearts_sk;
+  v21 = DDS3_GBWK->heartsequip;
+  v22 = *(v19 + 32) & 0xF;
+  v24 = hearts_sk->m_Items[v21];
+  v24->m_Items[v22] = v9;
+  v26 = DDS3_GBWK;
+  v27 = v26->heartsskcnt;
+  v28 = v26->heartsequip;
+  ++v27->m_Items[v28];
+  if (!Mode)
+  {
+    ++GBWK->HeartsSkFlag;
+  }
+  v35 = v9;
+  v32 = sub_8D3950(ushort, &v35);
+  Write_2930400("New hearts skill ID : {0:x2}\n", v32);
+  return 1;
 }
 
 // 0x1569470
@@ -270,7 +345,7 @@ void rstOverWriteSkill(s32 *pSkill, u16 NewSkillID) {
   obtainedObj = _statusUIScr->obtainedObj;
   PUpSkillIndex = GBWK->PUpSkillIndex;
   Component_object = GetComponent_object_(obtainedObj->m_Items[PUpSkillIndex]);
-  SetInteger(Component_object, StringLiteral_12358, 2);
+  SetInteger(Component_object, "sskill", 2);
 }
 
 // 0x15697d0
@@ -327,12 +402,119 @@ void rstResetAsignParam(void) {
 
 // 0x156fef0
 void rstSetHeartsEvent(s8 EventType) {
-    datOverwriteBadStat(0, 0);
-    rstSetHeartsRecover();
+  struct rstData_t_o *GBWK;
+  struct datUnitWork_t_array *unitwork;
+  struct System_SByte_array *levelupparam;
+  s64 HeartsEventData;
+  struct datUnitWork_t_array *v10;
+  struct System_SByte_array *param;
+  s64 v13;
+  struct datUnitWork_t_array *v17;
+  datUnitWork_t_o *v19;
+  datUnitWork_t_o *v20;
+  u32 v21;
+  struct datUnitWork_t_array *v23;
+  datUnitWork_t_o *v25;
+  struct datUnitWork_t_array *v27;
+  datUnitWork_t_o *v29;
+  struct datUnitWork_t_array *v31;
+  datUnitWork_t_o *v33;
+
+  switch (GBWK->HeartsEventMode)
+  {
+    case 0:
+      Clear(GBWK->ParamOfs, 0, GBWK->ParamOfs->max_length, 0);
+      unitwork = DDS3_GBWK->unitwork;
+      levelupparam = unitwork->m_Items[0]->levelupparam;
+      HeartsEventData = GBWK->HeartsEventData;
+      ++levelupparam->m_Items[HeartsEventData];
+      v10 = DDS3_GBWK->unitwork;
+      param = v10->m_Items[0]->param;
+      v13 = GBWK->HeartsEventData;
+      ++param->m_Items[v13];
+        goto LABEL_52;
+      goto LABEL_69;
+    case 2:
+      v17 = DDS3_GBWK->unitwork;
+      v19 = v17->m_Items[0];
+      v20 = v19;
+      v21 = 64;
+      goto LABEL_50;
+    case 3:
+      v23 = DDS3_GBWK->unitwork;
+      v25 = v23->m_Items[0];
+      v20 = v25;
+      v21 = 256;
+      goto LABEL_50;
+    case 4:
+      v27 = DDS3_GBWK->unitwork;
+      v29 = v27->m_Items[0];
+      v20 = v29;
+      v21 = 0x8000;
+LABEL_50:
+      datOverwriteBadStat(v20, v21);
+      goto LABEL_51;
+    case 5:
+      else
+      {
+        rstSetHeartsRecover(rstupdate);
+          goto LABEL_69;
+      }
+LABEL_52:
+LABEL_69:
+      GBWK->HeartsEventMode = -1;
+      return;
+    case 6:
+      v31 = DDS3_GBWK->unitwork;
+      v33 = v31->m_Items[0];
+      v33->hp = v33->maxhp;
+      v33->mp = v33->maxmp;
+      v33->badstatus &= 0x8000u;
+        goto LABEL_69;
+      goto LABEL_52;
+    default:
+LABEL_51:
+        goto LABEL_52;
+      goto LABEL_69;
+  }
 }
 
 // 0x156f750
 void rstSetHeartsRecover(void) {
+  u64 v3;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  struct System_Int32_array *stocklist;
+  struct datUnitWork_t_array *unitwork;
+  s64 v9;
+  datUnitWork_t_o *v11;
+
+  GBWK->RecoverFlag = 1;
+  v3 = 0;
+  {
+LABEL_9:
+  }
+  while (1)
+  {
+    if (v3 >= DDS3_GBWK->stockcnt)
+      break;
+    else
+    {
+      stocklist = DDS3_GBWK->stocklist;
+      if (v3 >= LODWORD(stocklist->max_length))
+        goto LABEL_15;
+    }
+    unitwork = DDS3_GBWK->unitwork;
+    v9 = SLOBYTE(stocklist->m_Items[v3]);
+    v11 = unitwork->m_Items[v9];
+    if ((v11->flag & 2) != 0)
+    {
+      v11->hp = v11->maxhp;
+      v11->mp = v11->maxmp;
+      v11->badstatus &= 0x8000u;
+    }
+    ++v3;
+      goto LABEL_9;
+  }
 }
 
 // 0x156f8d0
@@ -391,7 +573,6 @@ s8 rstStandbyHeartsEvent(s8 EventType) {
   u16 v25;
   s32 v27;
   struct rstData_t_o *GBWK;
-  rstupdate_c *v32;
   u32 *static_fields;
   u32 v34;
   u32 EndCol;
@@ -408,44 +589,64 @@ s8 rstStandbyHeartsEvent(s8 EventType) {
         HeartsEventData = GBWK->HeartsEventData;
         ParamName = cmpGetParamName(HeartsEventData);
         fclSetMessageVar_20743088(8, ParamName);
-        fclSetMessageVar_20743088(9, StringLiteral_1525);
+        fclSetMessageVar_20743088(9, "1");
         fclStartMessage(30);
         if (EventType != 7)
+          goto LABEL_65;
       }
+      goto LABEL_89;
     case 1:
       if (rstStandbyHeartsSkillPowerUp())
+        goto LABEL_64;
       return 0;
     case 2:
       fclStartMessage(33);
       id = GBWK->pCurrentStock->id;
       v18 = id;
       v19 = 64;
+      goto LABEL_63;
     case 3:
       fclStartMessage(34);
       v22 = GBWK->pCurrentStock->id;
       v18 = v22;
       v19 = 256;
+      goto LABEL_63;
     case 4:
       fclStartMessage(35);
       v25 = GBWK->pCurrentStock->id;
       v18 = v25;
       v19 = 0x8000;
+LABEL_63:
       cmpBadEffSetup(v18, v19);
+      goto LABEL_64;
     case 5:
       v27 = 36;
+      goto LABEL_76;
     case 6:
       v27 = 37;
+LABEL_76:
       fclStartMessage(v27);
       p2sdPlaySE(16);
-      static_fields = v32->static_fields;
       v34 = *static_fields;
       EndCol = static_fields[1];
       GBWK->PanelEffID = cmpAddQuePanelEff(0, 0, 0, 0, 0, 8u, 0, v34, EndCol, 4u);
       if (EventType == 7)
+        goto LABEL_89;
+      goto LABEL_65;
     default:
+LABEL_64:
+      if (EventType != 7)
+      {
+LABEL_65:
+          goto LABEL_93;
+        goto LABEL_66;
+      }
+LABEL_89:
       fclStartMessage(38);
       {
+LABEL_66:
       }
+LABEL_93:
       GBWK->SeqInfo->MesFlag = 1;
       return 1;
   }
@@ -463,7 +664,6 @@ s8 rstStandbyHeartsSkillPowerUp(void) {
   s32 v12;
   System_String_o *v14;
   System_String_o *v15;
-  struct rstinit_StaticFields *static_fields;
   struct rstData_t_o *v19;
   s32 v20;
   s8 v21;
@@ -480,6 +680,7 @@ s8 rstStandbyHeartsSkillPowerUp(void) {
   v3 = rstChkSkillAct();
   if (v3 == 1)
     return 0;
+LABEL_6:
   if (v3 == 2)
   {
     PUpSkillResult = GBWK->PUpSkillResult;
@@ -490,9 +691,11 @@ s8 rstStandbyHeartsSkillPowerUp(void) {
     else
     {
       if (PUpSkillResult != 1)
+        goto LABEL_55;
       v6 = 31;
     }
     fclStartMessage(v6);
+LABEL_55:
     cmpStatResetFlashFlag(1);
     GBWK->PUpSkillResult = -1;
     return 1;
@@ -505,9 +708,8 @@ s8 rstStandbyHeartsSkillPowerUp(void) {
   fclSetMessageVar_20743088(15, v14);
   v15 = Get(GBWK->PUpSkillID, 0, 0);
   fclSetMessageVar_20743088(16, v15);
-  static_fields = rstinit->static_fields;
-  v19 = static_fields->GBWK;
-  v20 = static_fields->GBWK->PUpSkillResult;
+  v19 = GBWK;
+  v20 = GBWK->PUpSkillResult;
   if (v20 == 2 || (v21 = 0, v20 == 1))
   {
     v22 = v19->PUpSkillIndex;
@@ -528,12 +730,10 @@ s8 rstStandbyHeartsSkillPowerUp(void) {
 
 // 0x156ca50
 void rstStartEvoActSE(void) {
-  rstinit_c *v2;
   struct rstinit_StaticFields **p_static_fields;
   struct rstData_t_o *GBWK;
   s32 EvoActFrame;
 
-  p_static_fields = &v2->static_fields;
   EvoActFrame = GBWK->EvoActFrame;
   if ((EvoActFrame & 0x80000000) == 0)
   {
@@ -573,27 +773,152 @@ void rstStartIntroduce(u16 DevilID) {
 
 // 0x1571000
 dds3ProcessFunc_t *rstUpdate(dds3ProcessID_t *PID) {
-    dds3GetProcessData(0);
-    dds3FadeCheck();
-    rstUpdateSeqAsignPlayerParam(0);
-    rstUpdateSeqPlayerLevelUpOnly();
-    rstUpdateSeqHeartsSkill();
-    rstUpdateSeqHeartsEvent();
-    rstUpdateSeqHeartsMaster();
-    rstUpdateSeqDevilParam();
-    rstUpdateSeqDefaultSkill();
-    rstUpdateSeqSkillPowerUp();
-    fclChkMessage();
-    rstUpdateSeqGift();
-    rstUpdateSeqEvo();
-    rstUpdateSeqEvoAt();
-    rstUpdateSeqEvoAct();
-    rstUpdateSeqDestroySkill();
-    rstUpdateSeqDestroyConfirm();
-    rstUpdateSeqConfirm();
-    fclUpdateMessage();
-    rstUpdateEvoBgFade();
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  s8 Current;
+  struct rstData_t_o *GBWK;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  u8 Flag;
+  u64 v18;
+  struct rstData_t_o *v19;
+  cmpSeqInfo_t_o *v22;
+  struct datUnitWork_t_array *unitwork;
+  struct cmpSeqInfo_t_o *v34;
+  dds3ProcessID_t_o *v43[3];
+  dds3ProcessID_t_o *id;
+
+  id = PID;
+  ProcessData = dds3GetProcessData(&id);
+  else
+  {
+    if (!ProcessData)
+      goto LABEL_15;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != rstData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, rstData_t, v43);
+    if ((v43[0] & 1) != 0)
+      v7 = v43[2];
+    else
+      v7 = v43 + 1;
+    v8 = sub_8C4940(v7);
+  }
+LABEL_15:
+  GBWK = ProcessData;
+  Current = GBWK->SeqInfo->Current;
+  else if (dds3FadeCheck())
+  {
+LABEL_18:
+    if (GBWK->SeqInfo->Current != 20)
+      return 0;
+  }
+  else if (cmpChkStatusModelLoadStat())
+  {
     return 0;
+  }
+  SeqInfo = GBWK->SeqInfo;
+  Flag = SeqInfo->Flag;
+  if ((Flag & 0x40) != 0)
+  {
+    id->func_ans = -1;
+  }
+  else
+  {
+    if ((Flag & 2) == 0)
+      goto LABEL_37;
+    if ((Flag & 1) != 0)
+    {
+      switch (SeqInfo->Current)
+      {
+        case 0:
+          if (GBWK->AsignParamMax)
+          {
+            unitwork = DDS3_GBWK->unitwork;
+            rstUpdateSeqAsignPlayerParam(unitwork->m_Items);
+          }
+          else
+          {
+            rstUpdateSeqPlayerLevelUpOnly();
+          }
+          goto LABEL_37;
+        case 1:
+          rstUpdateSeqHeartsSkill();
+          goto LABEL_37;
+        case 3:
+          rstUpdateSeqHeartsEvent();
+          goto LABEL_37;
+        case 5:
+          rstUpdateSeqHeartsMaster();
+          goto LABEL_37;
+        case 6:
+          rstUpdateSeqDevilParam();
+          goto LABEL_37;
+        case 8:
+          rstUpdateSeqDefaultSkill();
+          goto LABEL_37;
+        case 0xA:
+          rstUpdateSeqSkillPowerUp();
+          goto LABEL_37;
+        case 0xB:
+          if (!fclChkMessage())
+          {
+            v34 = GBWK->SeqInfo;
+            ++v34->Current;
+            GBWK->SeqInfo->Change = 1;
+          }
+          goto LABEL_37;
+        case 0xD:
+          rstUpdateSeqGift();
+          goto LABEL_37;
+        case 0x11:
+          rstUpdateSeqEvo();
+          goto LABEL_37;
+        case 0x12:
+          rstUpdateSeqEvoAt();
+          goto LABEL_37;
+        case 0x14:
+          rstUpdateSeqEvoAct();
+          goto LABEL_37;
+        case 0x15:
+          rstUpdateSeqDestroySkill();
+          goto LABEL_37;
+        case 0x16:
+          if (rstUpdateSeqDestroyConfirm())
+            goto LABEL_37;
+          break;
+        case 0x18:
+          if (rstUpdateSeqConfirm())
+            goto LABEL_37;
+          break;
+        default:
+          goto LABEL_37;
+      }
+    }
+    else
+    {
+LABEL_37:
+      fclUpdateMessage();
+      ++*(**(v18 + 184) + 216LL);
+      v19 = **(v18 + 184);
+      if (v19->BgTimer >= 0x900)
+      {
+        if ((*(v18 + 295) & 2) != 0 && !*(v18 + 216))
+        {
+          v19 = GBWK;
+        }
+        v19->BgTimer = 0;
+      }
+      rstUpdateEvoBgFade(v18);
+      v22 = GBWK->SeqInfo;
+      cmpUpdateSeqInfo(v22, Current);
+    }
+  }
+  return 0;
 }
 
 // 0x1570f50
@@ -628,23 +953,36 @@ void rstUpdateEvoBgFade(void) {
     {
       v4 = 0;
     }
+    goto LABEL_28;
   }
   else
   {
     EvoBgFade = GBWK->EvoBgFade;
     if (EvoBgFade > 0x31)
+      goto LABEL_16;
   }
   GBWK->EvoBgFade = EvoBgFade + 1;
+LABEL_16:
   if (GBWK->EvoBgFade >= 0x33)
   {
     v4 = 50;
+LABEL_28:
     GBWK->EvoBgFade = v4;
   }
 }
 
 // 0x1566490
 void rstUpdateNewParam(void) {
-    rstAddAsignParam(0);
+  struct rstData_t_o *GBWK;
+  datUnitWork_t_o **p_pCurrentStock;
+  datUnitWork_t_o **v5;
+
+  p_pCurrentStock = &GBWK->pCurrentStock;
+  else
+  {
+    v5 = &GBWK->pCurrentStock;
+  }
+  rstAddAsignParam(v5);
 }
 
 // 0x1569ef0
@@ -703,6 +1041,7 @@ void rstUpdateSeqAsignPlayerParam(datUnitWork_t **pStock) {
   else
   {
     if (v12)
+      goto LABEL_33;
   }
   if (GBWK->AsignParam)
   {
@@ -720,19 +1059,24 @@ void rstUpdateSeqAsignPlayerParam(datUnitWork_t **pStock) {
         ParamCursor = GBWK->ParamCursor;
         v33 = ParamCursor;
         v34 = 1;
+        goto LABEL_82;
       }
       if (v4 == 64)
       {
         v46 = GBWK->ParamOfs;
         if (v46->m_Items[v65] < 1)
+          goto LABEL_112;
         v49 = GBWK->ParamOfs;
         --v49->m_Items[v65];
         v52 = GBWK;
         v53 = v52->AsignParam + 1;
+LABEL_111:
         v52->AsignParam = v53;
         SetPointAnime(GBWK->AsignParam);
+        goto LABEL_112;
       }
       if (v4 != 128)
+        goto LABEL_112;
     }
     else
     {
@@ -742,12 +1086,14 @@ void rstUpdateSeqAsignPlayerParam(datUnitWork_t **pStock) {
         if (v4 == 2)
         {
           rstResetAsignParam();
+          goto LABEL_112;
         }
         if (v4 == 16)
         {
           v32 = GBWK->ParamCursor;
           v33 = v32;
           v34 = -1;
+LABEL_82:
           cmpMoveCursor(v33, v34);
           v40 = cmpGetCursorIndex(GBWK->ParamCursor);
           statusUIScr = _statusUIScr;
@@ -755,6 +1101,7 @@ void rstUpdateSeqAsignPlayerParam(datUnitWork_t **pStock) {
           ObjStsBar = statusUIScr->ObjStsBar;
           cmpMenuCursor(v40, v43, ObjStsBar);
         }
+LABEL_112:
         rstSetMaxHpMp(0, pStock);
         if (!cmpChkPadPressUpDown())
         {
@@ -770,14 +1117,18 @@ void rstUpdateSeqAsignPlayerParam(datUnitWork_t **pStock) {
     if (*(v6 + v65 + 8) > 39)
     {
       v30 = 0x8000;
+      goto LABEL_112;
     }
     v55 = GBWK;
     if (v55->AsignParam < 1)
+      goto LABEL_112;
     v56 = v55->ParamOfs;
     ++v56->m_Items[v65];
     v52 = GBWK;
     v53 = v52->AsignParam - 1;
+    goto LABEL_111;
   }
+LABEL_33:
   GBWK->AsignParam = 0;
   fclStartMessage(2);
   fclStartSelMessage(43);
@@ -829,29 +1180,133 @@ s8 rstUpdateSeqConfirm(void) {
 
 // 0x156bd00
 void rstUpdateSeqDefaultSkill(void) {
-    rstChkSkillAct();
-    fclChkMessage();
-    fclEndMessage();
-    fclStartMessage(0);
-    rstAddSkill();
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
+  s32 v3;
+  s32 EventParam;
+  System_String_o *v13;
+
+  else
+  {
+    v3 = rstChkSkillAct(rstupdate);
+    if (v3 != 2)
+      goto LABEL_6;
+  }
+  EventParam = GBWK->EventParam;
+  v13 = Get(EventParam, 0, 0);
+  fclSetMessageVar_20743088(10, v13);
+  fclStartMessage(6);
+  cmpStatResetFlashFlag(1);
 }
 
 // 0x156e730
 s8 rstUpdateSeqDestroyConfirm(void) {
-    fclStartMessage(0);
-    fclChkMessage();
-    fclChkSelMessage();
-    fclGetSelMessagePos();
-    fclEndMessage();
-    rstGetHeartsSkill(0);
-    rstReplaceSkill();
-    rstAddSkill();
-    rstSetMaxHpMp(0, 0);
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
+  rstinit_c *v2;
+  struct rstData_t_o *GBWK;
+  s32 Flag;
+  s16 v5;
+  s32 v6;
+  struct rstData_t_o *v8;
+  s32 SelMessagePos;
+  cmpCursorInfo_t_o *SkillCursor;
+  s32 CursorIndex;
+  datUnitWork_t_o **p_pCurrentStock;
+  char v25;
+  s64 v26;
+  struct System_Int32_array *skill;
+  s32 SelectSkillID;
+  System_String_o *v33;
+
+  Flag = GBWK->Flag;
+  if (Flag < 1)
+    goto LABEL_51;
+  LOBYTE(Flag) = GBWK->Flag;
+  if ((Flag - 1) < 2)
+    goto LABEL_18;
+LABEL_10:
+  if (Flag == 3)
+  {
+    if (fclChkMessage())
+      return 1;
+    if ((v5 & 0x200) != 0)
+    {
+      v6 = v5 & 0x200;
+    }
+    else
+    {
+      v6 = 0;
+    }
+    v8 = GBWK;
+    if (v8->pCurrentStock->id)
+    {
+      v8->SeqInfo->Current = 8;
+      GBWK->SeqInfo->Change = 1;
+      if ((v2->_2.bitflags2 & 2) == 0)
+        goto LABEL_50;
+    }
+    else
+    {
+      v8->SeqInfo->Current = 1;
+      GBWK->SeqInfo->Change = 1;
+      if ((v2->_2.bitflags2 & 2) == 0)
+        goto LABEL_50;
+    }
+    goto LABEL_35;
+  }
+LABEL_34:
+  if ((v2->_2.bitflags2 & 2) != 0)
+  {
+LABEL_35:
+  }
+LABEL_50:
+  GBWK->Flag = 3;
+LABEL_51:
+  else if (fclChkSelMessage())
+  {
     return 0;
+  }
+  SelMessagePos = fclGetSelMessagePos();
+  if (SelMessagePos <= 1)
+  {
+    if (SelMessagePos)
+    {
+      if (SelMessagePos == 1)
+      {
+        fclEndMessage();
+        GBWK->SeqInfo->Current = 21;
+        GBWK->SeqInfo->Change = 2;
+      }
+    }
+    else
+    {
+      fclEndMessage();
+      if (!GBWK->pCurrentStock->id)
+      {
+        rstGetHeartsSkill(1);
+      }
+      SkillCursor = GBWK->SkillCursor;
+      CursorIndex = cmpGetCursorIndex(SkillCursor);
+      if (CursorIndex << 24 <= 117440512)
+      {
+        LOBYTE(v26) = CursorIndex;
+        skill = GBWK->pCurrentStock->skill;
+        skill->m_Items[v26] = 0;
+        v30 = rstReplaceSkill();
+        rstAddSkill();
+        v25 = 1;
+      }
+      else
+      {
+        p_pCurrentStock = &GBWK->pCurrentStock;
+        rstSetMaxHpMp(1, p_pCurrentStock);
+        --GBWK->LevelUpCnt;
+        v25 = 2;
+      }
+      GBWK->Flag = v25;
+      SelectSkillID = GBWK->SelectSkillID;
+      v33 = Get(SelectSkillID, 0, 0);
+      fclSetMessageVar_20743088(10, v33);
+    }
+  }
+  return 1;
 }
 
 // 0x156de40
@@ -889,33 +1344,50 @@ s8 rstUpdateSeqDestroySkill(void) {
       v33 = GBWK->SkillCursor;
       v17 = v33;
       v18 = 1;
+      goto LABEL_72;
     }
     if (v4 != 64)
     {
       if (v4 != 128)
+        goto LABEL_54;
       if (CursorIndex > 7u)
       {
         GBWK->SkillCursor->CursorPos->Shift = 0;
+          goto LABEL_55;
+        goto LABEL_93;
       }
       if (CursorIndex <= 3u)
       {
         CursorPos = GBWK->SkillCursor->CursorPos;
         CursorPos->Shift += 4;
+          goto LABEL_55;
+        goto LABEL_93;
       }
+LABEL_89:
       GBWK->SkillCursor->CursorPos->Shift = 8;
+        goto LABEL_55;
+LABEL_93:
       if (!cmpChkPadPressUpDown())
+        goto LABEL_94;
+      goto LABEL_101;
     }
     if (CursorIndex <= 7u)
     {
       if (CursorIndex <= 3u)
+        goto LABEL_89;
       {
+LABEL_87:
         v37 = GBWK->SkillCursor->CursorPos;
         v37->Shift -= 4;
+          goto LABEL_55;
+        goto LABEL_93;
       }
     }
     else
     {
+        goto LABEL_87;
     }
+    goto LABEL_87;
   }
   if (v4 == 1)
   {
@@ -927,32 +1399,113 @@ s8 rstUpdateSeqDestroySkill(void) {
     fclStartSelMessage(43);
     GBWK->SeqInfo->Current = 22;
     GBWK->SeqInfo->Change = 1;
+    goto LABEL_54;
   }
   if (v4 == 2)
     return 0;
+  if (v4 != 16)
+  {
+LABEL_54:
+      goto LABEL_93;
+    goto LABEL_55;
+  }
   v13 = GBWK->SkillCursor;
   if (cmpGetCursorIndex(v13) == 8)
     return 0;
   v16 = GBWK->SkillCursor;
   v17 = v16;
   v18 = -1;
+LABEL_72:
   cmpMoveCursor(v17, v18);
+    goto LABEL_93;
+LABEL_55:
+    goto LABEL_93;
   if (!cmpChkPadPressUpDown())
   {
+LABEL_94:
     v39 = GBWK->SkillCursor;
     cmpMoveCursor(v39, 0);
   }
+LABEL_101:
   cmpPlaySE(v11);
   return 1;
 }
 
 // 0x156a8a0
 void rstUpdateSeqDevilParam(void) {
-    fclChkMessage();
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
-    fclStartMessage(0);
-    rstSetMaxHpMp(0, 0);
+  System_Char_array *v1;
+  s32 id;
+  System_String_o *v7;
+  s64 Flag;
+  s64 v13;
+  struct System_SByte_array *ParamOfs;
+  s64 v16;
+  struct rstData_t_o *v17;
+  datUnitWork_t_o **p_pCurrentStock;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  u32 v21;
+  System_String_o *ParamName;
+  struct System_SByte_array *v26;
+  u64 *v28;
+  System_String_o *v29;
+  s32 v31;
+  struct rstData_t_o *GBWK;
+  char v35;
+  char v38[4];
+
+  v1 = NewSpecific(char, 0x10u);
+  CreateString_5280336(0, v1);
+  else if (fclChkMessage())
+  {
+    return;
+  }
+  id = GBWK->pCurrentStock->id;
+  v7 = Get(id, 0);
+  fclSetMessageVar_20743088(1, v7);
+  Flag = GBWK->Flag;
+  if (Flag <= 5)
+  {
+    v13 = Flag + 32;
+    while (1)
+    {
+      ParamOfs = GBWK->ParamOfs;
+      if (*(&ParamOfs->obj.klass + v13) >= 1)
+        break;
+      v16 = v13 - 32;
+      ++v13;
+      if (v16 >= 5)
+        goto LABEL_24;
+    }
+    v21 = v13 - 32;
+    ParamName = cmpGetParamName(v21);
+    fclSetMessageVar_20743088(8, ParamName);
+    v26 = GBWK->ParamOfs;
+    v38[0] = *(&v26->obj.klass + v13);
+    v28 = sub_8D3950(sbyte, v38);
+    v29 = Format("{0:D}", v28, 0);
+    fclSetMessageVar_20743088(9, v29);
+    if (GBWK->Flag)
+    {
+      v31 = 5;
+    }
+    else
+    {
+      v31 = 3;
+    }
+    fclStartMessage(v31);
+    v35 = v13 - 31;
+    goto LABEL_68;
+  }
+LABEL_24:
+  v17 = GBWK;
+  if (!v17->Flag)
+    goto LABEL_53;
+LABEL_27:
+  p_pCurrentStock = &v17->pCurrentStock;
+  rstSetMaxHpMp(0, p_pCurrentStock);
+  SeqInfo = GBWK->SeqInfo;
+  ++SeqInfo->Current;
+  GBWK->SeqInfo->Change = 1;
 }
 
 // 0x156d2c0
@@ -972,11 +1525,12 @@ void rstUpdateSeqEvo(void) {
 
   Flag = GBWK->Flag;
   if (Flag < 1)
+    goto LABEL_55;
   if (Flag == 3)
   {
     if (!fclChkMessage())
     {
-      if (!dds3SearchProcessName(StringLiteral_21934))
+      if (!dds3SearchProcessName("e809_main"))
       {
         evtBitOff(3717);
         fclFreeStage();
@@ -992,11 +1546,15 @@ void rstUpdateSeqEvo(void) {
     v11 = Get(id, 0);
     fclSetMessageVar_20743088(1, v11);
     fclStartMessage(23);
+    goto LABEL_49;
   }
   if (Flag != 1)
+    goto LABEL_51;
   fclStartMessage(22);
   GBWK->SeqInfo->MesFlag = 1;
+LABEL_51:
   GBWK->Flag = 3;
+LABEL_55:
   else if (fclChkSelMessage())
   {
     return;
@@ -1012,6 +1570,7 @@ void rstUpdateSeqEvo(void) {
       cmpModelInitCore2();
       v27 = GBWK;
       v28 = 2;
+      goto LABEL_100;
     }
     if (!SelMessagePos)
     {
@@ -1024,13 +1583,14 @@ void rstUpdateSeqEvo(void) {
       draw_status_off(1);
       gameObject = get_gameObject(_statusUIScr);
       transform = get_transform(gameObject, 0);
-      v22 = Find(transform, StringLiteral_16220, 0);
+      v22 = Find(transform, "statusChara", 0);
       v24 = get_gameObject(v22);
       statusCharaObj = v24;
       v26 = get_transform(statusCharaObj, 0);
       startPos = get_localPosition(v26);
       v27 = GBWK;
       v28 = 1;
+LABEL_100:
       v27->Flag = v28;
     }
   }
@@ -1044,14 +1604,10 @@ void rstUpdateSeqEvoAct(void) {
   u8 StatAlpha;
   u16 id;
   u16 v12;
-  struct rstinit_StaticFields *static_fields;
-  rstupdate_c *v17;
-  struct rstupdate_StaticFields *v18;
   f32 y;
   f32 z;
   f32 v21;
   UnityEngine_Transform_o *transform;
-  rstinit_c *v25;
   s32 v30;
   System_String_o *v32;
   System_String_o *v33;
@@ -1072,44 +1628,53 @@ void rstUpdateSeqEvoAct(void) {
       if (StatAlpha)
       {
         v5->StatAlpha = StatAlpha - 4;
+        goto LABEL_57;
       }
       if (!IsSelectWindowDispOff())
       {
         if (!IsFadeOutWindow())
+          goto LABEL_57;
       }
-      static_fields = v25->static_fields;
+      goto LABEL_55;
     case 1:
+        goto LABEL_56;
+      goto LABEL_54;
     case 2:
       rstStartEvoActSE();
       if (!fclChkSignal(0))
+        goto LABEL_57;
       id = GBWK->EvoDevil->id;
       cmpModelSetup(id, 1);
+      goto LABEL_54;
     case 3:
       if (!fclChkSignal(1))
+        goto LABEL_57;
       v12 = GBWK->EvoDevil->id;
       rstStartIntroduce(v12);
+      goto LABEL_54;
     case 4:
       if (fclChkMessage())
         return;
       GBWK->EvoActStatFlag = 1;
       fclSetVal(3, 0);
-      static_fields = rstinit->static_fields;
-      GBWK = static_fields->GBWK;
+LABEL_54:
+LABEL_55:
       EvoActFlag = GBWK->EvoActFlag;
+LABEL_56:
       GBWK->EvoActFlag = EvoActFlag + 1;
+LABEL_57:
       dds3ScreenParam->ox = ((dds3ScreenParam->ox + -2048.0) / 1.2)
                                                      + 2048.0;
-      v18 = v17->static_fields;
-      y = v18->startPos.y;
-      z = v18->startPos.z;
-      v21 = v18->startPos.x - ((2188.0 - dds3ScreenParam->ox) * v18->movePos);
-      transform = get_transform(v18->statusCharaObj, 0);
+      y = startPos.y;
+      z = startPos.z;
+      v21 = startPos.x - ((2188.0 - dds3ScreenParam->ox) * movePos);
+      transform = get_transform(statusCharaObj, 0);
       startPos.x = v21;
       startPos.y = y;
       startPos.z = z;
       break;
     case 5:
-      if (dds3SearchProcessName(StringLiteral_21934))
+      if (dds3SearchProcessName("e809_main"))
         return;
       evtBitOff(3717);
       GBWK->StatAlpha = 0x80;
@@ -1130,50 +1695,199 @@ void rstUpdateSeqEvoAct(void) {
       fclEncycRegist(pCurrentStock, 0, 0);
       GBWK->SeqInfo->Current = 17;
       draw_status_off(0);
-      SetInteger(_statusUIScr->infoAnim, StringLiteral_12357, 1);
+      SetInteger(_statusUIScr->infoAnim, "sinfo", 1);
       transform = get_transform(statusCharaObj, 0);
       break;
     default:
+      goto LABEL_57;
   }
   set_localPosition(transform, startPos);
 }
 
 // 0x156d8c0
 void rstUpdateSeqEvoAt(void) {
-    fclChkMessage();
-    fclSetVal(0, 0);
-    dds3SearchProcessName(0);
-    evtBitOff(0);
-    evtFreeStage();
-    fclFilterOFF();
+  if (!GBWK->Flag)
+    goto LABEL_32;
+LABEL_6:
+LABEL_10:
+  if (!dds3SearchProcessName("e809_main"))
+  {
+    evtBitOff(3717);
+    if (!fclChkMessage())
+    {
+      evtFreeStage();
+      fclFilterOFF();
+      cmpModelInitCore2();
+      GBWK->Flag = 2;
+      GBWK->SeqInfo->Current = 17;
+      GBWK->SeqInfo->Change = 1;
+      goto LABEL_32;
+    }
+  }
 }
 
 // 0x156ace0
 void rstUpdateSeqGift(void) {
-    evtBitCheck(0);
-    evtPictureSetPos(0, 0, 0, 0, 0, 0);
-    evtKillPictureProcess(0);
-    fclStartMessage(0);
-    fclChkMessage();
-    p2sdPlaySE(0);
-    evtStartPictureProcess(0, 0);
-    evtPictureSetSize(0, 0, 0, 0, 0);
-    evtPictureSetAlpha(0, 0, 0, 0);
-    evtPictureDrawOn(0);
-    fclChkSelMessage();
-    fclGetSelMessagePos();
-    fclEndMessage();
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
-    Get(0);
-    datAddHearts(0);
-    Get(0);
-    datAddItem(0, 0);
-    rstSetMotionReqFromTbl(0);
+  struct rstData_t_o *GBWK;
+  s32 SelMessagePos;
+  s32 id;
+  System_String_o *v10;
+  struct rstData_t_o *v12;
+  s32 GiftItemID;
+  System_String_o *v15;
+  s32 v17;
+  rstupdate_c *v20;
+  s16 v21;
+  s32 v22;
+  struct rstupdate_StaticFields **p_static_fields;
+  s32 gAiboMode;
+  s32 gAiboX;
+  s16 v27;
+  s32 v28;
+  dds3ProcessID_t_o *v29;
+  s32 Flag;
+  s32 v34;
+  dds3ProcessID_t_o *thAibo;
+  s32 v37;
+  s8 v58;
+  s32 v59;
+  System_String_o *v61;
+  s32 v63;
+
+  if (evtBitCheck(3712))
+    goto LABEL_4;
+  if ((v21 & 0x200) != 0)
+  {
+    v22 = v21 & 0x200;
+  }
+  else
+  {
+    v22 = 0;
+  }
+  if (gAiboMode == 1)
+  {
+    else
+    {
+      if (gAiboX > 31)
+      {
+LABEL_49:
+        gAiboX = 32;
+        (*p_static_fields)->gAiboMode = 2;
+        if ((v20->_2.bitflags2 & 2) == 0)
+          goto LABEL_115;
+        goto LABEL_53;
+      }
+    }
+    gAiboX = gAiboX + 16;
+    if ((v20->_2.bitflags2 & 2) == 0)
+      goto LABEL_115;
+LABEL_53:
+LABEL_115:
+    v37 = gAiboX;
+    evtPictureSetPos(thAibo, v37, 192, 96, 192, 6);
+    return;
+  }
+  if (gAiboMode == 2)
+    goto LABEL_4;
+  v27 = *&v20->_2.bitflags1;
+  if ((v27 & 0x200) == 0)
+  {
+    v28 = 0;
+    if (gAiboMode != 3)
+      goto LABEL_61;
+LABEL_101:
+    v34 = gAiboX;
+    if (v34 >= -127)
+    {
+      gAiboX = v34 - 32;
+      if ((v20->_2.bitflags2 & 2) == 0)
+        goto LABEL_115;
+    }
+    else
+    {
+      gAiboX = -128;
+      (*p_static_fields)->gAiboMode = 4;
+      if ((v20->_2.bitflags2 & 2) == 0)
+        goto LABEL_115;
+    }
+    goto LABEL_53;
+  }
+  v28 = v27 & 0x200;
+  if (gAiboMode == 3)
+    goto LABEL_101;
+LABEL_61:
+  if (gAiboMode == 4)
+  {
+    v29 = thAibo;
+    if (v29)
+    {
+      evtKillPictureProcess(v29);
+      thAibo = 0;
+      set_sortingOrder(canvUI, 10);
+      canvUI = 0;
+    }
+    gAiboMode = 0;
+    return;
+  }
+LABEL_4:
+  if (!GBWK->GiftItemID)
+    goto LABEL_81;
+LABEL_7:
+  else if (fclChkSelMessage())
+  {
+    return;
+  }
+  SelMessagePos = fclGetSelMessagePos();
+  if (SelMessagePos <= 1)
+  {
+    if (SelMessagePos == 1)
+    {
+      fclEndMessage();
+      GBWK->Flag = 2;
+      GBWK->GiftItemID = 0;
+      GBWK->GiftStep = 1;
+      v58 = 4;
+      goto LABEL_248;
+    }
+    if (!SelMessagePos)
+    {
+      fclEndMessage();
+      id = GBWK->pCurrentStock->id;
+      v10 = Get(id, 0);
+      fclSetMessageVar_20743088(1, v10);
+      v12 = GBWK;
+      if (v12->GiftType)
+      {
+        GiftItemID = v12->GiftItemID;
+        v15 = Get(GiftItemID, 0);
+        fclSetMessageVar_20743088(2, v15);
+        v17 = GBWK->GiftItemID;
+        datAddHearts(v17);
+          goto LABEL_264;
+      }
+      else
+      {
+        v59 = v12->GiftItemID;
+        v61 = Get(v59, 0);
+        fclSetMessageVar_20743088(2, v61);
+        v63 = GBWK->GiftItemID;
+        datAddItem(v63, 1);
+          goto LABEL_264;
+      }
+LABEL_264:
+      GBWK->Flag = 1;
+      GBWK->GiftItemID = 0;
+      GBWK->GiftStep = 0;
+      v58 = 1;
+LABEL_248:
+      rstSetMotionReqFromTbl(v58);
+    }
+  }
 }
 
 // 0x1570360
 void rstUpdateSeqHeartsEvent(void) {
+  rstinit_c *v2;
   struct rstData_t_o *GBWK;
   s32 Flag;
   s8 HeartsEventMode;
@@ -1183,6 +1897,7 @@ void rstUpdateSeqHeartsEvent(void) {
 
   Flag = GBWK->Flag;
   if (Flag < 1)
+    goto LABEL_51;
   if (Flag == 3)
   {
     if (!fclChkMessage())
@@ -1206,8 +1921,16 @@ void rstUpdateSeqHeartsEvent(void) {
     HeartsEventMode = GBWK->HeartsEventMode;
     if (!rstStandbyHeartsEvent(HeartsEventMode))
       return;
+      goto LABEL_50;
+    goto LABEL_48;
   }
+  if ((v2->_2.bitflags2 & 2) != 0)
+  {
+LABEL_48:
+  }
+LABEL_50:
   GBWK->Flag = 3;
+LABEL_51:
   else if (fclChkSelMessage())
   {
     return;
@@ -1231,40 +1954,176 @@ void rstUpdateSeqHeartsEvent(void) {
 
 // 0x1570730
 void rstUpdateSeqHeartsMaster(void) {
-    fclChkMessage();
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
-    fclStartMessage(0);
-    rstSetMaxHpMp(0, 0);
+  struct rstData_t_o *GBWK;
+  s32 Flag;
+  struct System_SByte_array *param;
+  struct System_SByte_array *ParamOfs;
+  struct rstData_t_o *v11;
+  struct System_SByte_array *v12;
+  struct System_SByte_array *v14;
+  struct rstData_t_o *v16;
+  struct System_SByte_array *v17;
+  struct System_SByte_array *v19;
+  struct rstData_t_o *v21;
+  struct System_SByte_array *v22;
+  struct System_SByte_array *v24;
+  struct rstData_t_o *v26;
+  struct System_SByte_array *v27;
+  struct System_SByte_array *v29;
+  struct rstData_t_o *v31;
+  struct System_SByte_array *v32;
+  struct System_SByte_array *v34;
+  datUnitWork_t_o **p_pCurrentStock;
+  struct System_SByte_array *v37;
+
+  else if (fclChkMessage())
+  {
+    return;
+  }
+  Flag = GBWK->Flag;
+  if (!GBWK->Flag)
+    goto LABEL_62;
+LABEL_9:
+  if (Flag == 1)
+  {
+    param = GBWK->pCurrentStock->param;
+    ParamOfs = GBWK->ParamOfs;
+    param->m_Items[0] += ParamOfs->m_Items[0];
+    v11 = GBWK;
+    v12 = v11->pCurrentStock->param;
+    v14 = v11->ParamOfs;
+    v12->m_Items[1] += v14->m_Items[1];
+    v16 = GBWK;
+    v17 = v16->pCurrentStock->param;
+    v19 = v16->ParamOfs;
+    v17->m_Items[2] += v19->m_Items[2];
+    v21 = GBWK;
+    v22 = v21->pCurrentStock->param;
+    v24 = v21->ParamOfs;
+    v22->m_Items[3] += v24->m_Items[3];
+    v26 = GBWK;
+    v27 = v26->pCurrentStock->param;
+    v29 = v26->ParamOfs;
+    v27->m_Items[4] += v29->m_Items[4];
+    v31 = GBWK;
+    v32 = v31->pCurrentStock->param;
+    v34 = v31->ParamOfs;
+    v32->m_Items[5] += v34->m_Items[5];
+    p_pCurrentStock = &GBWK->pCurrentStock;
+    rstSetMaxHpMp(0, p_pCurrentStock);
+    v37 = GBWK->ParamOfs;
+    Clear(v37, 0, v37->max_length, 0);
+    GBWK->HeartsEventMode = -1;
+    GBWK->SeqInfo->Change = 1;
+    return;
+  }
+LABEL_125:
+  ++GBWK->Flag;
 }
 
 // 0x156ed20
 void rstUpdateSeqHeartsSkill(void) {
-    rstChkSkillAct();
-    fclChkMessage();
-    fclEndMessage();
-    fclStartMessage(0);
-    rstGetHeartsSkill(0);
-    rstSetMaxHpMp(0, 0);
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
+  s32 v3;
+  s32 GetHeartsSkill;
+  System_String_o *v13;
+
+  else
+  {
+    v3 = rstChkSkillAct(rstupdate);
+    if (v3 != 2)
+      goto LABEL_6;
+  }
+  GetHeartsSkill = GBWK->GetHeartsSkill;
+  v13 = Get(GetHeartsSkill, 0, 0);
+  fclSetMessageVar_20743088(10, v13);
+  fclStartMessage(6);
+  cmpStatResetFlashFlag(1);
 }
 
 // 0x156a730
 void rstUpdateSeqPlayerLevelUpOnly(void) {
-    fclStartMessage(0);
-    fclChkMessage();
+  else if (GBWK->Flag)
+  {
+    goto LABEL_14;
+  }
+  fclStartMessage(1);
+  GBWK->Flag = 1;
+LABEL_14:
+  else if (fclChkMessage())
+  {
+    return;
+  }
+  GBWK->SeqInfo->Current = 1;
+  GBWK->SeqInfo->Change = 1;
 }
 
 // 0x156c0e0
 void rstUpdateSeqSkillPowerUp(void) {
-    rstChkSkillAct();
-    fclChkMessage();
-    fclStartMessage(0);
-    fclChkSelMessage();
-    fclGetSelMessagePos();
-    fclEndMessage();
-    rstSetMotionReqFromTbl(0);
-    rstOverWriteSkill(0, 0);
-    rstInitSkillAct(0);
+  s32 SelMessagePos;
+  rstinit_c *v7;
+  struct rstData_t_o *GBWK;
+  s32 PUpSkillResult;
+  struct System_Int32_array *v10;
+  s64 v11;
+  u16 v12;
+  s32 Flag;
+  struct System_Int32_array *skill;
+  s64 PUpSkillIndex;
+  u16 PUpSkillID;
+
+  if (GBWK->PUpSkillResult < 0)
+    goto LABEL_37;
+LABEL_6:
+  else if (fclChkSelMessage())
+  {
+    return;
+  }
+  SelMessagePos = fclGetSelMessagePos();
+  if (SelMessagePos <= 1)
+  {
+    if (SelMessagePos == 1)
+    {
+      fclEndMessage();
+      rstSetMotionReqFromTbl(3);
+      GBWK->Flag = 4;
+      goto LABEL_124;
+    }
+    if (!SelMessagePos)
+    {
+      fclEndMessage();
+      PUpSkillResult = GBWK->PUpSkillResult;
+      if (PUpSkillResult == 2)
+      {
+        skill = GBWK->pCurrentStock->skill;
+        PUpSkillIndex = GBWK->PUpSkillIndex;
+        PUpSkillID = GBWK->PUpSkillID;
+        rstOverWriteSkill(&skill->m_Items[PUpSkillIndex], PUpSkillID);
+        rstSetMotionReqFromTbl(2);
+        rstInitSkillAct(GBWK->PUpSkillIndex);
+        GBWK->Flag = 2;
+        if ((v7->_2.bitflags2 & 2) == 0)
+          goto LABEL_124;
+      }
+      else if (PUpSkillResult == 1)
+      {
+        v10 = GBWK->pCurrentStock->skill;
+        v11 = GBWK->PUpSkillIndex;
+        v12 = GBWK->PUpSkillID;
+        rstOverWriteSkill(&v10->m_Items[v11], v12);
+        rstSetMotionReqFromTbl(2);
+        rstInitSkillAct(GBWK->PUpSkillIndex);
+        GBWK->Flag = 1;
+        if ((v7->_2.bitflags2 & 2) == 0)
+          goto LABEL_124;
+      }
+      else
+      {
+        GBWK->Flag = 3;
+        if ((v7->_2.bitflags2 & 2) == 0)
+          goto LABEL_124;
+      }
+LABEL_124:
+      GBWK->PUpSkillResult = -1;
+    }
+  }
 }

@@ -80,8 +80,10 @@ void utf8_utf16(void **dst, u8 ***src, s32 *iidx) {
     v9 = *dst;
     v10 = Method_System_Collections_Generic_List_byte__Add__;
     v11 = v7;
+LABEL_12:
     _Add(v9, v11, v10);
     v14 = *iidx + 1;
+LABEL_13:
     *iidx = v14;
     return;
   }
@@ -92,12 +94,14 @@ void utf8_utf16(void **dst, u8 ***src, s32 *iidx) {
     v9 = *dst;
     v10 = Method_System_Collections_Generic_List_byte__Add__;
     v11 = 32;
+    goto LABEL_12;
   }
   if (((*src)->m_Items[*iidx] & 0xE0) == 0xC0)
   {
     _Add(*dst, 0x81u);
     _Add(*dst, 0x40u);
     v14 = *iidx + 2;
+    goto LABEL_13;
   }
   v17 = *iidx;
   v19 = (*src)->m_Items[v17];
@@ -165,30 +169,34 @@ void utf8_utf16(void **dst, u8 ***src, s32 *iidx) {
     _Add(*dst, v30);
     _Add(*dst, v29);
     v14 = *iidx + 3;
+    goto LABEL_13;
   }
   if ((v19 & 0xF8) == 0xF0)
   {
-    Log(StringLiteral_12224, 0);
+    Log("!!!!! Not Support 4 byte UTF8 !!!!!", 0);
     _Add(*dst, 0);
     _Add(*dst, 0x20u);
     v14 = *iidx + 4;
+    goto LABEL_13;
   }
   v31 = *iidx;
   if (((*src)->m_Items[v31] & 0xFC) == 0xF8)
   {
-    Log(StringLiteral_12225, 0);
+    Log("!!!!! Not Support 5 byte UTF8 !!!!!", 0);
     _Add(*dst, 0);
     _Add(*dst, 0x20u);
     v14 = *iidx + 5;
+    goto LABEL_13;
   }
   v33 = *src;
   v34 = *iidx;
   if ((v33->m_Items[v34] & 0xFE) == 0xFC)
   {
-    Log(StringLiteral_12226, 0);
+    Log("!!!!! Not Support 6 byte UTF8 !!!!!", 0);
     _Add(*dst, 0);
     _Add(*dst, 0x20u);
     v14 = *iidx + 6;
+    goto LABEL_13;
   }
-  Log(StringLiteral_12227, 0);
+  Log("!!!!! HALT !!!!!!", 0);
 }

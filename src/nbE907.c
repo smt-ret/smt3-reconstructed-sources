@@ -68,20 +68,83 @@ void nbUpdateEventProcessData(dds3ProcessID_t **id);
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 1)
     return 0;
-  Write(StringLiteral_21332, 0);
+  Write("漂流神変身\n", 0);
   return 1;
 }
 
 // 0x16f8950
 s32 Model1Start(nbEventProcessData_t *ed) {
-    nbPanelAllHide();
-    nbGetEventForm();
-    evtSetUnitMotion(0, 0, 0, 0, 0);
-    evtGetResorceData(0, 0);
-    nbAddSkillEffectKoukaPacket3(0, 0, 0, 0, 0);
-    evtBitCheck(0);
-    nbBgmFadeOut();
-    return 0;
+  nbFormation_t_o *v6;
+  struct System_Int16_array *count;
+  struct nbParty_t_array *party;
+  struct System_Int16_array *v12;
+  s16 v13;
+  struct System_Int16_array *v17;
+  struct nbParty_t_array *v18;
+  struct System_Int16_array *v20;
+  s16 v22;
+  struct System_Int16_array *v25;
+  struct nbParty_t_array *v26;
+  struct System_Int16_array *v28;
+  s16 v29;
+  struct System_Int16_array *v33;
+  struct nbParty_t_array *v34;
+  struct System_Int16_array *v36;
+  s16 v37;
+  struct System_Int16_array *v41;
+  struct nbParty_t_array *v42;
+  s64 partyindex;
+  struct System_Int16_array *v45;
+  s16 v47;
+  System_Byte_array *ResorceData;
+  u64 *v51;
+  System_String_o *v52;
+  s32 v56;
+  nbFormation_t_o *form;
+
+  form = 0;
+  nbPanelAllHide();
+  form = nbGetEventForm();
+  v6 = form;
+  evtSetUnitMotion(&form->hunit, 17, 10, 0, 2);
+  party = ed->data->party;
+  v12 = party->m_Items[form->partyindex]->count;
+  v13 = v12->m_Items[4];
+  count->m_Items[4] = v13;
+  v17 = count;
+  v18 = ed->data->party;
+  v20 = v18->m_Items[v6->partyindex]->count;
+  v22 = v20->m_Items[5];
+  v17->m_Items[5] = v22;
+  v25 = count;
+  v26 = ed->data->party;
+  v28 = v26->m_Items[v6->partyindex]->count;
+  v29 = v28->m_Items[6];
+  v25->m_Items[6] = v29;
+  v33 = count;
+  v34 = ed->data->party;
+  v36 = v34->m_Items[v6->partyindex]->count;
+  v37 = v36->m_Items[7];
+  v33->m_Items[7] = v37;
+  v41 = count;
+  v42 = ed->data->party;
+  partyindex = v6->partyindex;
+  v45 = v42->m_Items[partyindex]->count;
+  v47 = v45->m_Items[8];
+  v41->m_Items[8] = v47;
+  ResorceData = evtGetResorceData(907, 1);
+  nbAddSkillEffectKoukaPacket3(0, 0, ResorceData, 2, &form);
+  if (!evtBitCheck(3087))
+  {
+    v56 = 259;
+    v51 = sub_8D3950(s32, &v56);
+    v52 = Format("/model/devil/boss/0x{0:x}.PB", v51, 0);
+    Model1Start_name = v52;
+    ed->file = 0;
+  }
+  nbBgmFadeOut();
+  *&ed->seq = (ed->seq + 1);
+  return 0;
 }
 
 // 0x16f8ee0
@@ -108,10 +171,29 @@ s32 Model1Wait(nbEventProcessData_t *ed) {
 
 // 0x16f8fe0
 s32 Model1Wait_2(nbEventProcessData_t *ed) {
+  u64 *v3;
+  s32 seqtime;
+  Il2CppObject *v5;
+  s32 v8;
+
+  v8 = 0;
+  v3 = sub_8D3950(s32, &v8);
+  seqtime = ed->seqtime;
+  v5 = v3;
+  if (seqtime == 10)
+  {
     nbReturnAllEnemyUnit();
-    evtBitCheck(0);
-    mdlPackDecode(0, 0, 0, 0, 0);
-    return 0;
+    seqtime = ed->seqtime;
+  }
+  if (seqtime >= 13)
+  {
+    if (!evtBitCheck(3087))
+    {
+      mdlPackDecode(1, 259, 0x101u, v5, 0, 0);
+    }
+    *&ed->seq = (ed->seq + 1);
+  }
+  return 0;
 }
 
 // 0x16f90e0
@@ -270,26 +352,182 @@ fileHandle_t *fileLoad(char *filename) {
 
 // 0x16f9a10
 void *nbE907Process_1(dds3ProcessID_t *id) {
-    dds3GetActiveScene();
-    dds3GetProcessData(0);
-    nbEventPrefabDelete(0);
-    dds3DeleteSceneBasicData(0);
-    dds3GetUnitHandleObjectBasic(0);
-    nbCameraHelperModelSet(0);
-    nbCameraSetState(0);
-    nbAllFormDispOn();
-    nbSetEnemyFormation(0);
-    nbSetPlayerFormation(0, 0);
-    nbCameraBoss_Bsnet_E907_Set();
-    evtRegistBEUnit(0, 0);
-    dds3SearchSceneBasic(0, 0, 0);
-    nbEventPrefabRead(0, 0, 0);
-    evtSetUnitMotion(0, 0, 0, 0, 0);
-    nbCameraBoss_Bsnet_E907_Run();
-    nbCameraBoss_Bsnet_E907_2_Set();
-    nbCameraBoss_Bsnet_E907_2_Run();
-    effPadVibeFadeOUT(0, 0, 0);
-    dds3PadAct(0, 0, 0);
-    nbUpdateEventProcessData(0);
+  u64 *v2;
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v8;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v11;
+  s64 *v12;
+  struct nbE907_funcDelegate_array *func;
+  s64 seq;
+  s32 time;
+  dds3ModelHandle_t_o *Model;
+  s32 eventrid;
+  s32 v27;
+  dds3Basic_t_o *v30;
+  s32 v32;
+  s32 pPBCameraBasicIndex;
+  s32 v37;
+  u8 v41;
+  u32 v42;
+  dds3Basic_t_o *ActiveScene;
+  evtUnitHandle_t_o *h;
+  dds3ProcessID_t_o *ida;
+  u64 v48[3];
+
+  ida = id;
+  ActiveScene = 0;
+  v2 = Allocate(evtUnitHandle_t);
+  evtUnitHandle_t___ctor(v2);
+  h = v2;
+  ActiveScene = dds3GetActiveScene();
+  ProcessData = dds3GetProcessData(&ida);
+  v8 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v48);
+      if ((v48[0] & 1) != 0)
+        v11 = v48[2];
+      else
+        v11 = v48 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  seq = v8->seq;
+  if (Invoke(func->m_Items[seq], v8))
+  {
+    pPBCameraBasicCurrent = 0;
+    if (pPBCameraBasic00)
+    {
+      nbEventPrefabDelete(&pPBCameraBasic00);
+      dds3DeleteSceneBasicData(&pPBCameraBasic00);
+      pPBCameraBasic00 = 0;
+    }
+    if (pPBCameraBasic01)
+    {
+      nbEventPrefabDelete(&pPBCameraBasic01);
+      dds3DeleteSceneBasicData(&pPBCameraBasic01);
+      pPBCameraBasic01 = 0;
+    }
+    ida->func_ans = -1;
     return 0;
+  }
+  time = v8->time;
+  if (time < 1)
+    goto LABEL_74;
+  if (pPBCameraBasicCurrent)
+  {
+    h = dds3GetUnitHandleObjectBasic(&pPBCameraBasicCurrent);
+    Model = h->Model;
+    if (Model)
+    {
+      nbCameraHelperModelSet(Model);
+    }
+  }
+  time = v8->time;
+  if (time <= 152)
+  {
+LABEL_74:
+    if (!time)
+    {
+      nbCameraSetState(0x17u);
+      pPBCameraBasicCurrent = 0;
+      pPBCameraBasic00 = 0;
+      pPBCameraBasic01 = 0;
+      nbAllFormDispOn();
+      nbSetEnemyFormation(&v8->data);
+      nbSetPlayerFormation(&v8->data, 0);
+      nbCameraBoss_Bsnet_E907_Set();
+      v37 = v8->time;
+      if (v37 > 20)
+        goto LABEL_124;
+      goto LABEL_138;
+    }
+    if (time == 152)
+    {
+      nbCameraSetState(0x17u);
+      eventrid = v8->eventrid;
+      v27 = evtRegistBEUnit(eventrid, 3);
+      v30 = dds3SearchSceneBasic(&ActiveScene, v27, 5u);
+      pPBCameraBasic00 = v30;
+      pPBCameraBasicIndex = 3;
+      v32 = v8->eventrid;
+      nbEventPrefabRead(&pPBCameraBasic00, v32, pPBCameraBasicIndex);
+      h = dds3GetUnitHandleObjectBasic(&pPBCameraBasic00);
+      evtSetUnitMotion(&h, 0, 0, 0, 2);
+      pPBCameraBasicCurrent = pPBCameraBasic00;
+      v37 = v8->time;
+      if (v37 > 20)
+        goto LABEL_124;
+      goto LABEL_138;
+    }
+    if (time < 135)
+      goto LABEL_123;
+    nbCameraBoss_Bsnet_E907_Run();
+    time = v8->time;
+  }
+  else
+  {
+    if (time == 235)
+    {
+      pPBCameraBasicCurrent = 0;
+      v37 = v8->time;
+      if (v37 > 20)
+        goto LABEL_124;
+      goto LABEL_138;
+    }
+    if (time == 237)
+    {
+      nbCameraBoss_Bsnet_E907_2_Set();
+      goto LABEL_122;
+    }
+  }
+  if (time < 237)
+    goto LABEL_123;
+LABEL_122:
+  nbCameraBoss_Bsnet_E907_2_Run();
+LABEL_123:
+  v37 = v8->time;
+  if (v37 > 20)
+  {
+LABEL_124:
+    if (v37 != 140)
+    {
+      if (v37 == 230)
+      {
+        effPadVibeFadeOUT(0, 0, 0);
+        effPadVibeFadeOUT(1u, 0xDCu, 70);
+      }
+      goto LABEL_149;
+    }
+    dds3PadAct(0, 0, 0);
+    v41 = -36;
+    v42 = 92;
+    goto LABEL_148;
+  }
+LABEL_138:
+  if (v37)
+  {
+    if (v37 != 20)
+      goto LABEL_149;
+    dds3PadAct(0, 0, 0);
+    v42 = 160;
+    v41 = 120;
+  }
+  else
+  {
+    dds3PadAct(0, 0, 0x14u);
+    v41 = 80;
+    v42 = 20;
+  }
+LABEL_148:
+  dds3PadAct(1u, v41, v42);
+LABEL_149:
+  nbUpdateEventProcessData(&ida);
+  return 0;
 }

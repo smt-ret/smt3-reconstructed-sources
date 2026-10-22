@@ -132,6 +132,7 @@ void *nbAtoProcess1(dds3ProcessID_t *id) {
       v17 = &Method_nbAtoProcess_nbAtoGameoverProcess__;
     v10 = *v17;
     v11 = Method_System_Func_dds3ProcessID_t__object___ctor__;
+    goto LABEL_36;
   }
   if (endtype == 6)
   {
@@ -139,6 +140,7 @@ void *nbAtoProcess1(dds3ProcessID_t *id) {
     v10 = Method_nbAtoProcess_nbAtoStoneProcess__;
     v11 = Method_System_Func_dds3ProcessID_t__object___ctor__;
     v12 = v9;
+LABEL_36:
     object____ctor(v9, 0, v10, v11);
     return v12;
   }
@@ -156,13 +158,38 @@ void *nbAtoShutdown(dds3ProcessID_t *id) {
 
 // 0xfaa740
 void *nbAtoStoneProcess(dds3ProcessID_t *id) {
-    dds3GetProcessRunTime(0);
-    nbGetMainProcessData();
-    dds3FadeOut(0, 0, 0, 0);
-    nbCameraSetState(0);
-    nbSetDevilNameMes(0, 0, 0);
-    nbDispMsgHelp(0, 0, 0);
-    return 0;
+  signed s32 ProcessRunTime;
+  nbMainProcessData_t_o *MainProcessData;
+  nbMainProcessData_t_o *v6;
+  s32 jyokyomsgid;
+  struct datUnitWork_t_array *unitwork;
+  datUnitWork_t_o *v11;
+  s32 v13;
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ProcessRunTime = dds3GetProcessRunTime(&ida);
+  else
+  {
+    MainProcessData = nbGetMainProcessData();
+    if (ProcessRunTime > 30)
+      goto LABEL_9;
+  }
+  if (ProcessRunTime == 10)
+  {
+    nbCameraSetState(0x14u);
+  }
+  else if (ProcessRunTime == 30)
+  {
+    v6 = MainProcessData;
+    jyokyomsgid = MainProcessData->jyokyomsgid;
+    unitwork = DDS3_GBWK->unitwork;
+    v11 = unitwork->m_Items[0];
+    nbSetDevilNameMes(jyokyomsgid, 0, v11);
+    v13 = v6->jyokyomsgid;
+    nbDispMsgHelp(v13, 58, 1);
+  }
+  return 0;
 }
 
 // 0xfaaf60
@@ -185,7 +212,7 @@ void nbInitAtoProcess(nbMainProcessData_t *data) {
     v5,
     0,
     Method_nbAtoProcess_nbAtoShutdown__);
-  target = dds3StartProcess(StringLiteral_21095, 0x3F9u, 1, 1, v4, 0, v5, 0, 0, 0);
+  target = dds3StartProcess("nb_ato", 0x3F9u, 1, 1, v4, 0, v5, 0, 0, 0);
   dds3LinkProcess(&data->MainProcessID, &target);
   data->AtoProcessID = target;
 }

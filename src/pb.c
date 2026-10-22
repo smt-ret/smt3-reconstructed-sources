@@ -11,8 +11,127 @@ f32 sdfSin(f32 aRadius);
 
 // 0x14aaaf0
 void pbBackup_t__pCopy(pbBackup_t *this, u8 **bytedata, s32 *bpos) {
-    Byte2UInt32(0, 0);
-    Byte2UInt16(0, 0);
+  s32 v7;
+  s64 v9;
+  struct System_Byte_array *pchar_reg;
+  u8 v12;
+  s64 v14;
+  struct System_Byte_array *v15;
+  u8 v17;
+  s64 v19;
+  struct System_Byte_array *v20;
+  u8 v22;
+  s64 v24;
+  struct System_Byte_array *v25;
+  u64 v28;
+  s32 v29;
+  struct System_UInt16_array *pchar_pos;
+  u16 v31;
+  Il2CppArrayBounds *bounds;
+  il2cpp_array_size_t length;
+  s32 v37;
+  struct System_UInt16_array *v38;
+  u16 v39;
+  Il2CppArrayBounds *v40;
+  il2cpp_array_size_t v42;
+  u64 v44;
+  struct System_UInt16_array *exit_pos;
+  u16 v47;
+  s32 v49;
+  struct System_UInt16_array *v50;
+  u16 v52;
+  s32 v54;
+  u64 v55;
+  u64 v56;
+  struct System_UInt16_array *mapdata;
+  u16 v58;
+  Il2CppArrayBounds *v59;
+  il2cpp_array_size_t v61;
+  u64 v63;
+  s64 v64[2];
+  s64 v65[2];
+
+  v7 = *bpos;
+  this->pchar_num = Byte2UInt32(bytedata, v7);
+  *bpos += 4;
+  this->pchar_reg = NewSpecific(byte, 4u);
+  v65[0] = 4;
+  v65[1] = 2;
+  this->pchar_pos = sub_8DB0C0(ushort_, v65, 0);
+  this->exit_pos = NewSpecific(ushort, 2u);
+  v64[0] = 20;
+  v64[1] = 20;
+  this->mapdata = sub_8DB0C0(ushort_, v64, 0);
+  v9 = *bpos;
+  pchar_reg = this->pchar_reg;
+  v12 = bytedata->m_Items[v9];
+  pchar_reg->m_Items[0] = v12;
+  v14 = *bpos + 1LL;
+  *bpos = v14;
+  v15 = this->pchar_reg;
+  v17 = bytedata->m_Items[v14];
+  v15->m_Items[1] = v17;
+  v19 = *bpos + 1LL;
+  *bpos = v19;
+  v20 = this->pchar_reg;
+  v22 = bytedata->m_Items[v19];
+  v20->m_Items[2] = v22;
+  v24 = *bpos + 1LL;
+  *bpos = v24;
+  v25 = this->pchar_reg;
+  v25->m_Items[3] = bytedata->m_Items[v24];
+  v28 = 0;
+  v29 = *bpos + 1;
+  *bpos = v29;
+  do
+  {
+    pchar_pos = this->pchar_pos;
+    v31 = Byte2UInt16(bytedata, v29);
+    bounds = pchar_pos->bounds;
+    length = bounds[1].length;
+    pchar_pos->m_Items[length * v28] = v31;
+    v37 = *bpos + 2;
+    *bpos = v37;
+    v38 = this->pchar_pos;
+    v39 = Byte2UInt16(bytedata, v37);
+    v40 = v38->bounds;
+    v42 = v40[1].length;
+    v44 = v42 * v28++;
+    v38->m_Items[v44 + 1] = v39;
+    v29 = *bpos + 2;
+    *bpos = v29;
+  }
+  while (v28 != 4);
+  exit_pos = this->exit_pos;
+  v47 = Byte2UInt16(bytedata, v29);
+  exit_pos->m_Items[0] = v47;
+  v49 = *bpos + 2;
+  *bpos = v49;
+  v50 = this->exit_pos;
+  v52 = Byte2UInt16(bytedata, v49);
+  v50->m_Items[1] = v52;
+  v54 = *bpos + 2;
+  v55 = 0;
+  v56 = 0;
+  *bpos = v54;
+  while (1)
+  {
+    do
+    {
+      mapdata = this->mapdata;
+      v58 = Byte2UInt16(bytedata, v54);
+      v59 = mapdata->bounds;
+      v61 = v59[1].length;
+      v63 = v55 + v61 * v56++;
+      mapdata->m_Items[v63] = v58;
+      v54 = *bpos + 2;
+      *bpos = v54;
+    }
+    while (v56 != 20);
+    if (++v55 == 20)
+      break;
+    v56 = 0;
+  }
 }
 
 // 0x14b3bf0
@@ -212,7 +331,7 @@ void pb_General__SET_MAP_GOAL_(s32 x, s32 y, s32 v) {
   char *v20;
 
   v4 = v;
-  Log(StringLiteral_21884, 0);
+  Log("Passing_start: ", 0);
   mapdata = pbWk->bup->mapdata;
   bounds = mapdata->bounds;
   length = bounds[1].length;

@@ -49,7 +49,7 @@ static s32 eventcnt;
 static void *LoadPacket;
 static ScrTraceCode_LoadTypeList *UnloadPacket[50];
 static s32 LoadFlag;
-static void HoleEff[UNKNOWN_ARRAY_SIZE];
+static void *HoleEff;
 
 void AttachHD(void *obj, dds3Basic_t *basic, char *name, s32 cb);
 void CodeFunc_2Operation(scrProcessWork_s *pwork, s32 type);
@@ -101,7 +101,7 @@ void AddLoad(dds3Basic_t *basic, char *key, s32 major, s32 minor, char *name, vo
   AssetBundleCtrl_o *v30;
 
   v18 = Empty_string_();
-  Log(StringLiteral_8892, v18, 0);
+  Log("AddLoad!!!!!!!!!!!!!!!!", v18, 0);
   v19 = Allocate(ScrTraceCode_LoadTypeList);
   _ctor(v19, 0);
   *(v19 + 4) = type;
@@ -127,7 +127,7 @@ void AddLoad(dds3Basic_t *basic, char *key, s32 major, s32 minor, char *name, vo
       Load(asset_bc, v19[5], v19[5], 0);
     }
   }
-  if (Equals_5234480(v19[4], StringLiteral_4870))
+  if (Equals_5234480(v19[4], "extram"))
   {
     v28 = get_asset_bc();
     dlc = get_dlc(v28);
@@ -142,35 +142,389 @@ void AddLoad(dds3Basic_t *basic, char *key, s32 major, s32 minor, char *name, vo
 
 // 0x1cd7f0
 char *AddModel(dds3Basic_t *basic, void *obj, s32 major, s32 minor) {
-    Log(0, 0);
-    LoadPrefab_16624656(0, 0, 0, 0);
-    AttachHD(0, 0, 0, 0);
-    LoadKeys(0, 0, 0);
-    SetDevilEffect(0, 0);
-    SetMajinHoleEffect(0);
-    SetShinenEffect(0, 0);
-    dds3GetBaseControlWorkData(0);
-    GetAnimator(0);
-    SetCharacterType(0, 0);
-    UpdateDying(0);
-    mdlSmoothLoopMotionForUnity(0, 0, 0, 0, 0, 0);
-    fldSetCharAdd(0, 0);
-    return 0;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  System_String_o *v12;
+  s32 v13;
+  bool IsNullOrEmpty;
+  System_String_o *v15;
+  System_String_o *v16;
+  Il2CppClass *v17;
+  System_String_o *v18;
+  System_String_o *v19;
+  System_String_array *v20;
+  System_String_o *monitor;
+  Il2CppClass *v27;
+  System_String_o *v29;
+  System_Object_array *v31;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  System_String_o *v36;
+  s32 v37;
+  bool v38;
+  s32 v39;
+  s64 *v40;
+  UnityEngine_GameObject_o *v41;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *v44;
+  System_String_o *name;
+  Il2CppObject *v47;
+  u64 *v49;
+  dds3Basic_t_o *v51;
+  Il2CppObject *workdata;
+  Il2CppClass *v54;
+  s64 v55;
+  evtUnitHandle_t_o *v56;
+  evtUnitHandle_t_o **v57;
+  Il2CppClass *v58;
+  u64 *interfaceOffsets;
+  UnityEngine_Transform_o *v60;
+  UnityEngine_Transform_o *Child;
+  Il2CppClass *v63;
+  dds3Basic_t_o *v66;
+  _BOOL4 v67;
+  System_String_o *v68;
+  dds3ObjectBaseControlWorkData_t_o *BaseControlWorkData;
+  Il2CppObject *pModel;
+  Il2CppClass *v74;
+  s64 v75;
+  UnityEngine_Component_o *Animator;
+  UnityEngine_GameObject_o *gameObject;
+  Il2CppObject *Component_object;
+  UnityEngine_GameObject_o *v83;
+  Il2CppObject *v84;
+  s32 v85;
+  evtUnitHandle_t_o *v86;
+  s32 NowMotion;
+  s32 NowBefore;
+  s32 NowSmooth;
+  s32 v93;
+  char *v101;
+  s64 *v102;
+  char *v103;
+  s64 *v104;
+  s32 LoadCount;
+  dds3Basic_t_o *basica;
+  u64 v107[2];
+  char *v108;
+  UnityEngine_Vector3_o zero;
+
+  basica = basic;
+  if (obj)
+  {
+    klass = obj->klass;
+    if (obj->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3ModelFileTable_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3ModelFileTable_t, v107);
+      if ((v107[0] & 1) != 0)
+        v10 = v108;
+      else
+        v10 = v107 + 1;
+      v11 = sub_8C4940(v10);
+    }
+  }
+  v12 = "charactor";
+  v13 = 0;
+  if (major <= 7)
+  {
+    if (((1 << major) & 5) != 0)
+    {
+      v19 = Concat_5224608("charactor", "/f");
+LABEL_23:
+      v12 = v19;
+      v13 = 0;
+      goto LABEL_24;
+    }
+    if (((1 << major) & 0x42) != 0)
+    {
+      v17 = obj[3].klass;
+      if (Equals_5234480(v17, "devil_0x100e"))
+        v18 = "devil_0x100";
+      else
+        v18 = v17;
+      v12 = Concat_5221536(v12, "/b/", v18);
+      v13 = 1;
+    }
+    else if (((1 << major) & 0x88) != 0)
+    {
+      IsNullOrEmpty = IsNullOrEmpty(obj[1].klass);
+      v15 = "/";
+      if (IsNullOrEmpty)
+        v16 = "e";
+      else
+        v16 = ToLower(obj[1].klass, 0);
+      v19 = Concat_5221536(v12, v15, v16);
+      goto LABEL_23;
+    }
+  }
+LABEL_24:
+  v20 = NewSpecific(string, 6u);
+  v20->m_Items[0] = "AddModel : ";
+  monitor = obj[2].monitor;
+  v20->m_Items[1] = monitor;
+  v20->m_Items[2] = ",";
+  v20->m_Items[3] = v12;
+  v20->m_Items[4] = "/";
+  v27 = obj[3].klass;
+  v20->m_Items[5] = v27;
+  v29 = Concat_5271600(v20);
+  v31 = Empty_string_();
+  Log(v29, v31, 0);
+  asset_bc = get_asset_bc();
+  Prefab_16624656 = LoadPrefab_16624656(asset_bc, obj[2].monitor, v12, obj[3].klass);
+  v36 = 0;
+  if (op_Inequality(Prefab_16624656, 0, 0))
+  {
+    if (IsNullOrEmpty(obj[1].klass))
+    {
+      v37 = 0;
+    }
+    else
+    {
+      v38 = Equals_5234480(obj[1].klass, "I");
+      if (Equals_5234480(obj[1].klass, "J"))
+        v39 = 2;
+      else
+        v39 = 0;
+      v37 = v39 & 0xFFFFFFFE | v38;
+    }
+    v40 = &"Character";
+    if ((v37 & 1) != 0)
+      v40 = &"Field";
+    v41 = Find(*v40, 0);
+    transform = get_transform(v41, 0);
+    v44 = Instantiate_object__425664(Prefab_16624656, transform, 0);
+    name = get_name(v44);
+    v47 = Replace_5267216(name, "(Clone)", "", 0);
+    v49 = sub_8D3950(s32, &LoadCount);
+    v36 = Format_5268592("{0}_{1}", v47, v49);
+    set_name(v44, v36);
+    v51 = basica;
+    workdata = basica->workdata;
+    v54 = workdata->klass;
+    if (workdata->klass->_2.typeHierarchyDepth < v55
+      || v54->_2.typeHierarchy[v55 - 1] != dds3UnitObjectBasicWorkData_t)
+    {
+      sub_8FC2C0(v54->_1.element_class, dds3UnitObjectBasicWorkData_t, v107);
+      if ((v107[0] & 1) != 0)
+        v101 = v108;
+      else
+        v101 = v107 + 1;
+      v102 = sub_8C4940(v101);
+    }
+    v58 = workdata[2].klass;
+    v57 = &workdata[2];
+    v56 = v58;
+    interfaceOffsets = v58->_1.interfaceOffsets;
+    if (interfaceOffsets)
+    {
+      interfaceOffsets[12] = basica;
+      v56 = *v57;
+    }
+    v56->modelobj = v44;
+    if (v13)
+    {
+      v60 = get_transform(v44, 0);
+      Child = GetChild(v60, 0);
+      zero = get_zero();
+      set_localPosition(Child, zero);
+      v51 = basica;
+    }
+    v63 = obj[3].klass;
+    AttachHD(v44, v51, v63, v37);
+    v66 = basica;
+    if (basica)
+    {
+      basica->gameObject = v44;
+      v66->name = v36;
+    }
+    v67 = major == 1 || (major | 1) == 7;
+    if (minor >= 1 && v67)
+    {
+      v68 = obj[2].monitor;
+      LoadKeys(4, v68, 0);
+      SetDevilEffect(&basica, minor);
+    }
+    if (major == 2 && minor == 20)
+    {
+      SetMajinHoleEffect(&basica);
+    }
+    else if (major == 3 && (minor & 0xFFFFFFFC) == 0x18)
+    {
+      SetShinenEffect(&basica, minor);
+    }
+    BaseControlWorkData = dds3GetBaseControlWorkData(&(*v57)->Owner, 0);
+    SetActive(v44, (BaseControlWorkData->flag & 1) == 0, 0);
+    pModel = BaseControlWorkData->pModel;
+    v74 = pModel->klass;
+    if (pModel->klass->_2.typeHierarchyDepth < v75
+      || v74->_2.typeHierarchy[v75 - 1] != dds3ModelHandle_t)
+    {
+      sub_8FC2C0(v74->_1.element_class, dds3ModelHandle_t, v107);
+      if ((v107[0] & 1) != 0)
+        v103 = v108;
+      else
+        v103 = v107 + 1;
+      v104 = sub_8C4940(v103);
+    }
+    if ((pModel[1].klass & 1) != 0)
+      SetActive(v44, 0, 0);
+    Animator = GetAnimator(v44);
+    if (op_Inequality(Animator, 0, 0))
+    {
+      gameObject = get_gameObject(Animator);
+      Component_object = GetComponent_object_(gameObject);
+      if (op_Equality(Component_object, 0, 0))
+      {
+        v83 = get_gameObject(Animator);
+        v84 = AddComponent_object_(v83);
+        if (v67)
+          v85 = 2;
+        else
+          v85 = 0;
+        SetCharacterType(v84, v85);
+      }
+      UpdateDying(v44);
+      v86 = *v57;
+      NowMotion = (*v57)->NowMotion;
+      if ((*v57)->NowMotion)
+      {
+        NowBefore = v86->NowBefore;
+        NowSmooth = v86->NowSmooth;
+        mdlSmoothLoopMotionForUnity(v57, 0, NowMotion, NowBefore, NowSmooth, 0, 0);
+      }
+    }
+    fldSetCharAdd(v36, v44);
+    v93 = LoadCount;
+    LoadCount = v93 + 1;
+    if (v93 >= 0xFFFF)
+    {
+      LoadCount = 0;
+    }
+  }
+  return v36;
 }
 
 // 0x1ce380
 void AttachHD(void *obj, dds3Basic_t *basic, char *name, s32 cb) {
-    evtUpdateEx_FieldLoadAfter(0, 0, 0);
-    PriChrHDGet(0);
-    SetEveUnit(0, 0);
-    mdlSetHD(0, 0, 0, 0);
-    evtUpdateEx_CharLoadAfter(0, 0, 0, 0);
+  dds3Basic_t_o *v7;
+  FieldBgHD_o *v9;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v16;
+  s64 *v17;
+  UnityEngine_Object_o *Manager__PriChrHDGet;
+  bool v20;
+  evtUnitHandle_t_o *v22;
+  u64 v24[3];
+
+  v7 = basic;
+  if (cb == 2)
+  {
+    v9 = AddComponent_object_(obj);
+    v9->filedname = name;
+    {
+LABEL_6:
+    }
+LABEL_9:
+    evtUpdateEx_FieldLoadAfter(v9, obj, name);
+    return;
+  }
+  if (cb == 1)
+  {
+    v9 = AddComponent_object_(obj);
+    transform = get_transform(obj, 0);
+    Rotate_27486992(transform, 0.0, 180.0, 0.0);
+    v9->filedname = name;
+      goto LABEL_6;
+    goto LABEL_9;
+  }
+  workdata = v7->workdata;
+  if (workdata)
+  {
+    klass = workdata->klass;
+    if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3UnitObjectBasicWorkData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3UnitObjectBasicWorkData_t, v24);
+      if ((v24[0] & 1) != 0)
+        v16 = v24[2];
+      else
+        v16 = v24 + 1;
+      v17 = sub_8C4940(v16);
+    }
+  }
+  Manager__PriChrHDGet = PriChrHDGet(obj);
+  v20 = op_Inequality(Manager__PriChrHDGet, 0, 0);
+  v22 = workdata[2].klass;
+  if (v20)
+  {
+    SetEveUnit(Manager__PriChrHDGet, v22);
+  }
+  else
+  {
+    Manager__PriChrHDGet = mdlSetHD(obj, 2, v22, 15);
+  }
+  evtUpdateEx_CharLoadAfter(Manager__PriChrHDGet, obj, v7, name);
 }
 
 // 0x1ca920
 void CodeFunc_2Operation(scrProcessWork_s *pwork, s32 type) {
-    PopInt(0);
-    PopFloat(0);
+  struct System_Byte_array *StackType;
+  s64 v6;
+  s32 v9;
+  struct System_Byte_array *v10;
+  s64 v11;
+  s32 CodeFunc_2Operation_t1;
+  s32 CodeFunc_2Operation_t2;
+  f32 v21;
+  struct System_Byte_array *v23;
+  f32 CodeFunc_2Operation_rf;
+  s64 v25;
+  s64 SP;
+  struct scrStackData_u_array *StackData;
+  s64 v31;
+
+  StackType = pwork->StackType;
+  v6 = pwork->SP - 1LL;
+  v9 = StackType->m_Items[v6];
+  CodeFunc_2Operation_t1 = v9;
+  v10 = pwork->StackType;
+  v11 = pwork->SP - 2LL;
+  CodeFunc_2Operation_t2 = v10->m_Items[v11];
+  if (CodeFunc_2Operation_t1)
+  {
+    else if (CodeFunc_2Operation_t1 != 2)
+    {
+      goto LABEL_30;
+    }
+  }
+  else
+  {
+    if (!CodeFunc_2Operation_t2)
+      goto LABEL_20;
+  }
+  if (CodeFunc_2Operation_t2 == 2)
+    goto LABEL_20;
+LABEL_30:
+  CodeFunc_2Operation_f1 = PopFloat(pwork, *&type);
+  v21 = PopFloat(pwork);
+  CodeFunc_2Operation_f2 = v21;
+  if (type <= 0xB)
+    __asm { BR              X10 }
+  v23 = pwork->StackType;
+  v25 = pwork->SP;
+  v23->m_Items[v25] = 1;
+LABEL_47:
+  StackData = pwork->StackData;
+  v31 = pwork->SP;
+  *(&StackData->m_Items[0].i + v31) = CodeFunc_2Operation_rf;
+  ++pwork->SP;
 }
 
 // 0x1cb2e0
@@ -292,7 +646,7 @@ s32 CodeFunc_IF(scrProcessWork_s *pwork) {
   v6 = StackType->m_Items[v4];
   if (v6 <= 4)
     __asm { BR              X10 }
-  v7 = StringLiteral_8879;
+  v7 = "CodeFunc_IF(..) invalid stack type(?)!!\n";
   v9 = Empty_string_();
   Log(v7, v9, 0);
   LabelTable = pwork->LabelTable;
@@ -345,7 +699,7 @@ s32 CodeFunc_Minus(scrProcessWork_s *pwork) {
   v6 = StackType->m_Items[v4];
   if (v6 <= 4)
     __asm { BR              X10 }
-  v7 = StringLiteral_8875;
+  v7 = "CodeFunc_Minus(..) invalid stack type(?)!!\n";
   v9 = Empty_string_();
   Log(v7, v9, 0);
   ++pwork->CP;
@@ -379,7 +733,7 @@ s32 CodeFunc_Not(scrProcessWork_s *pwork) {
   v6 = StackType->m_Items[v4];
   if (v6 <= 4)
     __asm { BR              X10 }
-  v7 = StringLiteral_8877;
+  v7 = "CodeFunc_Not(..) invalid stack type(?)!!\n";
   v9 = Empty_string_();
   Log(v7, v9, 0);
   ++pwork->CP;
@@ -730,7 +1084,7 @@ s32 CodeFunc_Run(scrProcessWork_s *pwork) {
   System_String_o *v3;
   System_Object_array *v5;
 
-  v3 = StringLiteral_8873;
+  v3 = "CodeFunc_Run(..) Can't running command!!\n";
   v5 = Empty_string_();
   Log(v3, v5, 0);
   ++pwork->CP;
@@ -810,6 +1164,7 @@ void FindHojiObj(void) {
 // 0x1c71e0
 void InitLoadPacket(void) {
   struct ScrTraceCode_LoadTypeList_array *v4;
+  ScrTraceCode_c *v5;
   u64 v6;
   struct ScrTraceCode_LoadTypeList_array *UnloadPacket;
 
@@ -819,12 +1174,19 @@ void InitLoadPacket(void) {
   v4 = NewSpecific(ScrTraceCode_LoadTypeList, 0x32u);
   v6 = 0;
   UnloadPacket = v4;
+  if ((v5->_2.bitflags2 & 2) != 0)
+  {
+LABEL_9:
+    goto LABEL_11;
+  }
   while (1)
   {
+LABEL_11:
     UnloadPacket->m_Items[v6] = 0;
     if (v6 == 49)
       break;
     ++v6;
+      goto LABEL_9;
   }
 }
 
@@ -852,7 +1214,7 @@ f32 PopFloat(scrProcessWork_s *pwork) {
   v6 = StackType->m_Items[v4];
   if (v6 <= 4)
     __asm { BR              X10 }
-  v7 = StringLiteral_8872;
+  v7 = "PopFloat(..) invalid stack type(?)!!\n";
   v9 = Empty_string_();
   Log(v7, v9, 0);
   return 0.0;
@@ -872,7 +1234,7 @@ s32 PopInt(scrProcessWork_s *pwork) {
   v6 = StackType->m_Items[v4];
   if (v6 <= 4)
     __asm { BR              X10 }
-  v7 = StringLiteral_8870;
+  v7 = "PopInt(..) invalid stack type!!\n";
   v9 = Empty_string_();
   Log(v7, v9, 0);
   return 0;
@@ -950,43 +1312,51 @@ char *ReplaceDvlKeyName(char *dvl, s32 *minor) {
   s32 v10;
 
   v5 = ToUpper(dvl, 0);
-  if (Equals_5234480(v5, StringLiteral_8893))
+  if (Equals_5234480(v5, "DVL0X113"))
   {
     else
     {
       if (CurrentEvent == 644)
       {
-        v9 = &StringLiteral_8894;
+LABEL_7:
+        v9 = &"dvl0x12b";
         v10 = 299;
+LABEL_22:
         *minor = v10;
         return *v9;
       }
     }
     else if (CurrentEvent == 658)
     {
-      v9 = &StringLiteral_8895;
+LABEL_12:
+      v9 = &"dvl0xcd";
       v10 = 205;
+      goto LABEL_22;
     }
   }
-  if (Equals_5234480(v5, StringLiteral_8896))
+  if (Equals_5234480(v5, "DVL0X11B"))
   {
-    v9 = &StringLiteral_8897;
+    v9 = &"dvl0xcc";
     v10 = 204;
+    goto LABEL_22;
   }
-  if (Equals_5234480(v5, StringLiteral_8898))
+  if (Equals_5234480(v5, "DVL0X123"))
   {
-    v9 = &StringLiteral_8899;
+    v9 = &"dvl0x102";
     v10 = 258;
+    goto LABEL_22;
   }
-  if (Equals_5234480(v5, StringLiteral_8900))
+  if (Equals_5234480(v5, "DVL0X124"))
   {
-    v9 = &StringLiteral_8901;
+    v9 = &"dvl0x103";
     v10 = 259;
+    goto LABEL_22;
   }
-  if (Equals_5234480(v5, StringLiteral_8902))
+  if (Equals_5234480(v5, "DVL0X161"))
   {
-    v9 = &StringLiteral_8903;
+    v9 = &"dvl0xcb";
     v10 = 203;
+    goto LABEL_22;
   }
   return dvl;
 }
@@ -1002,35 +1372,323 @@ s32 SDF_ABORT1(char *a) {
 
 // 0x1ce640
 void SetDevilEffect(dds3Basic_t **bas, s32 id) {
-    dds3GetBaseControlWorkData(0);
-    GetAkey(0);
-    GetPBname(0);
-    sdfDevLoadFileUnity_25061072(0, 0, 0, 0);
-    sdfModelMakeUnity(0, 0, 0);
-    mdlEffectCreateUnity(0, 0, 0, 0);
-    mdlGenEffect(0, 0, 0);
+  dds3ModelHandle_t_o *pModel;
+  dds3ModelHandle_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  dds3ModelResrc_t_o *v10;
+  struct dds3ModelResrc_t_o *resrc;
+  struct dds3ModelResrc_t_o *v12;
+  u64 *v13;
+  System_String_o *Akey;
+  System_String_o *PBname;
+  System_String_o *v17;
+  System_Byte_array *v19;
+  dds3ModelHandle_t_o *v20;
+  mdlEffectResrcList_t_o *efc_res_list;
+  System_Byte_array *aTopPtr;
+  dds3ModelHandle_t_o *v26[3];
+  dds3ModelHandle_t_o *aHandle;
+
+  aHandle = 0;
+  efc_res_list = 0;
+  aTopPtr = 0;
+  pModel = dds3GetBaseControlWorkData(bas)->pModel;
+  if (pModel)
+  {
+    klass = pModel->klass;
+    if (pModel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3ModelHandle_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3ModelHandle_t, v26);
+      if ((v26[0] & 1) != 0)
+        v8 = v26[2];
+      else
+        v8 = v26 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  aHandle = pModel;
+  v10 = Allocate(dds3ModelResrc_t);
+  dds3ModelResrc_t___ctor(v10);
+  pModel->resrc = v10;
+  v10->major = 1;
+  pModel->resrc->minor = id;
+  resrc = pModel->resrc;
+  pModel->effects = 0;
+  resrc->effectData = 0;
+  v12 = pModel->resrc;
+  v13 = Allocate(mdlEffectResrcList_t);
+  mdlEffectResrcList_t___ctor(v13);
+  v12->effectResrcList = v13;
+  Akey = GetAkey(id);
+  PBname = GetPBname(id);
+  v17 = Concat_5221536("dds3data/dvl_pb/", PBname, ".bytes");
+  aTopPtr = 0;
+  sdfDevLoadFileUnity_25061072(v17, &aTopPtr, 0, Akey);
+  v19 = aTopPtr;
+  v20 = pModel;
+  {
+    v20 = pModel;
+  }
+  pModel->modelRoot = sdfModelMakeUnity(0, v19, 0);
+  v20->modelRoot->modelobj = (*bas)->gameObject;
+  v20->resrc->effectData = &aTopPtr->obj;
+  efc_res_list = v20->resrc->effectResrcList;
+  mdlEffectCreateUnity(6, id, &efc_res_list, 1);
+  v20->resrc->effectResrcList = efc_res_list;
+  if (!mdlGenEffect(&aHandle, -1, -1))
+  {
+    mdlGenEffect(&aHandle, 0, 0);
+  }
 }
 
 // 0x1ce950
 void SetMajinHoleEffect(dds3Basic_t **bas) {
-    dds3GetBaseControlWorkData(0);
-    sdfDevLoadFileUnity_25061072(0, 0, 0, 0);
-    LoadFile(0, 0, 0, 0, 0);
-    billSetTexture(0);
-    sdfModelMakeUnity(0, 0, 0);
-    LoadFileByte(0, 0, 0);
-    mdlCreateEffectResrc_D3P(0, 0, 0);
-    mdlGenEffect(0, 0, 0);
+  dds3ObjectBaseControlWorkData_t_o *BaseControlWorkData;
+  Il2CppObject *pModel;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  dds3ModelResrc_t_o *v9;
+  u64 *monitor;
+  u64 *v11;
+  u64 *v12;
+  System_String_o *v13;
+  struct UnityEngine_Texture_array *HoleEff;
+  struct UnityEngine_Texture_array *v19;
+  struct UnityEngine_Texture_array *v21;
+  AssetBundleCtrl_o *asset_bc;
+  s64 *File;
+  s64 *v25;
+  s64 v26;
+  s64 v27;
+  char *v28;
+  s64 *v29;
+  s64 v31;
+  s64 v32;
+  char *v33;
+  s64 *v34;
+  UnityEngine_Texture_array *v36;
+  dds3ModelHandle_t_o *v38;
+  System_Byte_array *v39;
+  dds3ModelHandle_t_o *v40;
+  AssetBundleCtrl_o *v41;
+  System_Byte_array *FileByte;
+  struct UnityEngine_Texture_array *v45;
+  mdlEffectResrcList_t_o *listPtr;
+  System_Byte_array *aTopPtr;
+  u64 v49[2];
+  char *v50;
+  dds3ModelHandle_t_o *aHandle;
+
+  aHandle = 0;
+  listPtr = 0;
+  aTopPtr = 0;
+  BaseControlWorkData = dds3GetBaseControlWorkData(bas);
+  pModel = BaseControlWorkData->pModel;
+  if (pModel)
+  {
+    klass = pModel->klass;
+    if (pModel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3ModelHandle_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3ModelHandle_t, v49);
+      if ((v49[0] & 1) != 0)
+        v7 = v50;
+      else
+        v7 = v49 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  aHandle = BaseControlWorkData->pModel;
+  v9 = Allocate(dds3ModelResrc_t);
+  dds3ModelResrc_t___ctor(v9);
+  pModel[2].monitor = v9;
+  v9->major = 2;
+  *(pModel[2].monitor + 17) = 20;
+  monitor = pModel[2].monitor;
+  pModel[3].monitor = 0;
+  monitor[12] = 0;
+  v11 = pModel[2].monitor;
+  v12 = Allocate(mdlEffectResrcList_t);
+  mdlEffectResrcList_t___ctor(v12);
+  v11[13] = v12;
+  aTopPtr = 0;
+  v13 = "fldplayer";
+  sdfDevLoadFileUnity_25061072("charactor/f/hole/majin_hole.PB.bytes", &aTopPtr, 0, "fldplayer");
+  if (HoleEff)
+  {
+    else if (!LODWORD(HoleEff->max_length))
+    {
+      goto LABEL_17;
+    }
+    HoleEff->m_Items[0] = 0;
+    UnloadUnusedAssets();
+  }
+  v19 = NewSpecific(UnityEngine_Texture, 1u);
+  HoleEff = v19;
+  v21 = HoleEff;
+  asset_bc = get_asset_bc();
+  File = LoadFile(asset_bc, "fldplayer", "charactor/f/hole", "majin_hole_0", ".png");
+  v25 = File;
+  if (File)
+  {
+    v26 = *File;
+    if (*(*File + 288) < v27 || *(*(v26 + 200) + 8 * v27 - 8) != UnityEngine_Texture)
+    {
+      sub_8FC2C0(*(v26 + 64), UnityEngine_Texture, v49);
+      if ((v49[0] & 1) != 0)
+        v28 = v50;
+      else
+        v28 = v49 + 1;
+      v29 = sub_8C4940(v28);
+    }
+    v31 = *v25;
+    if (*(*v25 + 288) < v32 || *(*(v31 + 200) + 8 * v32 - 8) != UnityEngine_Texture)
+    {
+      sub_8FC2C0(*(v31 + 64), UnityEngine_Texture, v49);
+      if ((v49[0] & 1) != 0)
+        v33 = v50;
+      else
+        v33 = v49 + 1;
+      v34 = sub_8C4940(v33);
+    }
+  }
+  v21->m_Items[0] = v25;
+  v36 = HoleEff;
+  billSetTexture(v36);
+  v38 = aHandle;
+  v39 = aTopPtr;
+  v40 = aHandle;
+  {
+    v40 = aHandle;
+  }
+  v38->modelRoot = sdfModelMakeUnity(0, v39, 0);
+  v40->modelRoot->modelobj = (*bas)->gameObject;
+  v40->resrc->effectData = &aTopPtr->obj;
+  listPtr = v40->resrc->effectResrcList;
+  v41 = get_asset_bc();
+  FileByte = LoadFileByte(v41, v13, "charactor/f/hole/majin_hole.D3P.bytes");
+  mdlCreateEffectResrc_D3P(&listPtr, &FileByte->obj, 0);
+  v40->resrc->effectResrcList = listPtr;
+  if (!mdlGenEffect(&aHandle, -1, -1))
+  {
+    mdlGenEffect(&aHandle, 0, 0);
+  }
+  else
+  {
+    v45 = HoleEff;
+    if (!LODWORD(v45->max_length))
+      goto LABEL_61;
+  }
+  v45->m_Items[0] = 0;
+  UnloadUnusedAssets();
 }
 
 // 0x1cef30
 void SetShinenEffect(dds3Basic_t **bas, s32 id) {
-    dds3GetBaseControlWorkData(0);
-    sdfDevLoadFileUnity_25061072(0, 0, 0, 0);
-    sdfModelMakeUnity(0, 0, 0);
-    LoadFileByte(0, 0, 0);
-    mdlCreateEffectResrc_D3P(0, 0, 0);
-    mdlGenEffect(0, 0, 0);
+  dds3ObjectBaseControlWorkData_t_o *BaseControlWorkData;
+  Il2CppObject *pModel;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v9;
+  s64 *v10;
+  dds3ModelResrc_t_o *v11;
+  u64 *monitor;
+  u64 *v13;
+  u64 *v14;
+  s32 v15;
+  u64 *v16;
+  System_String_o *v17;
+  System_String_o *v18;
+  System_Byte_array *v20;
+  dds3ModelHandle_t_o *v21;
+  u64 *v22;
+  System_String_o *v23;
+  System_String_o *v25;
+  AssetBundleCtrl_o *asset_bc;
+  System_String_o *v27;
+  System_Byte_array *FileByte;
+  AssetBundleCtrl_o *v30;
+  System_String_o *v31;
+  System_Byte_array *v32;
+  s32 v34;
+  mdlEffectResrcList_t_o *listPtr;
+  System_Byte_array *aTopPtr;
+  dds3ModelHandle_t_o *aHandle;
+  u64 v38[3];
+
+  listPtr = 0;
+  aTopPtr = 0;
+  aHandle = 0;
+  BaseControlWorkData = dds3GetBaseControlWorkData(bas);
+  pModel = BaseControlWorkData->pModel;
+  if (pModel)
+  {
+    klass = pModel->klass;
+    if (pModel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3ModelHandle_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3ModelHandle_t, v38);
+      if ((v38[0] & 1) != 0)
+        v9 = v38[2];
+      else
+        v9 = v38 + 1;
+      v10 = sub_8C4940(v9);
+    }
+  }
+  aHandle = BaseControlWorkData->pModel;
+  v11 = Allocate(dds3ModelResrc_t);
+  dds3ModelResrc_t___ctor(v11);
+  pModel[2].monitor = v11;
+  v11->major = 1;
+  *(pModel[2].monitor + 17) = id;
+  monitor = pModel[2].monitor;
+  pModel[3].monitor = 0;
+  monitor[12] = 0;
+  v13 = pModel[2].monitor;
+  v14 = Allocate(mdlEffectResrcList_t);
+  mdlEffectResrcList_t___ctor(v14);
+  v13[13] = v14;
+  if ((id - 25) > 2)
+    v15 = 51;
+  else
+    v15 = dword_32C3078[id - 25];
+  LODWORD(v38[0]) = v15;
+  v16 = sub_8D3950(s32, v38);
+  v17 = Format("npc{0:D2}", v16, 0);
+  v18 = Concat_5221536("dds3data/fld/f/bin/", v17, ".PB.bytes");
+  aTopPtr = 0;
+  sdfDevLoadFileUnity_25061072(v18, &aTopPtr, 0, "f_bin");
+  v20 = aTopPtr;
+  v21 = pModel;
+  {
+    v21 = pModel;
+  }
+  pModel[4].klass = sdfModelMakeUnity(0, v20, 0);
+  v21->modelRoot->modelobj = (*bas)->gameObject;
+  v21->resrc->effectData = &aTopPtr->obj;
+  listPtr = v21->resrc->effectResrcList;
+  v34 = v15;
+  v22 = sub_8D3950(s32, &v34);
+  v23 = Format("npc_eff{0:D2}", v22, 0);
+  v25 = Concat_5224608("dds3data/fld/f/bin/", v23);
+  asset_bc = get_asset_bc();
+  v27 = Concat_5224608(v25, "_0.D3P.bytes");
+  FileByte = LoadFileByte(asset_bc, "f_bin", v27);
+  mdlCreateEffectResrc_D3P(&listPtr, &FileByte->obj, 0);
+  v30 = get_asset_bc();
+  v31 = Concat_5224608(v25, "_1.D3P.bytes");
+  v32 = LoadFileByte(v30, "f_bin", v31);
+  mdlCreateEffectResrc_D3P(&listPtr, &v32->obj, 0);
+  aHandle->resrc->effectResrcList = listPtr;
+  if (!mdlGenEffect(&aHandle, -1, -1))
+  {
+    mdlGenEffect(&aHandle, 0, 0);
+  }
 }
 
 // 0x1cf4a0
@@ -1212,14 +1870,14 @@ void UpdateDying(void *plyobj) {
   {
     v4 = Substring_5248048(name, 0, 12);
     v5 = ToUpper(v4, 0);
-    if (Equals_5234480(v5, StringLiteral_8891))
+    if (Equals_5234480(v5, "PLAYER_TATOO"))
     {
       Animator = GetAnimator(plyobj);
       if (!op_Equality(Animator, 0, 0) && get_layerCount(Animator) != 1)
       {
         SetInteger(
           Animator,
-          StringLiteral_4572,
+          "anim",
           (fldDbg->PlayerStatus >> 1) & 1,
           0);
       }
@@ -1266,7 +1924,7 @@ f32 scrGetFloatPara(s32 n) {
   v8 = StackType->m_Items[v6];
   if (v8 <= 4)
     __asm { BR              X10 }
-  v9 = StringLiteral_8881;
+  v9 = "scrGetFloatPara(..) invalid stack type!!\n";
   v11 = Empty_string_();
   Log(v9, v11, 0);
   return 0.0;
@@ -1286,7 +1944,7 @@ s32 scrGetIntPara(s32 n) {
   v8 = StackType->m_Items[v6];
   if (v8 <= 4)
     __asm { BR              X10 }
-  v9 = StringLiteral_8880;
+  v9 = "scrGetIntPara(..) invalid stack type!!\n";
   v11 = Empty_string_();
   Log(v9, v11, 0);
   return 0;
@@ -1353,7 +2011,7 @@ char *scrGetStrPara(s32 n) {
   v8 = v7;
   if (StackType->m_Items[v7] != 5)
   {
-    v13 = StringLiteral_8882;
+    v13 = "scrGetStrPara(..) invalid stack type!!\n";
     v15 = Empty_string_();
     Log(v13, v15, 0);
     return 0;
@@ -1373,7 +2031,7 @@ char *scrGetStrPara(s32 n) {
   BlockCopy(nowpwork->StringData, v17, v22, 0, v20);
   ASCII = get_ASCII();
   v25 = (ASCII->klass[1]._1.byval_arg.data)(ASCII, v22, *&ASCII->klass[1]._1.byval_arg.bits);
-  return Replace_5267216(v25, StringLiteral_859, StringLiteral_416);
+  return Replace_5267216(v25, " ", "");
 }
 
 // 0x1cd470
@@ -1432,12 +2090,14 @@ s32 scrTraceCode(scrProcessWork_s *pwork) {
         pwork->CommandTimerF = 0.0;
         break;
       case 2:
+        goto LABEL_20;
       case 0:
         pwork->CommandTimer = 0;
         pwork->CommandTimerF = 0.0;
         return 2;
     }
   }
+LABEL_20:
   ++eventcnt;
   CommandTimerF = pwork->CommandTimerF;
   v15 = CommandTimerF + get_deltaTime();

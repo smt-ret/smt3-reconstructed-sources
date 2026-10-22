@@ -48,6 +48,7 @@ void GetElement(u32 *segment, f32 *weight, fldResourcePathData_t *pData, f32 fra
   if (pData->nKey == 1)
   {
     v5 = -1;
+LABEL_12:
     v18 = 1.0;
     *segment = v5;
   }
@@ -76,6 +77,7 @@ void GetElement(u32 *segment, f32 *weight, fldResourcePathData_t *pData, f32 fra
       if (v12 >= nKey - 1)
       {
         v5 = nKey - 2;
+        goto LABEL_12;
       }
     }
     max_length = pKey->max_length;
@@ -398,9 +400,183 @@ void dds3PathBasicLoopOn(dds3PathBasicControl_t **pControl) {
 
 // 0x14ed880
 dds3PathBasicControl_t *dds3PathBasicMakeControl(dds3Basic_t **pBasic) {
-    dds3PathBasicControl_t__Clear(0);
-    effSplInitialize2(0, 0, 0);
+  u64 *v3;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  u64 *v9;
+  f64 v11;
+  u64 v12;
+  u64 v13;
+  u64 v14;
+  u64 *monitor;
+  s64 v17;
+  u64 v18;
+  s64 v19;
+  s64 v20;
+  char *v21;
+  s64 *v22;
+  UnityEngine_Vector3_array *v23;
+  u32 v24;
+  s64 v25;
+  s64 v26;
+  char *v27;
+  s64 *v28;
+  s64 v29;
+  s64 v30;
+  char *v31;
+  s64 *v32;
+  s64 v33;
+  s64 v34;
+  char *v35;
+  s64 *v36;
+  s64 v37;
+  s64 v38;
+  u64 v41[2];
+  char *v42;
+
+  v3 = Allocate(fldResourcePathData_t);
+  fldResourcePathData_t___ctor(v3);
+  workdata = (*pBasic)->workdata;
+  if (workdata)
+  {
+    klass = workdata->klass;
+    if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fldResourcePathTableInfo_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fldResourcePathTableInfo_t, v41);
+      if ((v41[0] & 1) != 0)
+        v7 = v42;
+      else
+        v7 = v41 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  if (!LODWORD(workdata[1].klass))
     return 0;
+  v9 = Allocate(dds3PathBasicControl_t);
+  dds3PathBasicControl_t___ctor(v9);
+  dds3PathBasicControl_t__Clear(v9);
+  *(v9 + 4) = 0;
+  v9[3] = 0;
+  if (LODWORD(workdata[1].klass))
+  {
+    v12 = 0;
+    do
+    {
+      monitor = workdata[1].monitor;
+      v17 = monitor[v12 + 4];
+      v18 = *(v17 + 24);
+      switch (*(v17 + 16))
+      {
+        case 0:
+          *(v9 + 5) |= 1u;
+          if (v18)
+          {
+            v19 = *v18;
+            if (*(*v18 + 288LL) < v20
+              || *(*(v19 + 200) + 8 * v20 - 8) != fldResourcePathData_t_Vector3)
+            {
+              sub_8FC2C0(*(v19 + 64), fldResourcePathData_t_Vector3, v41);
+              if ((v41[0] & 1) != 0)
+                v21 = v42;
+              else
+                v21 = v41 + 1;
+              v22 = sub_8C4940(v21);
+            }
+            v13 = v18;
+          }
+          else
+          {
+            v13 = 0;
+          }
+          v9[5] = v13;
+          v23 = *(v13 + 40);
+          v24 = *(v13 + 16);
+          v9[4] = effSplInitialize2(v23, v24, 1);
+          break;
+        case 2:
+          *(v9 + 5) |= 2u;
+          if (v18)
+          {
+            v25 = *v18;
+            if (*(*v18 + 288LL) < v26
+              || *(*(v25 + 200) + 8 * v26 - 8) != fldResourcePathData_t_Vector4)
+            {
+              sub_8FC2C0(*(v25 + 64), fldResourcePathData_t_Vector4, v41);
+              if ((v41[0] & 1) != 0)
+                v27 = v42;
+              else
+                v27 = v41 + 1;
+              v28 = sub_8C4940(v27);
+            }
+            v9[6] = v18;
+          }
+          else
+          {
+            v9[6] = 0;
+          }
+          break;
+        case 4:
+          *(v9 + 5) |= 4u;
+          if (v18)
+          {
+            v29 = *v18;
+            if (*(*v18 + 288LL) < v30 || *(*(v29 + 200) + 8 * v30 - 8) != fldResourcePathData_t_Float)
+            {
+              sub_8FC2C0(*(v29 + 64), fldResourcePathData_t_Float, v41);
+              if ((v41[0] & 1) != 0)
+                v31 = v42;
+              else
+                v31 = v41 + 1;
+              v32 = sub_8C4940(v31);
+            }
+            v14 = v18;
+          }
+          else
+          {
+            v14 = 0;
+          }
+          v9[7] = v14;
+          break;
+        case 5:
+          *(v9 + 5) |= 0x10u;
+          if (v18)
+          {
+            v33 = *v18;
+            if (*(*v18 + 288LL) < v34 || *(*(v33 + 200) + 8 * v34 - 8) != fldResourcePathData_t_Light)
+            {
+              sub_8FC2C0(*(v33 + 64), fldResourcePathData_t_Light, v41);
+              if ((v41[0] & 1) != 0)
+                v35 = v42;
+              else
+                v35 = v41 + 1;
+              v36 = sub_8C4940(v35);
+            }
+            v9[8] = v18;
+          }
+          else
+          {
+            v9[8] = 0;
+          }
+          break;
+        default:
+          break;
+      }
+      v37 = *(v18 + 32);
+      v38 = *(v18 + 16) - 1LL;
+      LODWORD(v11) = *(v37 + 4 * v38 + 32);
+      v11 = *&v11;
+      *&v11 = v11;
+      if (*(v9 + 6) < *&v11)
+        *(v9 + 6) = LODWORD(v11);
+      ++v12;
+    }
+    while (v12 < LODWORD(workdata[1].klass));
+  }
+  return v9;
 }
 
 // 0x14f7610

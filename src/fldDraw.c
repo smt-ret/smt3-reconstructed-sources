@@ -46,7 +46,21 @@ void sdfDrawTagLink(sdfDrawTag_t *aTag, void *aPacket);
 
 // 0x1038c90
 void DrwSprite2D(s32 x, s32 y, s32 w, s32 h, s32 u, s32 v, s32 uw, s32 vh, s32 rgba, sdfTexHandle_t *th) {
-    Draw(0, 0, 0, 0);
+  u64 *v11;
+  GfxManager_o *gfxMgr;
+  u64 *v15;
+  System_String_o *v16;
+  s32 v17;
+
+  v11 = Allocate(sdf2DSpriteParm_t);
+  sdf2DSpriteParm_t___ctor(v11);
+  if (th)
+  {
+    v17 = (th->klass->vtable._2_GetHashCode.methodPtr)(th, th->klass->vtable._2_GetHashCode.method);
+    v15 = sub_8D3950(s32, &v17);
+    v16 = Format("DrawSpr{0:X8}", v15, 0);
+    Draw(gfxMgr, v16, 0x4000000u, v11, 0);
+  }
 }
 
 // 0x1038e70
@@ -60,12 +74,66 @@ void DrwSprite2DF(f32 x, f32 y, f32 w, f32 h, s32 u, s32 v, s32 uw, s32 vh, s32 
 
 // 0x1038d80
 void DrwSprite2D_17010048(s32 x, s32 y, s32 w, s32 h, s32 u, s32 v, s32 uw, s32 vh, u32 rgba, sdfTexHandle_t *th) {
-    Draw(0, 0, 0, 0);
+  u64 *v11;
+  GfxManager_o *gfxMgr;
+  u64 *v15;
+  System_String_o *v16;
+  s32 v17;
+
+  v11 = Allocate(sdf2DSpriteParm_t);
+  sdf2DSpriteParm_t___ctor(v11);
+  if (th)
+  {
+    v17 = (th->klass->vtable._2_GetHashCode.methodPtr)(th, th->klass->vtable._2_GetHashCode.method);
+    v15 = sub_8D3950(s32, &v17);
+    v16 = Format("DrawSpr{0:X8}", v15, 0);
+    Draw(gfxMgr, v16, 0x4000000u, v11, 0);
+  }
 }
 
 // 0x10394b0
 sdfColor_t GetRgbColor(u32 color) {
-    return (sdfColor_t){0};
+  s64 v2;
+  s64 v3;
+  u32 v4;
+  f32 v5;
+  f32 v6;
+  u32 v7;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  s64 v15;
+  s64 v16;
+  s64 v17;
+  s64 v18;
+  UnityEngine_Color_o result;
+
+  if (HIBYTE(color))
+  {
+    v4 = HIWORD(color);
+    v5 = HIBYTE(color);
+    v6 = v5 * 0.0039216;
+    LOBYTE(v7) = color;
+  }
+  else
+  {
+    v6 = 1.0;
+    v7 = HIWORD(color);
+    LOBYTE(v4) = color;
+  }
+  v17 = v2;
+  v18 = v3;
+  v8 = v7;
+  v9 = BYTE1(color);
+  v10 = v4;
+  v15 = 0;
+  v16 = 0;
+  sub_19EC630(&v15, v8 * 0.0039216, v9 * 0.0039216, v10 * 0.0039216, v6);
+  result.g = *(&v15 + 1);
+  LODWORD(result.r) = v15;
+  result.a = *(&v16 + 1);
+  LODWORD(result.b) = v16;
+  return result;
 }
 
 // 0x1039770
@@ -181,7 +249,7 @@ void deleteFldMenuSub(s32 second) {
     if (op_Inequality(v21, 0, 0))
     {
       v24 = FldDbgMenuTxt;
-      set_text(v24->m_Items[v5], StringLiteral_416);
+      set_text(v24->m_Items[v5], "");
     }
   }
 }
@@ -218,15 +286,269 @@ void fldDbgPrintNum2DH(s32 x, s32 y, s32 num) {
 
 // 0x10397e0
 void fldDbgPrintStr2D(s32 x, s32 y, char *str) {
-    sdfDevSetPrintCB(0, 0, 0, 0, 0);
-    sdfDevPrintfEx(0, 0, 0);
-    sdfDrawTagLink(0, 0);
+  u64 *v7;
+  u64 *v8;
+  s32 v10;
+  s32 v11;
+  u32 v12;
+  System_Object_array *v13;
+  Il2CppObject *v15;
+  sdfDrawTag_t_o *v16;
+
+  v7 = Allocate(dbgConsCtl_tag);
+  _ctor(v7, 0);
+  v8 = Allocate(sdfDevPrintCB_t);
+  sdfDevPrintCB_t___ctor(v8);
+  v7[6] = 0xFFFFF8000007900LL;
+  v7[4] = 0x600000000FFFFF7FLL;
+  v7[5] = 0x700040806020LL;
+  v7[2] = 0x790000007000LL;
+  v7[3] = 6720;
+  else
+  {
+    v10 = 28672;
+    v11 = 30976;
+    v12 = 268435328;
+  }
+  sdfDevSetPrintCB(v8, v10 + 16 * x, v11 + 8 * y, v12, 0);
+  v13 = Empty_string_();
+  v15 = sdfDevPrintfEx(v8, str, v13);
+  v16 = v7[7];
+  sdfDrawTagLink(v16, v15);
+  *(v7 + 12) += 96;
 }
 
 // 0x1039990
 void fldDbgPrintStr2DC(s32 x, s32 y, s32 col, char *str, s32 second) {
-    LoadPrefab_16624656(0, 0, 0, 0);
-    RepColTag(0, 0);
+  UnityEngine_Object_o *FldDbgMenuObj;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  UnityEngine_GameObject_o *v16;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *v20;
+  u64 v22;
+  u64 v26;
+  System_String_o *v27;
+  System_String_o *v29;
+  u32 *FldDbgMenuList;
+  UnityEngine_Transform_o *v33;
+  UnityEngine_Component_o *v34;
+  s64 *gameObject;
+  s64 *v36;
+  struct UnityEngine_GameObject_array *v39;
+  u32 *FldDbgMenuTxt;
+  UnityEngine_Transform_o *v42;
+  UnityEngine_Component_o *v43;
+  s64 *Component_GUILayer;
+  s64 *v45;
+  u32 *FldDrawText;
+  u64 *v48;
+  struct System_Collections_Generic_List_fldDraw_DrawText__array *v50;
+  struct UnityEngine_GameObject_array *v52;
+  System_String_o *v55;
+  s32 v56;
+  struct System_Collections_Generic_List_fldDraw_DrawText__array *v58;
+  s64 v59;
+  s64 v61;
+  struct TMPro_TextMeshProUGUI_array *v62;
+  System_Collections_Generic_List_fldDraw_DrawText__o *v63;
+  s64 v65;
+  struct UnityEngine_GameObject_array *v66;
+  UnityEngine_GameObject_o *v68;
+  struct System_Collections_Generic_List_fldDraw_DrawText__array *v70;
+  struct TMPro_TextMeshProUGUI_array *v71;
+  TMPro_TMP_Text_o *v72;
+  struct UnityEngine_GameObject_array *v73;
+  s32 Count;
+  s32 v76;
+  s32 v77;
+  s64 v78;
+  struct System_String_o *v79;
+  struct System_String_o *v80;
+  System_String_o *v81;
+  s32 i;
+  System_String_o *v83;
+  System_String_o *v84;
+  System_String_o *v85;
+  System_String_o *v86;
+  System_String_o *DrawTxt;
+  System_String_o *v88;
+  System_String_o *v89;
+  System_Object_array *v90;
+  s64 *v91;
+  s64 *v93;
+  System_String_o *v95;
+  System_String_o *str1;
+  u32 item;
+  s32 v101;
+  TMPro_TMP_Text_o *v102;
+  s32 v103;
+  s32 v104;
+  fldDraw_DrawText_o v105;
+  fldDraw_DrawText_o v106;
+  fldDraw_DrawText_o v107;
+
+  item = col;
+  str1 = str;
+  v104 = 0;
+  v101 = y;
+  if (op_Equality(FldDbgMenuObj, 0, 0))
+  {
+    asset_bc = get_asset_bc();
+    Prefab_16624656 = LoadPrefab_16624656(asset_bc, "debug", "debug", "FldDbgMenu");
+    v16 = Find("Canvas_UI", 0);
+    transform = get_transform(v16, 0);
+    v20 = Instantiate_object__425520(Prefab_16624656, transform);
+    FldDbgMenuObj = v20;
+    FldDbgMenuList = NewSpecific(UnityEngine_GameObject, 0x16u);
+    FldDbgMenuTxt = NewSpecific(TMPro_TextMeshProUGUI, 0x16u);
+    FldDrawText = NewSpecific(
+                                                     System_Collections_Generic_List_fldDraw_DrawText_,
+                                                     0x16u);
+    v22 = 0;
+    do
+    {
+      v26 = v22 + 1;
+      v104 = v22 + 1;
+      v27 = sub_232A70(&v104, "D2");
+      v29 = Concat_5224608("menu", v27);
+      v33 = get_transform(FldDbgMenuObj, 0);
+      v34 = Find(v33, v29, 0);
+      gameObject = get_gameObject(v34);
+      v36 = gameObject;
+      *&FldDbgMenuList[2 * v22 + 8] = v36;
+      v39 = FldDbgMenuList;
+      v42 = get_transform(v39->m_Items[v22], 0);
+      v43 = Find(v42, "text", 0);
+      Component_GUILayer = GetComponent_GUILayer_(v43);
+      v45 = Component_GUILayer;
+      *&FldDbgMenuTxt[2 * v22 + 8] = v45;
+      v48 = Allocate(System_Collections_Generic_List_fldDraw_DrawText_);
+      __ctor(
+        v48);
+      *&FldDrawText[2 * v22 + 8] = v48;
+      v50 = FldDrawText;
+      _Clear(v50->m_Items[v22]);
+      v52 = FldDbgMenuList;
+      SetActive(v52->m_Items[v22++], 0, 0);
+    }
+    while (v26 != 22);
+  }
+  v55 = "";
+  v56 = v101 / 12;
+  if ((second - 2) >= 0x15)
+  {
+    v70 = FldDrawText;
+    v63 = v70->m_Items[0];
+    v71 = FldDbgMenuTxt;
+    v72 = v71->m_Items[0];
+    v73 = FldDbgMenuList;
+    v102 = v72;
+    v68 = v73->m_Items[0];
+  }
+  else
+  {
+    v58 = FldDrawText;
+    v59 = second - 1LL;
+    v61 = v58 + 8 * v59;
+    v62 = FldDbgMenuTxt;
+    v63 = *(v61 + 32);
+    v65 = v62 + 8 * v59;
+    v66 = FldDbgMenuList;
+    v102 = *(v65 + 32);
+    v68 = v66->m_Items[v59];
+  }
+  SetActive(v68, 1, 0);
+  if (_get_Count(v63) < v56)
+  {
+    Count = _get_Count(v63);
+    if (Count < v56)
+    {
+      v76 = v56 - Count;
+      do
+      {
+        v105.DrawTxt = "";
+        *&v105.color = 0;
+        _Add(v63, v105);
+        --v76;
+      }
+      while (v76);
+    }
+  }
+  if (x >= 12)
+  {
+    v77 = x / 12;
+    do
+    {
+      v55 = Concat_5224608(v55, " ");
+      --v77;
+    }
+    while (v77);
+  }
+  if (_get_Count(v63) <= v56)
+  {
+    v80 = Concat_5224608(v55, str1);
+    *&v106.color = item;
+    v106.DrawTxt = v80;
+    _Add(v63, v106);
+  }
+  else
+  {
+    v78 = *&_get_Item(
+              v63,
+              v56).color;
+    v79 = Concat_5224608(v55, str1);
+    *&v107.color = v78 & 0xFFFFFFFF00000000LL | item;
+    v107.DrawTxt = v79;
+    _set_Item(v63, v56, v107);
+  }
+  v81 = "";
+  if (_get_Count(v63) >= 1)
+  {
+    for (i = 0;
+          i < _get_Count(v63);
+          ++i)
+    {
+      if (_get_Item(
+             v63,
+             i).color)
+      {
+        if (_get_Item(
+               v63,
+               i).color != 6)
+        {
+          v104 = _get_Item(
+                   v63,
+                   i).color
+               & 0xFFFFFF;
+          v85 = sub_232A70(&v104, "X");
+          v84 = Concat_5271136(v81, "<color=#", v85, ">");
+          goto LABEL_82;
+        }
+        v83 = "<color=#008080>";
+      }
+      else
+      {
+        v83 = "<color=#808080>";
+      }
+      v84 = Concat_5224608(v81, v83);
+LABEL_82:
+      v86 = v84;
+      DrawTxt = _get_Item(
+                  v63,
+                  i).DrawTxt;
+      v88 = Concat_5224608(v86, DrawTxt);
+      v89 = Concat_5224608(v88, "</color>");
+      v81 = Concat_5224608(v89, "\n");
+    }
+  }
+  v103 = 0;
+  v90 = NewSpecific(object, 1u);
+  v91 = sub_8D3950(s32, &v103);
+  v93 = v91;
+  v90->m_Items[0] = v93;
+  v95 = RepColTag(v81, v90);
+  set_text(v102, v95);
 }
 
 // 0x103a340
@@ -343,7 +665,117 @@ void ooyTestLine3D(f32 x0, f32 y0, f32 z0, u32 col0, f32 x1, f32 y1, f32 z1, u32
 
 // 0x1039040
 void ooyTestLine3DForUnity(void **parent, char *pName, char *cName, u32 col, s32 size, sdfVector3_t **pos) {
-    LoadPrefab_16624656(0, 0, 0, 0);
+  System_String_o *v13;
+  UnityEngine_Object_o *v15;
+  u64 *v17;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_GameObject_o *v19;
+  UnityEngine_Transform_o *v20;
+  u32 v21;
+  f64 v22;
+  u32 v23;
+  f32 v24;
+  u32 v25;
+  f32 v26;
+  f32 v27;
+  f32 v28;
+  s64 v29;
+  s64 v30;
+  Il2CppObject *Item;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  UnityEngine_GameObject_o *v36;
+  UnityEngine_Transform_o *v38;
+  Il2CppObject *Component_object;
+  u64 v43;
+  f32 *p_z;
+  f32 v46;
+  s64 v48;
+  s64 v49;
+  UnityEngine_Vector3_o v50;
+  UnityEngine_Color_o v51;
+  UnityEngine_Color_o v52;
+
+  v13 = Concat_5224608("Field/", pName);
+  v15 = Find(v13, 0);
+  if (op_Equality(v15, 0, 0))
+  {
+    v17 = Allocate(UnityEngine_GameObject);
+    _ctor(v17, pName, 0);
+    *parent = v17;
+    transform = get_transform(v17, 0);
+    v19 = Find("Field", 0);
+    v20 = get_transform(v19, 0);
+    set_parent(transform, v20);
+  }
+  else
+  {
+    v21 = HIBYTE(col);
+    if (HIBYTE(col))
+    {
+LABEL_11:
+      v22 = v21;
+      v23 = HIWORD(col);
+      *&v22 = v22;
+      v24 = *&v22 * 0.0039216;
+      LOBYTE(v25) = col;
+      goto LABEL_14;
+    }
+  }
+  v24 = 1.0;
+  v25 = HIWORD(col);
+  LOBYTE(v23) = col;
+LABEL_14:
+  v26 = v25;
+  v27 = BYTE1(col);
+  v28 = v23;
+  v48 = 0;
+  v49 = 0;
+  sub_19EC630(&v48, v26 * 0.0039216, v27 * 0.0039216, v28 * 0.0039216, v24);
+  v29 = v48;
+  v30 = v49;
+  if (Animator___ContainsKey(Line3D, cName))
+  {
+    Item = object___get_Item(Line3D, cName);
+  }
+  else
+  {
+    if (!pos || *(&v30 + 1) == 0.0)
+      return;
+    asset_bc = get_asset_bc();
+    Prefab_16624656 = LoadPrefab_16624656(asset_bc, "debug", "debug", "FldLine3D");
+    v36 = Find(v13, 0);
+    v38 = get_transform(v36, 0);
+    Item = Instantiate_object__425520(Prefab_16624656, v38);
+    set_name(Item, cName);
+    PropertySheet___Add(Line3D, cName, Item);
+  }
+  Component_object = GetComponent_object_(Item);
+  set_startWidth(Component_object, 0.05);
+  set_endWidth(Component_object, 0.05);
+  *&v51.r = v29;
+  *&v51.b = v30;
+  set_startColor(Component_object, v51);
+  *&v52.r = v29;
+  *&v52.b = v30;
+  set_endColor(Component_object, v52);
+  set_positionCount(Component_object, size);
+  if (size >= 1)
+  {
+    v43 = 0;
+    p_z = &pos->m_Items[0].z;
+    do
+    {
+      v50.x = *(p_z - 2);
+      v50.y = *(p_z - 1);
+      v46 = *p_z;
+      p_z += 3;
+      v50.z = v46;
+      SetPosition(Component_object, v43++, v50);
+    }
+    while (size != v43);
+  }
+  AttributeUsageAttribute___set_Item(Line3D, cName, Item);
 }
 
 // 0x1039550

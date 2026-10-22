@@ -30,8 +30,8 @@ struct effBattleLight_EFFBTL_POINTLIGHT_P {
     s32 value__;
 };
 
-static effBattleLight_effBTLPointLight_tag effBTLPointLight[UNKNOWN_ARRAY_SIZE];
-static effBattleLight_effBTLPointLight_Base_tag effBTLPointLightBase[UNKNOWN_ARRAY_SIZE];
+static effBattleLight_effBTLPointLight_tag *effBTLPointLight;
+static effBattleLight_effBTLPointLight_Base_tag *effBTLPointLightBase;
 static u32 effBTLPointLightProcess;
 
 void SDF_VU0__COPYVECTOR(sdfVector4_t *dst, sdfVector4_t src);
@@ -70,9 +70,7 @@ void effBTLModelColorMain(void) {
   evtUnitHandle_t_o **v7;
   struct nbFormation_t_array *form;
   u64 v9;
-  effBattleLight_c *v11;
   s64 v12;
-  struct effBattleLight_StaticFields *static_fields;
   s64 v15;
   s64 v17;
   u32 *v18;
@@ -95,8 +93,7 @@ void effBTLModelColorMain(void) {
     form = MainProcessData->form;
     v9 = i - 4;
     v12 = *(&form->obj.klass + i);
-    static_fields = v11->static_fields;
-    v15 = *(&static_fields->effBTLPointLight->obj.klass + i);
+    v15 = *(&effBTLPointLight->obj.klass + i);
     if ((~*(v12 + 136) & 3) == 0)
     {
       v17 = *(v15 + 40);
@@ -127,6 +124,8 @@ void effBTLModelColorMain(void) {
                   evtSetUnitColorRGB((v12 + 168), FadeFramePtr, v6, 0);
                   v7 = (v12 + 168);
                   if (v17 != v26)
+                    goto LABEL_44;
+                  goto LABEL_40;
                 }
                 v31 = FadeFramePtr;
                 v32 = v7;
@@ -135,11 +134,14 @@ void effBTLModelColorMain(void) {
               }
               if (v17 != v26)
               {
+LABEL_44:
                 ++*(v15 + 40);
                 continue;
               }
+LABEL_40:
               v33 = *(v12 + 192);
               evtSetUnitColorRGB(v7, v27, v33);
+              goto LABEL_44;
             }
           }
         }
@@ -158,12 +160,15 @@ void effBTLModelColorSet(effBTL_SkillModel_t **pModel, nbFormation_t **pFormatio
   s64 v11;
   effBattleLight_effBTLPointLight_tag_o *v13;
 
+LABEL_7:
   v5 = *pFormation;
   if (!*pFormation || (v5->stat & 1) == 0)
+    goto LABEL_15;
   formindex = v5->formindex;
   UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(formindex);
   if ((UnitWorkFromFormindex->flag & 4) != 0 || (id = UnitWorkFromFormindex->id, id != 264) && id != 293)
   {
+LABEL_15:
     v11 = (*pFormation)->formindex;
     v13 = effBTLPointLight->m_Items[v11];
     effBTL_SkillModel_t__Copy(v13->model, *pModel);
@@ -248,8 +253,6 @@ void effBTLPointLightMain(void) {
   s64 i;
   struct nbFormation_t_array *form;
   u64 v6;
-  effBattleLight_c *v8;
-  struct effBattleLight_StaticFields *static_fields;
   s64 v11;
   struct effBattleLight_effBTLPointLight_Base_tag_array *effBTLPointLightBase;
   s64 v14;
@@ -279,9 +282,7 @@ void effBTLPointLightMain(void) {
     form = MainProcessData->form;
     v6 = i - 4;
     pFormation = *(&form->obj.klass + i);
-    static_fields = v8->static_fields;
-    v11 = *(&static_fields->effBTLPointLight->obj.klass + i);
-    effBTLPointLightBase = static_fields->effBTLPointLightBase;
+    v11 = *(&effBTLPointLight->obj.klass + i);
     if ((~pFormation->stat & 3) == 0)
     {
       v14 = *(v11 + 24);
@@ -353,6 +354,7 @@ void effBTLPointLightModelSet(effBTL_SkillLight_t **pLight, nbFormation_t **pFor
 
   v8 = effBTLPointLight->m_Items[(*pFormation)->formindex];
   effBTL_SkillLight_t__Copy(v8->light, *pLight);
+LABEL_12:
   v10 = *pFormation;
   if (*pFormation && (v10->stat & 1) != 0)
   {
@@ -389,27 +391,23 @@ void effBTLPointLightModelSet(effBTL_SkillLight_t **pLight, nbFormation_t **pFor
 
 // 0x14ba920
 void effBTLPointLightOFF(void) {
-  effBattleLight_c *v2;
-  struct effBattleLight_StaticFields *static_fields;
-
-  static_fields = v2->static_fields;
-  if (static_fields->effBTLPointLightProcess)
+  if (effBTLPointLightProcess)
   {
-    static_fields->effBTLPointLightProcess = 3;
+    effBTLPointLightProcess = 3;
   }
 }
 
 // 0x14ba810
 void effBTLPointLightON(void) {
   s32 v3;
-  struct effBattleLight_StaticFields *static_fields;
 
   {
     else
     {
-      static_fields = effBattleLight->static_fields;
-      if (static_fields->effBTLPointLightProcess)
+      if (effBTLPointLightProcess)
+        goto LABEL_5;
     }
+LABEL_11:
     if (v3)
     {
       else
@@ -419,22 +417,29 @@ void effBTLPointLightON(void) {
     }
     else
     {
-      static_fields->effBTLPointLightProcess = 1;
+      effBTLPointLightProcess = 1;
     }
     return;
   }
   v3 = 0;
-  static_fields = effBattleLight->static_fields;
-  if (!static_fields->effBTLPointLightProcess)
-  static_fields->effBTLPointLightProcess = 2;
+  if (!effBTLPointLightProcess)
+    goto LABEL_11;
+LABEL_5:
+  effBTLPointLightProcess = 2;
 }
 
 // 0x14bc180
 void effBTLPointLightRun(void) {
-    effBTLPointLightMain();
-    effBTLModelColorMain();
-    effBTLPointLightStart();
-    effBTLPointLightEnd();
+  u64 v2;
+  u32 effBTLPointLightProcess;
+
+  else
+  {
+    if (effBTLPointLightProcess != 3)
+      goto LABEL_6;
+  }
+  effBTLPointLightEnd(v2);
+  effBTLPointLightProcess = 0;
 }
 
 // 0x14baf50
@@ -453,14 +458,18 @@ void effBTLPointLightSet(effBTL_SkillLight_t **pLight, nbFormation_t **pFormatio
         return;
       case 1u:
         TargetParty = effBTLSkillGetInvokeParty();
+        goto LABEL_17;
       case 2u:
         TargetParty = effBTLSkillGetTargetParty();
+LABEL_17:
         v7 = TargetParty;
         v8 = pLight;
         v9 = v7;
+        goto LABEL_21;
       case 3u:
         v8 = pLight;
         v9 = 1792;
+LABEL_21:
         effBTLPointLightGroupSet(v8, v9);
         break;
       default:
@@ -485,6 +494,7 @@ void effBTLPointLightStart(void) {
   u64 *v18;
   u32 v19;
   struct effBattleLight_effBTLPointLight_Base_tag_array *v20;
+  effBattleLight_c *v21;
   u64 v22;
   u32 *effBTLPointLightBase;
   u64 *v24;
@@ -500,7 +510,11 @@ void effBTLPointLightStart(void) {
   UnityEngine_Vector4_o *v42;
   s64 v43;
 
-  else  v3 = NewSpecific(effBattleLight_effBTLPointLight_tag, 0x20u);
+  else if (effBTLPointLight)
+  {
+    goto LABEL_21;
+  }
+  v3 = NewSpecific(effBattleLight_effBTLPointLight_tag, 0x20u);
   effBTLPointLight = v3;
   for (i = 0; i != 32; ++i)
   {
@@ -509,6 +523,7 @@ void effBTLPointLightStart(void) {
     v11 = &effBTLPointLight[2 * i];
     *(v11 + 4) = v9;
   }
+LABEL_21:
   v12 = 0;
   v13 = (v2->_2.bitflags2 >> 1) & 1;
   do
@@ -527,18 +542,30 @@ void effBTLPointLightStart(void) {
     v13 = (v19 >> 9) & 1;
   }
   while (v12 != 32);
-  else  v20 = NewSpecific(effBattleLight_effBTLPointLight_Base_tag, 0x20u);
+  else if (effBTLPointLightBase)
+  {
+    goto LABEL_49;
+  }
+  v20 = NewSpecific(effBattleLight_effBTLPointLight_Base_tag, 0x20u);
   effBTLPointLightBase = v20;
   v22 = 0;
+  if ((v21->_2.bitflags2 & 2) != 0)
+  {
+LABEL_39:
+    goto LABEL_41;
+  }
   while (1)
   {
+LABEL_41:
     v24 = Allocate(effBattleLight_effBTLPointLight_Base_tag);
     _ctor(v24, 0);
     *&effBTLPointLightBase[2 * v22 + 8] = v24;
     if (v22 == 31)
       break;
     ++v22;
+      goto LABEL_39;
   }
+LABEL_49:
   v27 = 0;
   do
   {

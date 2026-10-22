@@ -78,18 +78,51 @@ void IOPcheckLoop(void *dummy) {
 
 // 0x15d22e0
 void p2sdAdpcmStreamFadeout(u32 fade) {
-    sdfSndSendCmd(0, 0, 0, 0);
+  s64 v2;
+  Il2CppObject *v3;
+  s32 v4;
+  s32 v6;
+  s32 v7;
+
+  v7 = 0;
+  sub_8D3950(s32, &v7);
+LABEL_7:
+  sdfSndSendCmd(v6, v2, v3, v4);
 }
 
 // 0x15d1fa0
 s32 p2sdAdpcmStreamPlay(u16 **fname, u8 vol) {
-    sdfSndSendCmd(0, 0, 0, 0);
-    return 0;
+  s64 v6;
+  s64 v8;
+  Il2CppObject *v9;
+  s32 v10;
+  s32 v12;
+  s32 v13;
+
+  else if (AdpcmPlaying)
+  {
+    return 1;
+  }
+  v6 = (fname->obj.klass->vtable[3].methodPtr)(fname, fname->obj.klass->vtable[3].method);
+  AdpcmFileName = v6;
+  v13 = 0;
+  sub_8D3950(s32, &v13);
+  sdfSndSendCmd(v12, v8, v9, v10);
+  return 0;
 }
 
 // 0x15d2210
 void p2sdAdpcmStreamSetVolume(u16 vol) {
-    sdfSndSendCmd(0, 0, 0, 0);
+  s64 v2;
+  Il2CppObject *v3;
+  s32 v4;
+  s32 v6;
+  s32 v7;
+
+  v7 = 0;
+  sub_8D3950(s32, &v7);
+LABEL_7:
+  sdfSndSendCmd(v6, v2, v3, v4);
 }
 
 // 0x15d20d0
@@ -99,22 +132,40 @@ s32 p2sdAdpcmStreamStatus(void) {
 
 // 0x15d2140
 void p2sdAdpcmStreamStop(void) {
-    sdfSndSendCmd(0, 0, 0, 0);
+  s64 v1;
+  Il2CppObject *v2;
+  s32 v3;
+  s32 v5;
+  s32 v6;
+
+  v6 = 0;
+  sub_8D3950(s32, &v6);
+LABEL_7:
+  sdfSndSendCmd(v5, v1, v2, v3);
 }
 
 // 0x15d0560
 void p2sdBGMStopAll(void) {
+  else
+  {
     p2sdBGMStopAll();
+  }
 }
 
 // 0x15d1e40
 void p2sdBGMVolHalfDown(void) {
+  else
+  {
     p2sdBGMVolHalfDown();
+  }
 }
 
 // 0x15d1eb0
 void p2sdBGMVolHalfUp(void) {
+  else
+  {
     p2sdBGMVolHalfUp();
+  }
 }
 
 // 0x15d1560
@@ -161,8 +212,22 @@ void p2sdFadeOut(s32 MidiNo) {
 
 // 0x15d15d0
 void p2sdFree(s32 MidiNo) {
-    p2sdLoadCheckMidi(0);
-    sdfSndSendCmd(0, 0, 0, 0);
+  sdfSndReqPlayInfo_t_o *v3;
+
+  v3 = Allocate(sdfSndReqPlayInfo_t);
+  sdfSndReqPlayInfo_t___ctor(v3);
+  if (p2sdLoadCheckMidi(MidiNo))
+  {
+    v3->reqno = MidiNo;
+    {
+    }
+    SizeOf_sdfMemRecord_t_(v3);
+    else if ((byte_3F5A0B2 & 1) != 0)
+    {
+      goto LABEL_14;
+    }
+    goto LABEL_14;
+  }
 }
 
 // 0x15d1a70
@@ -229,7 +294,16 @@ void p2sdLoadSMGFileOnMem(u8 *po, s32 size) {
 
 // 0x15d1490
 void p2sdMasterVolume(u16 vol) {
-    sdfSndSendCmd(0, 0, 0, 0);
+  s64 v2;
+  Il2CppObject *v3;
+  s32 v4;
+  s32 v6;
+  s32 v7;
+
+  v7 = 0;
+  sub_8D3950(s32, &v7);
+LABEL_7:
+  sdfSndSendCmd(v6, v2, v3, v4);
 }
 
 // 0x15d1f20
@@ -242,7 +316,16 @@ void p2sdMelodyTrans(s32 midiNo) {
 
 // 0x15d13c0
 void p2sdOutputMode(s32 output_mode) {
-    sdfSndSendCmd(0, 0, 0, 0);
+  s64 v2;
+  Il2CppObject *v3;
+  s32 v4;
+  s32 v6;
+  s32 v7;
+
+  v7 = 0;
+  sub_8D3950(s32, &v7);
+LABEL_7:
+  sdfSndSendCmd(v6, v2, v3, v4);
 }
 
 // 0x15d0350
@@ -305,6 +388,7 @@ void p2sdPlaySe3DEx(s32 MidiNo, f32 posx, f32 posy, f32 posz, s32 limit) {
   {
   }
   SizeOf_sdfMemRecord_t_(v11);
+LABEL_10:
   sdfSndSendCmd(v17, v13, v14, v15);
 }
 
@@ -416,15 +500,12 @@ s32 p2sdSMGtotaltimes(s32 level) {
 
 // 0x15d23b0
 void *p2sdSetMovieCallback(void *func) {
-  struct sdfSound_StaticFields *static_fields;
-
   else
   {
-    static_fields = sdfSound->static_fields;
-    if (static_fields->MoviePlaying)
+    if (MoviePlaying)
       return 0;
   }
-  static_fields->p2sdStreamCallback = func;
+  p2sdStreamCallback = func;
   return func;
 }
 
@@ -448,18 +529,32 @@ void p2sdSetStandPos(f32 Cposx, f32 Cposy, f32 Cposz, f32 Pposx, f32 Pposy, f32 
   v13->py = (Pposy * 0.1);
   v13->pz = (Pposz * 0.1);
   if (p2sdSetStandPos_stock_pos->cx != cx)
-  else  if (p2sdSetStandPos_stock_pos->px != v13->px)
+    goto LABEL_29;
+  else if (p2sdSetStandPos_stock_pos->cy != v13->cy)
+  {
+    goto LABEL_29;
+  }
+  else if (p2sdSetStandPos_stock_pos->cz != v13->cz)
+  {
+    goto LABEL_29;
+  }
+  if (p2sdSetStandPos_stock_pos->px != v13->px)
+    goto LABEL_29;
   if (p2sdSetStandPos_stock_pos->py != v13->py)
+    goto LABEL_29;
   if (p2sdSetStandPos_stock_pos->pz != v13->pz)
   {
+LABEL_29:
     {
     }
     SizeOf_sdfMemRecord_t_(v13);
     else if ((byte_3F5A0B2 & 1) != 0)
     {
+LABEL_36:
       sdfSndSendCmd(v22, v18, v19, v20);
       return;
     }
+    goto LABEL_36;
   }
 }
 
@@ -476,7 +571,10 @@ void p2sdSndStop(s32 MidiNo) {
 
 // 0x15d05e0
 void p2sdSndStopAll(void) {
+  else
+  {
     p2sdSndStopAll();
+  }
 }
 
 // 0x15d1990
@@ -532,6 +630,7 @@ void sdfSndCmdIFThread(void) {
     {
       while (1)
       {
+LABEL_8:
         while ((*&v2->_2.bitflags1 & 0x200) == 0)
           ;
       }
@@ -547,11 +646,9 @@ s32 sdfSndCmdTrans(void) {
 // 0x15cff80
 void sdfSndInit(sdfSndVoiceInfo_t *aVcInfo, s32 aNumVc, sdfSndSeqInfo_t **aSqInfo, s32 aNumSq) {
   u64 v8;
-  sdfSound_c *v9;
   s16 v10;
   s32 *v11;
   s32 i;
-  struct sdfSound_StaticFields *static_fields;
   s32 *sdfSndCmdIFBuffer;
   s64 *v15;
   s64 *v16;
@@ -565,10 +662,10 @@ void sdfSndInit(sdfSndVoiceInfo_t *aVcInfo, s32 aNumVc, sdfSndSeqInfo_t **aSqInf
 
   v8 = 0;
   if ((v10 & 0x200) != 0)
+    goto LABEL_7;
+LABEL_6:
   for (i = 0; ; i = v10 & 0x200)
   {
-    static_fields = v9->static_fields;
-    sdfSndCmdIFBuffer = static_fields->sdfSndCmdIFBuffer;
     if (v8 >= sdfSndCmdIFBuffer[6])
       break;
     v15 = NewSpecific(s32, 0x20u);
@@ -576,16 +673,18 @@ void sdfSndInit(sdfSndVoiceInfo_t *aVcInfo, s32 aNumVc, sdfSndSeqInfo_t **aSqInf
     v11 = &sdfSndCmdIFBuffer[2 * v8++];
     *(v11 + 4) = v16;
     if ((v10 & 0x200) == 0)
+      goto LABEL_6;
+LABEL_7:
   }
-  static_fields->sdfSndBurstReqMode = 1;
+  sdfSndBurstReqMode = 1;
   sdfSndCmdHeadIndex = 0;
   sdfSndCmdTailIndex = 0;
-  Write(StringLiteral_22020, 0);
+  Write("SDF_SND_READ_BUFF_SIZE\n", 0);
   sdfSndMap->readBuff = 0;
   sdfSndMap->readBuffSize = 0x4000;
   sdfSndVoiceMapInit(v21, aNumVc);
   sdfSndSeqMapInit(aSqInfo, aNumSq);
-  Write(StringLiteral_22021, 0);
+  Write("sizeof(sdfSndMap)\n", 0);
   {
   }
   SizeOf_sdfMemRecord_t_(sdfSndMap);
@@ -618,6 +717,7 @@ void sdfSndLoadBDFile(s32 aVcChNum, char *aFilename) {
   s32 v8;
 
   get_Length(aFilename);
+LABEL_7:
   sdfSndSendCmd(v8, v4, v5, v6);
 }
 
@@ -629,6 +729,7 @@ void sdfSndLoadHDFile(s32 aVcChNum, char *aFilename) {
   s32 v8;
 
   get_Length(aFilename);
+LABEL_7:
   sdfSndSendCmd(v8, v4, v5, v6);
 }
 
@@ -645,23 +746,29 @@ void sdfSndLoadSQFile(s32 aSqChNum, char *aFilename) {
   s32 v8;
 
   get_Length(aFilename);
+LABEL_7:
   sdfSndSendCmd(v8, v4, v5, v6);
 }
 
 // 0x15cf7f0
 s32 sdfSndSendCmd(s32 aCmd, s32 aParam, void *aExDataPtr, s32 aExDataSize) {
   sdfSound_c *v5;
-  struct sdfSound_StaticFields *static_fields;
   s32 v7;
 
-  static_fields = v5->static_fields;
-  v7 = static_fields->sdfSndSendCmd_cmd_id + 1;
-  static_fields->sdfSndSendCmd_cmd_id = v7;
+  v7 = sdfSndSendCmd_cmd_id + 1;
+  sdfSndSendCmd_cmd_id = v7;
   if (v7)
   {
     if ((v5->_2.bitflags2 & 2) == 0)
+      goto LABEL_14;
+    goto LABEL_8;
   }
   sdfSndSendCmd_cmd_id = 1;
+  if ((v5->_2.bitflags2 & 2) != 0)
+  {
+LABEL_8:
+  }
+LABEL_14:
   sdfSndCmdTailIndex = (sdfSndCmdTailIndex + 1) & 0x1F;
   return sdfSndSendCmd_cmd_id;
 }
@@ -675,11 +782,64 @@ s32 sdfSndSendSyncCmd(s32 aCmd, s32 aParam, void *aExDataPtr, s32 aExDataSize) {
 
 // 0x15cfd60
 void sdfSndSeqMapInit(sdfSndSeqInfo_t **aSqInfo, s32 aNumSq) {
+  u32 v3;
+  u64 v6;
+  u32 iopSize;
+  struct sdfSndSeqMap_t_array *seqMap;
+  Il2CppClass **v12;
+  s64 v13;
+  struct sdfSndSeqMap_t_array *v15;
+  struct sdfSndSeqMap_t_array *v17;
+  s64 v19;
+  u64 *v20;
+  s64 v21;
+  s32 v22;
+
+  v3 = aNumSq;
+  v6 = 0;
+  sdfSndMap->numOfSeq = v3;
+  do
+  {
+    iopSize = aSqInfo->m_Items[v6]->iopSize;
+    seqMap = sdfSndMap->seqMap;
+    v12 = &seqMap->obj.klass + v6++;
+    LODWORD(v12[4]->_1.name) = iopSize;
+  }
+  while (v3 != v6);
+  if ((v6 - 1) <= 0xE)
+  {
+    v13 = v3 + 4LL;
+    do
+    {
+      v15 = sdfSndMap->seqMap;
+      *(*(&v15->obj.klass + v13) + 16LL) = 0;
+      v17 = sdfSndMap->seqMap;
+      v19 = *(&v17->obj.klass + v13);
+      v22 = 0;
+      v20 = sub_8D3950(s32, &v22);
+      v21 = v13 - 4;
+      ++v13;
+      ++v3;
+      *(v19 + 24) = v20;
+    }
+    while (v21 < 15);
+  }
+  Write("sdfSndSeqMapInit\n", 0);
 }
 
 // 0x15d0650
 void sdfSndSetupVoice(s32 aVcChNum) {
-    sdfSndSendCmd(0, 0, 0, 0);
+  s64 v2;
+  Il2CppObject *v3;
+  s32 v4;
+  s32 v11;
+
+  v11 = 0;
+  sub_8D3950(s32, &v11);
+  else
+  {
+    sdfSndSendCmd(sdfSound, v2, v3, v4);
+  }
 }
 
 // 0x15cf910
@@ -694,4 +854,81 @@ void sdfSndTransToIOP(void *aIOPAddr, void *aEEAddr, s32 aSize) {
 
 // 0x15cf9b0
 void sdfSndVoiceMapInit(sdfSndVoiceInfo_t *aVcInfo, s32 aNumVc) {
+  sdfSound_c *v4;
+  u64 v5;
+  struct sdfSndVoiceMap_t_array *voiceMap;
+  struct sdfSndVoiceMap_t_array *v8;
+  struct sdfSndVoiceMap_t_array *v10;
+  struct sdfSndVoiceMap_t_array *v12;
+  sdfSndVoiceMap_t_o *v14;
+  struct sdfSndVoiceMap_t_array *v16;
+  struct sdfSndVoiceMap_t_array *v18;
+  sdfSndVoiceMap_t_o *v20;
+  sdfSound_c *v22;
+  struct sdfSndVoiceMap_t_array *v23;
+  s64 v25;
+  u64 v26;
+  struct p2sdSMGstatus_array *smg;
+  struct p2sdSMGstatus_array *v29;
+  struct p2sdSMGstatus_array *v31;
+  s32 v33;
+  s32 v34;
+
+  sdfSndMap->numOfVoice = aNumVc;
+  v5 = 0;
+  if ((v4->_2.bitflags2 & 2) != 0)
+  {
+LABEL_9:
+    goto LABEL_11;
+  }
+  while (1)
+  {
+LABEL_11:
+    voiceMap = sdfSndMap->voiceMap;
+    voiceMap->m_Items[v5]->priority = v5;
+    v8 = sdfSndMap->voiceMap;
+    v8->m_Items[v5]->polyCount = 32;
+    v10 = sdfSndMap->voiceMap;
+    v10->m_Items[v5]->iopSize = 0;
+    v12 = sdfSndMap->voiceMap;
+    v14 = v12->m_Items[v5];
+    v34 = 0;
+    v14->iopAddr = sub_8D3950(s32, &v34);
+    v16 = sdfSndMap->voiceMap;
+    v16->m_Items[v5]->spuSize = 0;
+    v18 = sdfSndMap->voiceMap;
+    v20 = v18->m_Items[v5];
+    v33 = 0;
+    v20->spuAddr = sub_8D3950(s32, &v33);
+    if (v5 == 15)
+      break;
+    ++v5;
+      goto LABEL_9;
+  }
+  Write("SDF_SND_IOP_SIZE\n", 0);
+  v23 = sdfSndMap->voiceMap;
+  v23->m_Items[0]->iopAddr = 0;
+  sdfSndMap->TransBufAddr = 0;
+  v25 = 4;
+  sdfSndMap->TransBufSize = 0;
+  v26 = 0;
+  if ((v22->_2.bitflags2 & 2) != 0)
+  {
+LABEL_35:
+    goto LABEL_37;
+  }
+  while (1)
+  {
+LABEL_37:
+    smg = sdfSndMap->smg;
+    *(*(&smg->obj.klass + v25) + 16LL) = -1;
+    v29 = sdfSndMap->smg;
+    *(*(&v29->obj.klass + v25) + 20LL) = 0;
+    v31 = sdfSndMap->smg;
+    *(*(&v31->obj.klass + v25) + 21LL) = 0;
+    if (v25 == 10)
+      break;
+    v26 = ++v25 - 4;
+      goto LABEL_35;
+  }
 }

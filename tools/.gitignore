@@ -1,5 +1,10 @@
+# Inputs stay out by default; recovered data with no game content is allowed back in.
 inputs/*
 !inputs/README.md
+!inputs/stringliteral_map.json
+!inputs/array_lengths.json
+!inputs/il2cpp_arrays.json
+!inputs/il2cpp_classes.json
 
 .venv/
 __pycache__/

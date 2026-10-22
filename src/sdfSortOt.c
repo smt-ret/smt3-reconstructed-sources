@@ -118,12 +118,16 @@ void sdfSortOtAvlCheckBalance(sdfSortOtNode_tag **stack, s32 stack_depth, sdfSor
         v18 = sdfSortOtAvlRotateLR(v7, v12, node);
         v19 = v10 - 1;
         if (v10 < 1)
+          goto LABEL_28;
+        goto LABEL_17;
       }
       if (v16 <= -2)
       {
         v18 = sdfSortOtAvlRotateRL(v7, v12, node);
         v19 = v10 - 1;
         if (v10 < 1)
+          goto LABEL_28;
+        goto LABEL_17;
       }
       v17 = v9 - 3;
       --v9;
@@ -135,9 +139,16 @@ void sdfSortOtAvlCheckBalance(sdfSortOtNode_tag **stack, s32 stack_depth, sdfSor
     v19 = v10 - 1;
     if (v10 < 1)
     {
+LABEL_28:
       if (!v18)
         return;
+      if (!LODWORD(root_p->max_length))
+      {
+LABEL_32:
+      }
+      goto LABEL_33;
     }
+LABEL_17:
     v21 = stack->m_Items[v19]->child;
     root_p = v21;
     v23 = v21->m_Items[0];
@@ -145,6 +156,8 @@ void sdfSortOtAvlCheckBalance(sdfSortOtNode_tag **stack, s32 stack_depth, sdfSor
     if (v23 == v12)
     {
       if (!max_length)
+        goto LABEL_32;
+LABEL_33:
       root_p->m_Items[0] = v18;
       return;
     }
@@ -167,6 +180,10 @@ void sdfSortOtAvlRegist(sdfSortOtNode_tag **root_p, sdfDrawTag_t *tag) {
   v8 = v5;
   v9 = 0;
   v10 = v5 + 8;
+  if (!LODWORD(root_p->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     v12 = root_p->m_Items[0];
@@ -181,6 +198,7 @@ void sdfSortOtAvlRegist(sdfSortOtNode_tag **root_p, sdfDrawTag_t *tag) {
     }
     v10[v9++] = v12;
     if (!LODWORD(root_p->max_length))
+      goto LABEL_6;
   }
   tag->next = 0;
   MEMORY[0x4039E0803CEFDD8] = 0;

@@ -6,7 +6,7 @@ typedef struct mnMyLink_h_tagPipeLinkData mnMyLink_h_tagPipeLinkData;
 typedef struct mnMyLink_h_tagPipeLinkInfo mnMyLink_h_tagPipeLinkInfo;
 
 struct mnMyLink_h_tagPipeLinkInfo {
-    mnMyLink_h_tagPipeLinkData aHandle[UNKNOWN_ARRAY_SIZE];
+    mnMyLink_h_tagPipeLinkData *aHandle;
     mnMyLink_h_tagPipeLinkData *linkPtr;
     s32 nodeMax;
     s32 linkIndex;
@@ -157,7 +157,10 @@ s32 PTYPE2_BACK(s32 o) {
 s32 PTYPE2_BDOWN(void) {
   {
     if ((byte_3F5AC9D & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 110;
   }
@@ -168,7 +171,10 @@ s32 PTYPE2_BDOWN(void) {
 s32 PTYPE2_BFRONT(void) {
   {
     if ((byte_3F5AC9D & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 106;
   }
@@ -179,7 +185,10 @@ s32 PTYPE2_BFRONT(void) {
 s32 PTYPE2_BLEFT(void) {
   {
     if ((byte_3F5AC9D & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 107;
   }
@@ -190,7 +199,10 @@ s32 PTYPE2_BLEFT(void) {
 s32 PTYPE2_BRIGHT(void) {
   {
     if ((byte_3F5AC9D & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 108;
   }
@@ -201,7 +213,10 @@ s32 PTYPE2_BRIGHT(void) {
 s32 PTYPE2_BUP(void) {
   {
     if ((byte_3F5AC9D & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 105;
   }
@@ -212,7 +227,10 @@ s32 PTYPE2_BUP(void) {
 s32 PTYPE2_DBACK(void) {
   {
     if ((byte_3F5AC9A & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 117;
   }
@@ -223,7 +241,10 @@ s32 PTYPE2_DBACK(void) {
 s32 PTYPE2_DFRONT(void) {
   {
     if ((byte_3F5AC9A & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 114;
   }
@@ -234,7 +255,10 @@ s32 PTYPE2_DFRONT(void) {
 s32 PTYPE2_DLEFT(void) {
   {
     if ((byte_3F5AC9A & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 115;
   }
@@ -253,7 +277,10 @@ s32 PTYPE2_DOWN(s32 o) {
 s32 PTYPE2_DRIGHT(void) {
   {
     if ((byte_3F5AC9A & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 116;
   }
@@ -264,7 +291,10 @@ s32 PTYPE2_DRIGHT(void) {
 s32 PTYPE2_DUP(void) {
   {
     if ((byte_3F5AC9A & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 113;
   }
@@ -275,7 +305,10 @@ s32 PTYPE2_DUP(void) {
 s32 PTYPE2_FBACK(void) {
   {
     if ((byte_3F5AC9E & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 85;
   }
@@ -286,7 +319,10 @@ s32 PTYPE2_FBACK(void) {
 s32 PTYPE2_FDOWN(void) {
   {
     if ((byte_3F5AC9E & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 86;
   }
@@ -297,7 +333,10 @@ s32 PTYPE2_FDOWN(void) {
 s32 PTYPE2_FLEFT(void) {
   {
     if ((byte_3F5AC9E & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 83;
   }
@@ -308,7 +347,10 @@ s32 PTYPE2_FLEFT(void) {
 s32 PTYPE2_FRIGHT(void) {
   {
     if ((byte_3F5AC9E & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 84;
   }
@@ -326,7 +368,10 @@ s32 PTYPE2_FRONT(s32 o) {
 s32 PTYPE2_FUP(void) {
   {
     if ((byte_3F5AC9E & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 81;
   }
@@ -337,7 +382,10 @@ s32 PTYPE2_FUP(void) {
 s32 PTYPE2_LBACK(void) {
   {
     if ((byte_3F5AC9B & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 93;
   }
@@ -348,7 +396,10 @@ s32 PTYPE2_LBACK(void) {
 s32 PTYPE2_LDOWN(void) {
   {
     if ((byte_3F5AC9B & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 94;
   }
@@ -366,7 +417,10 @@ s32 PTYPE2_LEFT(s32 o) {
 s32 PTYPE2_LFRONT(void) {
   {
     if ((byte_3F5AC9B & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 90;
   }
@@ -377,7 +431,10 @@ s32 PTYPE2_LFRONT(void) {
 s32 PTYPE2_LRIGHT(void) {
   {
     if ((byte_3F5AC9B & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 92;
   }
@@ -388,7 +445,10 @@ s32 PTYPE2_LRIGHT(void) {
 s32 PTYPE2_LUP(void) {
   {
     if ((byte_3F5AC9B & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 89;
   }
@@ -399,7 +459,10 @@ s32 PTYPE2_LUP(void) {
 s32 PTYPE2_RBACK(void) {
   {
     if ((byte_3F5AC9C & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 101;
   }
@@ -410,7 +473,10 @@ s32 PTYPE2_RBACK(void) {
 s32 PTYPE2_RDOWN(void) {
   {
     if ((byte_3F5AC9C & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 102;
   }
@@ -421,7 +487,10 @@ s32 PTYPE2_RDOWN(void) {
 s32 PTYPE2_RFRONT(void) {
   {
     if ((byte_3F5AC9C & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 98;
   }
@@ -440,7 +509,10 @@ s32 PTYPE2_RIGHT(s32 o) {
 s32 PTYPE2_RLEFT(void) {
   {
     if ((byte_3F5AC9C & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 99;
   }
@@ -451,7 +523,10 @@ s32 PTYPE2_RLEFT(void) {
 s32 PTYPE2_RUP(void) {
   {
     if ((byte_3F5AC9C & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 97;
   }
@@ -462,7 +537,10 @@ s32 PTYPE2_RUP(void) {
 s32 PTYPE2_UBACK(void) {
   {
     if ((byte_3F5AC99 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 77;
   }
@@ -473,7 +551,10 @@ s32 PTYPE2_UBACK(void) {
 s32 PTYPE2_UDOWN(void) {
   {
     if ((byte_3F5AC99 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 78;
   }
@@ -484,7 +565,10 @@ s32 PTYPE2_UDOWN(void) {
 s32 PTYPE2_UFRONT(void) {
   {
     if ((byte_3F5AC99 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 74;
   }
@@ -495,7 +579,10 @@ s32 PTYPE2_UFRONT(void) {
 s32 PTYPE2_ULEFT(void) {
   {
     if ((byte_3F5AC99 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 75;
   }
@@ -513,7 +600,10 @@ s32 PTYPE2_UP(s32 o) {
 s32 PTYPE2_URIGHT(void) {
   {
     if ((byte_3F5AC99 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 76;
   }
@@ -531,7 +621,10 @@ s32 PTYPE_BACK(s32 o) {
 s32 PTYPE_BDOWN(void) {
   {
     if ((byte_3F5AC97 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 46;
   }
@@ -542,7 +635,10 @@ s32 PTYPE_BDOWN(void) {
 s32 PTYPE_BFRONT(void) {
   {
     if ((byte_3F5AC97 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 42;
   }
@@ -553,7 +649,10 @@ s32 PTYPE_BFRONT(void) {
 s32 PTYPE_BLEFT(void) {
   {
     if ((byte_3F5AC97 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 43;
   }
@@ -564,7 +663,10 @@ s32 PTYPE_BLEFT(void) {
 s32 PTYPE_BRIGHT(void) {
   {
     if ((byte_3F5AC97 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 44;
   }
@@ -575,7 +677,10 @@ s32 PTYPE_BRIGHT(void) {
 s32 PTYPE_BUP(void) {
   {
     if ((byte_3F5AC97 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 41;
   }
@@ -586,7 +691,10 @@ s32 PTYPE_BUP(void) {
 s32 PTYPE_DBACK(void) {
   {
     if ((byte_3F5AC94 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 53;
   }
@@ -597,7 +705,10 @@ s32 PTYPE_DBACK(void) {
 s32 PTYPE_DFRONT(void) {
   {
     if ((byte_3F5AC94 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 50;
   }
@@ -608,7 +719,10 @@ s32 PTYPE_DFRONT(void) {
 s32 PTYPE_DLEFT(void) {
   {
     if ((byte_3F5AC94 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 51;
   }
@@ -627,7 +741,10 @@ s32 PTYPE_DOWN(s32 o) {
 s32 PTYPE_DRIGHT(void) {
   {
     if ((byte_3F5AC94 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 52;
   }
@@ -638,7 +755,10 @@ s32 PTYPE_DRIGHT(void) {
 s32 PTYPE_DUP(void) {
   {
     if ((byte_3F5AC94 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 49;
   }
@@ -649,7 +769,10 @@ s32 PTYPE_DUP(void) {
 s32 PTYPE_FBACK(void) {
   {
     if ((byte_3F5AC98 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 21;
   }
@@ -660,7 +783,10 @@ s32 PTYPE_FBACK(void) {
 s32 PTYPE_FDOWN(void) {
   {
     if ((byte_3F5AC98 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 22;
   }
@@ -671,7 +797,10 @@ s32 PTYPE_FDOWN(void) {
 s32 PTYPE_FLEFT(void) {
   {
     if ((byte_3F5AC98 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 19;
   }
@@ -682,7 +811,10 @@ s32 PTYPE_FLEFT(void) {
 s32 PTYPE_FRIGHT(void) {
   {
     if ((byte_3F5AC98 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 20;
   }
@@ -701,7 +833,10 @@ s32 PTYPE_FRONT(s32 o) {
 s32 PTYPE_FUP(void) {
   {
     if ((byte_3F5AC98 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 17;
   }
@@ -712,7 +847,10 @@ s32 PTYPE_FUP(void) {
 s32 PTYPE_LBACK(void) {
   {
     if ((byte_3F5AC95 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 29;
   }
@@ -723,7 +861,10 @@ s32 PTYPE_LBACK(void) {
 s32 PTYPE_LDOWN(void) {
   {
     if ((byte_3F5AC95 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 30;
   }
@@ -742,7 +883,10 @@ s32 PTYPE_LEFT(s32 o) {
 s32 PTYPE_LFRONT(void) {
   {
     if ((byte_3F5AC95 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 26;
   }
@@ -753,7 +897,10 @@ s32 PTYPE_LFRONT(void) {
 s32 PTYPE_LRIGHT(void) {
   {
     if ((byte_3F5AC95 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 28;
   }
@@ -764,7 +911,10 @@ s32 PTYPE_LRIGHT(void) {
 s32 PTYPE_LUP(void) {
   {
     if ((byte_3F5AC95 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 25;
   }
@@ -775,7 +925,10 @@ s32 PTYPE_LUP(void) {
 s32 PTYPE_RBACK(void) {
   {
     if ((byte_3F5AC96 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 37;
   }
@@ -786,7 +939,10 @@ s32 PTYPE_RBACK(void) {
 s32 PTYPE_RDOWN(void) {
   {
     if ((byte_3F5AC96 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 38;
   }
@@ -797,7 +953,10 @@ s32 PTYPE_RDOWN(void) {
 s32 PTYPE_RFRONT(void) {
   {
     if ((byte_3F5AC96 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 34;
   }
@@ -816,7 +975,10 @@ s32 PTYPE_RIGHT(s32 o) {
 s32 PTYPE_RLEFT(void) {
   {
     if ((byte_3F5AC96 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 35;
   }
@@ -827,7 +989,10 @@ s32 PTYPE_RLEFT(void) {
 s32 PTYPE_RUP(void) {
   {
     if ((byte_3F5AC96 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 33;
   }
@@ -838,7 +1003,10 @@ s32 PTYPE_RUP(void) {
 s32 PTYPE_UBACK(void) {
   {
     if ((byte_3F5AC93 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 13;
   }
@@ -849,7 +1017,10 @@ s32 PTYPE_UBACK(void) {
 s32 PTYPE_UDOWN(void) {
   {
     if ((byte_3F5AC93 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 14;
   }
@@ -860,7 +1031,10 @@ s32 PTYPE_UDOWN(void) {
 s32 PTYPE_UFRONT(void) {
   {
     if ((byte_3F5AC93 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 10;
   }
@@ -871,7 +1045,10 @@ s32 PTYPE_UFRONT(void) {
 s32 PTYPE_ULEFT(void) {
   {
     if ((byte_3F5AC93 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 11;
   }
@@ -890,7 +1067,10 @@ s32 PTYPE_UP(s32 o) {
 s32 PTYPE_URIGHT(void) {
   {
     if ((byte_3F5AC93 & 1) != 0)
+      goto LABEL_7;
+    goto LABEL_6;
   }
+LABEL_7:
   {
     return 12;
   }
@@ -945,7 +1125,56 @@ s32 pipeCreateLink(mnMyLink_h_tagPipeLinkInfo *pInfo, s32 nodeNum) {
 
 // 0x19ba0f0
 s32 pipeDellLink(mnMyLink_h_tagPipeLinkData *pData) {
+  Il2CppObject *prev;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  Il2CppObject *next;
+  Il2CppClass *v9;
+  s64 v10;
+  char *v11;
+  s64 *v12;
+  u64 v14[2];
+  char *v15;
+
+  if (!pData)
     return 0;
+  prev = pData->prev;
+  if (prev)
+  {
+    klass = prev->klass;
+    if (prev->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mnMyLink_h_tagPipeLinkData)
+    {
+      sub_8FC2C0(klass->_1.element_class, mnMyLink_h_tagPipeLinkData, v14);
+      if ((v14[0] & 1) != 0)
+        v6 = v15;
+      else
+        v6 = v14 + 1;
+      v7 = sub_8C4940(v6);
+    }
+  }
+  next = pData->next;
+  if (next)
+  {
+    v9 = next->klass;
+    if (next->klass->_2.typeHierarchyDepth < v10
+      || v9->_2.typeHierarchy[v10 - 1] != mnMyLink_h_tagPipeLinkData)
+    {
+      sub_8FC2C0(v9->_1.element_class, mnMyLink_h_tagPipeLinkData, v14);
+      if ((v14[0] & 1) != 0)
+        v11 = v15;
+      else
+        v11 = v14 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  if (prev)
+    prev[1].monitor = next;
+  if (next)
+    next[2].klass = prev;
+  return 1;
 }
 
 // 0x19ba290
@@ -969,8 +1198,16 @@ s32 pipeInitLink(mnMyLink_h_tagPipeLinkInfo *pInfo) {
   if (pInfo)
   {
     {
+      if (!LODWORD(pInfo->aHandle->max_length))
+      {
+LABEL_7:
+      }
     }
-    else    if (pInfo->nodeMax >= 1)
+    else if (!LODWORD(pInfo->aHandle->max_length))
+    {
+      goto LABEL_7;
+    }
+    if (pInfo->nodeMax >= 1)
     {
       v4 = 0;
       do
@@ -1017,8 +1254,12 @@ mnMyLink_h_tagPipeLinkData *pipeMakeNodeLink(mnMyLink_h_tagPipeLinkInfo *pInfo) 
 
   {
     if (LODWORD(pInfo->aHandle->max_length))
+      goto LABEL_6;
+LABEL_9:
   }
   if (!LODWORD(pInfo->aHandle->max_length))
+    goto LABEL_9;
+LABEL_6:
   if (pInfo->nodeMax < 1)
     return 0;
   for (i = 4; ; ++i)

@@ -47,10 +47,13 @@ bool fldAllTblLoad(void) {
   AssetBundleCtrl_o *asset_bc;
 
   if (fldAllCnt == 2)
+    goto LABEL_27;
+LABEL_6:
   if (fldAllCnt == 1)
   {
     asset_bc = get_asset_bc();
-    if (IsLoad(asset_bc, StringLiteral_8913))
+    if (IsLoad(asset_bc, "f_bin"))
+      goto LABEL_21;
     return 0;
   }
   else
@@ -58,15 +61,21 @@ bool fldAllTblLoad(void) {
     if (!fldAllCnt)
     {
       v4 = get_asset_bc();
-      if (!IsLoad(v4, StringLiteral_8913))
+      if (!IsLoad(v4, "f_bin"))
       {
         v6 = get_asset_bc();
-        Load(v6, StringLiteral_8913, StringLiteral_8913, 0);
+        Load(v6, "f_bin", "f_bin", 0);
+          goto LABEL_24;
+        goto LABEL_22;
       }
+LABEL_21:
       {
+LABEL_24:
         ++fldAllCnt;
         return 0;
       }
+LABEL_22:
+      goto LABEL_24;
     }
     return 0;
   }
@@ -170,10 +179,14 @@ s32 fldGbChkAnime(s32 fld, s32 area, s32 blk) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->ManimeOffFlg) != 0;
@@ -202,10 +215,14 @@ s32 fldGbChkEAnime(s32 fld, s32 area, s32 grp) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->EanimeOffFlg) != 0;
@@ -234,10 +251,14 @@ s32 fldGbChkEView(s32 fld, s32 area, s32 grp) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->EviewOffFlg) != 0;
@@ -266,10 +287,14 @@ s32 fldGbChkGimic(s32 fld, s32 area, s32 hojiID) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->gimicLastFlg) != 0;
@@ -298,10 +323,14 @@ s32 fldGbChkHit(s32 fld, s32 area, s32 blk) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->hitOffFlg) != 0;
@@ -330,10 +359,14 @@ s32 fldGbChkNpc(s32 fld, s32 area, s32 hojiID) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->npcOffFlg) != 0;
@@ -394,10 +427,14 @@ s32 fldGbChkView(s32 fld, s32 area, s32 blk) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   return ((1 << v4) & v13->m_Items[area]->MviewOffFlg) != 0;
@@ -531,10 +568,14 @@ s32 fldGbGetEAnimeCngID(s32 fld, s32 area, s32 grp) {
     {
       v9 = fld % 100;
     }
+      goto LABEL_27;
+    goto LABEL_25;
   }
   v9 = fld % 100;
   {
+LABEL_25:
   }
+LABEL_27:
   PushBlock = DDS3_GBWK->fldSave->PushBlock;
   v13 = PushBlock->m_Items[v9];
   EanimeCngID = v13->m_Items[area]->EanimeCngID;
@@ -692,10 +733,12 @@ void fldGbSetAnime(s32 fld, s32 area, s32 blk, s32 onoff) {
       v10 = fld % 100;
       if (!onoff)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->ManimeOffFlg & ~(1 << v6);
+LABEL_40:
         v17->ManimeOffFlg = v18;
         return;
       }
@@ -714,11 +757,13 @@ void fldGbSetAnime(s32 fld, s32 area, s32 blk, s32 onoff) {
         v10 = fld % 100;
       }
       if (!onoff)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->ManimeOffFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -741,10 +786,12 @@ void fldGbSetEAnime(s32 fld, s32 area, s32 grp, s32 onoff) {
       v10 = fld % 100;
       if (!onoff)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->EanimeOffFlg & ~(1 << v6);
+LABEL_40:
         v17->EanimeOffFlg = v18;
         return;
       }
@@ -763,11 +810,13 @@ void fldGbSetEAnime(s32 fld, s32 area, s32 grp, s32 onoff) {
         v10 = fld % 100;
       }
       if (!onoff)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->EanimeOffFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -786,6 +835,7 @@ void fldGbSetEAnimeCngID(s32 fld, s32 area, s32 grp, s32 animeid) {
     {
       v10 = fld % 100;
       {
+LABEL_27:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v14 = PushBlock->m_Items[v10];
         EanimeCngID = v14->m_Items[area]->EanimeCngID;
@@ -806,7 +856,9 @@ void fldGbSetEAnimeCngID(s32 fld, s32 area, s32 grp, s32 animeid) {
       {
         v10 = fld % 100;
       }
+        goto LABEL_27;
     }
+    goto LABEL_27;
   }
 }
 
@@ -829,10 +881,12 @@ void fldGbSetEView(s32 fld, s32 area, s32 grp, s32 onoff) {
       v10 = fld % 100;
       if (!onoff)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->EviewOffFlg & ~(1 << v6);
+LABEL_40:
         v17->EviewOffFlg = v18;
         return;
       }
@@ -851,11 +905,13 @@ void fldGbSetEView(s32 fld, s32 area, s32 grp, s32 onoff) {
         v10 = fld % 100;
       }
       if (!onoff)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->EviewOffFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -878,10 +934,12 @@ void fldGbSetGimic(s32 fld, s32 area, s32 hojiID, s32 toplast) {
       v10 = fld % 100;
       if (!toplast)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->gimicLastFlg & ~(1 << v6);
+LABEL_40:
         v17->gimicLastFlg = v18;
         return;
       }
@@ -900,11 +958,13 @@ void fldGbSetGimic(s32 fld, s32 area, s32 hojiID, s32 toplast) {
         v10 = fld % 100;
       }
       if (!toplast)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->gimicLastFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -927,10 +987,12 @@ void fldGbSetHit(s32 fld, s32 area, s32 blk, s32 onoff) {
       v10 = fld % 100;
       if (!onoff)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->hitOffFlg & ~(1 << v6);
+LABEL_40:
         v17->hitOffFlg = v18;
         return;
       }
@@ -949,11 +1011,13 @@ void fldGbSetHit(s32 fld, s32 area, s32 blk, s32 onoff) {
         v10 = fld % 100;
       }
       if (!onoff)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->hitOffFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -976,10 +1040,12 @@ void fldGbSetNpc(s32 fld, s32 area, s32 hojiID, s32 onoff) {
       v10 = fld % 100;
       if (!onoff)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->npcOffFlg & ~(1 << v6);
+LABEL_40:
         v17->npcOffFlg = v18;
         return;
       }
@@ -998,11 +1064,13 @@ void fldGbSetNpc(s32 fld, s32 area, s32 hojiID, s32 onoff) {
         v10 = fld % 100;
       }
       if (!onoff)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->npcOffFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -1050,10 +1118,12 @@ void fldGbSetView(s32 fld, s32 area, s32 blk, s32 onoff) {
       v10 = fld % 100;
       if (!onoff)
       {
+LABEL_32:
         PushBlock = DDS3_GBWK->fldSave->PushBlock;
         v21 = PushBlock->m_Items[v10];
         v17 = v21->m_Items[area];
         v18 = v17->MviewOffFlg & ~(1 << v6);
+LABEL_40:
         v17->MviewOffFlg = v18;
         return;
       }
@@ -1072,11 +1142,13 @@ void fldGbSetView(s32 fld, s32 area, s32 blk, s32 onoff) {
         v10 = fld % 100;
       }
       if (!onoff)
+        goto LABEL_32;
     }
     v13 = DDS3_GBWK->fldSave->PushBlock;
     v15 = v13->m_Items[v10];
     v17 = v15->m_Items[area];
     v18 = v17->MviewOffFlg | (1 << v6);
+    goto LABEL_40;
   }
 }
 
@@ -1087,21 +1159,18 @@ void fldGbTblLoad(void) {
   AssetBundleCtrl_o *asset_bc;
   AssetBundleCtrl_o *v8;
   UnityEngine_Object_o *Asset;
-  struct fldGlobal_StaticFields *static_fields;
   s64 typeHierarchyDepth;
   UnityEngine_Object_o *v13;
   UnityEngine_Object_o *fldHitData;
   AssetBundleCtrl_o *v17;
   AssetBundleCtrl_o *v19;
   UnityEngine_Object_o *v21;
-  struct fldGlobal_StaticFields *v22;
   s64 v23;
   UnityEngine_Object_o *v24;
   UnityEngine_Object_o *fldCameraParam;
   AssetBundleCtrl_o *v28;
   AssetBundleCtrl_o *v31;
   UnityEngine_Object_o *v34;
-  struct fldGlobal_StaticFields *v35;
   s64 v36;
   UnityEngine_Object_o *v37;
 
@@ -1110,21 +1179,21 @@ void fldGbTblLoad(void) {
   if (op_Equality(fldNameData, 0, 0))
   {
     asset_bc = get_asset_bc();
-    if (IsLoad(asset_bc, StringLiteral_8913))
+    if (IsLoad(asset_bc, "f_bin"))
     {
       v8 = get_asset_bc();
       {
       }
       Asset = LoadAsset(
                 v8,
-                StringLiteral_8913,
+                "f_bin",
                 ParamDataAssetPath,
-                StringLiteral_16674,
+                "FldNameData_JA",
                 0);
       else
       {
-        static_fields = fldGlobal->static_fields;
         if (!Asset)
+          goto LABEL_28;
       }
       if (Asset->klass->_2.typeHierarchyDepth >= typeHierarchyDepth)
       {
@@ -1132,29 +1201,32 @@ void fldGbTblLoad(void) {
           v13 = Asset;
         else
           v13 = 0;
+        goto LABEL_29;
       }
+LABEL_28:
       v13 = 0;
-      static_fields->fldNameData = v13;
+LABEL_29:
+      fldNameData = v13;
     }
   }
   if (op_Equality(fldHitData, 0, 0))
   {
     v17 = get_asset_bc();
-    if (IsLoad(v17, StringLiteral_8913))
+    if (IsLoad(v17, "f_bin"))
     {
       v19 = get_asset_bc();
       {
       }
       v21 = LoadAsset(
               v19,
-              StringLiteral_8913,
+              "f_bin",
               ParamDataAssetPath,
-              StringLiteral_16675,
+              "FldHitData",
               0);
       else
       {
-        v22 = fldGlobal->static_fields;
         if (!v21)
+          goto LABEL_55;
       }
       if (v21->klass->_2.typeHierarchyDepth >= v23)
       {
@@ -1162,29 +1234,32 @@ void fldGbTblLoad(void) {
           v24 = v21;
         else
           v24 = 0;
+        goto LABEL_56;
       }
+LABEL_55:
       v24 = 0;
-      v22->fldHitData = v24;
+LABEL_56:
+      fldHitData = v24;
     }
   }
   if (op_Equality(fldCameraParam, 0, 0))
   {
     v28 = get_asset_bc();
-    if (IsLoad(v28, StringLiteral_8913))
+    if (IsLoad(v28, "f_bin"))
     {
       v31 = get_asset_bc();
       {
       }
       v34 = LoadAsset(
               v31,
-              StringLiteral_8913,
+              "f_bin",
               ParamDataAssetPath,
-              StringLiteral_16676,
+              "FldCameraParam",
               0);
       else
       {
-        v35 = fldGlobal->static_fields;
         if (!v34)
+          goto LABEL_83;
       }
       if (v34->klass->_2.typeHierarchyDepth >= v36)
       {
@@ -1192,9 +1267,12 @@ void fldGbTblLoad(void) {
           v37 = v34;
         else
           v37 = 0;
+        goto LABEL_84;
       }
+LABEL_83:
       v37 = 0;
-      v35->fldCameraParam = v37;
+LABEL_84:
+      fldCameraParam = v37;
       fldCameraInit();
     }
   }

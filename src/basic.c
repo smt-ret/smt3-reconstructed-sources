@@ -11,10 +11,86 @@ typedef struct dds3UnitObjectBasicWorkData_t dds3UnitObjectBasicWorkData_t;
 
 // 0x1311870
 void dds3EffectObjectBasicWorkData_t__Clear(dds3EffectObjectBasicWorkData_t *this) {
+  u64 *v3;
+  f32 v4;
+  f32 v5;
+  Il2CppObject *v6;
+  u64 *v7;
+  f32 v8;
+  f32 v9;
+  s64 v10;
+  s64 v11;
+  s64 v12;
+  s64 v13;
+
+  v3 = Allocate(dds3ObjectBaseControlWorkData_t);
+  _ctor(v3, 0);
+  *&this->stat = 0;
+  this->handle = 0;
+  this->pObjectBaseControlWorkData = v3;
+  v12 = 0;
+  v13 = 0;
+  sub_854690(&v12, 0.0, 0.0, 0.0, 0.0);
+  v5 = *&v13;
+  v4 = *(&v13 + 1);
+  *&this->linkpos.x = v12;
+  this->linkpos.z = v5;
+  this->linkpos.w = v4;
+  v6 = Allocate(dds3Basic_t);
+  v6[7].monitor = NewSpecific(uint, 3u);
+  _ctor(v6, 0);
+  this->linkbasic = v6;
+  *&this->linkindex = 0;
+  this->reserve3 = 0;
+  this->para = 0;
+  this->cuth = 0;
+  *&this->reserve1 = 0;
+  v7 = Allocate(fldResourceEffect_t);
+  fldResourceEffect_t___ctor(v7);
+  this->pFldEx = v7;
+  v10 = 0;
+  v11 = 0;
+  sub_854690(&v10, 0.0, 0.0, 0.0, 0.0);
+  v9 = *&v11;
+  v8 = *(&v11 + 1);
+  *&this->FldExBasePos.x = v10;
+  this->FldExBasePos.z = v9;
+  this->FldExBasePos.w = v8;
 }
 
 // 0x1311ad0
 void dds3MatterObjectBasicWorkData_t__Clear(dds3MatterObjectBasicWorkData_t *this) {
+  u64 *v3;
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  s64 v7;
+  s64 v8;
+  s64 v9;
+  s64 v10;
+  s64 v11;
+
+  v3 = Allocate(dds3ObjectBaseControlWorkData_t);
+  _ctor(v3, 0);
+  this->pObjectBaseControlWorkData = v3;
+  *&this->hojiID = 0;
+  this->OtLinkIdx = 0;
+  v10 = 0;
+  v11 = 0;
+  sub_854690(&v10, 0.0, 0.0, 0.0, 0.0);
+  v5 = *&v11;
+  v4 = *(&v11 + 1);
+  *&this->base_pos.x = v10;
+  this->base_pos.z = v5;
+  this->base_pos.w = v4;
+  v8 = 0;
+  v9 = 0;
+  sub_854690(&v8, 0.0, 0.0, 0.0, 0.0);
+  v6 = *(&v9 + 1);
+  v7 = v8;
+  LODWORD(this->move_pos.z) = v9;
+  this->move_pos.w = v6;
+  *&this->move_pos.x = v7;
 }
 
 // 0x1311bc0
@@ -42,6 +118,29 @@ void dds3ModelBasicWorkData_t__Clear(dds3ModelBasicWorkData_t *this) {
 
 // 0x1311d40
 void dds3ModelRangeBasicWorkData_t__Clear(dds3ModelRangeBasicWorkData_t *this) {
+  u64 *v3;
+  u64 *v4;
+  f32 v5;
+  f32 v6;
+  s64 v7;
+  s64 v8;
+
+  v3 = Allocate(fldResourceModelRange_t);
+  fldResourceModelRange_t___ctor(v3);
+  this->pRange = v3;
+  this->pShapePacket = 0;
+  v4 = Allocate(sdfMemHandle_t);
+  sdfMemHandle_t___ctor(v4);
+  this->hPlane = v4;
+  v7 = 0;
+  v8 = 0;
+  sub_854690(&v7, 0.0, 0.0, 0.0, 0.0);
+  v6 = *&v8;
+  v5 = *(&v8 + 1);
+  *&this->pPlane.x = v7;
+  this->pPlane.z = v6;
+  this->pPlane.w = v5;
+  *&this->blockID = 0;
 }
 
 // 0x1313610

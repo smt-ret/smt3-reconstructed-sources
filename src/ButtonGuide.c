@@ -36,30 +36,36 @@ s8 fldProcCheckFlag(u32 flag);
 // 0xfdf9b0
 bool ButtonGuideCheck(bool reset) {
   ButtonGuide_c *v3;
-  struct ButtonGuide_StaticFields *static_fields;
   bool v5;
-  dds3GlobalWork_c *v6;
-  struct dds3GlobalWork_StaticFields *v7;
   s32 playtime;
-  struct ButtonGuide_StaticFields *v10;
   s32 startTime;
   s32 waitTime;
 
-  static_fields = ButtonGuide->static_fields;
-  if (!static_fields->timeCheck)
+  if (!timeCheck)
     return 0;
-  else  if (static_fields->startTime < 0 || reset)
+LABEL_6:
+  else if (typeClose)
+  {
+    goto LABEL_35;
+  }
+  if (startTime < 0 || reset)
+    goto LABEL_44;
   v5 = fldProcCheckFlag(0x40u) == 0;
   if (v5)
   {
-    v7 = v6->static_fields;
-    playtime = v7->DDS3_GBWK->playtime;
+LABEL_44:
+    playtime = DDS3_GBWK->playtime;
     startTime = playtime;
     if ((v3->_2.bitflags2 & 2) == 0)
+      goto LABEL_38;
+    goto LABEL_36;
   }
-  v10 = v3->static_fields;
-  startTime = v10->startTime;
-  waitTime = v10->waitTime;
+LABEL_35:
+  if ((v3->_2.bitflags2 & 2) != 0)
+  {
+LABEL_36:
+  }
+LABEL_38:
   return waitTime + startTime < DDS3_GBWK->playtime;
 }
 
@@ -69,7 +75,7 @@ void ButtonGuideDispDel(void) {
 
   if (!op_Equality(ButtonGuideAnm, 0, 0))
   {
-    SetInteger(ButtonGuideAnm, StringLiteral_4614, 0);
+    SetInteger(ButtonGuideAnm, "fbuttonguide", 0);
     GuideNowAnm = 0;
     timeCheck = 0;
     waitTime = 90;
@@ -79,19 +85,15 @@ void ButtonGuideDispDel(void) {
 // 0xfdfbd0
 void ButtonGuideDispIn(void) {
   UnityEngine_Object_o *ButtonGuideAnm;
-  ButtonGuide_c *v5;
-  struct ButtonGuide_StaticFields *static_fields;
   s32 GuideNowAnm;
 
   if (!op_Equality(ButtonGuideAnm, 0, 0))
   {
-    static_fields = v5->static_fields;
-    GuideNowAnm = static_fields->GuideNowAnm;
     if (GuideNowAnm != 1)
     {
       if (GuideNowAnm != 2)
       {
-        SetInteger(static_fields->ButtonGuideAnm, StringLiteral_4614, 1);
+        SetInteger(ButtonGuideAnm, "fbuttonguide", 1);
         GuideNowAnm = 1;
       }
     }
@@ -101,15 +103,12 @@ void ButtonGuideDispIn(void) {
 // 0xfdf6f0
 void ButtonGuideDispOff(void) {
   UnityEngine_Object_o *ButtonGuideAnm;
-  ButtonGuide_c *v5;
-  struct ButtonGuide_StaticFields *static_fields;
 
   if (!op_Equality(ButtonGuideAnm, 0, 0))
   {
-    static_fields = v5->static_fields;
-    if (static_fields->GuideNowAnm)
+    if (GuideNowAnm)
     {
-      SetInteger(static_fields->ButtonGuideAnm, StringLiteral_4614, 0);
+      SetInteger(ButtonGuideAnm, "fbuttonguide", 0);
       GuideNowAnm = 0;
       waitTime = 90;
     }
@@ -119,15 +118,12 @@ void ButtonGuideDispOff(void) {
 // 0xfe0750
 void ButtonGuideDispOn(void) {
   UnityEngine_Object_o *ButtonGuideAnm;
-  ButtonGuide_c *v5;
-  struct ButtonGuide_StaticFields *static_fields;
 
   if (!op_Equality(ButtonGuideAnm, 0, 0))
   {
-    static_fields = v5->static_fields;
-    if (static_fields->GuideNowAnm != 2)
+    if (GuideNowAnm != 2)
     {
-      SetInteger(static_fields->ButtonGuideAnm, StringLiteral_4614, 2);
+      SetInteger(ButtonGuideAnm, "fbuttonguide", 2);
       GuideNowAnm = 2;
     }
   }
@@ -136,19 +132,15 @@ void ButtonGuideDispOn(void) {
 // 0xfdfd10
 void ButtonGuideDispOut(void) {
   UnityEngine_Object_o *ButtonGuideAnm;
-  ButtonGuide_c *v5;
-  struct ButtonGuide_StaticFields *static_fields;
   s32 GuideNowAnm;
 
   if (!op_Equality(ButtonGuideAnm, 0, 0))
   {
-    static_fields = v5->static_fields;
-    GuideNowAnm = static_fields->GuideNowAnm;
     if (GuideNowAnm != 3)
     {
       if (GuideNowAnm)
       {
-        SetInteger(static_fields->ButtonGuideAnm, StringLiteral_4614, 3);
+        SetInteger(ButtonGuideAnm, "fbuttonguide", 3);
         GuideNowAnm = 3;
         waitTime = 90;
       }
@@ -158,12 +150,169 @@ void ButtonGuideDispOut(void) {
 
 // 0xfdfef0
 void ButtonGuideDispSet(char *name, bool timer, bool empty, s32 waitTimer) {
-    GetGuideData(0, 0);
-    Change(0, 0, 0);
-    GetLocalizeText(0);
-    RepColTag(0, 0);
-    ButtonGuideDispOff();
-    ButtonGuideDispOn();
+  GuideDataTbl_GuideData_o *GuideData;
+  u64 v12;
+  struct GuideDataTbl_GuideSet_array *guideSet;
+  UnityEngine_GameObject_o *v15;
+  struct GuideDataTbl_GuideSet_array *v17;
+  il2cpp_array_size_t max_length;
+  u64 v19;
+  s32 v20;
+  struct UnityEngine_GameObject_array *v23;
+  UnityEngine_GameObject_o *v25;
+  struct GuideDataTbl_GuideSet_array *v26;
+  struct GuideDataTbl_GuideSet_array *v29;
+  struct UnityEngine_GameObject_array *v32;
+  UnityEngine_GameObject_o *v34;
+  struct GuideDataTbl_GuideSet_array *v35;
+  struct UnityEngine_GameObject_array *guideObj;
+  UnityEngine_GameObject_o *v41;
+  struct UnityEngine_GameObject_array *subObj;
+  UnityEngine_GameObject_o *v44;
+  struct TMPro_TextMeshProUGUI_array *guideText;
+  struct GuideDataTbl_GuideSet_array *v47;
+  TMPro_TMP_Text_o *v48;
+  System_String_o *text;
+  System_String_o *LocalizeText;
+  System_Object_array *v52;
+  System_Object_array *v53;
+  s64 *v54;
+  s64 *v56;
+  System_String_o *v59;
+  u64 v60;
+  ButtonGuide_c *v62;
+  bool v69;
+  s32 v70;
+
+  GuideData = GetGuideData(GuideList, name, empty);
+  waitTime = waitTimer;
+  guideSet = GuideData->_guideSet;
+  if (guideSet->m_Items[0]->button1 > 0)
+  {
+    v69 = timer;
+    v15 = *(*(*(v12 + 184) + 16LL) + 64LL);
+    cmpSetupObject(v15, empty);
+    v17 = GuideData->_guideSet;
+    max_length = v17->max_length;
+    if (max_length >= 1)
+    {
+      v19 = 0;
+      v20 = 1;
+      do
+      {
+        if (v17->m_Items[v19]->button1 <= 0)
+        {
+          guideObj = _buttonguideUI->guideObj;
+          v41 = guideObj->m_Items[v19];
+          cmpSetupObject(v41, 0);
+          goto LABEL_80;
+        }
+        v23 = _buttonguideUI->guideObj;
+        v25 = v23->m_Items[v19];
+        cmpSetupObject(v25, 1);
+        v26 = GuideData->_guideSet;
+        Change(
+          _buttonguideUI,
+          v20 - 1,
+          v26->m_Items[v19]->button1,
+          0);
+        v29 = GuideData->_guideSet;
+        if (v29->m_Items[v19]->button2 <= 0)
+        {
+          subObj = _buttonguideUI->subObj;
+          v44 = subObj->m_Items[v19];
+          cmpSetupObject(v44, 0);
+            goto LABEL_64;
+        }
+        else
+        {
+          v32 = _buttonguideUI->subObj;
+          v34 = v32->m_Items[v19];
+          cmpSetupObject(v34, 1);
+          v35 = GuideData->_guideSet;
+          Change(
+            _buttonguideUI,
+            v20,
+            v35->m_Items[v19]->button2,
+            0);
+            goto LABEL_64;
+        }
+LABEL_64:
+        guideText = _buttonguideUI->_guideText;
+        v47 = GuideData->_guideSet;
+        v48 = guideText->m_Items[v19];
+        text = v47->m_Items[v19]->text;
+        LocalizeText = GetLocalizeText(text);
+        v52 = NewSpecific(object, 1u);
+        v70 = 0;
+        v53 = v52;
+        v54 = sub_8D3950(s32, &v70);
+        v56 = v54;
+        v53->m_Items[0] = v56;
+        v59 = RepColTag(LocalizeText, v53);
+        set_text(v48, v59);
+LABEL_80:
+        v17 = GuideData->_guideSet;
+        LODWORD(max_length) = v17->max_length;
+        ++v19;
+        v20 += 2;
+      }
+      while (v19 < max_length);
+    }
+    if (v69)
+    {
+      else if (typeClose)
+      {
+        goto LABEL_85;
+      }
+      ButtonGuideDispOff(v60);
+      {
+LABEL_112:
+        timeCheck = 1;
+        if ((v62->_2.bitflags2 & 2) == 0)
+          goto LABEL_113;
+        goto LABEL_94;
+      }
+LABEL_108:
+      goto LABEL_112;
+    }
+LABEL_85:
+    if ((*(v60 + 295) & 2) != 0 && !*(v60 + 216))
+    {
+      ButtonGuideDispOn();
+      if (v69)
+        goto LABEL_111;
+    }
+    else
+    {
+      ButtonGuideDispOn(v60);
+      if (v69)
+        goto LABEL_111;
+    }
+    else
+    {
+      if (!typeClose)
+      {
+LABEL_91:
+        else
+        {
+          timeCheck = 0;
+          if ((v62->_2.bitflags2 & 2) == 0)
+            goto LABEL_113;
+        }
+LABEL_94:
+LABEL_113:
+        if ((byte_3F587AA & 1) != 0)
+          goto LABEL_115;
+        goto LABEL_114;
+      }
+    }
+LABEL_111:
+      goto LABEL_112;
+    goto LABEL_108;
+  }
+  ButtonGuideDispOff(v12);
+  timeCheck = 0;
 }
 
 // 0xfdf480
@@ -194,10 +343,10 @@ void ButtonGuideInit(void) {
   asset_bc = get_asset_bc();
   {
   }
-  v17 = StringLiteral_4611;
-  v18 = StringLiteral_4612;
-  v19 = StringLiteral_4586;
-  v20 = Concat_5271136(ButtonGuideAssetPath, StringLiteral_74, v18, v19);
+  v17 = "common";
+  v18 = "ButtonGuideList";
+  v19 = ".asset";
+  v20 = Concat_5271136(ButtonGuideAssetPath, "/", v18, v19);
   File_16626736 = LoadFile_16626736(asset_bc, v17, v20);
   if (File_16626736
         File_16626736->klass->_2.typeHierarchyDepth >= typeHierarchyDepth))
@@ -218,21 +367,20 @@ void ButtonGuideInit(void) {
 dds3ProcessFunc_t *ButtonGuideMain(dds3ProcessID_t *id) {
   u64 v3;
   s32 v4;
-  dds3GlobalWork_c *v6;
-  struct dds3GlobalWork_StaticFields *static_fields;
   s32 playtime;
 
   if (!ButtonGuideCheck(0))
     return 0;
+LABEL_6:
   {
     else
     {
       if (!typeClose)
+        goto LABEL_22;
     }
-    if (v4 && !*(v3 + 216))
+LABEL_8:
     ButtonGuideDispOut(v3);
-    static_fields = v6->static_fields;
-    playtime = static_fields->DDS3_GBWK->playtime;
+    playtime = DDS3_GBWK->playtime;
     startTime = playtime;
     typeClose = 0;
     waitTime = 90;
@@ -240,22 +388,20 @@ dds3ProcessFunc_t *ButtonGuideMain(dds3ProcessID_t *id) {
   }
   v4 = 0;
   if (typeClose)
-  if (v4 && !*(v3 + 216))
+    goto LABEL_8;
+LABEL_22:
   ButtonGuideDispIn(v3);
   return 0;
 }
 
 // 0xfe0860
 bool ButtonGuideResetCheck(bool reset) {
-  ButtonGuide_c *v3;
-  struct ButtonGuide_StaticFields *static_fields;
   bool result;
 
-  static_fields = v3->static_fields;
   result = 1;
-  if ((static_fields->startTime & 0x80000000) == 0 && !reset)
+  if ((startTime & 0x80000000) == 0 && !reset)
   {
-    if (dds3SearchProcessName(StringLiteral_4613))
+    if (dds3SearchProcessName("PipeMain"))
     {
       return 0;
     }
@@ -278,8 +424,45 @@ void ButtonGuideTimerReset(void) {
 
 // 0xfe0960
 void CheckPlayerCtrl(void) {
-    DDS3_PADCHECK_PRESS(0);
-    ButtonGuideDispOut();
+  if (!timeCheck)
+    return;
+  else if (typeClose)
+  {
+    return;
+  }
+  if (DDS3_PADCHECK_PRESS(4))
+    goto LABEL_77;
+LABEL_13:
+  if (DDS3_PADCHECK_PRESS(5))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(6))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(7))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(0))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(1))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(2))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(3))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(8))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(9))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(10))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(11))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(12))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(13))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(14))
+    goto LABEL_77;
+  if (DDS3_PADCHECK_PRESS(15))
+    goto LABEL_77;
 }
 
 // 0xfe0db0
@@ -290,6 +473,7 @@ bool CheckTypeClose(void) {
     return 0;
   if (fldGb->areaID != 16)
     return 0;
+LABEL_10:
   return typeClose;
 }
 

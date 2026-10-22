@@ -12,7 +12,7 @@ struct effPCPBlinkMultiBlurBase_tag {
     f32 area;
     u32 blink;
     u32 blink_base;
-    u32 blink_abgr[UNKNOWN_ARRAY_SIZE];
+    u32 *blink_abgr;
     f32 ratio;
     s32 area_min;
     dds3Effect_PartialMultiBlur_t *hBlur;

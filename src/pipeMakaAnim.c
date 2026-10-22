@@ -46,37 +46,54 @@ void makaAdd(s32 maka, f32 x, f32 y) {
   UnityEngine_Color_o v58;
 
   if (!LODWORD(makaWork->max_length))
+    goto LABEL_50;
+LABEL_6:
   v8 = makaWork->m_Items[0];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[1];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[2];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[3];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[4];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[5];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[6];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[7];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[8];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[9];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[10];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[11];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[12];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[13];
   if (!v8->maka)
+    goto LABEL_51;
   v8 = makaWork->m_Items[14];
   if (!v8->maka)
   {
+LABEL_51:
     pos = v8->pos;
     if (maka < 0)
     {
@@ -100,7 +117,7 @@ void makaAdd(s32 maka, f32 x, f32 y) {
     v34 = Component_object;
     if ((maka & 0x7FFFFFFF) == 5)
     {
-      SetInteger(Component_object, StringLiteral_4572, 1);
+      SetInteger(Component_object, "anim", 1);
       v35 = GetComponent_object_(v8->makaObject);
       monitor = v35[1].monitor;
       v37 = v35;
@@ -119,7 +136,7 @@ void makaAdd(s32 maka, f32 x, f32 y) {
         v46 = 3;
       else
         v46 = 2;
-      SetInteger(v34, StringLiteral_4572, v46);
+      SetInteger(v34, "anim", v46);
       v47 = GetComponent_object_(v8->makaObject);
       v48 = v47[1].monitor;
       v49 = v47;
@@ -154,12 +171,379 @@ void makaDraw(tagMakaObject *makaPtr) {
 
 // 0x15351b0
 void makaDrawAnimation(s32 x, s32 y, f32 sclw, f32 sclh, u16 maka, u8 alpha) {
-    eglLinkSprite(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  u32 v10;
+  s64 v11;
+  bool v12;
+  s32 v13;
+  s16 v14;
+  char v15;
+  s64 v16;
+  s32 v17;
+  char v18;
+  s32 v19;
+  s32 v20;
+  s32 v21;
+  s32 v22;
+  s32 v23;
+  s32 v24;
+  char *v26;
+  s16 v27;
+  f32 v31;
+  s32 rgba0;
+  f32 v33;
+  u64 *v34;
+  struct tagPipeTexture_array *MakaTex;
+  f32 v37;
+  f32 v38;
+  s16 v40;
+  f32 v41;
+  f32 v42;
+  s32 v44;
+  char v45;
+  sdfTexHandle_t_o *th;
+  s32 v49;
+  s32 v50;
+  s32 v51;
+  u64 *v52;
+  u64 *v53;
+  u64 v54[2];
+
+  v10 = maka;
+  v11 = 0;
+  v49 = maka;
+  v54[0] = 0;
+  v54[1] = 0;
+  if (maka)
+  {
+    do
+    {
+      v12 = v10 > 9;
+      ++v11;
+      v10 /= 0xAu;
+    }
+    while (v12);
+  }
+  v52 = NewSpecific(s16, 0xAu);
+  v53 = NewSpecific(sbyte, 0xAu);
+  sub_854930(v54, 0);
+  sub_854930(v54, 1u);
+  v13 = 0;
+  v14 = 0;
+  v15 = 0;
+  v16 = v11;
+  v17 = 1 - v11;
+  v18 = v11 + 7;
+  do
+  {
+    if (!v16)
+    {
+      LOBYTE(v20) = -1;
+      if (!*(v53 + 6))
+        goto LABEL_20;
+      goto LABEL_21;
+    }
+    if (v16 == 1)
+    {
+      v19 = 1;
+      goto LABEL_19;
+    }
+    v21 = v18 & 7;
+    v22 = (~v13 + v11) & 7;
+    if ((v11 - 2 - v13) < 7)
+    {
+      v19 = 1;
+      if (!v22)
+        goto LABEL_19;
+LABEL_17:
+      v24 = -v21;
+      do
+      {
+        v19 = (10 * v19);
+        ++v24;
+      }
+      while (v24);
+      goto LABEL_19;
+    }
+    v23 = v17 + v21;
+    LOWORD(v19) = 1;
+    do
+    {
+      v19 = (-7936 * v19);
+      v23 += 8;
+    }
+    while (v23);
+    if (v22)
+      goto LABEL_17;
+LABEL_19:
+    v20 = v49 / v19 % 10;
+    if (v16 >= *(v53 + 6))
+    {
+LABEL_20:
+    }
+LABEL_21:
+    *(v53 + v16 + 32) = v20;
+    v26 = v53 + v16 + 32;
+    if (v16 == v11)
+    {
+      v27 = 0;
+    }
+    else
+    {
+      v27 = (sclw * 10.0);
+      if (v15 != 1)
+      {
+        v27 = (sclw * 13.0);
+        if (v20 == 1)
+          v27 = (sclw * 10.0);
+      }
+    }
+    v14 += v27;
+    *(v52 + v16 + 16) = v14;
+    v15 = *v26;
+    v12 = v16-- <= 0;
+    ++v13;
+    ++v17;
+    ++*v26;
+    v18 += 7;
+  }
+  while (!v12);
+  v51 = (sclw * 22.0);
+  v31 = ((v14 + v51) >> 1);
+  v50 = (sclh * 26.0);
+  v33 = (sclh * 26.0) * 0.5;
+  v34 = v53 + 4;
+  do
+  {
+    sub_854710(v54, 0);
+    v38 = v37;
+    v40 = *(v52 + v11 + 16);
+    sub_854710(v54, 1u);
+    v42 = v41;
+    v44 = *(v34 + v11);
+    v45 = *(v34 + v11);
+    else
+    {
+      if (!LODWORD(MakaTex->max_length))
+      {
+LABEL_44:
+      }
+    }
+    th = MakaTex->m_Items[0]->th;
+    rgba0 = (alpha << 24) | 0x808080;
+    eglLinkSprite(
+      ((v38 + v40) - v31),
+      (v42 - v33),
+      v51,
+      v50,
+      (22 * (v44 % 5)) | 1,
+      26 * (((1717986919LL * v45) >> 33) + (1717986919LL * v45 < 0)) + 2,
+      22,
+      26,
+      rgba0,
+      rgba0,
+      rgba0,
+      rgba0,
+      th,
+      0);
+    v12 = v11-- <= 0;
+  }
+  while (!v12);
 }
 
 // 0x1535ac0
 void makaDrawAnimationZ(s32 x, s32 y, f32 sclw, f32 sclh, u16 maka, u8 alpha) {
-    eglLinkSprite(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  u32 v10;
+  s64 v11;
+  bool v12;
+  s32 v13;
+  s32 v14;
+  char v15;
+  s64 v16;
+  s32 v17;
+  s32 v18;
+  char v19;
+  s32 v21;
+  s32 v22;
+  s32 v23;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  char *v28;
+  s32 v34;
+  f32 v35;
+  f32 v36;
+  s32 rgba0;
+  u64 *v38;
+  f32 v39;
+  f32 v40;
+  s16 v42;
+  f32 v44;
+  f32 v45;
+  s32 v47;
+  char v48;
+  struct tagPipeTexture_array *MakaTex;
+  sdfTexHandle_t_o *th;
+  u32 v54;
+  s32 v55;
+  s32 v56;
+  s16 w;
+  s32 wa;
+  u64 *v59;
+  u64 *v60;
+  u64 v61[2];
+
+  v10 = maka;
+  v11 = 0;
+  v55 = maka;
+  v61[0] = 0;
+  v61[1] = 0;
+  if (maka)
+  {
+    do
+    {
+      v12 = v10 > 9;
+      ++v11;
+      v10 /= 0xAu;
+    }
+    while (v12);
+  }
+  v60 = NewSpecific(sbyte, 0xAu);
+  v59 = NewSpecific(s16, 0xAu);
+  sub_854930(v61, 0);
+  sub_854930(v61, 1u);
+  v13 = 0;
+  v14 = 0;
+  v54 = vcvts_n_s32_f32(sclw, 4u);
+  v15 = 0;
+  v16 = v11;
+  v17 = 1 - v11;
+  LOWORD(v18) = 0;
+  v19 = v11 + 7;
+  do
+  {
+    w = v18;
+    if (!v16)
+    {
+      LOBYTE(v22) = -1;
+      if (!*(v60 + 6))
+        goto LABEL_24;
+      goto LABEL_25;
+    }
+    if (v16 == 1)
+    {
+      v21 = 1;
+      goto LABEL_23;
+    }
+    v23 = v19 & 7;
+    v24 = (~v13 + v11) & 7;
+    if ((v11 - 2 - v13) < 7)
+    {
+      v21 = 1;
+      if (!v24)
+        goto LABEL_23;
+LABEL_21:
+      v26 = -v23;
+      do
+      {
+        v21 = (10 * v21);
+        ++v26;
+      }
+      while (v26);
+      goto LABEL_23;
+    }
+    v25 = v17 + v23;
+    LOWORD(v21) = 1;
+    do
+    {
+      v21 = (-7936 * v21);
+      v25 += 8;
+    }
+    while (v25);
+    if (v24)
+      goto LABEL_21;
+LABEL_23:
+    v22 = v55 / v21 % 10;
+    if (v16 >= *(v60 + 6))
+    {
+LABEL_24:
+    }
+LABEL_25:
+    *(v60 + v16 + 32) = v22;
+    v28 = v60 + v16 + 32;
+    if (v16 == v11)
+    {
+      v14 = 0;
+      goto LABEL_42;
+    }
+    v56 = v14;
+    if (v15 == 9)
+    {
+      v14 = (sclw * 20.0);
+      if (v22 == 9)
+        goto LABEL_42;
+LABEL_33:
+      v14 = (sclw * 14.0);
+      if (v22 >= 1)
+        goto LABEL_42;
+LABEL_38:
+      v14 = v56;
+      if (!v22)
+        goto LABEL_41;
+      goto LABEL_42;
+    }
+    if (v15 >= 1)
+      goto LABEL_33;
+    if (v15)
+      goto LABEL_38;
+    v14 = (sclw * 14.0);
+    if (v22)
+LABEL_41:
+      v14 = v54;
+LABEL_42:
+    v18 = w + v14;
+    *(v59 + v16 + 16) = v18;
+    v15 = *v28;
+    v12 = v16-- <= 0;
+    ++v13;
+    ++v17;
+    ++*v28;
+    v19 += 7;
+  }
+  while (!v12);
+  wa = (sclw * 25.0);
+  v34 = (sclh * 30.0);
+  v35 = (sclh * 30.0) * 0.5;
+  v36 = ((v18 + wa) << 16 >> 17);
+  v38 = v60 + 4;
+  do
+  {
+    sub_854710(v61, 0);
+    v40 = v39;
+    v42 = *(v59 + v11 + 16);
+    sub_854710(v61, 1u);
+    v45 = v44;
+    v47 = *(v38 + v11);
+    v48 = *(v38 + v11);
+    th = MakaTex->m_Items[1]->th;
+    rgba0 = (alpha << 24) | 0x808080;
+    eglLinkSprite(
+      ((v40 + v42) - v36),
+      (v45 - v35),
+      wa,
+      v34,
+      25 * (v47 % 5) + 1,
+      30 * (((1717986919LL * v48) >> 33) + (1717986919LL * v48 < 0)) + 2,
+      25,
+      30,
+      rgba0,
+      rgba0,
+      rgba0,
+      rgba0,
+      th,
+      0);
+    v12 = v11-- <= 0;
+  }
+  while (!v12);
 }
 
 // 0x1536110
@@ -227,11 +611,13 @@ void makaDrawMAKA(tagMakaObject *makaPtr) {
     else
     {
       if (v13 > 167772160)
+        goto LABEL_30;
       v22 = 6.0;
       v23 = (11 - v11);
     }
     v21 = v23 / v22;
   }
+LABEL_30:
   v24 = v7[6];
   makaDrawAnimation(v7[8], v7[9] - 48, 1.0, 1.0, maka, vcvts_n_s32_f32(v21, 7u));
 }
@@ -279,24 +665,32 @@ void makaDrawZMAKA(tagMakaObject *makaPtr) {
         max_length = pos->max_length;
         v14 = pos;
         if (max_length)
+          goto LABEL_10;
+LABEL_24:
       }
     }
+    goto LABEL_23;
   }
   v22 = v9 - 1LL;
   v10 = *(&v4[2].klass + v22);
   if (v8 > 0x1000000)
   {
+LABEL_23:
     v11 = ((12 - v9) / 11.0) * 128.0;
     pos = makaPtr->pos;
     max_length = pos->max_length;
     v14 = pos;
     if (!max_length)
+      goto LABEL_24;
+    goto LABEL_10;
   }
   v11 = 128.0;
   pos = makaPtr->pos;
   max_length = pos->max_length;
   v14 = pos;
   if (!max_length)
+    goto LABEL_24;
+LABEL_10:
   v15 = pos->m_Items[0];
   v16 = v14->m_Items[1];
   if (v8 > 117440512)
@@ -307,6 +701,7 @@ void makaDrawZMAKA(tagMakaObject *makaPtr) {
     v20 = v19->max_length;
     v21 = v19;
     if (!v20)
+      goto LABEL_27;
   }
   else
   {
@@ -318,6 +713,10 @@ void makaDrawZMAKA(tagMakaObject *makaPtr) {
     v19 = makaPtr->pos;
     v20 = v19->max_length;
     v21 = v19;
+    if (!v20)
+    {
+LABEL_27:
+    }
   }
   makaDrawAnimationZ(v19->m_Items[0], v21->m_Items[1] - 40, 1.5, 1.7, maka, (v18 * 25.0));
 }
@@ -367,24 +766,32 @@ void makaDrawZMAKA2(tagMakaObject *makaPtr) {
         max_length = pos->max_length;
         v14 = pos;
         if (max_length)
+          goto LABEL_10;
+LABEL_20:
       }
     }
+    goto LABEL_19;
   }
   v19 = v9 - 1LL;
   v10 = *(&v4[2].klass + v19);
   if (v8 > 0x1000000)
   {
+LABEL_19:
     v11 = ((12 - v9) / 11.0) * 128.0;
     pos = makaPtr->pos;
     max_length = pos->max_length;
     v14 = pos;
     if (!max_length)
+      goto LABEL_20;
+    goto LABEL_10;
   }
   v11 = 128.0;
   pos = makaPtr->pos;
   max_length = pos->max_length;
   v14 = pos;
   if (!max_length)
+    goto LABEL_20;
+LABEL_10:
   v15 = pos->m_Items[0];
   v16 = v14->m_Items[1];
   if (v8 > 117440512)
@@ -409,12 +816,16 @@ void makaDrawZMAKA2(tagMakaObject *makaPtr) {
     v27 = v26->max_length;
     v28 = v26;
     if (v27)
+      goto LABEL_31;
+LABEL_35:
   }
   v25 = (16 - v9) / 9.0;
   v26 = makaPtr->pos;
   v27 = v26->max_length;
   v28 = v26;
   if (!v27)
+    goto LABEL_35;
+LABEL_31:
   makaDrawAnimationZ(v26->m_Items[0], v28->m_Items[1] - 40, 1.8, 1.8, maka, (v25 * 25.0));
 }
 
@@ -494,10 +905,11 @@ void makaInit(void) {
   struct tagMakaObject_array *v17;
 
   asset_bc = get_asset_bc();
-  Prefab_16624656 = LoadPrefab_16624656(asset_bc, StringLiteral_19042, StringLiteral_21894, StringLiteral_21895);
+  Prefab_16624656 = LoadPrefab_16624656(asset_bc, "pipe_common", "charactor/e/pipedata/makamark", "makamark");
   v5 = 4;
   v7 = 0;
   {
+LABEL_9:
   }
   while (1)
   {
@@ -510,11 +922,12 @@ void makaInit(void) {
     *&makaWork[2 * v5] = v9;
     v11 = makaWork;
     v13 = *(&v11->obj.klass + v5);
-    v14 = Find(StringLiteral_4905, 0);
+    v14 = Find("Canvas_UI", 0);
     transform = get_transform(v14, 0);
     *(v13 + 40) = Instantiate_object__425664(Prefab_16624656, transform, 0);
     v17 = makaWork;
     SetActive(*(*(&v17->obj.klass + v5++) + 40LL), 0, 0);
     v7 = v5 - 4;
+      goto LABEL_9;
   }
 }

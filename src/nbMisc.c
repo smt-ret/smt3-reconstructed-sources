@@ -122,9 +122,7 @@ void BloomDown(void) {
   nbFormation_t_o *v11;
   UnityEngine_Object_o *modelobj;
   s32 ID;
-  dds3KernelDraw_c *v15;
   struct dds3KernelDraw_StaticFields **p_static_fields;
-  struct dds3KernelDraw_StaticFields *static_fields;
   nbFormation_t_o *pFormation;
 
   pFormation = 0;
@@ -143,14 +141,13 @@ void BloomDown(void) {
         ID = effBTLModelGetID(&pFormation);
         BloomDown = GetBloomDown(ID);
         if (BloomDown < PPSV2_bloom_btl_Default)
+          goto LABEL_26;
       }
     }
   }
-  p_static_fields = &v15->static_fields;
-  static_fields = v15->static_fields;
-  if (static_fields->PPSV2_bloom_btl_max != PPSV2_bloom_btl_Default)
+  if (PPSV2_bloom_btl_max != PPSV2_bloom_btl_Default)
   {
-    static_fields->PPSV2_update = 1;
+    PPSV2_update = 1;
     (*p_static_fields)->PPSV2_bloom_btl_max = PPSV2_bloom_btl_Default;
   }
 }
@@ -159,76 +156,728 @@ void BloomDown(void) {
 void CalcBloom(void) {
   nbMainProcessData_t_o *MainProcessData;
   s32 v8;
-  dds3KernelDraw_c *v9;
   struct dds3KernelDraw_StaticFields **p_static_fields;
-  struct dds3KernelDraw_StaticFields *static_fields;
   struct dds3KernelDraw_StaticFields *v12;
   s32 Base_PPSV2_bloom_type;
-  struct dds3KernelDraw_StaticFields *v14;
   s32 PPSV2_bloom_type;
-  dds3KernelDraw_c *v17;
 
+LABEL_7:
   else
   {
     MainProcessData = nbGetMainProcessData();
     if (!MainProcessData)
+      goto LABEL_19;
   }
   if ((MainProcessData->stat & 0x1000) == 0)
+    goto LABEL_19;
   if (PPSV2_bloom_type <= 899)
   {
+LABEL_19:
     BloomDown();
     v8 = effBTLSkillCheckRun();
     if (v8)
     {
-      p_static_fields = &v9->static_fields;
-      static_fields = v9->static_fields;
-      if (static_fields->PPSV2_bloom_type == 190)
+      if (PPSV2_bloom_type == 190)
         return;
-      static_fields->PPSV2_update = 1;
+      PPSV2_update = 1;
       v12 = *p_static_fields;
       Base_PPSV2_bloom_type = 190;
     }
     else
     {
-      v14 = v9->static_fields;
-      PPSV2_bloom_type = v14->PPSV2_bloom_type;
       if (PPSV2_bloom_type == Base_PPSV2_bloom_type)
         return;
       PPSV2_update = 1;
-      v12 = v17->static_fields;
     }
-    v12->PPSV2_bloom_type = Base_PPSV2_bloom_type;
+    PPSV2_bloom_type = Base_PPSV2_bloom_type;
   }
 }
 
 // 0x120eae0
 f32 CalcRadiusShadow(u32 group, f32 *aPShadow2_CamY_add) {
-    nbGetMainProcessData();
-    dds3GetActiveScene();
-    dds3GetActiveCameraSceneBasic(0);
-    dds3CameraObjectBasicGetTgtCam(0, 0, 0);
-    dds3CameraObjectBasicGetFovy(0);
-    effBTLModelGetID(0);
-    dds3ObjectBaseCheckFlag(0, 0);
-    SetLayerAll_FadeModeOn(0, 0, 0);
-    SetLayerAll_FadeModeOff(0, 0);
-    effBTLModelGetMarkPosition2(0, 0);
-    SDF_VU0__STOREVECTOR(0);
-    sdfAtan2(0, 0);
-    OOYDEG(0);
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    return 0;
+  f32 v4;
+  nbMainProcessData_t_o *MainProcessData;
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  f32 v15;
+  f32 v16;
+  f32 v17;
+  f32 v18;
+  f32 v19;
+  f32 v20;
+  f32 v21;
+  f32 v22;
+  s32 v23;
+  f32 v24;
+  u64 v25;
+  s32 v26;
+  f32 v27;
+  f32 v28;
+  f32 v29;
+  struct nbFormation_t_array *form;
+  nbFormation_t_o *v32;
+  UnityEngine_Object_o *modelobj;
+  u32 ID;
+  struct evtUnitHandle_t_o *hunit;
+  u32 color;
+  Il2CppObject *Component_object;
+  UnityEngine_GameObject_o *v39;
+  nbFormation_t_o *v42;
+  f32 r;
+  s32 v48;
+  s32 motionMinorNum;
+  f32 v53;
+  f32 v54;
+  f32 v55;
+  f32 v56;
+  s64 v57;
+  s64 v58;
+  f32 v60;
+  f32 v61;
+  struct evtUnitHandle_t_o *v62;
+  f32 v63;
+  f32 v64;
+  f32 v65;
+  f32 v66;
+  f32 v67;
+  f32 v68;
+  f32 v69;
+  f32 v70;
+  f32 v71;
+  f32 v74;
+  f32 v75;
+  f32 v76;
+  f32 v78;
+  f32 v80;
+  f32 v83;
+  f32 v84;
+  f32 v85;
+  f32 v86;
+  f32 Fovy;
+  f32 v88;
+  f32 v89;
+  f32 v90;
+  f32 v91;
+  f32 v92;
+  f32 v93;
+  f32 v94;
+  f32 scl;
+  f32 v96;
+  s64 v97;
+  s64 v98;
+  UnityEngine_Vector4_o v99;
+  UnityEngine_Vector4_o tgtpos;
+  UnityEngine_Vector4_o campos;
+  dds3Basic_t_o *ActiveCameraSceneBasic;
+  dds3Basic_t_o *pBasic;
+  UnityEngine_Vector4_o p;
+  nbFormation_t_o *pFormation[2];
+  UnityEngine_Vector3_o v106;
+  UnityEngine_Vector3_o v107;
+  UnityEngine_Vector4_o v108;
+  UnityEngine_Vector4_o v109;
+  UnityEngine_Vector4_o v110;
+  UnityEngine_Vector4_o v111;
+  UnityEngine_Vector4_o v112;
+  UnityEngine_Vector4_o v114;
+  UnityEngine_Vector4_o v115;
+
+  v4 = 0.0;
+  pFormation[0] = 0;
+  *&p.x = 0;
+  *&p.z = 0;
+  ActiveCameraSceneBasic = 0;
+  pBasic = 0;
+  *&campos.x = 0;
+  *&campos.z = 0;
+  *&tgtpos.x = 0;
+  *&tgtpos.z = 0;
+  *&v99.x = 0;
+  *&v99.z = 0;
+  v97 = 0;
+  v98 = 0;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 0.0);
+  MainProcessData = nbGetMainProcessData();
+  pBasic = dds3GetActiveScene();
+  ActiveCameraSceneBasic = 0;
+  campos = get_zero();
+  tgtpos = get_zero();
+  Fovy = 0.7;
+  if (pBasic)
+  {
+    v85 = 0.0;
+    v86 = 0.0;
+    ActiveCameraSceneBasic = dds3GetActiveCameraSceneBasic(&pBasic);
+    v83 = 0.0;
+    v84 = 0.0;
+    if (ActiveCameraSceneBasic)
+    {
+      dds3CameraObjectBasicGetTgtCam(&ActiveCameraSceneBasic, &tgtpos, &campos);
+      x = campos.x;
+      y = campos.y;
+      z = campos.z;
+      w = campos.w;
+      v16 = tgtpos.x;
+      v15 = tgtpos.y;
+      v18 = tgtpos.z;
+      v17 = tgtpos.w;
+      v108.x = x;
+      v108.y = y;
+      v108.z = z;
+      v108.w = w;
+      v114.x = v16;
+      v114.y = v15;
+      v114.z = v18;
+      v114.w = v17;
+      v99 = op_Subtraction(v108, v114);
+      v19 = sub_855290(&v99.x, 0);
+      v85 = v20;
+      v86 = v19;
+      v83 = v22;
+      v84 = v21;
+      v4 = 0.0;
+      Fovy = dds3CameraObjectBasicGetFovy(&ActiveCameraSceneBasic);
+    }
+  }
+  else
+  {
+    v85 = 0.0;
+    v86 = 0.0;
+    v83 = 0.0;
+    v84 = 0.0;
+  }
+  v90 = 0.0;
+  v91 = 0.0;
+  v88 = 0.0;
+  v89 = 0.0;
+  v92 = 0.0;
+  v23 = 1;
+  v24 = 0.0;
+  v25 = 0;
+  v26 = 0;
+  do
+  {
+    while (1)
+    {
+      form = MainProcessData->form;
+      v32 = form->m_Items[v25];
+      pFormation[0] = v32;
+      if ((v32->stat & 3) != 3 || (v32->stat & group) == 0)
+        break;
+      modelobj = v32->hunit->modelobj;
+      if (!op_Inequality(modelobj, 0, 0)
+        || !get_activeSelf(pFormation[0]->hunit->modelobj))
+      {
+        break;
+      }
+      ID = effBTLModelGetID(pFormation);
+      if (ID == 269 && !dds3ObjectBaseCheckFlag(&pFormation[0]->basic, 0x400u))
+        break;
+      hunit = pFormation[0]->hunit;
+      color = hunit->Model->modelRoot->color;
+      if ((color & 0x80000000) == 0)
+      {
+        Component_object = GetComponent_object_(hunit->modelobj);
+        v39 = pFormation[0]->modelobj;
+        if (!(color >> 30))
+        {
+          SetLayerAll_FadeModeOn(Component_object, v39, 14);
+            goto LABEL_62;
+          goto LABEL_60;
+        }
+        goto LABEL_58;
+      }
+      if (ID - 32 <= 0x33 && ((1LL << (ID - 32)) & 0x8100000000001LL) != 0)
+      {
+        Component_object = GetComponent_object_(hunit->modelobj);
+        v39 = pFormation[0]->modelobj;
+LABEL_58:
+        SetLayerAll_FadeModeOff(Component_object, v39);
+      }
+        goto LABEL_62;
+LABEL_60:
+LABEL_62:
+      effBTLModelGetMarkPosition2(pFormation, 0);
+      SDF_VU0__STOREVECTOR(&p);
+      v42 = pFormation[0];
+      r = pFormation[0]->r;
+      if (ID > 0x9B)
+      {
+        if (ID > 0x102)
+        {
+          if (ID > 0x138)
+          {
+            switch (ID)
+            {
+              case 0x140u:
+              case 0x142u:
+                goto LABEL_123;
+              case 0x141u:
+                *aPShadow2_CamY_add = 2.0;
+                goto LABEL_106;
+              case 0x143u:
+LABEL_106:
+                v29 = 150.0;
+                goto LABEL_138;
+              case 0x14Fu:
+                v29 = 250.0;
+                goto LABEL_138;
+              case 0x157u:
+                *aPShadow2_CamY_add = 3.0;
+                goto LABEL_123;
+              default:
+                goto LABEL_139;
+            }
+          }
+          switch (ID)
+          {
+            case 0x112u:
+              goto LABEL_106;
+            case 0x114u:
+              goto LABEL_76;
+            case 0x116u:
+              PShadow_TexClipMode = 1;
+              r = r + 400.0;
+              if (v42->hunit->Model->motionMinorNum == 3)
+                *aPShadow2_CamY_add = 3.0;
+              else
+                *aPShadow2_CamY_add = 1.0;
+              break;
+            case 0x117u:
+            case 0x118u:
+            case 0x119u:
+            case 0x11Au:
+              PShadow_TexClipMode = 1;
+              goto LABEL_123;
+            case 0x11Fu:
+              goto LABEL_107;
+            case 0x120u:
+              goto LABEL_117;
+            case 0x122u:
+              if (pFormation[0]->hunit->Model->motionMinorNum == 3)
+                r = r + 100.0;
+              break;
+            case 0x123u:
+              *aPShadow2_CamY_add = 3.0;
+              goto LABEL_133;
+            case 0x138u:
+              motionMinorNum = pFormation[0]->hunit->Model->motionMinorNum;
+              if (motionMinorNum == 12 || motionMinorNum == 3 || motionMinorNum == 1)
+                goto LABEL_137;
+              break;
+            default:
+              goto LABEL_139;
+          }
+          goto LABEL_139;
+        }
+        if (ID > 0xC2)
+        {
+          if (ID != 256)
+          {
+            if (ID != 258)
+              goto LABEL_139;
+            PShadow_TexClipMode = 1;
+            *aPShadow2_CamY_add = 6.0;
+            PShadow2_CamFar = 16.0;
+LABEL_103:
+            v29 = 600.0;
+LABEL_138:
+            r = r + v29;
+            goto LABEL_139;
+          }
+LABEL_123:
+          v29 = 200.0;
+          goto LABEL_138;
+        }
+        if (ID == 161)
+        {
+LABEL_107:
+          v48 = pFormation[0]->hunit->Model->motionMinorNum;
+          if (v48 == 3)
+          {
+LABEL_133:
+            v29 = 300.0;
+          }
+          else if (v48 == 1)
+          {
+LABEL_117:
+            v29 = 350.0;
+          }
+          else
+          {
+            v29 = 280.0;
+          }
+          goto LABEL_138;
+        }
+        if (ID == 194)
+          goto LABEL_133;
+      }
+      else if (ID > 0x4A)
+      {
+        if (ID <= 0x6E)
+        {
+          if (ID == 97)
+          {
+            v29 = 220.0;
+          }
+          else
+          {
+            if (ID != 110)
+              goto LABEL_139;
+LABEL_76:
+            PShadow_TexClipMode = 1;
+            switch (v42->hunit->Model->motionMinorNum)
+            {
+              case 1:
+                goto LABEL_123;
+              case 3:
+                v29 = 320.0;
+                break;
+              case 4:
+                goto LABEL_117;
+              case 5:
+                goto LABEL_133;
+              default:
+                goto LABEL_137;
+            }
+          }
+          goto LABEL_138;
+        }
+        switch (ID)
+        {
+          case 0x70u:
+            PShadow_TexClipMode = 1;
+            switch (v42->hunit->Model->motionMinorNum)
+            {
+              case 1:
+                v29 = 390.0;
+                break;
+              case 3:
+                goto LABEL_133;
+              case 4:
+                goto LABEL_117;
+              case 5:
+                v29 = 400.0;
+                break;
+              default:
+                goto LABEL_137;
+            }
+            goto LABEL_138;
+          case 0x94u:
+            if (pFormation[0]->hunit->Model->motionMinorNum == 1)
+              r = r + 200.0;
+            break;
+          case 0x9Bu:
+            PShadow_TexClipMode = 1;
+            if (v42->hunit->Model->motionMinorNum == 3)
+              goto LABEL_103;
+LABEL_137:
+            v29 = 100.0;
+            goto LABEL_138;
+        }
+      }
+      else
+      {
+        if (ID > 0x1E)
+        {
+          if (ID != 50 && ID != 74)
+            goto LABEL_139;
+          goto LABEL_123;
+        }
+        if (ID == 14)
+        {
+          v29 = 50.0;
+          goto LABEL_138;
+        }
+        if (ID == 30)
+          goto LABEL_137;
+      }
+LABEL_139:
+      v93 = v24;
+      v94 = v4;
+      scl = pFormation[0]->scl;
+      sub_854690(&v97, p.x, p.y, p.z, 1.0);
+      v54 = campos.x;
+      v53 = campos.y;
+      v55 = campos.z;
+      v56 = campos.w;
+      v57 = v97;
+      v58 = v98;
+      v109.y = v53;
+      v96 = r * scl;
+      v109.x = v54;
+      v109.z = v55;
+      v109.w = v56;
+      *&v115.x = v57;
+      *&v115.z = v58;
+      v99 = op_Subtraction(v109, v115);
+      v110.x = sub_855290(&v99.x, 0);
+      v106 = op_Implicit_8738992(v110);
+      v111.y = v85;
+      v111.x = v86;
+      v111.w = v83;
+      v111.z = v84;
+      v107 = op_Implicit_8738992(v111);
+      v60 = Dot(v106, v107);
+      v61 = flt_32C3160[v96 < 60.0];
+      if (v96 > 100.0)
+        v61 = -0.19;
+      if (v60 >= (Fovy + v61))
+      {
+        v62 = pFormation[0]->hunit;
+        v63 = v62->NowLightDir.x;
+        v64 = v62->NowLightDir.z;
+        ++v26;
+        v65 = v92 + sdfAtan2(v63, v64);
+        v66 = v96 + p.x;
+        v28 = p.x - v96;
+        v67 = v96 + p.z;
+        v68 = p.z - v96;
+        v92 = v65;
+        if (!v23)
+        {
+          v24 = v93;
+          v4 = v94;
+          v69 = v91;
+          if (v94 < v96)
+            v4 = r * scl;
+          if (v91 < v66)
+            v69 = v96 + p.x;
+          if (v90 <= v66)
+            v66 = v90;
+          if (v69 < v28)
+            v69 = p.x - v96;
+          if (v66 <= v28)
+            v28 = v66;
+          v90 = v28;
+          v91 = v69;
+          v70 = v89;
+          if (v89 < v67)
+            v70 = v96 + p.z;
+          if (v88 <= v67)
+            v67 = v88;
+          if (v70 < v68)
+            v70 = p.z - v96;
+          if (v67 <= v68)
+            v68 = v67;
+          v23 = 0;
+          v88 = v68;
+          v89 = v70;
+          if (v93 < (((pFormation[0]->h * pFormation[0]->scl) * 0.5) - p.y))
+            v24 = ((pFormation[0]->h * pFormation[0]->scl) * 0.5) - p.y;
+          break;
+        }
+        if (v66 <= v28)
+          v27 = p.x - v96;
+        else
+          v27 = v96 + p.x;
+        if (v66 <= v28)
+          v28 = v96 + p.x;
+        v24 = ((pFormation[0]->h * pFormation[0]->scl) * 0.5) - p.y;
+        v23 = 0;
+        v90 = v28;
+        v91 = v27;
+        if (v67 <= v68)
+        {
+          v88 = v96 + p.z;
+          v89 = p.z - v96;
+          v4 = r * scl;
+          if (++v25 == 16)
+            goto LABEL_175;
+        }
+        else
+        {
+          v88 = p.z - v96;
+          v89 = v96 + p.z;
+          v4 = r * scl;
+          if (++v25 == 16)
+            goto LABEL_175;
+        }
+      }
+      else
+      {
+        v24 = v93;
+        if (++v25 == 16)
+          goto LABEL_175;
+      }
+    }
+    ++v25;
+  }
+  while (v25 != 16);
+LABEL_175:
+  v112.x = (v91 + v90) * 0.5;
+  v71 = (v91 - v90) * 0.5;
+  v112.y = v24 * -0.5;
+  v112.z = (v89 + v88) * 0.5;
+  v74 = (v89 - v88) * 0.5;
+  v75 = v24 * 0.5;
+  p.x = v112.x;
+  p.y = v24 * -0.5;
+  p.z = v112.z;
+  p.w = 0.0;
+  if (v71 <= v74)
+  {
+    if (v74 > v75)
+      v75 = (v89 - v88) * 0.5;
+  }
+  else if (v71 > v75)
+  {
+    v75 = (v91 - v90) * 0.5;
+  }
+  v76 = (v4 * 0.25) + v75;
+  if (v26 < 1)
+  {
+    v112.w = 0.0;
+  }
+  else
+  {
+    v78 = OOYDEG(v92 / v26);
+    v80 = v78;
+    ShadowLightYR = v80;
+    v112 = p;
+  }
+  SDF_VU0__LOADVECTOR(v112);
+  return v76;
 }
 
 // 0x120e420
 void CalcShadow(void) {
-    effBTLSkillCheckRun();
-    OOYRAD(0);
-    CalcRadiusShadow(0, 0);
-    SDF_VU0__STOREVECTOR(0);
-    sdfSin(0);
-    sdfCos(0);
-    SpShadow_BSONGY();
+  s32 v3;
+  f32 ShadowSkillPow;
+  f32 v9;
+  f32 v15;
+  nbMisc_c *v17;
+  s32 v19;
+  f32 ShadowLightYR_P;
+  f32 v22;
+  f32 v23;
+  f32 v24;
+  f32 v26;
+  f32 x;
+  f32 v30;
+  nbMisc_c *v32;
+  s32 v34;
+  f32 ShadowLightYR_E;
+  f32 v37;
+  f32 v38;
+  f32 v40;
+  f32 v42;
+  f32 v43;
+  UnityEngine_Vector4_o v44;
+  f32 aPShadow2_CamY_add;
+
+  *&v44.x = 0;
+  *&v44.z = 0;
+  aPShadow2_CamY_add = 0.0;
+  v3 = effBTLSkillCheckRun();
+  if (v3)
+  {
+    if (ShadowSkillPow < 1.0)
+    {
+      ShadowSkillPow = ShadowSkillPow + 0.1;
+    }
+    if (ShadowSkillPow > 1.0)
+    {
+      ShadowSkillPow = 1.0;
+    }
+  }
+  else
+  {
+    v9 = ShadowSkillPow;
+    if (v9 > 0.0)
+    {
+      ShadowSkillPow = v9 + -0.1;
+    }
+    if (ShadowSkillPow < 0.0)
+    {
+      ShadowSkillPow = 0.0;
+    }
+  }
+  sub_854690(&v44.x, 0.0, 0.0, 0.0, 0.0);
+  OOYRAD(0.0);
+  aPShadow2_CamY_add = 0.0;
+  PShadow_TexClipMode = 0;
+  aPShadow2_CamY_add = 0.0;
+  v15 = CalcRadiusShadow(0x100u, &aPShadow2_CamY_add);
+  SDF_VU0__STOREVECTOR(&v44);
+  if (v15 > 1.0)
+  {
+    else
+    {
+      if (ShadowFastP)
+      {
+LABEL_52:
+        ShadowLightYR_P = ShadowLightYR;
+        ShadowFastP = 0;
+        if ((v17->_2.bitflags2 & 2) == 0)
+          goto LABEL_69;
+        goto LABEL_67;
+      }
+    }
+    v19 = effBTLSkillCheckRun();
+    if (!v19)
+    {
+      ShadowLightYR_P = (ShadowLightYR_P * 0.9)
+                                          + (ShadowLightYR * 0.1);
+    }
+    if ((v17->_2.bitflags2 & 2) == 0)
+      goto LABEL_69;
+LABEL_67:
+LABEL_69:
+    v22 = OOYRAD(ShadowLightYR_P);
+    v23 = sdfSin(v22) * 100.0;
+    v24 = sdfCos(v22);
+    v26 = v24 * 100.0;
+    x = v44.x;
+    PShadow_CamX = (x - v23) / 100.0;
+    PShadow_CamY = 7.0;
+    PShadow_CamZ = (v44.z - v26) / 100.0;
+    PShadow_RotX = 80.0;
+    PShadow_RotY = ShadowLightYR_P;
+    PShadow_CamSize = v15 / 100.0;
+  }
+  SpShadow_BSONGY();
+  aPShadow2_CamY_add = 0.0;
+  v30 = CalcRadiusShadow(0x200u, &aPShadow2_CamY_add);
+  SDF_VU0__STOREVECTOR(&v44);
+  if (v30 > 1.0)
+  {
+    else
+    {
+      if (ShadowFastE)
+      {
+LABEL_86:
+        ShadowLightYR_E = ShadowLightYR;
+        ShadowFastE = 0;
+        if ((v32->_2.bitflags2 & 2) == 0)
+          goto LABEL_103;
+        goto LABEL_101;
+      }
+    }
+    v34 = effBTLSkillCheckRun();
+    if (!v34)
+    {
+      ShadowLightYR_E = (ShadowLightYR_E * 0.9)
+                                          + (ShadowLightYR * 0.1);
+    }
+    if ((v32->_2.bitflags2 & 2) == 0)
+      goto LABEL_103;
+LABEL_101:
+LABEL_103:
+    v37 = OOYRAD(ShadowLightYR_E);
+    v38 = sdfSin(v37) * 200.0;
+    v40 = sdfCos(v37);
+    v42 = v40 * 200.0;
+    v43 = v44.x;
+    PShadow2_CamX = (v43 - v38) / 100.0;
+    PShadow2_CamY = aPShadow2_CamY_add + 9.0;
+    PShadow2_CamZ = (v44.z - v42) / 100.0;
+    PShadow2_RotX = 75.0;
+    PShadow2_RotY = ShadowLightYR_E;
+    PShadow2_CamSize = v30 / 100.0;
+  }
 }
 
 // 0x1210100
@@ -239,6 +888,7 @@ bool ChkNbEventRun(void) {
   {
     MainProcessData = nbGetMainProcessData();
     if (MainProcessData)
+LABEL_6:
       LODWORD(MainProcessData) = (BYTE1(MainProcessData->stat) >> 4) & 1;
   }
   return MainProcessData;
@@ -322,25 +972,48 @@ void FieldArea_Alpha(s32 fld, s32 area) {
 
 // 0x120fa80
 f32 GetBloomDown(s32 deveilID) {
-    return 0;
+  s64 v3;
+  u64 v5;
+  struct nbMisc_Btl_BloomDown_array *Tbl_Btl_BloomDown;
+  u64 max_length_low;
+  struct nbMisc_Btl_BloomDown_array *v10;
+  f32 *p_PPSV2_bloom_btl_Default;
+  struct nbMisc_Btl_BloomDown_array *v15;
+
+  v3 = 4;
+  v5 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(Tbl_Btl_BloomDown->max_length);
+    if (v5 >= max_length_low)
+      break;
+    else if (v5 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    if (*(*(&Tbl_Btl_BloomDown->obj.klass + v3) + 16LL) > deveilID)
+      break;
+    v10 = Tbl_Btl_BloomDown;
+    if (*(*(&v10->obj.klass + v3) + 16LL) == deveilID)
+    {
+      v15 = Tbl_Btl_BloomDown;
+      p_PPSV2_bloom_btl_Default = (*(&v15->obj.klass + v3) + 20LL);
+      return *p_PPSV2_bloom_btl_Default;
+    }
+    ++v3;
+    v5 = v3 - 4;
+      goto LABEL_6;
+  }
+  p_PPSV2_bloom_btl_Default = &PPSV2_bloom_btl_Default;
+  return *p_PPSV2_bloom_btl_Default;
 }
 
 // 0x120d900
 void InitShadow(void) {
   nbMisc_c *v8;
-  struct nbMisc_StaticFields *static_fields;
-  struct nbMisc_StaticFields *v12;
-  struct nbMisc_StaticFields *v14;
-  struct nbMisc_StaticFields *v16;
-  struct nbMisc_StaticFields *v18;
-  struct nbMisc_StaticFields *v20;
-  struct nbMisc_StaticFields *v22;
-  struct nbMisc_StaticFields *v24;
-  struct nbMisc_StaticFields *v26;
-  struct nbMisc_StaticFields *v28;
-  struct nbMisc_StaticFields *v31;
-  dds3KernelDraw_c *v32;
-  struct dds3KernelDraw_StaticFields *v33;
   s32 PPSV2_bloom_type;
 
   PShadow_CamX = 0.0;
@@ -370,149 +1043,225 @@ void InitShadow(void) {
   PPSV2_bloom_type = 100;
   DofOff();
   BattleMarukageAlpMul = 0.6;
-  static_fields = nbMisc->static_fields;
-  if (static_fields->ShadowFld == 216)
+  if (ShadowFld == 216)
   {
-    if (static_fields->ShadowArea == 3)
+    if (ShadowArea == 3)
     {
       PShadow2_Alp = 0.4;
       PShadow_Alp = 0.4;
     }
   }
-  else  PShadow2_Alp = 1.0;
+  else if (ShadowFld != 218)
+  {
+    goto LABEL_28;
+  }
+  PShadow2_Alp = 1.0;
   PShadow_Alp = 1.0;
   BattleMarukageAlpMul = 1.0;
+LABEL_28:
   else
   {
-    v12 = v8->static_fields;
-    if (v12->ShadowFld != 219)
+    if (ShadowFld != 219)
+      goto LABEL_43;
   }
-  if (v12->ShadowArea != 1)
+  if (ShadowArea != 1)
   {
+LABEL_43:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_45;
+    goto LABEL_44;
   }
   PPSV2_bloom_type = 119;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v14 = v8->static_fields;
-    if (v14->ShadowFld != 223)
+LABEL_45:
+    if (ShadowFld != 223)
+      goto LABEL_56;
+    goto LABEL_46;
   }
-  v14 = nbMisc->static_fields;
-  if (v14->ShadowFld != 223)
-  if (v14->ShadowArea != 3)
+LABEL_44:
+    goto LABEL_45;
+  if (ShadowFld != 223)
+    goto LABEL_56;
+LABEL_46:
+  if (ShadowArea != 3)
   {
+LABEL_56:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_58;
+    goto LABEL_57;
   }
   PPSV2_bloom_type = 101;
   PShadow2_Alp = 0.4;
   PShadow_Alp = 0.4;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v16 = v8->static_fields;
-    if (v16->ShadowFld != 232)
+LABEL_58:
+    if (ShadowFld != 232)
+      goto LABEL_69;
+    goto LABEL_59;
   }
-  v16 = nbMisc->static_fields;
-  if (v16->ShadowFld != 232)
-  if (v16->ShadowArea != 6)
+LABEL_57:
+    goto LABEL_58;
+  if (ShadowFld != 232)
+    goto LABEL_69;
+LABEL_59:
+  if (ShadowArea != 6)
   {
+LABEL_69:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_71;
+    goto LABEL_70;
   }
   PPSV2_bloom_type = 232;
   PShadow2_Alp = 0.6;
   PShadow_Alp = 0.6;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v18 = v8->static_fields;
-    if (v18->ShadowFld != 235)
+LABEL_71:
+    if (ShadowFld != 235)
+      goto LABEL_82;
+    goto LABEL_72;
   }
-  v18 = nbMisc->static_fields;
-  if (v18->ShadowFld != 235)
-  if (v18->ShadowArea != 7)
+LABEL_70:
+    goto LABEL_71;
+  if (ShadowFld != 235)
+    goto LABEL_82;
+LABEL_72:
+  if (ShadowArea != 7)
   {
+LABEL_82:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_84;
+    goto LABEL_83;
   }
   PShadow2_Alp = 0.4;
   PShadow_Alp = 0.4;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v20 = v8->static_fields;
-    if (v20->ShadowFld != 235)
+LABEL_84:
+    if (ShadowFld != 235)
+      goto LABEL_95;
+    goto LABEL_85;
   }
-  v20 = nbMisc->static_fields;
-  if (v20->ShadowFld != 235)
-  if (v20->ShadowArea != 3)
+LABEL_83:
+    goto LABEL_84;
+  if (ShadowFld != 235)
+    goto LABEL_95;
+LABEL_85:
+  if (ShadowArea != 3)
   {
+LABEL_95:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_97;
+    goto LABEL_96;
   }
   PShadow2_Alp = 0.4;
   PShadow_Alp = 0.4;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v22 = v8->static_fields;
-    if (v22->ShadowFld != 240)
+LABEL_97:
+    if (ShadowFld != 240)
+      goto LABEL_108;
+    goto LABEL_98;
   }
-  v22 = nbMisc->static_fields;
-  if (v22->ShadowFld != 240)
-  if (v22->ShadowArea != 1)
+LABEL_96:
+    goto LABEL_97;
+  if (ShadowFld != 240)
+    goto LABEL_108;
+LABEL_98:
+  if (ShadowArea != 1)
   {
+LABEL_108:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_110;
+    goto LABEL_109;
   }
   PPSV2_bloom_type = 102;
   PShadow2_Alp = 0.4;
   PShadow_Alp = 0.4;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v24 = v8->static_fields;
-    if (v24->ShadowFld != 243)
+LABEL_110:
+    if (ShadowFld != 243)
+      goto LABEL_121;
+    goto LABEL_111;
   }
-  v24 = nbMisc->static_fields;
-  if (v24->ShadowFld != 243)
-  if (v24->ShadowArea != 1)
+LABEL_109:
+    goto LABEL_110;
+  if (ShadowFld != 243)
+    goto LABEL_121;
+LABEL_111:
+  if (ShadowArea != 1)
   {
+LABEL_121:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_123;
+    goto LABEL_122;
   }
   PShadow2_Alp = 0.4;
   PShadow_Alp = 0.4;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v26 = v8->static_fields;
-    if (v26->ShadowFld != 244)
+LABEL_123:
+    if (ShadowFld != 244)
+      goto LABEL_134;
+    goto LABEL_124;
   }
-  v26 = nbMisc->static_fields;
-  if (v26->ShadowFld != 244)
-  if (v26->ShadowArea != 3)
+LABEL_122:
+    goto LABEL_123;
+  if (ShadowFld != 244)
+    goto LABEL_134;
+LABEL_124:
+  if (ShadowArea != 3)
   {
+LABEL_134:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_136;
+    goto LABEL_135;
   }
   PShadow2_Alp = 0.6;
   PShadow_Alp = 0.6;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
-    v28 = v8->static_fields;
-    if (v28->ShadowFld != 245)
+LABEL_136:
+    if (ShadowFld != 245)
+      goto LABEL_147;
+    goto LABEL_137;
   }
-  v28 = nbMisc->static_fields;
-  if (v28->ShadowFld != 245)
-  if (v28->ShadowArea != 1)
+LABEL_135:
+    goto LABEL_136;
+  if (ShadowFld != 245)
+    goto LABEL_147;
+LABEL_137:
+  if (ShadowArea != 1)
   {
+LABEL_147:
     if ((v8->_2.bitflags2 & 2) == 0)
+      goto LABEL_149;
+    goto LABEL_148;
   }
   PShadow2_Alp = 0.5;
   PShadow_Alp = 0.5;
   if ((v8->_2.bitflags2 & 2) == 0)
   {
+LABEL_149:
     if (ShadowFld != 260)
+      goto LABEL_154;
+    goto LABEL_150;
   }
+LABEL_148:
+    goto LABEL_149;
   if (ShadowFld != 260)
+    goto LABEL_154;
+LABEL_150:
   PPSV2_bloom_type = 260;
-  v31 = v8->static_fields;
-  if (v31->ShadowFld == 261)
+LABEL_154:
+  if (ShadowFld == 261)
   {
     PShadow2_Alp = 0.8;
     PShadow_Alp = 0.8;
   }
-  v33 = v32->static_fields;
-  PPSV2_bloom_type = v33->PPSV2_bloom_type;
   Base_PPSV2_bloom_type = PPSV2_bloom_type;
 }
 
@@ -545,13 +1294,20 @@ void SpShadow_BSONGY(void) {
         Component_object = GetComponent_object_(v8);
         if (dds3ObjectBaseCheckFlag(&pFormation->basic, 0x400u))
         {
-          else          v11 = Component_object;
+          else if (effBTLSkillCheckRun2(0xE9u))
+          {
+            goto LABEL_23;
+          }
+          v11 = Component_object;
           v12 = v8;
           v13 = 15;
+          goto LABEL_26;
         }
+LABEL_23:
         v11 = Component_object;
         v12 = v8;
         v13 = 14;
+LABEL_26:
         SetLayerAll2(v11, v12, v13);
         continue;
       }
@@ -654,14 +1410,20 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
   {
     enemyunit = data->enemyunit;
     if (LODWORD(enemyunit->max_length))
+      goto LABEL_3;
+LABEL_15:
   }
   enemyunit = data->enemyunit;
   if (!LODWORD(enemyunit->max_length))
+    goto LABEL_15;
+LABEL_3:
   if ((enemyunit->m_Items[0]->flag & 1) == 0)
   {
     v7 = 0;
     v8 = data->enemyunit;
     if (!LODWORD(v8->max_length))
+      goto LABEL_5;
+    goto LABEL_6;
   }
   v14 = data->enemyunit;
   if ((v14->m_Items[1]->flag & 1) == 0)
@@ -669,6 +1431,8 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
     v7 = 1;
     v8 = data->enemyunit;
     if (LODWORD(v8->max_length) > 1)
+      goto LABEL_6;
+LABEL_5:
   }
   v16 = data->enemyunit;
   if ((v16->m_Items[2]->flag & 1) != 0)
@@ -700,12 +1464,14 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
                 v7 = 9;
                 v8 = data->enemyunit;
                 if (LODWORD(v8->max_length) <= 9)
+                  goto LABEL_5;
               }
               else
               {
                 v7 = 8;
                 v8 = data->enemyunit;
                 if (LODWORD(v8->max_length) <= 8)
+                  goto LABEL_5;
               }
             }
             else
@@ -713,6 +1479,7 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
               v7 = 7;
               v8 = data->enemyunit;
               if (LODWORD(v8->max_length) <= 7)
+                goto LABEL_5;
             }
           }
           else
@@ -720,6 +1487,7 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
             v7 = 6;
             v8 = data->enemyunit;
             if (LODWORD(v8->max_length) <= 6)
+              goto LABEL_5;
           }
         }
         else
@@ -727,6 +1495,7 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
           v7 = 5;
           v8 = data->enemyunit;
           if (LODWORD(v8->max_length) <= 5)
+            goto LABEL_5;
         }
       }
       else
@@ -734,6 +1503,7 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
         v7 = 4;
         v8 = data->enemyunit;
         if (LODWORD(v8->max_length) <= 4)
+          goto LABEL_5;
       }
     }
     else
@@ -741,6 +1511,7 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
       v7 = 3;
       v8 = data->enemyunit;
       if (LODWORD(v8->max_length) <= 3)
+        goto LABEL_5;
     }
   }
   else
@@ -748,7 +1519,9 @@ s32 nbAppendEnemyDevilWork(nbMainProcessData_t *data, s32 id, s32 formindex) {
     v7 = 2;
     v8 = data->enemyunit;
     if (LODWORD(v8->max_length) <= 2)
+      goto LABEL_5;
   }
+LABEL_6:
   v10 = v8->m_Items[v7];
   datSetDevilWork(id, v10);
   v10->maxhp = Get(id, 1, 0)->maxhp;
@@ -769,16 +1542,23 @@ s32 nbCheckDeadEvent(nbFormation_t *form) {
   UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(formindex);
   if (!UnitWorkFromFormindex)
     return 0;
+LABEL_9:
   if ((UnitWorkFromFormindex->flag & 4) == 0)
   {
     id = UnitWorkFromFormindex->id;
     if ((UnitWorkFromFormindex->badstatus & 0xFFF) != 0x200)
+      goto LABEL_11;
+LABEL_14:
     id = 255;
+    goto LABEL_15;
   }
   id = 0;
   if ((UnitWorkFromFormindex->badstatus & 0xFFF) == 0x200)
+    goto LABEL_14;
+LABEL_11:
   if (!id)
     return 0;
+LABEL_15:
   return Get(id, 0)->deadeventno;
 }
 
@@ -792,16 +1572,23 @@ s32 nbCheckDeadScript(nbFormation_t *form) {
   UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(formindex);
   if (!UnitWorkFromFormindex)
     return 0;
+LABEL_9:
   if ((UnitWorkFromFormindex->flag & 4) == 0)
   {
     id = UnitWorkFromFormindex->id;
     if ((UnitWorkFromFormindex->badstatus & 0xFFF) != 0x200)
+      goto LABEL_11;
+LABEL_14:
     id = 255;
+    goto LABEL_15;
   }
   id = 0;
   if ((UnitWorkFromFormindex->badstatus & 0xFFF) == 0x200)
+    goto LABEL_14;
+LABEL_11:
   if (!id)
     return 0;
+LABEL_15:
   return Get(id, 0)->deadscriptid;
 }
 
@@ -816,21 +1603,26 @@ s32 nbCheckEventDead(nbFormation_t *form) {
   UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(formindex);
   if (!UnitWorkFromFormindex)
     return 0;
+LABEL_9:
   if ((UnitWorkFromFormindex->flag & 4) != 0)
   {
     id = 0;
     if ((UnitWorkFromFormindex->badstatus & 0xFFF) != 0x200)
     {
+LABEL_11:
       if (!id)
         return 0;
+      goto LABEL_15;
     }
   }
   else
   {
     id = UnitWorkFromFormindex->id;
     if ((UnitWorkFromFormindex->badstatus & 0xFFF) != 0x200)
+      goto LABEL_11;
   }
   id = 255;
+LABEL_15:
   v8 = Get(id, 0);
   return v8->deadscriptid || v8->deadeventno != 0;
 }
@@ -846,26 +1638,50 @@ void nbClearCommandMemeoyRenzoku(void) {
   {
     UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(0);
     if (!UnitWorkFromFormindex)
+      goto LABEL_10;
   }
   if (UnitWorkFromFormindex->prevtarea == 2)
   {
     *&UnitWorkFromFormindex->prevtarea = -1;
+      goto LABEL_12;
+    goto LABEL_11;
   }
+LABEL_10:
+    goto LABEL_12;
+LABEL_11:
+LABEL_12:
   v5 = nbGetUnitWorkFromFormindex(1);
   if (!v5)
+    goto LABEL_17;
+LABEL_13:
   if (v5->prevtarea == 2)
   {
     *&v5->prevtarea = -1;
+      goto LABEL_19;
+    goto LABEL_18;
   }
+LABEL_17:
+    goto LABEL_19;
+LABEL_18:
+LABEL_19:
   v8 = nbGetUnitWorkFromFormindex(2);
   if (!v8)
+    goto LABEL_24;
+LABEL_20:
   if (v8->prevtarea == 2)
   {
     *&v8->prevtarea = -1;
+      goto LABEL_26;
+    goto LABEL_25;
   }
+LABEL_24:
+    goto LABEL_26;
+LABEL_25:
+LABEL_26:
   v11 = nbGetUnitWorkFromFormindex(3);
   if (!v11)
     return;
+LABEL_27:
   if (v11->prevtarea == 2)
     *&v11->prevtarea = -1;
 }
@@ -877,9 +1693,47 @@ void nbDrawCylinder(sdfDrawTag_t *tag, sdfVector4_t pos, sdfVector4_t rot, sdfVe
 
 // 0x120a6b0
 void nbDrawNumber(sdfTexHandle_t *tex, u32 num, s32 x, s32 y, u32 c, s32 mod, nbFormation_t *form, s32 number) {
-    GetHitNum(0, 0);
-    SDF_VU0__Retdds3ColorItoF(0, 0);
-    Set(0, 0);
+  s32 formindex;
+  UnityEngine_GameObject_o *HitNum;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_Component_o *v19;
+  UnityEngine_GameObject_o *gameObject;
+  Il2CppObject *Component_object;
+  UnityEngine_Component_o *v22;
+  UnityEngine_GUILayer_o *Component_GUILayer;
+  UnityEngine_Color_o v24;
+  s64 v25;
+  f32 value;
+  UnityEngine_Vector4_o v27;
+  UnityEngine_Vector3_o v28;
+
+  value = 0.0;
+  v25 = 0;
+  formindex = form->formindex;
+  HitNum = GetHitNum(formindex, number);
+  if (op_Inequality(HitNum, 0, 0))
+  {
+    transform = get_transform(HitNum, 0);
+    v19 = Find(transform, "num_damage", 0);
+    gameObject = get_gameObject(v19);
+    if (!get_activeSelf(gameObject))
+      SetActive(gameObject, 1, 0);
+    v27 = SDF_VU0__Retdds3ColorItoF(c, 128.0);
+    Component_object = GetComponent_object_(gameObject);
+    *&v24.r = 0;
+    *&v24.b = 0;
+    sub_19EC630(&v24.r, v27.x, v27.y, v27.z, v27.w);
+    Set(Component_object, num, v24, 0, 0);
+    v22 = get_transform(HitNum, 0);
+    Component_GUILayer = GetComponent_GUILayer_(v22);
+    sub_8524C0(&v25, 0.0, 0.0, 0.0);
+    v28.x = x;
+    v28.z = value;
+    v28.y = y;
+    *&v25 = x;
+    *(&v25 + 1) = y;
+    set_localPosition(Component_GUILayer, v28);
+  }
 }
 
 // 0x120a6a0
@@ -889,10 +1743,95 @@ void nbDrawNumber1(sdfTexHandle_t *tex, s32 num, s32 x, s32 y, u32 c) {
 
 // 0x120a3e0
 void nbDrawTargetCursor(nbMainProcessData_t *data, nbFormation_t *form, sdfDrawTag_t *tag, s32 curidx) {
-    GetMainCamera(0);
-    sdfModelGetMarkPosUnity(0, 0);
-    SDF_VU0__STOREVECTOR(0);
-    GetTargetMark2D(0);
+  UnityEngine_GameObject_o *MainCamera;
+  Il2CppObject *Component_object;
+  f32 y;
+  f32 x;
+  UnityEngine_Camera_o *v13;
+  f32 w;
+  f32 z;
+  struct evtUnitHandle_t_o *hunit;
+  sdfModelRootNode_t_o *modelRoot;
+  f32 v18;
+  f32 v19;
+  f32 v20;
+  f32 v21;
+  f32 v22;
+  f32 v23;
+  f32 v24;
+  UnityEngine_GameObject_o *TargetMark2D;
+  UnityEngine_Component_o *transform;
+  UnityEngine_GUILayer_o *Component_GUILayer;
+  f32 width;
+  f32 height;
+  s64 v35;
+  f32 value;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector3_o v38;
+  UnityEngine_Vector3_o v39;
+  UnityEngine_Vector3_o v40;
+  UnityEngine_Vector4_o v41;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  value = 0.0;
+  v35 = 0;
+  MainCamera = GetMainCamera(kernelObject);
+  Component_object = GetComponent_object_(MainCamera);
+  x = form->pos.x;
+  y = form->pos.y;
+  v13 = Component_object;
+  z = form->pos.z;
+  w = form->pos.w;
+  p.x = x;
+  p.y = y;
+  p.z = z;
+  p.w = w;
+  hunit = form->hunit;
+  if (hunit)
+  {
+    modelRoot = hunit->Model->modelRoot;
+    sdfModelGetMarkPosUnity(modelRoot, 0);
+    SDF_VU0__STOREVECTOR(&p);
+    v19 = p.x;
+    v18 = p.y;
+    v20 = p.z;
+    v21 = p.w;
+  }
+  else
+  {
+    v19 = x;
+    v18 = y;
+    v20 = z;
+    v21 = w;
+  }
+  v22 = v19 / 100.0;
+  p.x = v19 / 100.0;
+  v23 = v18 / -100.0;
+  v24 = v20 / 100.0;
+  p.y = v18 / -100.0;
+  p.z = v20 / 100.0;
+  v41.x = v22;
+  v41.y = v23;
+  v41.z = v24;
+  v41.w = v21;
+  v40 = op_Implicit_8738992(v41);
+  v38 = WorldToScreenPoint_27174640(v13, v40);
+  TargetMark2D = GetTargetMark2D(curidx);
+  if (op_Inequality(TargetMark2D, 0, 0))
+  {
+    transform = get_transform(TargetMark2D, 0);
+    Component_GUILayer = GetComponent_GUILayer_(transform);
+    sub_8524C0(&v35, 0.0, 0.0, 0.0);
+    width = get_width(0);
+    height = get_height(0);
+    v39.y = (v38.y - (height * 0.5)) * (screen_hei / height);
+    v39.z = value;
+    *&v35 = (v38.x - (width * 0.5)) * (screen_wid / width);
+    v39.x = *&v35;
+    HIDWORD(v35) = LODWORD(v39.y);
+    set_localPosition(Component_GUILayer, v39);
+  }
 }
 
 // 0x120a200
@@ -908,13 +1847,26 @@ void nbGetFormCenter(nbFormation_t *form) {
 
 // 0x120a270
 void nbGetFormForward(nbFormation_t *form) {
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    ToMatrix();
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__STOREVECTOR(0);
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__ADDVECTOR();
+  UnityEngine_Vector4_o v4;
+
+  *&v4.x = 0;
+  *&v4.z = 0;
+  sub_854690(&v4.x, 0.0, 0.0, 1.0, 0.0);
+  SDF_VU0__LOADVECTOR(form->rot);
+  ToMatrix();
+  sub_854930(&v4, 2u);
+  SDF_VU0__LOADVECTOR(v4);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__STOREVECTOR(&v4);
+  SDF_VU0__LOADVECTOR(form->orgrot);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR(form->center);
+  SDF_VU0__SCALEVECTOR(form->scl);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__LOADVECTOR_B(form->orgpos);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__LOADVECTOR_B(v4);
+  SDF_VU0__ADDVECTOR();
 }
 
 // 0x120a080
@@ -935,9 +1887,11 @@ void nbGetFormTop(nbFormation_t *form) {
   f32 v4;
 
   if ((~form->stat & 3) != 0)
+    goto LABEL_8;
   modelRoot = form->hunit->Model->modelRoot;
   if (!sdfModelGetMarkPosUnity(modelRoot, 2))
   {
+LABEL_8:
     SDF_VU0__LOADVECTOR(form->center);
     SDF_VU0__SCALEVECTOR(form->scl);
     SDF_VU0__LOADVECTOR_B(form->pos);
@@ -1050,12 +2004,70 @@ u32 nbGetModelColor(nbFormation_t *form) {
 
 // 0x120b0c0
 s32 nbGetNakama(datUnitWork_t *s) {
-    datCheckStockFull();
-    datSearchDevilStock(0);
-    datSetDevilWork(0, 0);
-    fclEncycRegist(0, 0, 0);
-    Unlock_16599376(0);
+  s32 id;
+  s64 v7;
+  u64 v9;
+  struct datUnitWork_t_array *unitwork;
+  datUnitWork_t_o *v12;
+  s32 v14;
+  struct datUnitWork_t_array *v16;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  struct System_Int32_array *stocklist;
+  s64 stockcnt;
+  s64 *achievementTbl;
+  System_String_o *v27;
+  s64 *v28;
+  System_String_o *v29;
+
+  else if (datCheckStockFull())
+  {
     return 0;
+  }
+  id = s->id;
+  datSearchDevilStock(id);
+  v7 = 8;
+  while (1)
+  {
+    v9 = v7 - 4;
+    unitwork = DDS3_GBWK->unitwork;
+    if ((*(*(&unitwork->obj.klass + v7) + 16LL) & 1) == 0)
+      break;
+    ++v7;
+    if (v9 >= 0xF)
+    {
+      v12 = 0;
+      LODWORD(v9) = v7 - 4;
+      v14 = s->id;
+        goto LABEL_28;
+      goto LABEL_20;
+    }
+  }
+  v16 = DDS3_GBWK->unitwork;
+  v12 = *(&v16->obj.klass + v7);
+  v14 = s->id;
+  {
+LABEL_20:
+  }
+LABEL_28:
+  datSetDevilWork(v14, v12);
+  fclEncycRegist(v12, 0, 0);
+  stocklist = DDS3_GBWK->stocklist;
+  stockcnt = DDS3_GBWK->stockcnt;
+  stocklist->m_Items[stockcnt] = v9;
+  ++DDS3_GBWK->stockcnt;
+  if (++SystemWork->TalkJoin == 1)
+  {
+    achievementTbl = get_achievementTbl();
+    v27 = sub_B7950(0x12u, DefineAchievementID_string_, achievementTbl);
+    Unlock_16599376(v27);
+  }
+  if (SystemWork->TalkJoin >= 30)
+  {
+    v28 = get_achievementTbl();
+    v29 = sub_B7950(0x13u, DefineAchievementID_string_, v28);
+    Unlock_16599376(v29);
+  }
+  return 1;
 }
 
 // 0x120bcc0
@@ -1103,7 +2115,7 @@ s32 nbGetRandamStock(void) {
   while (v3 != 16);
   if (!v4)
     return -1;
-  RandIntA = dds3GetRandIntA(v4, StringLiteral_416);
+  RandIntA = dds3GetRandIntA(v4, "");
   return *(v2 + RandIntA + 8);
 }
 
@@ -1216,6 +2228,7 @@ void nbGetTargetTypeRuleArea(nbActionProcessData_t *a, datUnitWork_t *work, s32 
     case 6:
       data = a->data;
       if ((data->stat & 8) != 0)
+        goto LABEL_23;
       v15 = 0;
       v16 = 1;
       if (data->playerpcnt >= 4)
@@ -1224,6 +2237,7 @@ void nbGetTargetTypeRuleArea(nbActionProcessData_t *a, datUnitWork_t *work, s32 
         v14 = 12;
       break;
     default:
+LABEL_23:
       v16 = 0;
       v14 = 0;
       v15 = 0;
@@ -1254,20 +2268,37 @@ s32 nbGetUnitID(datUnitWork_t *work) {
 
 // 0x120cd90
 datUnitVisual_t *nbGetUnitVisual(datUnitWork_t *work) {
-    Get(0);
-    return 0;
+  s32 id;
+
+  if (!work)
+    goto LABEL_17;
+LABEL_6:
+  if ((work->flag & 4) == 0)
+  {
+    id = work->id;
+    if ((work->badstatus & 0xFFF) != 0x200)
+      goto LABEL_8;
+LABEL_11:
+    id = 255;
+    goto LABEL_12;
+  }
+  id = 0;
+  if ((work->badstatus & 0xFFF) == 0x200)
+    goto LABEL_11;
+LABEL_8:
+  if (!id)
+    goto LABEL_17;
+LABEL_12:
+  return Get(id, 0);
 }
 
 // 0x120d380
 bool nbMisc_TableAccessInit(void) {
-  nbMisc_c *v2;
   struct nbMisc_StaticFields **p_static_fields;
-  struct nbMisc_StaticFields *static_fields;
   s32 nbMisc_dmy_idx;
   datUnitVisual_t_o *v6;
   bool result;
   s32 v8;
-  struct nbMisc_StaticFields *v10;
   struct datEncountPack_t_array *tbl;
   struct datEncountTbl_s_array *enctable;
   struct datEncountRitu_s_array *ritu;
@@ -1285,26 +2316,25 @@ bool nbMisc_TableAccessInit(void) {
   struct datNormalSkill_t_array *v37;
   s32 cost;
 
-  p_static_fields = &v2->static_fields;
-  static_fields = v2->static_fields;
-  switch (static_fields->nbMisc_dmy_step)
+  switch (nbMisc_dmy_step)
   {
     case 0:
-      static_fields->nbMisc_dmy_idx = 0;
+      nbMisc_dmy_idx = 0;
       nbMisc_dmy_idx = (*p_static_fields)->nbMisc_dmy_idx;
       v6 = Get2(nbMisc_dmy_idx);
       result = 0;
       nbMisc_datDevilVisual_dmy = v6->formsize;
+      goto LABEL_35;
     case 1:
-      static_fields->nbMisc_dmy_idx += 32;
+      nbMisc_dmy_idx += 32;
       v8 = (*p_static_fields)->nbMisc_dmy_idx;
       nbMisc_datDevilVisual_dmy = nbMisc_datDevilVisual_dmy
                                                                 + Get2(v8)->formsize;
-      v10 = nbMisc->static_fields;
-      if (v10->nbMisc_dmy_idx < 352)
+      if (nbMisc_dmy_idx < 352)
         return 0;
       result = 0;
-      ++v10->nbMisc_dmy_step;
+LABEL_79:
+      ++nbMisc_dmy_step;
       return result;
     case 2:
       enctable = tbl->m_Items[0]->enctable;
@@ -1312,27 +2342,33 @@ bool nbMisc_TableAccessInit(void) {
       sensei = ritu->m_Items[0]->sensei;
       result = 0;
       nbMisc_datEncountPack_dmy = sensei;
-      v10 = nbMisc->static_fields;
+LABEL_35:
+      goto LABEL_79;
     case 3:
       v19 = tbl;
       flag = v19->m_Items[0]->flag;
       nbMisc_datEncount_dmy = flag;
+      goto LABEL_77;
     case 4:
       v22 = Get(0, 0, 0, 0);
       v24 = v22;
       nbMisc_datAisyo_dmy = v24;
+      goto LABEL_77;
     case 5:
       v25 = Get(0, 1, 0);
       level = v25->level;
       nbMisc_datDevilFormat_dmy = level;
+      goto LABEL_77;
     case 6:
       Event = Get(0, 0)->Event;
       TargetLevel = Event->m_Items[0]->TargetLevel;
       nbMisc_tblSkill_dmy = TargetLevel;
+      goto LABEL_77;
     case 7:
       v33 = tbl;
       n = v33->m_Items[0]->n;
       datSpecialSkill_dmy = n;
+      goto LABEL_77;
     case 8:
       v37 = tbl;
       cost = v37->m_Items[0]->cost;
@@ -1356,7 +2392,6 @@ s32 nbScreenOffset(sdfIVector4_t **pos, nbKoukaPacket_t *p) {
   f32 v19;
   f32 width;
   s32 height;
-  struct GlobalData_StaticFields *static_fields;
   f32 v23;
   struct System_Int32_array *pm;
   struct System_Int32_array *v26;
@@ -1369,7 +2404,15 @@ s32 nbScreenOffset(sdfIVector4_t **pos, nbKoukaPacket_t *p) {
   *&v28.x = 0;
   *&v28.z = 0;
   pFormation = 0;
-  else  if (!evtBitCheck(3712))
+  else if (!effBTLSkillCheckRun())
+  {
+    goto LABEL_23;
+  }
+  else if (effBTLSkillGetID() != 269)
+  {
+    goto LABEL_23;
+  }
+  if (!evtBitCheck(3712))
   {
     pFormation = effBTLSkillGetInvokeFormation(0);
     ID = effBTLModelGetID(&pFormation);
@@ -1379,6 +2422,7 @@ s32 nbScreenOffset(sdfIVector4_t **pos, nbKoukaPacket_t *p) {
         return 0;
     }
   }
+LABEL_23:
   *&v28.x = 0;
   *&v28.z = 0;
   SDF_VU0__STOREVECTOR(&v28);
@@ -1400,10 +2444,9 @@ s32 nbScreenOffset(sdfIVector4_t **pos, nbKoukaPacket_t *p) {
   v30 = WorldToScreenPoint_27174640(v16, v31);
   width = get_width(0);
   height = get_height(0);
-  static_fields = GlobalData->static_fields;
-  v23 = static_fields->screen_hei / height;
+  v23 = screen_hei / height;
   pm = (*pos)->pm;
-  pm->m_Items[0] = ((v30.x - (width * 0.5)) * (static_fields->screen_wid / width));
+  pm->m_Items[0] = ((v30.x - (width * 0.5)) * (screen_wid / width));
   v26 = (*pos)->pm;
   v26->m_Items[1] = ((v30.y - (height * 0.5)) * v23);
   return 1;
@@ -1614,12 +2657,15 @@ void nbSetNextOrder(void) {
   MainProcessData = nbGetMainProcessData();
   orderindex = MainProcessData->orderindex;
   if (orderindex < 0)
+    goto LABEL_19;
+LABEL_6:
   v5 = orderindex + 1;
   v6 = (orderindex + 1);
   v7 = MainProcessData;
   MainProcessData->orderindex = v5;
   if (v6 > 11)
   {
+LABEL_11:
     nbSetOrder();
   }
   else
@@ -1631,6 +2677,7 @@ void nbSetNextOrder(void) {
         break;
       v6 = ++MainProcessData->orderindex;
       if (v6 >= 12)
+        goto LABEL_11;
     }
   }
   v11 = v7->order;
@@ -1666,11 +2713,14 @@ void nbSetNormalSkill0(datUnitWork_t *work) {
     v11 = Get(v23, 0);
     if ((work->flag & 4) == 0)
     {
+LABEL_20:
       id = work->id;
       attackcnt = Get(id, 1, 0)->attackcnt;
       attackattr = Get(work->id, 1, 0)->attackattr;
       Get(work->id, 1, 0);
       if (!v10)
+        goto LABEL_42;
+      goto LABEL_41;
     }
   }
   else
@@ -1686,29 +2736,45 @@ void nbSetNormalSkill0(datUnitWork_t *work) {
     {
       v10->targettype = 1;
       if ((work->flag & 4) == 0)
+        goto LABEL_20;
     }
     else
     {
       v10->targettype = 0;
       if ((work->flag & 4) == 0)
+        goto LABEL_20;
     }
   }
   attackattr = 0;
   attackcnt = 1;
   if (v10)
   {
+LABEL_41:
     v7->skillattr = attackattr;
     v10->targetcntmin = attackcnt;
     v10->targetcntmax = attackcnt;
     v11->animetype = 0;
   }
-  Write(StringLiteral_21488, 0);
+LABEL_42:
+  Write("スキル書き換え!!\n", 0);
 }
 
 // 0x12097b0
 void nbSetOrder(void) {
-    nbGetMainProcessData();
-    nbSetOrderSide(0);
+  s32 v3;
+
+  if ((nbGetMainProcessData()->stat & 8) != 0)
+  {
+    else
+    {
+      v3 = 1;
+    }
+  }
+  else
+  {
+    v3 = 0;
+  }
+  nbSetOrderSide(v3);
 }
 
 // 0x12091e0
@@ -1797,15 +2863,19 @@ void nbSetOrderSide(s32 side) {
         }
       }
     }
+    goto LABEL_80;
   }
   v40 = MainProcessData->party;
   if ((v40->m_Items[0]->flag & 1) == 0)
+    goto LABEL_53;
   v41 = MainProcessData->party;
   if ((v41->m_Items[0]->flag & 0x20) != 0)
   {
+LABEL_53:
     v30 = 0;
     v44 = MainProcessData->party;
     if ((v44->max_length & 0xFFFFFFFE) == 0)
+      goto LABEL_54;
   }
   else
   {
@@ -1813,6 +2883,10 @@ void nbSetOrderSide(s32 side) {
     v42->m_Items[0] = 0;
     v30 = 1;
     v44 = MainProcessData->party;
+    if ((v44->max_length & 0xFFFFFFFE) == 0)
+    {
+LABEL_54:
+    }
   }
   if ((v44->m_Items[1]->flag & 1) != 0)
   {
@@ -1845,24 +2919,81 @@ void nbSetOrderSide(s32 side) {
     {
       v62 = MainProcessData->order;
       v62->m_Items[v30] = 3;
+      goto LABEL_81;
     }
   }
+LABEL_80:
   if (v30 < 1)
   {
     MainProcessData->orderindex = -1;
     v68 = -1;
+    goto LABEL_88;
   }
+LABEL_81:
   MainProcessData->orderindex = 0;
   nbSortOrder(0);
   v66 = v6->order;
   v68 = v66->m_Items[v6->orderindex];
+LABEL_88:
   v6->activeunit = v68;
 }
 
 // 0x120cab0
 void nbSetPlayerStartData(nbMainProcessData_t *data) {
-    nbAddUnitStock(0, 0, 0, 0);
-    nbSetPlayerFormation(0, 0);
+  u64 v2;
+  s32 v3;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  struct System_Int32_array *stocklist;
+  struct datUnitWork_t_array *unitwork;
+  s64 v9;
+  struct datUnitWork_t_array *v12;
+  struct datUnitWork_t_array *v14;
+  struct datUnitWork_t_array *v16;
+  struct nbFormation_t_array *form;
+  nbFormation_t_o *v20;
+  nbMainProcessData_t_o *dataa;
+
+  dataa = data;
+  v2 = 0;
+  v3 = 0;
+  {
+LABEL_6:
+  }
+  while (v3 <= 3)
+  {
+    if (v2 >= DDS3_GBWK->stockcnt)
+      break;
+    else
+    {
+      stocklist = DDS3_GBWK->stocklist;
+      if (v2 >= LODWORD(stocklist->max_length))
+        goto LABEL_13;
+    }
+    unitwork = DDS3_GBWK->unitwork;
+    v9 = stocklist->m_Items[v2];
+    if ((unitwork->m_Items[v9]->flag & 1) != 0)
+    {
+      v12 = DDS3_GBWK->unitwork;
+      v12->m_Items[v9]->prevtarea = -1;
+      v14 = DDS3_GBWK->unitwork;
+      v14->m_Items[v9]->prevtform = -1;
+      v16 = DDS3_GBWK->unitwork;
+      if ((v16->m_Items[v9]->flag & 2) != 0)
+      {
+        nbAddUnitStock(&dataa, 0, v9, v3);
+        if ((dataa->stat & 0x10) != 0)
+        {
+          form = dataa->form;
+          v20 = form->m_Items[v3];
+          v20->stat |= 0x2000u;
+        }
+        ++v3;
+      }
+    }
+    ++v2;
+      goto LABEL_6;
+  }
+  nbSetPlayerFormation(&dataa, 0);
 }
 
 // 0x120bf90
@@ -1886,9 +3017,14 @@ void nbSetRenzokuEncount(s32 enc) {
 
 // 0x1208dd0
 void nbSortOrder(s32 start) {
-    nbGetMainProcessData();
-    nbGetUnitWorkPointer(0, 0);
-    datGetParam(0, 0);
+  nbMainProcessData_t_o *MainProcessData;
+
+  else
+  {
+    MainProcessData = nbGetMainProcessData();
+    if (start <= 10)
+      goto LABEL_6;
+  }
 }
 
 // 0x1209e70
@@ -1906,7 +3042,6 @@ void nbToCurrectClipOffsetForOrg(sdfIVector4_t **pos) {
   s32 screen_hei;
   f32 v17;
   f32 v18;
-  struct GlobalData_StaticFields *static_fields;
   struct System_Int32_array *pm;
   f32 v21;
   struct System_Int32_array *v23;
@@ -1938,10 +3073,9 @@ void nbToCurrectClipOffsetForOrg(sdfIVector4_t **pos) {
   v15 = screen_wid;
   v17 = v26.x * (v15 / width);
   v18 = screen_hei / get_height(0);
-  static_fields = GlobalData->static_fields;
   pm = (*pos)->pm;
-  v21 = 3584.0 / static_fields->screen_hei;
-  pm->m_Items[0] = (v17 * (8192.0 / static_fields->screen_wid)) >> 4;
+  v21 = 3584.0 / screen_hei;
+  pm->m_Items[0] = (v17 * (8192.0 / screen_wid)) >> 4;
   v23 = (*pos)->pm;
   v23->m_Items[1] = ((v26.y * v18) * v21) >> 3;
 }
@@ -1971,11 +3105,13 @@ void nbUpdateOrder(void) {
       party = MainProcessData->party;
       v10 = *(&v7->obj.klass + i);
       if ((party->m_Items[v10]->flag & 1) == 0)
+        goto LABEL_20;
       v12 = MainProcessData->order;
       v13 = MainProcessData->party;
       v15 = *(&v12->obj.klass + i);
       if ((v13->m_Items[v15]->flag & 0x20) != 0)
       {
+LABEL_20:
         v17 = MainProcessData->order;
         *(&v17->obj.klass + i) = -1;
       }

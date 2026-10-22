@@ -57,16 +57,21 @@ s8 SDF_ARRAYCOUNT(s8 **n) {
 
 // 0x1888e90
 void nmeBackSpace(void) {
-  struct Nme_Update_StaticFields *static_fields;
   nmeData_t_o **p_GBWK;
 
-  static_fields = Nme_Update->static_fields;
-  p_GBWK = &static_fields->GBWK;
+LABEL_7:
+  p_GBWK = &GBWK;
   if (nmeChkEntryType(p_GBWK) == 1)
   {
     if (((*p_GBWK)->InputPos - 4) < 1)
+      goto LABEL_16;
   }
-  else  nmeMoveInputCursor(255);
+  else if ((*p_GBWK)->InputPos < 1)
+  {
+    goto LABEL_16;
+  }
+  nmeMoveInputCursor(255);
+LABEL_16:
   nmeDeleteCharCursorPos(1);
 }
 
@@ -91,6 +96,7 @@ s8 nmeChkInvalidName(s8 Type) {
     if (!v6->m_Items[1])
       return 0;
   }
+LABEL_26:
     return 1;
   return 1;
 }
@@ -103,7 +109,6 @@ s8 nmeCompareStr(s8 Type) {
 
 // 0x18880f0
 void nmeDeleteCharCursorPos(s8 Mode) {
-  struct Nme_Update_StaticFields *static_fields;
   nmeData_t_o **p_GBWK;
   s64 v6;
   s8 inited;
@@ -147,16 +152,19 @@ void nmeDeleteCharCursorPos(s8 Mode) {
   struct System_SByte_array *v80;
   s8 v82;
 
-  static_fields = Nme_Update->static_fields;
-  p_GBWK = &static_fields->GBWK;
+LABEL_7:
+  p_GBWK = &GBWK;
   if (nmeChkEntryType(p_GBWK) == 1)
   {
     LOBYTE(v6) = (*p_GBWK)->InputPos - 4;
+      goto LABEL_15;
   }
   else
   {
     LOBYTE(v6) = (*p_GBWK)->InputPos;
+      goto LABEL_15;
   }
+LABEL_15:
   inited = nmeChkEntryType(&GBWK);
   InputNums = GBWK->InputNums;
   v11 = inited;
@@ -217,14 +225,17 @@ void nmeDeleteCharCursorPos(s8 Mode) {
     {
       v80 = GBWK->InputNums;
       --v80->m_Items[v12];
+        goto LABEL_97;
     }
     else
     {
       {
+LABEL_97:
         nmeDeleteEndSpace(v12);
         return;
       }
     }
+    goto LABEL_97;
   }
 }
 
@@ -254,6 +265,7 @@ void nmeDeleteEndSpace(s8 Type) {
   v8 = v7 << 24;
   if (v7 << 24 < -16777215)
   {
+LABEL_37:
     InputNums = GBWK->InputNums;
     v10 = Type;
     LOBYTE(v31) = 0;
@@ -281,6 +293,7 @@ void nmeDeleteEndSpace(s8 Type) {
       v7 = (v8 >> 24) - 1;
       v8 = v7 << 24;
       if (v7 << 24 <= -16777216)
+        goto LABEL_37;
     }
     InputNums = GBWK->InputNums;
     v31 = HIBYTE(v8) + 1;
@@ -308,7 +321,6 @@ void nmeGetInputChar(void) {
   struct System_String_array_array *v25;
   System_Byte_array *v26;
   System_String_array *v28;
-  struct Nme_Update_StaticFields *static_fields;
   nmeData_t_o **p_GBWK;
   s8 InputPos;
   s8 inited;
@@ -345,8 +357,8 @@ void nmeGetInputChar(void) {
   v26 = v24;
   v28 = v25->m_Items[v20];
   v60 = UnicodeToIndexByte2(txtMgr, v28->m_Items[v19]);
-  static_fields = Nme_Update->static_fields;
-  p_GBWK = &static_fields->GBWK;
+LABEL_34:
+  p_GBWK = &GBWK;
   if (nmeChkEntryType(p_GBWK) == 1)
     InputPos = (*p_GBWK)->InputPos - 4;
   else
@@ -364,10 +376,17 @@ void nmeGetInputChar(void) {
   v46 = v44[2].length;
   v42->m_Items[v46 * (InputPos + v45 * inited) + 1] = v60->m_Items[1];
   InputNums = GBWK->InputNums;
+  if (InputNums->m_Items[inited] != InputPos)
+  {
+      goto LABEL_68;
+    goto LABEL_54;
+  }
   v57 = GBWK->InputNums;
   ++v57->m_Items[v37];
   {
+LABEL_54:
   }
+LABEL_68:
   nmeMoveInputCursor(1);
   nmeDeleteEndSpace(v37);
 }
@@ -382,27 +401,31 @@ s8 nmeGetInputCharPos(nmeData_t **pData) {
 
 // 0x1887ea0
 void nmeMoveInputCursor(s8 Dir) {
-  struct Nme_Update_StaticFields *static_fields;
   nmeData_t_o **p_GBWK;
   s8 InputPos;
   s8 inited;
   struct nmeData_t_o *GBWK;
   s8 v12;
 
-  static_fields = Nme_Update->static_fields;
-  p_GBWK = &static_fields->GBWK;
+LABEL_7:
+  p_GBWK = &GBWK;
   if (nmeChkEntryType(p_GBWK) == 1)
   {
     InputPos = (*p_GBWK)->InputPos - 4;
+      goto LABEL_15;
   }
   else
   {
     InputPos = (*p_GBWK)->InputPos;
+      goto LABEL_15;
   }
+LABEL_15:
   inited = nmeChkEntryType(&GBWK);
   if (inited == 2)
   {
     if (Dir < 1)
+      goto LABEL_21;
+    goto LABEL_28;
   }
   if (inited == 1)
   {
@@ -410,17 +433,25 @@ void nmeMoveInputCursor(s8 Dir) {
     {
       if (!Dir)
         return;
+      goto LABEL_23;
     }
+LABEL_28:
     if (nmeGetInputCharMax(&GBWK) - 1 <= InputPos)
       return;
+LABEL_35:
     v12 = GBWK->InputPos + 1;
+    goto LABEL_39;
   }
   if (inited)
     return;
   if (Dir >= 1)
+    goto LABEL_35;
+LABEL_21:
   if (Dir && InputPos >= 1)
   {
+LABEL_23:
     v12 = GBWK->InputPos - 1;
+LABEL_39:
     GBWK->InputPos = v12;
   }
 }
@@ -463,7 +494,7 @@ void nmeMoveListCapLine(s8 Dir) {
     v18 = v15->m_Items[v12];
     str_index = v18;
   }
-  while (!op_Inequality(v18, StringLiteral_5526, 0));
+  while (!op_Inequality(v18, "　", 0));
 }
 
 // 0x1889190
@@ -480,25 +511,166 @@ void nmeSetRetLine(s8 InputMode) {
 
 // 0x188bf90
 dds3ProcessFunc_t *nmeUpdate(dds3ProcessID_t *PID) {
-    dds3GetProcessData(0);
-    dds3FadeCheck();
-    ClearNameUI();
-    nmeUpdate1st();
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  u64 v10;
+  struct nmeData_t_o *GBWK;
+  dds3ProcessID_t_o *v15[3];
+  dds3ProcessID_t_o *id;
+
+  id = PID;
+  ProcessData = dds3GetProcessData(&id);
+  else
+  {
+    if (!ProcessData)
+      goto LABEL_15;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nmeData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, nmeData_t, v15);
+    if ((v15[0] & 1) != 0)
+      v7 = v15[2];
+    else
+      v7 = v15 + 1;
+    v8 = sub_8C4940(v7);
+  }
+LABEL_15:
+  GBWK = ProcessData;
+  else if (dds3FadeCheck())
+  {
     return 0;
+  }
+  if ((*(*(*(*(v10 + 184) + 64LL) + 16LL) + 16LL) & 0x40) != 0)
+  {
+    ClearNameUI();
+    id->func_ans = -1;
+  }
+  else
+  {
+    nmeUpdate1st(v10);
+    GBWK->BaseRate += 2;
+    if (GBWK->BaseRate >= 2304)
+    {
+      GBWK->BaseRate = 0;
+    }
+  }
+  return 0;
 }
 
 // 0x188b5a0
 void nmeUpdate1st(void) {
-    GetoNameUI();
-    nmeUpdateConfirm();
-    nmeUpdateListCapCursor();
-    nmeUpdateFuncCursor();
-    nmeUpdateInputMode();
-    nmeUpdateInputCursor();
-    nmeChkInvalidName(0);
-    nmeInitEntryType(0, 0);
-    DefNameDraw();
-    nmeSetDefaultName(0, 0);
+  u16 v3;
+  UnityEngine_Object_o *name_input;
+  UnityEngine_GameObject_o *inited;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_Component_o *v11;
+  struct UnityEngine_GameObject_o *gameObject;
+  Il2CppObject *Component_object;
+  u64 v15;
+  s32 v16;
+  struct nmeData_t_o *GBWK;
+  s32 v18;
+  s32 v21;
+  Nme_Update_c *v22;
+
+  v3 = cmpChkCommonInput(0x1000u);
+  if (!op_Equality(name_input, 0, 0))
+  {
+      goto LABEL_23;
+    goto LABEL_20;
+  }
+  inited = GetoNameUI();
+  nameChange = inited;
+  transform = get_transform(nameChange, 0);
+  v11 = Find(transform, "nameinput", 0);
+  gameObject = get_gameObject(v11);
+  name_input = gameObject;
+  Component_object = GetComponent_object_(name_input);
+  _name_input = Component_object;
+  if ((*(v15 + 295) & 2) != 0)
+  {
+LABEL_20:
+  }
+LABEL_23:
+  if (*(*(*(v15 + 184) + 64LL) + 35LL) == 1)
+  {
+    nmeUpdateConfirm(v15);
+    v16 = 2;
+      goto LABEL_43;
+  }
+  else
+  {
+    v16 = 0;
+    if ((*(v15 + 295) & 2) == 0)
+      goto LABEL_43;
+  }
+  if (!*(v15 + 216))
+  {
+    if (!GBWK->CfmFlag)
+      goto LABEL_30;
+    return;
+  }
+LABEL_43:
+  GBWK = *(*(v15 + 184) + 64LL);
+  if (!GBWK->CfmFlag)
+  {
+LABEL_30:
+    if (v16)
+    {
+      v18 = 0;
+      if (v3 != 4096)
+        goto LABEL_32;
+LABEL_57:
+      else if (nameOpeflag == 1)
+      {
+LABEL_60:
+        v18 = 1;
+        nameEndflag = 1;
+        namecursur_flag = 0;
+          goto LABEL_80;
+        goto LABEL_33;
+      }
+      v3 = 0;
+        goto LABEL_80;
+      goto LABEL_33;
+    }
+    if (GBWK->ListCapFlag)
+    {
+      nmeUpdateListCapCursor(v15);
+    }
+    else
+    {
+      if (!GBWK->FuncFlag)
+      {
+        v18 = 0;
+        v21 = 0;
+          goto LABEL_55;
+        goto LABEL_54;
+      }
+      if (nmeUpdateFuncCursor(v15))
+      {
+        v18 = 1;
+        nameEndflag = 1;
+        v21 = 1;
+          goto LABEL_55;
+        goto LABEL_54;
+      }
+    }
+    v18 = 0;
+    v21 = 1;
+      goto LABEL_55;
+LABEL_54:
+LABEL_55:
+    nmeUpdateInputMode(v22);
+    if (v21)
+      goto LABEL_56;
+    goto LABEL_155;
+  }
 }
 
 // 0x188bee0
@@ -514,11 +686,164 @@ void nmeUpdateBaseRate(void) {
 
 // 0x188aa50
 void nmeUpdateConfirm(void) {
-    nmeInitEntryType(0, 0);
-    RepColTag(0, 0);
-    ButtonGuideDispOff();
-    nmeFadeOut();
-    ReturnEventObject();
+  u16 v4;
+  u32 v7;
+  Il2CppObject *Component_object;
+  struct System_String_array *name_des;
+  TMPro_TMP_Text_o *namedes_textTM;
+  System_String_o *v18;
+  u64 *v19;
+  s64 *v21;
+  cmpCursorInfo_t_o *v23;
+  cmpCursorInfo_t_o *v24;
+  s8 v25;
+  cmpCursorInfo_t_o *v27;
+  s32 CursorIndex;
+  Il2CppObject *v34;
+  struct System_String_array *v37;
+  System_String_o *v41;
+  cmpCursorInfo_t_o *YesNoCursor;
+  cmpCursorInfo_t_o *v47;
+  cmpCursorInfo_t_o *v49;
+  u16 v51;
+  u64 i;
+  u32 *nameTMPStr2;
+  u32 *v58;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  s32 v62;
+  s32 v63;
+
+  v4 = cmpChkCommonInput(CMP_PE_NORMAL);
+  v7 = v4;
+  if (yesnoflag != 1)
+    goto LABEL_85;
+  if (yesnoOpeflag != 1)
+    goto LABEL_85;
+  if (v4 > 2u)
+  {
+    if (v4 == 16)
+    {
+      nameInitflag = 0;
+      YesNoCursor = GBWK->YesNoCursor;
+      v24 = YesNoCursor;
+      v25 = -1;
+    }
+    else
+    {
+      if (v4 != 32)
+        goto LABEL_85;
+      nameInitflag = 0;
+      v23 = GBWK->YesNoCursor;
+      v24 = v23;
+      v25 = 1;
+    }
+    cmpMoveCursor(v24, v25);
+LABEL_85:
+      goto LABEL_88;
+    goto LABEL_86;
+  }
+  if (v4 != 1)
+  {
+    if (v4 == 2)
+    {
+      namecursur_flag = 0;
+      nameInputResetflag = 0;
+      Chackflag = 0;
+      PlistUpdateflag = 1;
+      nameInitflag = 0;
+      endChoiceflag = 0;
+      name_count = 2;
+      yesnoswith = 0;
+      yesnoflag = 0;
+      yesnoOpeflag = 0;
+      yesnoOpeCnt = 0;
+      nmeInitEntryType(0, &GBWK);
+      Component_object = GetComponent_object_(name_description);
+      namedes_text = Component_object;
+      v18 = name_des->m_Items[1];
+      v62 = 22;
+      v19 = NewSpecific(object, 1u);
+      v21 = sub_8D3950(s32, &v62);
+      if (!v21)
+        goto LABEL_67;
+      goto LABEL_65;
+    }
+    goto LABEL_85;
+  }
+  v27 = GBWK->YesNoCursor;
+  CursorIndex = cmpGetCursorIndex(v27);
+  if (CursorIndex)
+  {
+    if (yesnoswith == 1)
+    {
+      namecursur_flag = 0;
+      nameInputResetflag = 0;
+      Chackflag = 0;
+      PlistUpdateflag = 1;
+      nameInitflag = 0;
+      endChoiceflag = 0;
+      name_count = 2;
+      yesnoswith = 0;
+      yesnoflag = 0;
+      yesnoOpeflag = 0;
+      yesnoOpeCnt = 0;
+      nmeInitEntryType(0, &GBWK);
+      v34 = GetComponent_object_(name_description);
+      namedes_text = v34;
+      v37 = name_des;
+      v18 = v37->m_Items[1];
+      v63 = 22;
+      v19 = NewSpecific(object, 1u);
+      v21 = sub_8D3950(s32, &v63);
+      if (!v21)
+      {
+LABEL_67:
+        v19[4] = v21;
+        v41 = RepColTag(v18, v19);
+        set_text(namedes_textTM, v41);
+          goto LABEL_88;
+LABEL_86:
+        goto LABEL_88;
+      }
+LABEL_65:
+      goto LABEL_67;
+    }
+    goto LABEL_85;
+  }
+  Chackflag = 0;
+  defnameChackflag = 0;
+  defnameflag = 0;
+  PlistUpdateflag = 1;
+  nameOpeflag = 0;
+  nameInitflag = 0;
+  name_fadecnt = 0;
+  apoInitflag = 0;
+  apoEndInitflag = 0;
+  ButtonGuideDispOff();
+  for (i = 0; i != 8; ++i)
+  {
+    v58 = &nameTMPStr2[2 * i];
+    *(v58 + 4) = "";
+  }
+  GBWK->CfmFlag = 2;
+  SeqInfo = GBWK->SeqInfo;
+  SeqInfo->Flag |= 0x10u;
+  nmeFadeOut();
+  ReturnEventObject();
+    goto LABEL_86;
+LABEL_88:
+  if (!cmpChkPadPressUpDown())
+  {
+    v47 = GBWK->YesNoCursor;
+    cmpMoveCursor(v47, 0);
+  }
+  v49 = GBWK->YesNoCursor;
+  v51 = cmpDisablePadBitStop(v49, v7, 0x30u);
+  else if (nameInitflag)
+  {
+    return;
+  }
+  cmpPlaySE2(v51, 2);
 }
 
 // 0x1889520
@@ -552,6 +877,8 @@ s8 nmeUpdateFuncCursor(void) {
       cmpMoveCursor(FuncCursor, 1);
       v12 = 0;
       PlistUpdateflag = 1;
+        goto LABEL_95;
+      goto LABEL_82;
     }
     v9 = CursorIndex;
     if (v3 == 64)
@@ -562,8 +889,11 @@ s8 nmeUpdateFuncCursor(void) {
       v26 = InputModeColumnMax;
       v28 = CharCursor->m_Items[1];
       cmpSetCursorPos(v26 - 1, v28);
+LABEL_78:
       v12 = 0;
       PlistUpdateflag = 1;
+        goto LABEL_95;
+      goto LABEL_82;
     }
     if (v3 == 128)
     {
@@ -573,6 +903,8 @@ s8 nmeUpdateFuncCursor(void) {
       {
         v12 = 0;
         GBWK->ListCapFlag = 1;
+          goto LABEL_95;
+        goto LABEL_82;
       }
       v34 = GBWK->CharCursor;
       v36 = v34->m_Items[1];
@@ -598,33 +930,59 @@ s8 nmeUpdateFuncCursor(void) {
             case 2:
               nmeDeleteCharCursorPos(1);
               v12 = 0;
+                goto LABEL_95;
+              goto LABEL_82;
             case 3:
               nameOpeflag = 0;
               v12 = 1;
+                goto LABEL_95;
+              goto LABEL_82;
             default:
+              goto LABEL_94;
           }
           nmeMoveInputCursor(v17);
           v12 = 0;
+            goto LABEL_95;
         }
         else
         {
           v12 = 0;
           v3 = 0;
+            goto LABEL_95;
         }
+        goto LABEL_82;
       case 2u:
         nmeBackSpace();
         v12 = 0;
+          goto LABEL_95;
+        goto LABEL_82;
       case 0x10u:
         v8 = GBWK->FuncCursor;
         cmpMoveCursor(v8, 255);
+        goto LABEL_78;
     }
   }
+LABEL_94:
   v12 = 0;
+    goto LABEL_95;
+LABEL_82:
+LABEL_95:
   nmeSetRetLine(v13);
+    goto LABEL_97;
+LABEL_96:
+  if (cmpChkPadPressUpDown())
+  {
+LABEL_98:
+      goto LABEL_109;
+    goto LABEL_99;
+  }
+LABEL_102:
   v40 = GBWK->FuncCursor;
   cmpMoveCursor(v40, 0);
   {
+LABEL_99:
   }
+LABEL_109:
   v41 = GBWK->FuncCursor;
   v42 = cmpDisablePadBitStop(v41, v3, 0x30u);
   cmpPlaySE(v42);
@@ -668,6 +1026,8 @@ void nmeUpdateInputCursor(void) {
         v27 = CharCursor->m_Items[0];
         cmpMoveCursorEx(v27, 1, 0);
         PlistUpdateflag = 1;
+          goto LABEL_101;
+        goto LABEL_51;
       case 0x40u:
         v30 = GBWK->CharCursor;
         if (!nmeUpdateMoveEtcMode(v30->m_Items[1], 255))
@@ -677,6 +1037,8 @@ void nmeUpdateInputCursor(void) {
           cmpMoveCursor(v35, 255);
           nameLeftflag = 1;
           if ((v10->_2.bitflags2 & 2) == 0)
+            goto LABEL_99;
+          goto LABEL_83;
         }
         break;
       case 0x80u:
@@ -688,43 +1050,76 @@ void nmeUpdateInputCursor(void) {
           cmpMoveCursor(v17, 1);
           nameRightflag = 1;
           if ((v10->_2.bitflags2 & 2) == 0)
+            goto LABEL_99;
+LABEL_83:
+            goto LABEL_99;
+          goto LABEL_20;
         }
         break;
       default:
+        goto LABEL_100;
     }
+      goto LABEL_99;
+    goto LABEL_83;
   }
   if (v2 == 1)
   {
     if (nameOpeflag == 1)
     {
       nmeGetInputChar();
+        goto LABEL_101;
+      goto LABEL_51;
     }
+LABEL_85:
     v5 = 0;
+      goto LABEL_101;
+    goto LABEL_51;
   }
   if (v2 == 2)
   {
     if (nameOpeflag == 1)
     {
       nmeBackSpace();
+        goto LABEL_101;
+      goto LABEL_51;
     }
+    goto LABEL_85;
   }
   if (v2 != 16)
+    goto LABEL_100;
   v7 = GBWK->CharCursor;
   v9 = v7->m_Items[0];
   cmpMoveCursorEx(v9, 255, 0);
+    goto LABEL_99;
+LABEL_20:
+LABEL_99:
   PlistUpdateflag = 1;
+LABEL_100:
+    goto LABEL_101;
+LABEL_51:
+LABEL_101:
   if (cmpChkPadPressUpDown())
+    goto LABEL_111;
+LABEL_102:
   v37 = GBWK->CharCursor;
   v38 = v37->m_Items[0];
   cmpMoveCursor(v38, 0);
+LABEL_111:
   v41 = GBWK->CharCursor;
   v42 = v41->m_Items[0];
   v44 = cmpDisablePadBitStop(v42, v5, 0x30u);
+  if (cmpChkPadPressLR())
+  {
+      goto LABEL_132;
+    goto LABEL_121;
+  }
   v48 = GBWK->CharCursor;
   v50 = v48->m_Items[1];
   cmpMoveCursor(v50, 0);
   {
+LABEL_121:
   }
+LABEL_132:
   v51 = GBWK->CharCursor;
   v53 = v51->m_Items[1];
   v54 = cmpDisablePadBitStop(v53, v44, 0xC0u);
@@ -753,6 +1148,7 @@ void nmeUpdateInputMode(void) {
   else
   {
     if (v3 != 256)
+      goto LABEL_29;
     v5 = GBWK->ModeCursor;
     v6 = v5;
     v7 = -1;
@@ -761,8 +1157,14 @@ void nmeUpdateInputMode(void) {
   CursorIndex = cmpGetCursorIndex(GBWK->ModeCursor);
   nmeInitInputMode(CursorIndex, &GBWK);
   PlistUpdateflag = 1;
-  else  v15 = GBWK->ModeCursor;
+LABEL_29:
+  else if (cmpChkPadPressL1R1())
+  {
+    goto LABEL_40;
+  }
+  v15 = GBWK->ModeCursor;
   cmpMoveCursor(v15, 0);
+LABEL_40:
   v17 = GBWK->ModeCursor;
   v18 = cmpDisablePadBitStop(v17, v3, 0x300u);
   cmpPlaySE(v18);
@@ -770,10 +1172,85 @@ void nmeUpdateInputMode(void) {
 
 // 0x1889be0
 void nmeUpdateListCapCursor(void) {
-    nmeMoveListCapLine(0);
-    nmeGetInputModeColumnMax(0);
-    nmeSetRetLine(0);
-    nmeBackSpace();
+  u16 v3;
+  u32 v4;
+  s8 CursorIndex;
+  struct cmpCursorInfo_t_array *v10;
+  cmpCursorInfo_t_o *v12;
+  s32 v13;
+  cmpCursorInfo_t_o *v14;
+  Nme_Update_c *v16;
+  s8 v18;
+  s8 InputModeColumnMax;
+  struct cmpCursorInfo_t_array *CharCursor;
+  s8 v24;
+  cmpCursorInfo_t_o *v26;
+
+  v3 = cmpChkCommonInput(0xF3u);
+  v4 = v3;
+  CursorIndex = cmpGetCursorIndex(GBWK->ModeCursor);
+  if (v3 > 0x10u)
+  {
+    switch (v3)
+    {
+      case 0x20u:
+        nmeMoveListCapLine(1);
+        PlistUpdateflag = 1;
+          goto LABEL_69;
+        goto LABEL_62;
+      case 0x40u:
+        v18 = CursorIndex;
+        GBWK->ListCapFlag = 0;
+        GBWK->FuncFlag = 1;
+        PlistUpdateflag = 1;
+        InputModeColumnMax = nmeGetInputModeColumnMax(v18);
+        CharCursor = GBWK->CharCursor;
+        v24 = InputModeColumnMax;
+        v26 = CharCursor->m_Items[1];
+        v13 = v24 - 1;
+        v14 = v26;
+        break;
+      case 0x80u:
+        GBWK->ListCapFlag = 0;
+        PlistUpdateflag = 1;
+        v10 = GBWK->CharCursor;
+        v12 = v10->m_Items[1];
+        v13 = 0;
+        v14 = v12;
+        break;
+      default:
+        goto LABEL_61;
+    }
+    cmpSetCursorPos(v13, v14);
+LABEL_61:
+      goto LABEL_69;
+LABEL_62:
+LABEL_69:
+    nmeSetRetLine(v16);
+      goto LABEL_71;
+LABEL_70:
+LABEL_71:
+    if (cmpChkPadPressUpDown())
+      goto LABEL_72;
+    goto LABEL_76;
+  }
+  if (v3 != 1)
+  {
+    if (v3 == 2)
+    {
+      nmeBackSpace();
+        goto LABEL_69;
+      goto LABEL_62;
+    }
+    if (v3 == 16)
+    {
+      nmeMoveListCapLine(255);
+      PlistUpdateflag = 1;
+        goto LABEL_69;
+      goto LABEL_62;
+    }
+    goto LABEL_61;
+  }
 }
 
 // 0x188a060
@@ -792,6 +1269,8 @@ s8 nmeUpdateMoveEtcMode(cmpCursorInfo_t *pCursorInfo, s8 Dir) {
     if (v11 == nmeGetInputModeColumnMax(CursorIndex) - 1)
     {
       GBWK->FuncFlag = 1;
+        goto LABEL_39;
+      goto LABEL_23;
     }
     return 0;
   }
@@ -802,6 +1281,9 @@ s8 nmeUpdateMoveEtcMode(cmpCursorInfo_t *pCursorInfo, s8 Dir) {
   if (CursorIndex != 3)
   {
     GBWK->FuncFlag = 1;
+      goto LABEL_39;
+LABEL_23:
+LABEL_39:
     nmeInitFuncCursor(255, &GBWK);
     return 1;
   }

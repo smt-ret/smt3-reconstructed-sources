@@ -51,10 +51,10 @@ static s32 SubPhase;
 static void *unitAB_List;
 static s32 nbUnloadTime;
 static s32 nbmsetup_phase;
-static void oTargetMark2D[UNKNOWN_ARRAY_SIZE];
-static void oHitNum[UNKNOWN_ARRAY_SIZE];
-static void oBattle_UI[UNKNOWN_ARRAY_SIZE];
-static void oBattle_UI_PreLoad[UNKNOWN_ARRAY_SIZE];
+static void *oTargetMark2D;
+static void *oHitNum;
+static void *oBattle_UI;
+static void *oBattle_UI_PreLoad;
 static char *SKILLSE_AKEY;
 static s32 nbmclear_phase;
 static nbMainProcess_UILoadTable *battleUIprefab[8];
@@ -203,16 +203,189 @@ s8 rstChkResultEntry(void);
 
 // 0x1982b90
 void BattleUIDelete(void) {
+  s64 v2;
+  s16 v4;
+  u64 v5;
+  s32 i;
+  struct nbMainProcess_UILoadTable_array *battleUIprefab;
+  u64 max_length_low;
+  struct UnityEngine_GameObject_array *oBattle_UI;
+  struct UnityEngine_GameObject_array *v13;
+  UnityEngine_Object_o *v15;
+  struct UnityEngine_GameObject_array *v17;
+  UnityEngine_Object_o *v19;
+  struct UnityEngine_GameObject_array *v20;
+
+  v2 = 4;
+  v5 = 0;
+  if ((v4 & 0x200) != 0)
+    goto LABEL_7;
+LABEL_6:
+  for (i = 0; ; i = v4 & 0x200)
+  {
+    max_length_low = LODWORD(battleUIprefab->max_length);
+    if (v5 >= max_length_low)
+      break;
+    else if (v5 >= max_length_low)
+    {
+      goto LABEL_14;
+    }
+    if (*(*(&battleUIprefab->obj.klass + v2) + 16LL))
+    {
+      SetActive(*(&oBattle_UI->obj.klass + v2), 0, 0);
+LABEL_40:
+      v20 = oBattle_UI;
+      *(&v20->obj.klass + v2) = 0;
+      goto LABEL_5;
+    }
+    v13 = oBattle_UI;
+    v15 = *(&v13->obj.klass + v2);
+    if (op_Inequality(v15, 0, 0))
+    {
+      v17 = oBattle_UI;
+      v19 = *(&v17->obj.klass + v2);
+      Destroy_27360000(v19);
+      goto LABEL_40;
+    }
+LABEL_5:
+    ++v2;
+    v5 = v2 - 4;
+    if ((v4 & 0x200) == 0)
+      goto LABEL_6;
+LABEL_7:
+  }
+  oBattle_UI = 0;
 }
 
 // 0x1982e10
 void BattleUIPreRead(void) {
-    LoadPrefab_16624656(0, 0, 0, 0);
+  struct UnityEngine_GameObject_array *v4;
+  nbMainProcess_c *v5;
+  u64 v6;
+  struct nbMainProcess_UILoadTable_array *battleUIprefab;
+  u64 max_length_low;
+  nbMainProcess_UILoadTable_o *v10;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  struct UnityEngine_GameObject_array *oBattle_UI_PreLoad;
+  s64 ui_index;
+  UnityEngine_GameObject_o *v17;
+  UnityEngine_Transform_o *transform;
+  s64 *v20;
+  s64 *v21;
+  struct UnityEngine_GameObject_array *v23;
+  s64 v24;
+  struct UnityEngine_GameObject_array *v26;
+  s64 v27;
+
+  v4 = NewSpecific(UnityEngine_GameObject, LODWORD(battleUIprefab->max_length));
+  oBattle_UI_PreLoad = v4;
+  v6 = 0;
+  if ((v5->_2.bitflags2 & 2) != 0)
+  {
+LABEL_9:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(battleUIprefab->max_length);
+    if (v6 >= max_length_low)
+      break;
+    else if (v6 >= max_length_low)
+    {
+      goto LABEL_15;
+    }
+    v10 = battleUIprefab->m_Items[v6];
+    if (v10->preload == 1)
+    {
+      asset_bc = get_asset_bc();
+      Prefab_16624656 = LoadPrefab_16624656(asset_bc, v10->akey, v10->folder, v10->prefab);
+      ui_index = v10->ui_index;
+      v17 = Find("Canvas_UI", 0);
+      transform = get_transform(v17, 0);
+      v20 = Instantiate_object__425664(Prefab_16624656, transform, 0);
+      v21 = v20;
+      oBattle_UI_PreLoad->m_Items[ui_index] = v21;
+      v23 = oBattle_UI_PreLoad;
+      v24 = v10->ui_index;
+      SetActive(v23->m_Items[v24], 0, 0);
+      v26 = oBattle_UI_PreLoad;
+      v27 = v10->ui_index;
+      AddComponent_object_(v26->m_Items[v27]);
+    }
+    ++v6;
+      goto LABEL_9;
+  }
 }
 
 // 0x19823a0
 void BattleUIRead(void) {
-    LoadPrefab_16624656(0, 0, 0, 0);
+  struct UnityEngine_GameObject_array *v4;
+  nbMainProcess_c *v5;
+  u64 v6;
+  struct nbMainProcess_UILoadTable_array *battleUIprefab;
+  u64 max_length_low;
+  nbMainProcess_UILoadTable_o *v10;
+  struct UnityEngine_GameObject_array *oBattle_UI_PreLoad;
+  struct UnityEngine_GameObject_array *oBattle_UI;
+  s64 ui_index;
+  s64 *v17;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  struct UnityEngine_GameObject_array *v23;
+  s64 v24;
+  UnityEngine_GameObject_o *v25;
+  UnityEngine_Transform_o *transform;
+  s64 *v28;
+  s64 *v29;
+  struct UnityEngine_GameObject_array *v31;
+  s64 v32;
+  struct UnityEngine_GameObject_array *v34;
+  s64 v35;
+
+  v4 = NewSpecific(UnityEngine_GameObject, LODWORD(battleUIprefab->max_length));
+  oBattle_UI = v4;
+  v6 = 0;
+  if ((v5->_2.bitflags2 & 2) != 0)
+  {
+LABEL_9:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(battleUIprefab->max_length);
+    if (v6 >= max_length_low)
+      break;
+    else if (v6 >= max_length_low)
+    {
+      goto LABEL_15;
+    }
+    v10 = battleUIprefab->m_Items[v6];
+    if (v10->preload)
+    {
+      ui_index = v10->ui_index;
+      v17 = oBattle_UI_PreLoad->m_Items[ui_index];
+      oBattle_UI->m_Items[ui_index] = v17;
+    }
+    else
+    {
+      asset_bc = get_asset_bc();
+      Prefab_16624656 = LoadPrefab_16624656(asset_bc, v10->akey, v10->folder, v10->prefab);
+      v23 = oBattle_UI;
+      v24 = v10->ui_index;
+      v25 = Find("Canvas_UI", 0);
+      transform = get_transform(v25, 0);
+      v28 = Instantiate_object__425664(Prefab_16624656, transform, 0);
+      v29 = v28;
+      v23->m_Items[v24] = v29;
+      v31 = oBattle_UI;
+      v32 = v10->ui_index;
+      SetActive(v31->m_Items[v32], 0, 0);
+      v34 = oBattle_UI;
+      v35 = v10->ui_index;
+      AddComponent_object_(v34->m_Items[v35]);
+    }
+    ++v6;
+      goto LABEL_9;
+  }
 }
 
 // 0x197e3d0
@@ -327,7 +500,7 @@ void CheckSenseiOrBackAttack(nbMainProcessData_t *data) {
     if (nbCheckBackAttack(data))
     {
       data->stat |= 0x10u;
-      Write(StringLiteral_21433, 0);
+      Write("backattack!!\n", 0);
     }
     data->stat |= 8u;
   }
@@ -379,7 +552,19 @@ void FreeJyocyuData(nbMainProcessData_t *data) {
 
 // 0x1973210
 void *GetBattleUI(s32 index) {
+  struct UnityEngine_GameObject_array *oBattle_UI;
+  s64 v5;
+
+  if (!oBattle_UI)
     return 0;
+LABEL_6:
+  else
+  {
+    v5 = index;
+    if (LODWORD(oBattle_UI->max_length) <= index)
+      goto LABEL_9;
+  }
+  return oBattle_UI->m_Items[v5];
 }
 
 // 0x1975100
@@ -444,11 +629,38 @@ void *GetHitNumList(s32 idx, s32 copyNumber) {
 
 // 0x1982740
 void *GetTargetMark2D(s32 idx) {
+  struct UnityEngine_GameObject_array *oTargetMark2D;
+  s64 v5;
+
+  if (!oTargetMark2D)
     return 0;
+LABEL_6:
+  else
+  {
+    v5 = idx;
+    if (LODWORD(oTargetMark2D->max_length) <= idx)
+      goto LABEL_9;
+  }
+  return oTargetMark2D->m_Items[v5];
 }
 
 // 0x19829a0
 void SetActiveToAllHitNum(s32 idx, bool bActive) {
+  _BOOL4 v3;
+  struct System_Collections_Generic_List_GameObject__array *oHitNum;
+  UnityEngine_GameObject_o *v9;
+  System_Collections_Generic_List_Enumerator_T__o v10;
+
+  v3 = bActive;
+  memset(&v10, 0, sizeof(v10));
+  __GetEnumerator(&v10, oHitNum->m_Items[idx]);
+  while ((sub_1A11200(&v10) & 1) != 0)
+  {
+    v9 = sub_1A11350(&v10);
+    if (!op_Equality(v9, 0, 0) && ((get_activeSelf(v9) ^ v3) & 1) != 0)
+      SetActive(v9, v3, 0);
+  }
+  nullsub_111(&v10);
 }
 
 // 0x197e670
@@ -593,7 +805,33 @@ void SetDummy(nbMainProcessData_t *data) {
 
 // 0x1982210
 void SetFlag(nbMainProcessData_t *data) {
-    Get(0);
+  u64 *v4;
+  u64 *v5;
+  u64 *v6;
+  u64 *v7;
+  s32 v9;
+  s32 encno;
+  s32 packindex;
+  s32 packno;
+  s32 encpackno;
+
+  encpackno = data->encpackno;
+  v4 = sub_8D3950(s32, &encpackno);
+  Write_2930400("encpackno = {0:D}\n", v4);
+  packno = data->packno;
+  v5 = sub_8D3950(s32, &packno);
+  Write_2930400("packno = {0:D}\n", v5);
+  packindex = data->packindex;
+  v6 = sub_8D3950(s32, &packindex);
+  Write_2930400("packindex = {0:D}\n", v6);
+  encno = data->encno;
+  v7 = sub_8D3950(s32, &encno);
+  Write_2930400("encno = {0:D}\n", v7);
+  v9 = data->encno;
+  if (v9 == 199)
+    data->stat |= 0x400u;
+  if ((Get(v9, 0)->flag & 8) != 0)
+    data->stat |= 0x800u;
 }
 
 // 0x19812f0
@@ -607,7 +845,7 @@ void TargetMark2DAnim(s32 idx) {
   Il2CppObject *Component_object;
 
   Component_object = GetComponent_object_(oTargetMark2D->m_Items[idx]);
-  Play_8766576(Component_object, StringLiteral_21447);
+  Play_8766576(Component_object, "bcursur_chara");
 }
 
 // 0x197bc80
@@ -624,6 +862,7 @@ s32 nbCheckActionStack(void) {
   MainProcessData = nbGetMainProcessData();
   if (MainProcessData->actionstackp < 1)
     return 0;
+LABEL_6:
   v5 = MainProcessData;
   v6 = 0;
   while (1)
@@ -633,7 +872,7 @@ s32 nbCheckActionStack(void) {
     if (++v6 >= v5->actionstackp)
       return 0;
   }
-  Write(StringLiteral_21434, 0);
+  Write("ありますよ!!\n", 0);
   return 1;
 }
 
@@ -658,18 +897,22 @@ void nbDebugSelect(nbMainProcessData_t *data) {
   struct nbFormation_t_array *v11;
 
   if (DDS3_PADCHECK_TRIG(8))
+LABEL_6:
     data->stat ^= 0x100000u;
+LABEL_7:
   if (DDS3_PAD2CHECK_TRIG(3))
+LABEL_10:
     data->debug = (data->debug & 1) == 0;
+LABEL_11:
   if ((data->stat & 8) != 0 && evtBitCheck(3089))
   {
-    if (!dds3GetRandIntA(5u, StringLiteral_416))
+    if (!dds3GetRandIntA(5u, ""))
     {
       form = data->form;
       nbAddDeadPcmPacket(0, 0, &form->m_Items[2]);
       nbAddPadShockPacket(0, 0, 1, 150, 20);
     }
-    if (!dds3GetRandIntA(5u, StringLiteral_416))
+    if (!dds3GetRandIntA(5u, ""))
     {
       v11 = data->form;
       nbAddDeadPcmPacket(0, 0, &v11->m_Items[2]);
@@ -680,9 +923,38 @@ void nbDebugSelect(nbMainProcessData_t *data) {
 
 // 0x196dad0
 nbMainProcessData_t *nbGetMainProcessData(void) {
-    dds3SearchProcessPriority(0);
-    dds3GetProcessData(0);
-    return 0;
+  nbMainProcessData_t_o *result;
+  nbMainProcessData_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  dds3ProcessID_t_o *v8[3];
+  dds3ProcessID_t_o *id;
+
+  id = 0;
+  result = dds3SearchProcessPriority(1018);
+  id = result;
+  if (result)
+  {
+    else
+    {
+      result = dds3GetProcessData(&id);
+      if (!result)
+        return result;
+    }
+    klass = result->klass;
+    if (result->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMainProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMainProcessData_t, v8);
+      if ((v8[0] & 1) != 0)
+        v6 = v8[2];
+      else
+        v6 = v8 + 1;
+      v7 = sub_8C4940(v6);
+    }
+  }
+  return result;
 }
 
 // 0x197dde0
@@ -785,18 +1057,129 @@ datUnitWork_t *nbGetUnitWorkPointer(nbMainProcessData_t *data, nbParty_t *party)
 
 // 0x19739e0
 void nbInitMainProcess(s32 encpackno, s32 packno, s32 packindex, s32 encno, s32 stagemajor, s32 stageminor) {
-    SetDrawFlag(0, 0);
-    SetBoostFrameRate(0);
-    nbCamera_t__Clear(0);
-    nbCameraState_Start_t__Clear(0);
-    nbInitMainProcessData();
-    Get(0);
+  s16 v7;
+  s16 v8;
+  u64 *v15;
+  u64 *v18;
+  u64 *v21;
+  u64 *v24;
+  Il2CppObject *inited;
+  nbMainProcessData_t_o *data;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v34;
+  s64 *v35;
+  u64 *v37;
+  u64 *v38;
+  u64 *v39;
+  u64 *v40;
+  u64 *v41;
+  s32 v43;
+  u64 *v46;
+  u64 *v47;
+  s32 formationtype;
+  s32 v52;
+  u64 v53[3];
+  s32 v54;
+  s32 v55;
+
+  v7 = stageminor;
+  v8 = stagemajor;
+  SetDrawFlag(0x20000000u, 1u);
+  SetDrawFlag(0x40000000u, 1u);
+  SetBoostFrameRate(kernelObject);
+  v15 = Allocate(nbStageProcessData_t);
+  nbStageProcessData_t___ctor(v15);
+  StageData = v15;
+  v18 = Allocate(nbCamera_t);
+  nbCamera_t___ctor(v18);
+  nbCameraCurrent = v18;
+  nbCamera_t__Clear(nbCameraCurrent);
+  nbCameraCurrent->fovy = 0.69813;
+  v21 = Allocate(nbCameraState_Start_t);
+  nbCameraState_Start_t___ctor(v21);
+  nbCameraState_Start_Camera = v21;
+  nbCameraState_Start_t__Clear(nbCameraState_Start_Camera);
+  v24 = Allocate(nbCamera_t);
+  nbCamera_t___ctor(v24);
+  nbCameraStateEndComPos = v24;
+  nbCamera_t__Clear(nbCameraStateEndComPos);
+  _Clear(unitAB_List);
+  inited = nbInitMainProcessData();
+  data = inited;
+  if (inited)
+  {
+    klass = inited->klass;
+    if (inited->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMainProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMainProcessData_t, v53);
+      if ((v53[0] & 1) != 0)
+        v34 = v53[2];
+      else
+        v34 = v53 + 1;
+      v35 = sub_8C4940(v34);
+    }
+  }
+  LODWORD(inited[4].klass) = encpackno;
+  HIDWORD(inited[4].klass) = packno;
+  LODWORD(inited[4].monitor) = packindex;
+  HIDWORD(inited[4].monitor) = encno;
+  data->formationtype = Get(encno, 0)->formationtype;
+  LODWORD(v53[0]) = data->encpackno;
+  v37 = sub_8D3950(s32, v53);
+  Write_2930400("encpackno = {0:D}\n", v37);
+  v55 = data->packno;
+  v38 = sub_8D3950(s32, &v55);
+  Write_2930400("packno = {0:D}\n", v38);
+  v54 = data->packindex;
+  v39 = sub_8D3950(s32, &v54);
+  Write_2930400("packindex = {0:D}\n", v39);
+  v52 = data->encno;
+  v40 = sub_8D3950(s32, &v52);
+  Write_2930400("encno = {0:D}\n", v40);
+  formationtype = data->formationtype;
+  v41 = sub_8D3950(s32, &formationtype);
+  Write_2930400("formationtype = {0:D}\n", v41);
+  v43 = data->encno;
+  data->StageMajor = v8;
+  data->StageMinor = v7;
+  if (v43 == 473)
+  {
     evtSetAgeOfMoon(0);
-    SetFlag(0);
-    ClearLocalBit();
-    dds3StartProcess(0, 0, 0, 0, 0, 0, 0);
-    evtEnableMoonDraw();
+  }
+  SetFlag(data);
+  ClearLocalBit();
+  nbmsetup_phase = 0;
+  nbmclear_phase = 0;
+  nbUnloadTime = 0;
+  v46 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v46,
+    0,
+    Method_nbMainProcess_nbMainProcess1__);
+  v47 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v47,
+    0,
+    Method_nbMainProcess_nbMainShutdown__);
+  data->MainProcessID = dds3StartProcess(
+                                 "nb_main",
+                                 0x3FAu,
+                                 1,
+                                 1,
+                                 v46,
+                                 0,
+                                 v47,
+                                 0,
+                                 data,
+                                 0);
+  evtEnableMoonDraw();
+  if (data->encno == 451)
+  {
     evtDeadMoonInit();
+    evtSetAgeOfMoon(1);
+  }
 }
 
 // 0x1981880
@@ -985,71 +1368,745 @@ void nbKillMainProcess(void) {
 
 // 0x197fa40
 void *nbMainProcess1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbUpdateSoundTable(0);
-    nbGetMainProcessData();
-    nbMainProcessSetUp();
-    StageLoad_BlockMode(0);
-    nbGetStageStat();
-    InitShadow(0);
-    SetNormalFrameRate(0);
-    nbSetEnemyStartData_0(0, 0);
-    nbSetEnemyStartData_1(0, 0);
-    nbCameraSetState(0);
-    encChk();
-    encMode(0);
-    nbFormDispOff(0);
-    nbPanelPressTurnOmit();
-    nbInitEncProcess(0);
-    nbPanelPressGaugeStart();
-    nbCameraPressProcessThrough();
-    nbTurnPBInitSetting();
-    nbCameraPressProcessCheckRun();
-    nbPanelPressTurnStart();
-    nbCameraPressProcessGetFrame();
-    nbGetKoukaProcessData();
-    nbGetActionSeq(0);
-    nbCheckActionStack();
-    CheckActionProcessEnd(0);
-    p2sdStatusSE_Dead();
-    nbGetJyokyoMes(0, 0);
-    nbDispMsgHelp(0, 0, 0);
-    nbClearCommandMemeoyRenzoku();
-    nbSetPhase(0);
-    return 0;
+  Il2CppObject *ProcessData;
+  Il2CppObject *v5;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  s32 v12;
+  u64 v16;
+  s32 v17;
+  s32 monitor_high;
+  s32 klass_high;
+  nbMainProcessData_t_o *MainProcessData;
+  char v27;
+  s64 v29;
+  Il2CppClass *v30;
+  u64 v31;
+  Il2CppClass *v33;
+  struct nbKoukaPacket_t_o *first;
+  s32 v37;
+  s32 type;
+  struct datUnitWork_t_array *unitwork;
+  s32 v48;
+  s32 JyokyoMes;
+  u32 *monitor;
+  s64 klass_low;
+  u32 *v57;
+  s64 v58;
+  dds3ProcessID_t_o *v60;
+  s32 v69;
+  s32 monitor_low;
+  s32 v73;
+  s32 v74;
+  s32 v76;
+  dds3ProcessID_t_o *v84[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ++nbUnloadTime;
+  ProcessData = dds3GetProcessData(&ida);
+  v5 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMainProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMainProcessData_t, v84);
+      if ((v84[0] & 1) != 0)
+        v8 = v84[2];
+      else
+        v8 = v84 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  LODWORD(ProcessData[8].klass) = 0;
+  nbUpdateSoundTable(v5);
+  v12 = 1;
+  switch (BYTE5(v5[8].klass))
+  {
+    case 0:
+      nb1st = 1;
+      v12 = 1;
+      nbGetMainProcessData()->nextphase = 1;
+      SubPhase = 0;
+      dead_voice_time = 0.0;
+      goto LABEL_298;
+    case 1:
+      v17 = *(*(v16 + 184) + 68LL);
+      if (v17 != 1)
+      {
+        if (v17)
+          goto LABEL_274;
+        if (nbMainProcessSetUp(v16))
+          goto LABEL_274;
+        StageLoad_BlockMode(0);
+        {
+LABEL_357:
+        }
+LABEL_359:
+LABEL_360:
+        v12 = 0;
+        ++SubPhase;
+        goto LABEL_298;
+      }
+      if (nbGetStageStat() != 1)
+        goto LABEL_274;
+      nbGetMainProcessData()->nextphase = 2;
+      InitShadow(0);
+      SetNormalFrameRate(kernelObject);
+LABEL_273:
+      SubPhase = 0;
+      goto LABEL_297;
+    case 2:
+      switch (SubPhase)
+      {
+        case 0:
+          nbGetMainProcessData()->actionstackp = 0;
+          monitor_high = HIDWORD(v5[4].monitor);
+          nbSetEnemyStartData_0(v5, monitor_high);
+          goto LABEL_360;
+        case 1:
+          v76 = HIDWORD(v5[4].monitor);
+          nbSetEnemyStartData_1(v5, v76);
+            goto LABEL_359;
+          goto LABEL_357;
+        case 2:
+          nbCameraSetState(1u);
+          if ((BYTE5(v5[7].monitor) & 8) == 0)
+          {
+            if (encChk())
+            {
+              encMode(1);
+            }
+          }
+          nbFormDispOff(0);
+          nbFormDispOff(1);
+          nbFormDispOff(2);
+          nbFormDispOff(3);
+          nbPanelPressTurnOmit();
+            goto LABEL_359;
+          goto LABEL_357;
+        case 3:
+          nbInitEncProcess(v5);
+            goto LABEL_359;
+          goto LABEL_357;
+        case 4:
+          nbPanelPressGaugeStart();
+            goto LABEL_357;
+          goto LABEL_359;
+        case 5:
+          if (v5[25].klass)
+          {
+            v12 = 0;
+          }
+          else
+          {
+            nbCameraPressProcessThrough();
+            v12 = 1;
+            nbGetMainProcessData()->nextphase = 3;
+          }
+          nbTurnPBInitSetting();
+          break;
+        default:
+          goto LABEL_274;
+      }
+      goto LABEL_298;
+    case 3:
+      if (v5[25].monitor)
+        goto LABEL_274;
+      klass_high = HIDWORD(v5[6].klass);
+      if (klass_high == 8 || klass_high == 1)
+        goto LABEL_287;
+      MainProcessData = nbGetMainProcessData();
+      v27 = 5;
+      goto LABEL_296;
+    case 4:
+      if (!nbCameraPressProcessCheckRun())
+        goto LABEL_191;
+      goto LABEL_274;
+    case 5:
+      if (!LOWORD(v5[8].monitor))
+      {
+        nbPanelPressTurnStart();
+      }
+      if (nbCameraPressProcessGetFrame() < 10)
+        goto LABEL_274;
+      MainProcessData = nbGetMainProcessData();
+      v27 = 4;
+      goto LABEL_296;
+    case 6:
+      v29 = 4;
+      break;
+    case 7:
+      if (HIDWORD(v5[6].klass) == 7)
+      {
+        first = nbGetKoukaProcessData()->first;
+        if (first)
+        {
+          v37 = 0;
+          do
+          {
+            type = first->type;
+            first = first->next;
+            if (type == 46)
+              ++v37;
+          }
+          while (first);
+          if (v37)
+            goto LABEL_274;
+        }
+        unitwork = DDS3_GBWK->unitwork;
+        if (!unitwork->m_Items[0]->hp)
+        {
+          v12 = 0;
+          HIDWORD(v5[6].klass) = 0;
+          goto LABEL_298;
+        }
+        MainProcessData = nbGetMainProcessData();
+        v27 = 3;
+        goto LABEL_296;
+      }
+      monitor = v5[18].monitor;
+      klass_low = SLODWORD(v5[19].klass);
+      if (!*&monitor[2 * klass_low + 8])
+        goto LABEL_382;
+      v57 = v5[18].monitor;
+      v58 = SLODWORD(v5[19].klass);
+      v60 = *&v57[2 * v58 + 8];
+      if (nbGetActionSeq(v60) >= 20)
+      {
+LABEL_382:
+        MainProcessData = nbGetMainProcessData();
+        v27 = 8;
+        goto LABEL_296;
+      }
+      goto LABEL_274;
+    case 8:
+      MainProcessData = nbGetMainProcessData();
+      v27 = 9;
+      goto LABEL_296;
+    case 9:
+      if ((BYTE4(v5[7].monitor) & 0x40) != 0)
+      {
+        if (8 * (nbCheckActionStack() != 0) > LOWORD(v5[8].monitor))
+          goto LABEL_274;
+      }
+      else if (LOWORD(v5[8].monitor) < 8u)
+      {
+        goto LABEL_274;
+      }
+      if (nbCheckActionStack() || (v69 = HIDWORD(v5[6].klass)) == 0)
+      {
+        MainProcessData = nbGetMainProcessData();
+        v27 = 10;
+      }
+      else
+      {
+        if (v69 == 7)
+          goto LABEL_297;
+        if (v69 == 5)
+        {
+          MainProcessData = nbGetMainProcessData();
+          v27 = 15;
+        }
+        else
+        {
+LABEL_287:
+          MainProcessData = nbGetMainProcessData();
+          v27 = 11;
+        }
+      }
+      goto LABEL_296;
+    case 0xA:
+      goto LABEL_298;
+    case 0xB:
+      if (!CheckActionProcessEnd(v5) || v5[16].monitor)
+        goto LABEL_274;
+      dead_voice_time = dead_voice_time + 1.0;
+      if (dead_voice_time > dead_voice_waitmax)
+        goto LABEL_170;
+      if (p2sdStatusSE_Dead())
+        goto LABEL_274;
+LABEL_170:
+      MainProcessData = nbGetMainProcessData();
+      v27 = 12;
+      goto LABEL_296;
+    case 0xC:
+      if (v5[17].klass)
+        goto LABEL_274;
+      MainProcessData = nbGetMainProcessData();
+      v27 = 13;
+      goto LABEL_296;
+    case 0xD:
+      ida->func_ans = -1;
+      return 0;
+    case 0xE:
+      if (v5[22].monitor)
+        goto LABEL_274;
+LABEL_191:
+      MainProcessData = nbGetMainProcessData();
+      v27 = 6;
+      goto LABEL_296;
+    case 0xF:
+      if (!CheckActionProcessEnd(v5))
+        goto LABEL_274;
+      v48 = v5[28].monitor;
+      JyokyoMes = nbGetJyokyoMes(v5, 72);
+      nbDispMsgHelp(v48, JyokyoMes, 1);
+      HIDWORD(v5[7].monitor) &= 0xFFFFFF67;
+      nbClearCommandMemeoyRenzoku();
+      nbGetMainProcessData()->nextphase = 2;
+      goto LABEL_273;
+    default:
+      goto LABEL_274;
+  }
+  do
+  {
+    v30 = v5[1].klass;
+    v31 = v29 - 4;
+    if ((*(*(&v30->_1.image + v29) + 136LL) & 1) != 0)
+    {
+      v33 = v5[1].klass;
+      if ((*(*(&v33->_1.image + v29) + 140LL) & 7) != 0)
+      {
+LABEL_274:
+        v12 = 0;
+        goto LABEL_298;
+      }
+    }
+    ++v29;
+  }
+  while (v31 < 0xF);
+  MainProcessData = nbGetMainProcessData();
+  v27 = 7;
+LABEL_296:
+  MainProcessData->nextphase = v27;
+LABEL_297:
+  v12 = 1;
+LABEL_298:
+  monitor_low = LOWORD(v5[8].monitor);
+  if (monitor_low == 0xFFFF)
+    v73 = -82;
+  else
+    v73 = 0;
+  if (v73 != -82)
+    LOWORD(v5[8].monitor) = monitor_low + 1;
+  ++HIDWORD(v5[8].monitor);
+  if (v12)
+  {
+    v74 = SBYTE6(v5[8].klass);
+    nbSetPhase(v74);
+  }
+  return 0;
 }
 
 // 0x197f150
 void nbMainProcessClear(void) {
-    GetBattleUI(0);
-    BattleUIDelete();
-    nbGetMainProcessData();
-    nbNoDestroy_MoveCache_Party(0);
-    dds3DeleteSceneBasicData(0);
-    nbNoDestroy_MoveCache_Field_B(0);
+  s64 v2;
+  nbMainProcess_c *v3;
+  u64 v4;
+  struct UnityEngine_GameObject_array *oTargetMark2D;
+  u64 max_length_low;
+  UnityEngine_Object_o *v8;
+  struct UnityEngine_GameObject_array *v10;
+  UnityEngine_Object_o *v12;
+  struct UnityEngine_GameObject_array *v13;
+  u64 v15;
+  s32 v16;
+  s16 v17;
+  Il2CppClass **v18;
+  s32 i;
+  struct System_Collections_Generic_List_GameObject__array *oHitNum;
+  u64 v21;
+  UnityEngine_Object_o *v24;
+  s32 v26;
+  struct System_Collections_Generic_List_GameObject__array *v29;
+  struct System_Collections_Generic_List_GameObject__array *v31;
+  UnityEngine_GameObject_o *BattleUI;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_Component_o *v37;
+  UnityEngine_GameObject_o *gameObject;
+  UnityEngine_Transform_o *v39;
+  UnityEngine_Component_o *v40;
+  UnityEngine_GameObject_o *v41;
+  nbMainProcessData_t_o *MainProcessData;
+  u64 v46;
+  struct nbFormation_t_array *form;
+  nbFormation_t_o *v49;
+  UnityEngine_Object_o *modelobj;
+  UnityEngine_Object_o *v51;
+  struct dds3Basic_t_o **p_basic;
+  struct dds3Basic_t_o *basic;
+  struct dds3Basic_t_o *v54;
+  UnityEngine_Object_o *FildMapObj;
+  UnityEngine_GameObject_o *v59;
+  s32 v61;
+  s32 Count;
+  System_String_o *Item;
+  AssetBundleCtrl_o *asset_bc;
+  AssetBundleCtrl_o *v70;
+  System_String_o *SKILLSE_AKEY;
+  System_Collections_Generic_List_Enumerator_T__o v73;
+  System_Collections_Generic_List_Enumerator_T__o v74;
+
+  v2 = 4;
+  memset(&v74, 0, sizeof(v74));
+  v4 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(oTargetMark2D->max_length);
+    if (v4 >= max_length_low)
+      break;
+    else if (v4 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    v8 = *(&oTargetMark2D->obj.klass + v2);
+    if (op_Inequality(v8, 0, 0))
+    {
+      v10 = oTargetMark2D;
+      v12 = *(&v10->obj.klass + v2);
+      Destroy_27360000(v12);
+      v13 = oTargetMark2D;
+      *(&v13->obj.klass + v2) = 0;
+    }
+    ++v2;
+    v4 = v2 - 4;
+      goto LABEL_6;
+  }
+  v15 = 0;
+  v16 = -1;
+  v17 = *&v3->_2.bitflags1;
+  if ((v17 & 0x200) != 0)
+    goto LABEL_34;
+LABEL_33:
+  for (i = 0; ; i = v17 & 0x200)
+  {
+    v21 = LODWORD(oHitNum->max_length);
+    if (v15 >= v21)
+      break;
+    else if (v15 >= v21)
+    {
+      goto LABEL_41;
+    }
+    __GetEnumerator(&v73, oHitNum->m_Items[v15]);
+    v74 = v73;
+    while ((sub_1A11200(&v74) & 1) != 0)
+    {
+      v24 = sub_1A11350(&v74);
+      if (op_Inequality(v24, 0, 0))
+      {
+        Destroy_27360000(v24);
+      }
+    }
+    v26 = v16 + 1;
+    nullsub_111(&v74);
+    if (v26 == -1)
+    {
+      v16 = -1;
+        goto LABEL_60;
+    }
+    else
+    {
+      v16 = v26 + ~(v26 >> 31);
+        goto LABEL_60;
+    }
+LABEL_60:
+    v29 = oHitNum;
+    _Clear(v29->m_Items[v15]);
+    v31 = oHitNum;
+    v18 = &v31->obj.klass + v15++;
+    v18[4] = 0;
+    if ((v17 & 0x200) == 0)
+      goto LABEL_33;
+LABEL_34:
+  }
+  BattleUI = GetBattleUI(2);
+  if (op_Inequality(BattleUI, 0, 0))
+  {
+    transform = get_transform(BattleUI, 0);
+    v37 = Find(transform, "bauto/auto_off", 0);
+    gameObject = get_gameObject(v37);
+    SetActive(gameObject, 1, 0);
+    v39 = get_transform(BattleUI, 0);
+    v40 = Find(v39, "bauto/auto_on", 0);
+    v41 = get_gameObject(v40);
+    SetActive(v41, 0, 0);
+  }
+  BattleUIDelete();
+  MainProcessData = nbGetMainProcessData();
+  v46 = 0;
+  while (1)
+  {
+LABEL_76:
+    form = MainProcessData->form;
+    v49 = form->m_Items[v46];
+    modelobj = v49->modelobj;
+    if (!op_Inequality(modelobj, 0, 0))
+      goto LABEL_96;
+    v51 = v49->modelobj;
+    if (v46 <= 3)
+      break;
+    Destroy_27360000(v51);
+    basic = v49->basic;
+    p_basic = &v49->basic;
+    p_basic[11] = 0;
+    if (basic)
+      goto LABEL_87;
+LABEL_96:
+    if (++v46 == 32)
+      goto LABEL_97;
+  }
+  nbNoDestroy_MoveCache_Party(v51);
+  v54 = v49->basic;
+  p_basic = &v49->basic;
+  p_basic[11] = 0;
+  if (!v54)
+    goto LABEL_96;
+LABEL_87:
+  dds3DeleteSceneBasicData(p_basic);
+  *p_basic = 0;
+  if (++v46 != 32)
+    goto LABEL_76;
+LABEL_97:
+  if (op_Inequality(FildMapObj, 0, 0))
+  {
+    v59 = FildMapObj;
+    nbNoDestroy_MoveCache_Field_B(v59);
+    FildMapObj = 0;
     FilterDelete();
-    UnloadAB(0, 0);
-    RemoveKeys(0, 0);
+  }
+  v61 = 0;
+  {
+LABEL_117:
+  }
+  while (1)
+  {
+    Count = _get_Count(unitAB_List);
+    if (v61 >= Count)
+      break;
+    Item = _get_Item(
+             unitAB_List,
+             v61);
+    asset_bc = get_asset_bc();
+    UnloadAB(asset_bc, Item);
+    if (!Equals_5234480(Item, "dvl0x00"))
+    {
+      RemoveKeys(4, Item);
+    }
+    ++v61;
+      goto LABEL_117;
+  }
+  _Clear(unitAB_List);
+  v70 = get_asset_bc();
+  UnloadAB(v70, SKILLSE_AKEY);
+  RemoveKeys(3, SKILLSE_AKEY);
+  UnloadUnusedAssets();
 }
 
 // 0x1980bf0
 bool nbMainProcessSetUp(void) {
-    BattleUIRead();
-    Load(0, 0);
-    IsLoad(0, 0);
-    LoadPrefab_16624656(0, 0, 0, 0);
-    return 0;
+  u64 v2;
+  struct nbMainProcess_StaticFields *static_fields;
+  u64 *v7;
+  struct System_Collections_Generic_List_GameObject__array *v9;
+  UnityEngine_GameObject_o *v11;
+  UnityEngine_Component_o *transform;
+  UnityEngine_Transform_o *v14;
+  s32 SiblingIndex;
+  AssetBundleCtrl_o *asset_bc;
+  AssetBundleCtrl_o *v21;
+  s64 v23;
+  AssetBundleCtrl_o *v24;
+  Il2CppObject *Prefab_16624656;
+  UnityEngine_GameObject_o *v26;
+  UnityEngine_Transform_o *v28;
+  Il2CppObject *v29;
+  u64 *v30;
+  System_String_o *v31;
+  u32 *oTargetMark2D;
+  u64 v34;
+  struct UnityEngine_GameObject_array *v37;
+  UnityEngine_Transform_o *v40;
+  AssetBundleCtrl_o *v41;
+  Il2CppObject *v42;
+  UnityEngine_GameObject_o *v43;
+  UnityEngine_Transform_o *v45;
+  Il2CppObject *v46;
+  u64 *v47;
+  u32 *oHitNum;
+  struct System_Collections_Generic_List_GameObject__array *v52;
+  Il2CppObject *object;
+  UnityEngine_Transform_o *v55;
+  s32 v56;
+
+  static_fields = *(v2 + 184);
+  switch (nbmsetup_phase)
+  {
+    case 0:
+      UnloadUnusedAssets();
+        goto LABEL_91;
+      goto LABEL_93;
+    case 1:
+      if (!oTargetMark2D)
+      {
+        v7 = NewSpecific(UnityEngine_GameObject, 0x10u);
+        *(*(v2 + 184) + 88LL) = v7;
+      }
+      if (!*(*(v2 + 184) + 96LL))
+      {
+        v9 = NewSpecific(System_Collections_Generic_List_GameObject_, 0x10u);
+        oHitNum = v9;
+      }
+      v11 = Find("Canvas_UI/buttonguide01", 0);
+      transform = get_transform(v11, 0);
+      if (op_Inequality(transform, 0, 0))
+      {
+        v14 = get_transform(transform, 0);
+        SiblingIndex = GetSiblingIndex(v14);
+      }
+      else
+      {
+        SiblingIndex = 0;
+      }
+      v23 = 4;
+      break;
+    case 2:
+      BattleUIRead(v2);
+      goto LABEL_42;
+    case 3:
+      asset_bc = get_asset_bc();
+      Load(asset_bc, SKILLSE_AKEY, SKILLSE_AKEY, 0);
+LABEL_42:
+      goto LABEL_94;
+    case 4:
+      v21 = get_asset_bc();
+      if (!IsLoad(v21, SKILLSE_AKEY))
+        return 1;
+      goto LABEL_90;
+    default:
+      return 0;
+  }
+  do
+  {
+    v24 = get_asset_bc();
+    Prefab_16624656 = LoadPrefab_16624656(v24, "common", "dds3data/UI/battleUI", "bcursur_chara");
+    v26 = Find("Canvas_UI", 0);
+    v28 = get_transform(v26, 0);
+    v29 = Instantiate_object__425664(Prefab_16624656, v28, 0);
+    AddComponent_object_(v29);
+    v56 = v23 - 4;
+    v30 = sub_8D3950(s32, &v56);
+    v31 = Concat("target_marker2D", v30);
+    set_name(v29, v31);
+    else
+    {
+      v34 = v23 - 4;
+      if (!v29)
+        goto LABEL_65;
+    }
+LABEL_65:
+    *&oTargetMark2D[2 * v23] = v29;
+    v37 = oTargetMark2D;
+    SetActive(*(&v37->obj.klass + v23), 0, 0);
+    if (SiblingIndex)
+    {
+      v40 = get_transform(v29, 0);
+      SetSiblingIndex(v40, ++SiblingIndex);
+    }
+    v41 = get_asset_bc();
+    v42 = LoadPrefab_16624656(v41, "common", "dds3data/UI/battleUI", "bhit_ef");
+    v43 = Find("Canvas_UI", 0);
+    v45 = get_transform(v43, 0);
+    v46 = Instantiate_object__425664(v42, v45, 0);
+    AddComponent_object_(v46);
+    v47 = Allocate(System_Collections_Generic_List_GameObject_);
+    __ctor(
+      v47);
+    _Add(v47, v46);
+    else
+    {
+      if (!v47)
+        goto LABEL_83;
+    }
+LABEL_83:
+    *&oHitNum[2 * v23] = v47;
+    v52 = oHitNum;
+    object = First_object_(
+               *(&v52->obj.klass + v23));
+    SetActive(object, 0, 0);
+    if (SiblingIndex)
+    {
+      v55 = get_transform(v46, 0);
+      SetSiblingIndex(v55, ++SiblingIndex);
+    }
+    ++v23;
+  }
+  while (v23 != 20);
+LABEL_90:
+  {
+LABEL_91:
+  }
+LABEL_93:
+LABEL_94:
+  ++nbmsetup_phase;
+  return 1;
 }
 
 // 0x1981450
 void *nbMainShutdown(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbFreeSound(0);
-    effBTLDelete(0);
-    itfMesMngRelease(0);
-    nbFreeFlyUnitPack(0);
-    RemoveBattleLocalizeText();
-    return 0;
+  Il2CppObject *ProcessData;
+  nbMainProcessData_t_o *v4;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  nbMainProcessData_t_o *v9;
+  s32 monitor;
+  Il2CppObject *v15;
+  dds3ProcessID_t_o *v16[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  v15 = 0;
+  ProcessData = dds3GetProcessData(&ida);
+  v4 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMainProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMainProcessData_t, v16);
+      if ((v16[0] & 1) != 0)
+        v7 = v16[2];
+      else
+        v7 = v16 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  v15 = ProcessData;
+  if (v4)
+  {
+    v9 = v4;
+    {
+      v9 = v4;
+    }
+    nbFreeSound(v4);
+    effBTLDelete(&v9->HatudoEff);
+    v9->HatudoEff = 0;
+    monitor = v15[28].monitor;
+    itfMesMngRelease(monitor);
+    nbFreeFlyUnitPack(&v15);
+  }
+  RemoveBattleLocalizeText();
+  return 0;
 }
 
 // 0x197eac0
@@ -1079,9 +2136,11 @@ s32 nbPopAction(nbActionStack_t **act) {
       MainProcessData->actionstackp = v8;
         break;
       if (!CheckErrorActionStack(MainProcessData, v8))
+        goto LABEL_13;
     }
   }
   while (CheckErrorActionStack(MainProcessData, v8));
+LABEL_13:
   actionstack = MainProcessData->actionstack;
   v11 = MainProcessData->actionstackp;
   (*act)->type = actionstack->m_Items[v11]->type;
@@ -1278,6 +2337,7 @@ void nbSetChkEndPhase(nbMainProcessData_t *data) {
   UnityEngine_Transform_o *v30;
 
   if (data->endtype)
+    goto LABEL_37;
   if (!data->enemypcnt)
     data->endtype = 1;
   v3 = 8;
@@ -1298,7 +2358,7 @@ void nbSetChkEndPhase(nbMainProcessData_t *data) {
     data->endtype = 1;
   if (nbCheckBadStatusGameOver(data))
   {
-    Write(StringLiteral_21435, 0);
+    Write("全員行動不能!!\n", 0);
     data->endtype = 6;
   }
   unitwork = DDS3_GBWK->unitwork;
@@ -1307,16 +2367,28 @@ void nbSetChkEndPhase(nbMainProcessData_t *data) {
     data->endtype = 2;
     v11 = data->party;
     if (LODWORD(v11->max_length))
+      goto LABEL_27;
+LABEL_34:
   }
   v11 = data->party;
   if (!LODWORD(v11->max_length))
+    goto LABEL_34;
+LABEL_27:
   if ((v11->m_Items[0]->flag & 1) == 0)
+    goto LABEL_36;
   v12 = data->party;
   if ((v12->m_Items[0]->flag & 0x20) != 0)
   {
+LABEL_36:
     data->endtype = 2;
   }
-  else  nbResetTurnSetAnimKeepState();
+  else if (!data->endtype)
+  {
+    goto LABEL_41;
+  }
+LABEL_37:
+  nbResetTurnSetAnimKeepState();
+LABEL_41:
   else if (nbCheckActionStack(nbMainProcess))
   {
     return;
@@ -1340,7 +2412,7 @@ void nbSetChkEndPhase(nbMainProcessData_t *data) {
           v24 = get_transform(v21, 0);
           Child = GetChild(v24, v23);
           name = get_name(Child);
-          if (!Equals_5234480(name, StringLiteral_21436))
+          if (!Equals_5234480(name, "bauto"))
           {
             v27 = get_transform(v21, 0);
             v28 = GetChild(v27, v23);
@@ -1378,19 +2450,30 @@ void nbSetChkTurnPhase(nbMainProcessData_t *data) {
   v5 = nbCheckActionStack();
   if (v5)
   {
+      goto LABEL_37;
+LABEL_8:
+LABEL_37:
     if ((byte_3F5AB50 & 1) != 0)
     {
+LABEL_39:
       MainProcessData = nbGetMainProcessData();
       v11 = 6;
+LABEL_43:
       MainProcessData->nextphase = v11;
       return;
     }
+LABEL_38:
+    goto LABEL_39;
   }
   nbGetMainProcessData()->actionstackp = 0;
   if (data->eventno >= 1)
   {
+      goto LABEL_23;
+LABEL_21:
+LABEL_23:
     MainProcessData = nbGetMainProcessData();
     v11 = 3;
+    goto LABEL_43;
   }
   if (data->press4_p > 0 || data->press4_ten > 0)
   {
@@ -1398,6 +2481,8 @@ void nbSetChkTurnPhase(nbMainProcessData_t *data) {
     {
       nbSetNextOrder();
     }
+      goto LABEL_37;
+    goto LABEL_8;
   }
   v13 = 32;
   v14 = -16;
@@ -1410,25 +2495,35 @@ void nbSetChkTurnPhase(nbMainProcessData_t *data) {
       if (v16 <= 8)
       {
         if (v16 != 4 && v16 != 8)
+          goto LABEL_59;
       }
       else if (v16 != 128 && v16 != 16)
       {
+LABEL_59:
         form = data->form;
         party = data->party;
         interfaceOffsets_low = SLOWORD((*(&form->obj.klass + v13))->_1.interfaceOffsets);
         if ((party->m_Items[interfaceOffsets_low]->flag & 0x20) == 0)
         {
-          RandIntA = dds3GetRandIntA(7u, StringLiteral_416);
+          RandIntA = dds3GetRandIntA(7u, "");
           v25 = data->form;
           nbMakeBadKaifukuPacket(RandIntA, 0, (v25 + v13));
         }
+        goto LABEL_70;
       }
       flag = UnitWorkFromFormindex->flag;
       if ((data->stat & 8) != 0)
       {
         if ((flag & 0x20) == 0)
+          goto LABEL_70;
       }
-      else    }
+      else if ((flag & 0x20) != 0)
+      {
+        goto LABEL_70;
+      }
+      goto LABEL_59;
+    }
+LABEL_70:
     ++v14;
     v13 += 8;
   }
@@ -1454,6 +2549,8 @@ void nbSetChkTurnPhase(nbMainProcessData_t *data) {
   if ((stat & 8) == 0)
   {
     data->stat = stat & 0xFFFFFF67 | 8;
+      goto LABEL_23;
+    goto LABEL_21;
   }
   data->stat = stat & 0xFFFFFF67;
   turn = data->turn;
@@ -1468,15 +2565,89 @@ void nbSetChkTurnPhase(nbMainProcessData_t *data) {
 
 // 0x197db30
 void nbSetDebugPhase(nbMainProcessData_t *data) {
-    dds3KillProcess(0, 0);
-    nbInitDebugProcess(0);
+  struct dds3ProcessID_t_array *ActionProcessID;
+  s64 NowActionProcess;
+  struct dds3ProcessID_t_array *v6;
+  s64 v7;
+  nbMainProcessData_t_o *dataa;
+
+  dataa = data;
+  if (data->CommSelProcessID)
+  {
+    dds3KillProcess(&data->CommSelProcessID, 1);
+  }
+  ActionProcessID = data->ActionProcessID;
+  NowActionProcess = data->NowActionProcess;
+  if (ActionProcessID->m_Items[NowActionProcess])
+  {
+    v6 = data->ActionProcessID;
+    v7 = data->NowActionProcess;
+    else if (v7 >= LODWORD(v6->max_length))
+    {
+      goto LABEL_14;
+    }
+    dds3KillProcess(&v6->m_Items[v7], 1);
+  }
+  data->NowActionProcess = 0;
+  nbInitDebugProcess(&dataa);
 }
 
 // 0x197d720
 void nbSetEndPhase(nbMainProcessData_t *data) {
-    evtBitCheck(0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    rstChkResultEntry();
+  u64 *v3;
+  u64 *v5;
+  struct datUnitWork_t_array *unitwork;
+  struct datUnitWork_t_array *v10;
+  s32 v13;
+  u64 *v14;
+  struct datUnitWork_t_array *v18;
+  struct datUnitWork_t_array *v20;
+  struct datUnitWork_t_array *v22;
+  struct datUnitWork_t_array *v23;
+  s32 v27;
+
+  v3 = NewSpecific(uint, 1u);
+  v5 = v3;
+  *(v3 + 8) = 799;
+  DDS3_GBWK->encountcnt = 0;
+  DDS3_GBWK->encountkyori = 0.0;
+  unitwork = DDS3_GBWK->unitwork;
+  if (!unitwork->m_Items[0]->hp)
+    goto LABEL_25;
+  v10 = DDS3_GBWK->unitwork;
+  if (v10->m_Items[0]->badstatus == 2048)
+  {
+LABEL_25:
+    v18 = DDS3_GBWK->unitwork;
+    v18->m_Items[0]->flag = 7;
+    v20 = DDS3_GBWK->unitwork;
+    v20->m_Items[0]->badstatus = 0;
+    v22 = DDS3_GBWK->unitwork;
+    v22->m_Items[0]->hp = DDS3_GBWK->unitwork->m_Items[0]->maxhp;
+    v23 = DDS3_GBWK->unitwork;
+    v23->m_Items[0]->mp = DDS3_GBWK->unitwork->m_Items[0]->maxmp;
+    if ((data->endtype | 4) == 6)
+      goto LABEL_16;
+  }
+  else if ((data->endtype | 4) == 6)
+  {
+LABEL_16:
+    if (!evtBitCheck(3084))
+    {
+      v13 = *(v5 + 8);
+      Write("game over !!\n", 0);
+      v27 = v13;
+      v14 = sub_8D3950(s32, &v27);
+      dds3AdminiCallSequence(8, v14, 4, 0);
+    }
+    return;
+  }
+  else if (!rstChkResultEntry())
+  {
+    return;
+  }
+  Write("level up !!\n", 0);
+  dds3AdminiCallSequence(15, 0, 0, 1);
 }
 
 // 0x197c220
@@ -1520,6 +2691,7 @@ void nbSetMaePhase(nbMainProcessData_t *data) {
   nbMainProcessData_t_o *dataa;
 
   dataa = data;
+LABEL_7:
   encno = data->encno;
   if ((Get(encno, 0)->flag & 1) != 0)
     data->stat |= 1u;
@@ -1609,11 +2781,95 @@ void nbSetPhase(s32 phase) {
 
 // 0x197c2b0
 void nbSetPressMaePhase(nbMainProcessData_t *data) {
-    nbGetUnitWorkPointer(0, 0);
-    Get(0);
-    evtBitCheck(0);
-    nbSetHojoCounter(0, 0, 0);
-    nbSetOrder();
+  u64 stat;
+  u64 v5;
+  bool v6;
+  s64 v7;
+  s64 v8;
+  u64 v9;
+  s64 v10;
+  datUnitWork_t_o *UnitWorkPointer;
+  struct nbParty_t_array *party;
+  u64 v14;
+  struct nbParty_t_array *v16;
+  struct nbParty_t_array *v18;
+  nbParty_t_o *v20;
+  s16 press4_p;
+  u64 v25;
+  bool v26;
+  u32 v27;
+  s16 v28;
+  s32 v29;
+  u32 v30;
+  u32 v31;
+
+  stat = data->stat;
+  data->press4_p = 0;
+  data->press3 = 1.0;
+  v5 = stat & 8;
+  v6 = (stat & 8) == 0;
+  v7 = (stat >> 1) & 4;
+  if (v6)
+    v8 = 4;
+  else
+    v8 = 10;
+  v9 = v8 + (v5 >> 1);
+  v10 = v7 + 4;
+  do
+  {
+    party = data->party;
+    v14 = v10 - 4;
+    if ((*(*(&party->obj.klass + v10) + 16LL) & 1) != 0)
+    {
+      v16 = data->party;
+      if ((*(*(&v16->obj.klass + v10) + 16LL) & 0x20) == 0)
+      {
+        v18 = data->party;
+        v20 = *(&v18->obj.klass + v10);
+        UnitWorkPointer = nbGetUnitWorkPointer(data, v20);
+        if (UnitWorkPointer)
+          goto LABEL_20;
+      }
+    }
+LABEL_29:
+    v25 = v10 - 3;
+    ++v10;
+  }
+  while (v25 < v9);
+  v26 = evtBitCheck(2240);
+  v27 = data->stat & 8;
+  if (v26)
+  {
+    v28 = data->press4_p;
+    if (!v27)
+    {
+      data->press4_p = v28 + 1;
+      data->press4_ten = v28 + 1;
+      goto LABEL_34;
+    }
+    data->press4_ten = v28;
+LABEL_36:
+    v29 = 10;
+  }
+  else
+  {
+    data->press4_ten = data->press4_p;
+    if (v27)
+      goto LABEL_36;
+LABEL_34:
+    v27 = 0;
+    v29 = 4;
+  }
+  v30 = v27 >> 1;
+  v31 = v29 + (v27 >> 1);
+  do
+  {
+    nbSetHojoCounter(v30, 14, 0);
+    nbSetHojoCounter(v30++, 13, 0);
+  }
+  while (v30 < v31);
+  data->endtype = 0;
+  nbSetOrder();
 }
 
 // 0x197c530

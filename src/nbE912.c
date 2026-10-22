@@ -130,11 +130,13 @@ s32 Effect1(nbEventProcessData_t *ed) {
           if ((v25->m_Items[v28]->stat & 1) != 0)
             break;
           if (++i == 36)
+            goto LABEL_51;
         }
         v31 = ed->data->form;
         v32 = formlist;
         nbAddMotionKoukaPacket(0, 0, &v31->m_Items[*(&v32->obj.klass + i)], 16, 0);
       }
+LABEL_51:
       nbAddUnitAKoukaPacket(0, 0, &form, 0, 0);
     }
   }
@@ -179,23 +181,110 @@ s32 Effect1(nbEventProcessData_t *ed) {
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 51)
     return 0;
-  Write(StringLiteral_21337, 0);
+  Write("アルビオンサマリカーム\n", 0);
   ed->data->stat &= ~8u;
   return 1;
 }
 
 // 0x1700af0
 s32 Hatudo(nbEventProcessData_t *ed) {
-    nbPanelAllHide();
-    nbAddMotionKoukaPacket(0, 0, 0, 0);
-    nbSetFormRot(0, (sdfVector4_t){0}, 0);
-    Get(0);
-    nbDispText(0, 0, 0, 0, 0, 0);
-    nbSetFormPosRot(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    nbAppendEnemyDevilWork(0, 0, 0);
-    nbAddUnitStock(0, 0, 0, 0);
-    nbLoadUnit(0, 0, 0);
-    return 0;
+  s64 v5;
+  nbEventProcessData_t_Fields *p_fields;
+  u64 v8;
+  struct nbFormation_t_array *v9;
+  struct System_SByte_array *formlist;
+  s64 v12;
+  struct nbFormation_t_array *v15;
+  struct System_SByte_array *v16;
+  s64 v18;
+  struct nbFormation_t_array *v21;
+  struct System_SByte_array *v22;
+  f32 x;
+  f32 y;
+  f32 z;
+  f32 w;
+  System_String_o *v30;
+  s32 NB_HELP_TYPE_TXTCONV;
+  struct nbFormation_t_array *v34;
+  s64 v36;
+  f32 v38;
+  f32 v39;
+  f32 v40;
+  f32 v41;
+  s64 v42;
+  nbMainProcessData_t_o *data;
+  s32 formindex;
+  s32 appended;
+  nbFormation_t_o *form;
+  s64 v50;
+  s64 v51;
+  UnityEngine_Vector4_o v52;
+  UnityEngine_Vector4_o v53;
+  UnityEngine_Vector4_o v54;
+
+  v50 = 0;
+  v51 = 0;
+  form = 0;
+  sub_854690(&v50, 0.0, 0.0, 0.0, 1.0);
+  nbPanelAllHide();
+  v5 = 32;
+  p_fields = &ed->fields;
+  do
+  {
+    while (1)
+    {
+      v8 = v5 - 32;
+      v9 = p_fields->data->form;
+      v12 = *(&formlist->obj.klass + v5);
+      if ((v9->m_Items[v12]->stat & 1) != 0)
+        break;
+      if (++v5 == 36)
+        goto LABEL_32;
+    }
+    v15 = p_fields->data->form;
+    v16 = formlist;
+    v18 = *(&v16->obj.klass + v5);
+    nbAddMotionKoukaPacket(0, 0, &v15->m_Items[v18], 4);
+    v21 = p_fields->data->form;
+    v22 = formlist;
+    form = v21->m_Items[*(&v22->obj.klass + v5)];
+    x = form->orgrot.x;
+    y = form->orgrot.y;
+    z = form->orgrot.z;
+    w = form->orgrot.w;
+    v52.x = x;
+    v52.y = y;
+    v52.z = z;
+    v52.w = w;
+    nbSetFormRot(&form, v52, 0);
+    ++v5;
+  }
+  while (v5 != 36);
+LABEL_32:
+  v30 = Get(251, 0, 0);
+  nbDispText(v30, 0, NB_HELP_TYPE_TXTCONV, 90, 0x89FEFF80, 0);
+  v34 = p_fields->data->form;
+  form = v34->m_Items[6];
+  v36 = v50;
+  v38 = cen.x;
+  v39 = cen.y;
+  v40 = cen.z;
+  v41 = cen.w;
+  v42 = v51;
+  v53.x = v38;
+  v53.y = v39;
+  v53.z = v40;
+  v53.w = v41;
+  *&v54.x = v36;
+  *&v54.z = v42;
+  nbSetFormPosRot(&form, v53, v54);
+  data = p_fields->data;
+  formindex = form->formindex;
+  appended = nbAppendEnemyDevilWork(data, 278, formindex);
+  nbAddUnitStock(&ed->data, 1, appended, form->formindex);
+  nbLoadUnit(&form, 0, 0);
+  *&ed->seq = (ed->seq + 1);
+  return 0;
 }
 
 // 0x17014c0
@@ -262,6 +351,7 @@ void MoveSub(nbEventProcessData_t *ed) {
       if ((form->m_Items[v13]->stat & 1) != 0)
         break;
       if (++i == 36)
+        goto LABEL_22;
     }
     v16 = formlist;
     v18 = *(&v16->obj.klass + i);
@@ -269,6 +359,7 @@ void MoveSub(nbEventProcessData_t *ed) {
     ++v6;
     *(v5 + v19 + 8) = v18;
   }
+LABEL_22:
   if (v6 >= 1)
   {
     v21 = v6 - 1LL;
@@ -347,21 +438,134 @@ s32 Wait1(nbEventProcessData_t *ed) {
 
 // 0x1701c80
 dds3ProcessFunc_t *nbE912Process_1(dds3ProcessID_t *id) {
-    dds3GetActiveScene();
-    dds3GetProcessData(0);
-    nbEventPrefabDelete(0);
-    dds3DeleteSceneBasicData(0);
-    dds3GetUnitHandleObjectBasic(0);
-    nbCameraHelperModelSet(0);
-    evtRegistBEUnit(0, 0);
-    dds3SearchSceneBasic(0, 0, 0);
-    nbEventPrefabRead(0, 0, 0);
-    evtSetUnitMotion(0, 0, 0, 0, 0);
-    nbCameraSetState(0);
-    nbCameraBoss_BSALBI_E912_Run();
-    nbAllFormDispOn();
-    nbGroupFormDispOff(0);
-    nbCameraBoss_BSALBI_E912_Set();
-    nbUpdateEventProcessData(0);
-    return 0;
+  u64 *v2;
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v8;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v11;
+  s64 *v12;
+  struct nbE912_funcDelegate_array *func;
+  s64 seq;
+  s32 time;
+  dds3ModelHandle_t_o *Model;
+  s32 eventrid;
+  s32 v29;
+  dds3Basic_t_o *v32;
+  s32 v34;
+  s32 pPBCameraBasicIndex;
+  s32 v40;
+  s32 v42;
+  dds3Basic_t_o *v45;
+  s32 v47;
+  s32 v49;
+  dds3Basic_t_o *ActiveScene;
+  evtUnitHandle_t_o *h;
+  dds3ProcessID_t_o *ida;
+  u64 v56[3];
+
+  ida = id;
+  ActiveScene = 0;
+  v2 = Allocate(evtUnitHandle_t);
+  evtUnitHandle_t___ctor(v2);
+  h = v2;
+  ActiveScene = dds3GetActiveScene();
+  ProcessData = dds3GetProcessData(&ida);
+  v8 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v56);
+      if ((v56[0] & 1) != 0)
+        v11 = v56[2];
+      else
+        v11 = v56 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  seq = v8->seq;
+  if (Invoke(func->m_Items[seq], v8))
+  {
+    pPBCameraBasicCurrent = 0;
+    if (pPBCameraBasic00)
+    {
+      nbEventPrefabDelete(&pPBCameraBasic00);
+      dds3DeleteSceneBasicData(&pPBCameraBasic00);
+      pPBCameraBasic00 = 0;
+    }
+    if (pPBCameraBasic01)
+    {
+      nbEventPrefabDelete(&pPBCameraBasic01);
+      dds3DeleteSceneBasicData(&pPBCameraBasic01);
+      pPBCameraBasic01 = 0;
+    }
+    ida->func_ans = -1;
+  }
+  else
+  {
+    time = v8->time;
+    if (time >= 1)
+    {
+      if (pPBCameraBasicCurrent)
+      {
+        h = dds3GetUnitHandleObjectBasic(&pPBCameraBasicCurrent);
+        Model = h->Model;
+        if (Model)
+        {
+          nbCameraHelperModelSet(Model);
+        }
+      }
+      time = v8->time;
+    }
+    if (time == 210)
+    {
+      eventrid = v8->eventrid;
+      v29 = evtRegistBEUnit(eventrid, 5);
+      v32 = dds3SearchSceneBasic(&ActiveScene, v29, 5u);
+      pPBCameraBasic01 = v32;
+      pPBCameraBasicIndex = 5;
+      v34 = v8->eventrid;
+      nbEventPrefabRead(&pPBCameraBasic01, v34, pPBCameraBasicIndex);
+      h = dds3GetUnitHandleObjectBasic(&pPBCameraBasic01);
+      evtSetUnitMotion(&h, 0, 0, 0, 2);
+      pPBCameraBasicCurrent = pPBCameraBasic01;
+    }
+    else if (time == 60)
+    {
+      nbCameraSetState(0x17u);
+      v40 = v8->eventrid;
+      v42 = evtRegistBEUnit(v40, 4);
+      v45 = dds3SearchSceneBasic(&ActiveScene, v42, 5u);
+      pPBCameraBasic00 = v45;
+      pPBCameraBasicIndex = 4;
+      v47 = v8->eventrid;
+      v49 = pPBCameraBasicIndex;
+      nbEventPrefabRead(&pPBCameraBasic00, v47, v49);
+      h = dds3GetUnitHandleObjectBasic(&pPBCameraBasic00);
+      evtSetUnitMotion(&h, 0, 0, 0, 2);
+      pPBCameraBasicCurrent = pPBCameraBasic00;
+    }
+    else if (time)
+    {
+      if (time <= 59)
+      {
+        nbCameraBoss_BSALBI_E912_Run();
+      }
+    }
+    else
+    {
+      nbCameraSetState(0x17u);
+      nbAllFormDispOn();
+      nbGroupFormDispOff(0);
+      pPBCameraBasicCurrent = 0;
+      pPBCameraBasic00 = 0;
+      pPBCameraBasic01 = 0;
+      nbCameraBoss_BSALBI_E912_Set();
+    }
+    nbUpdateEventProcessData(&ida);
+  }
+  return 0;
 }

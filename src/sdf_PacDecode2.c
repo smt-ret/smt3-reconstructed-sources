@@ -21,7 +21,7 @@ struct sdf_PacDecode2_sdfPac2StdBlockHeader_t {
 struct sdf_PacDecode2_sdfPac2DecodeResrc_t {
     sdf_PacDecode2_sdfPac2DecodeResrc_t *next;
     sdf_PacDecode2_sdfPac2DecodeCb_t *cb;
-    u8 handle[UNKNOWN_ARRAY_SIZE];
+    u8 *handle;
     s32 ptr;
     sdf_PacDecode2_sdfPac2StdBlockHeader_t *header;
 };
@@ -33,18 +33,18 @@ struct sdf_PacDecode2_sdfPac2DecodeCb_t {
     sdf_PacDecode2_sdfPac2Callback_t *callback;
     sdf_PacDecode2_sdfPac2DecodeFunc_t *decoder;
     sdf_PacDecode2_sdfPac2DecodeFunc_t *onEnd;
-    u8 srcData[UNKNOWN_ARRAY_SIZE];
+    u8 *srcData;
     s32 srcData_p;
     s32 srcLength;
     s32 srcTotal;
-    u8 workPtr[UNKNOWN_ARRAY_SIZE];
+    u8 *workPtr;
     s32 workPtr_p;
     s32 rest;
     sdfDecompCb_t *decompWork;
     s32 decompWork_p;
-    u8 decodeCb[UNKNOWN_ARRAY_SIZE];
+    u8 *decodeCb;
     s32 decodeCb_p;
-    u8 decodeWork[UNKNOWN_ARRAY_SIZE];
+    u8 *decodeWork;
     s32 decodeWork_p;
     sdf_PacDecode2_sdfPac2DecodeResrc_t *resrcHead;
     sdf_PacDecode2_sdfPac2DecodeResrc_t *resrcTail;
@@ -125,36 +125,39 @@ s32 sdfPac2StdCallback(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, s32 cause, sdf_PacD
     switch (hdr->fileType)
     {
       case 1u:
-        v8 = StringLiteral_22055;
+        v8 = "SDF_PAC_FILE_ID_BIN";
         Log(v8, 0);
         sdfPacMemDecoderInit(cb, hdr);
         return 0;
       case 2u:
-        v11 = StringLiteral_22056;
+        v11 = "SDF_PAC_FILE_ID_TMX";
         if ((byte_3F5A0D5 & 1) != 0)
+          goto LABEL_36;
+        goto LABEL_35;
       case 3u:
       case 4u:
       case 5u:
       case 7u:
         return result;
       case 6u:
-        v12 = StringLiteral_22057;
+        v12 = "SDF_PAC_FILE_ID_MODEL";
         Log(v12, 0);
         sdfPacModelDecoderInit(cb, hdr);
         return 0;
       case 8u:
-        v14 = StringLiteral_22058;
+        v14 = "SDF_PAC_FILE_ID_MOTION";
         Log(v14, 0);
         sdfPacMotionDecoderInit(cb, hdr);
         return 0;
       case 9u:
-        v11 = StringLiteral_22059;
+        v11 = "SDF_PAC_FILE_ID_TEXPACK";
+LABEL_36:
         Log(v11, 0);
         return 0;
       default:
         if (hdr->fileType == 255)
         {
-          v10 = StringLiteral_22060;
+          v10 = "SDF_PAC_FILE_ID_END";
           Log(v10, 0);
           return 1;
         }
@@ -203,6 +206,7 @@ s32 sdfPacDecode(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, u8 **data, s32 length) {
           cb->srcLength = length - v8;
           cb->srcTotal = srcTotal + v8;
           if (v9)
+            goto LABEL_9;
           cb->stat = 0;
           *&length = cb->srcLength;
           result = 0;
@@ -217,6 +221,7 @@ s32 sdfPacDecode(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, u8 **data, s32 length) {
             continue;
           break;
         default:
+LABEL_9:
           *&length = cb->srcLength;
           result = cb->stat;
           if (length > 0)
@@ -369,7 +374,7 @@ void sdfPacMemDecoderFunc(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
   s32 v12;
   s32 srcTotal;
 
-  v3 = StringLiteral_22061;
+  v3 = "sdfPacMemDecoderFunc";
   Log(v3, 0);
   if (cb->rest <= cb->srcLength)
     rest = cb->rest;
@@ -401,9 +406,140 @@ void sdfPacMemDecoderFunc(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
 
 // 0x15dd5e0
 void sdfPacMemDecoderFuncInit(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, sdf_PacDecode2_sdfPac2StdBlockHeader_t *hdr) {
-    SDF_ASSERT(0);
-    sdfDecompInit(0, 0);
-    SDF_ABORT2(0, 0);
+  Il2CppObject *v5;
+  u32 realSize;
+  u64 *v8;
+  struct sdf_PacDecode2_sdfPac2DecodeResrc_t_o *v9;
+  struct sdf_PacDecode2_sdfPac2DecodeResrc_t_o **p_resrcHead;
+  s32 v11;
+  u64 *v12;
+  Il2CppObject *v14;
+  Il2CppObject *v16;
+  s32 compression;
+  u64 *v18;
+  struct sdf_PacDecode2_sdfPac2DecodeResrc_t_o *resrcTail;
+  struct sdf_PacDecode2_sdfPac2DecodeResrc_t_o **p_next;
+  s32 header_p;
+  u64 *v22;
+  Il2CppObject *v24;
+  struct sdf_PacDecode2_sdfPac2DecodeFunc_t_o *v25;
+  s64 *v26;
+  struct System_Byte_array *v27;
+  s32 v29;
+  Il2CppObject *v30;
+  Il2CppObject *v31;
+  u64 *v32;
+  struct System_Byte_array *workPtr;
+  intptr_t *v36;
+  System_Object_array *v37;
+  s64 *v38;
+  s64 *v40;
+  s32 v43;
+  s32 v44;
+  s32 v45;
+
+  v5 = "sdfPackMemDecoderFuncInit";
+  Log(v5, 0);
+  realSize = hdr->realSize;
+  if (realSize)
+  {
+    if ((cb->flag & 1) == 0)
+      goto LABEL_10;
+LABEL_24:
+    compression = hdr->compression;
+    SDF_ASSERT(compression == 0);
+    v18 = Allocate(sdf_PacDecode2_sdfPac2DecodeResrc_t);
+    _ctor(v18, 0);
+    v18[6] = hdr;
+    v18[3] = cb;
+    resrcTail = cb->resrcTail;
+    if (resrcTail)
+      p_next = &resrcTail->next;
+    else
+      p_next = &cb->resrcHead;
+    *p_next = v18;
+    cb->resrcTail = v18;
+    header_p = hdr->header_p;
+    *(v18 + 10) = header_p;
+    v45 = header_p;
+    v22 = sub_8D3950(s32, &v45);
+    v24 = Concat("sdfPacMemDecoderFuncInit2 : ", v22);
+    Log(v24, 0);
+    v25 = Allocate(sdf_PacDecode2_sdfPac2DecodeFunc_t);
+    v26 = &Method_sdf_PacDecode2_sdfPacMemStayDecoderFunc__;
+    goto LABEL_60;
+  }
+  realSize = hdr->size + (hdr->compression & 0xF0) - 16;
+  if ((cb->flag & 1) != 0)
+    goto LABEL_24;
+LABEL_10:
+  cb->stat = 2;
+  v8 = Allocate(sdf_PacDecode2_sdfPac2DecodeResrc_t);
+  _ctor(v8, 0);
+  v8[6] = hdr;
+  v8[3] = cb;
+  v9 = cb->resrcTail;
+  if (v9)
+    p_resrcHead = &v9->next;
+  else
+    p_resrcHead = &cb->resrcHead;
+  *p_resrcHead = v8;
+  cb->resrcTail = v8;
+  v11 = hdr->header_p;
+  *(v8 + 10) = v11;
+  v44 = v11;
+  v12 = sub_8D3950(s32, &v44);
+  v14 = Concat("sdfPacMemDecoderFuncInit2 : ", v12);
+  Log(v14, 0);
+  if ((cb->flag & 2) == 0)
+  {
+    v16 = "ALLOC HEAD";
+    if ((byte_3F5A0D5 & 1) != 0)
+      goto LABEL_40;
+    goto LABEL_39;
+  }
+  v16 = "ALLOC TAIL";
+LABEL_40:
+  Log(v16, 0);
+  v27 = NewSpecific(byte, realSize);
+  v8[4] = v27;
+  cb->workPtr = v27;
+  cb->workPtr_p = 0;
+  *(v8 + 10) = 0;
+  v29 = hdr->compression & 0xF;
+  if (v29 == 1)
+  {
+    v31 = "SDF_PAC_FILE_COMPRESS";
+    Log(v31, 0);
+    v32 = Allocate(sdfDecompCb_t);
+    sdfDecompCb_t___ctor(v32);
+    cb->decompWork = v32;
+    workPtr = cb->workPtr;
+    sdfDecompInit(v32, &workPtr->obj);
+    v25 = Allocate(sdf_PacDecode2_sdfPac2DecodeFunc_t);
+    v26 = &Method_sdf_PacDecode2_sdfPacMemDecompDecoderFunc__;
+    goto LABEL_60;
+  }
+  if (!v29)
+  {
+    v30 = "SDF_PAC_FILE_NOCOMPRESS";
+    Log(v30, 0);
+    v25 = Allocate(sdf_PacDecode2_sdfPac2DecodeFunc_t);
+    v26 = &Method_sdf_PacDecode2_sdfPacMemDecoderFunc__;
+LABEL_60:
+    v36 = *v26;
+    v25->method_ptr = *v36;
+    v25->m_target = 0;
+    v25->method = v36;
+    cb->decoder = v25;
+    return;
+  }
+  v37 = NewSpecific(object, 1u);
+  v43 = v29;
+  v38 = sub_8D3950(s32, &v43);
+  v40 = v38;
+  v37->m_Items[0] = v40;
+  SDF_ABORT2("sdfPacDecode: unknown compression mode. [%d]\n", v37);
 }
 
 // 0x15dcf60
@@ -412,7 +548,7 @@ void sdfPacMemDecoderInit(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, sdf_PacDecode2_s
   struct sdf_PacDecode2_sdfPac2DecodeFunc_t_o *v7;
   s64 v8;
 
-  v5 = StringLiteral_22044;
+  v5 = "sdfPacMemDecoderInit";
   Log(v5, 0);
   sdfPacMemDecoderFuncInit(cb, hdr);
   v7 = Allocate(sdf_PacDecode2_sdfPac2DecodeFunc_t);
@@ -433,7 +569,7 @@ void sdfPacMemDecompDecoderFunc(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
   u32 v11;
   s32 v12;
 
-  v3 = StringLiteral_22062;
+  v3 = "sdfPacMemDecompDecoderFunc";
   Log(v3, 0);
   srcLength = cb->srcLength;
   decompWork = cb->decompWork;
@@ -461,7 +597,7 @@ void sdfPacMemStayDecoderFunc(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
   s32 srcTotal;
   s32 v10;
 
-  v3 = StringLiteral_22063;
+  v3 = "sdfPacMemStayDecoderFunc";
   Log(v3, 0);
   rest = cb->rest;
   srcLength = cb->srcLength;
@@ -490,7 +626,7 @@ void sdfPacModelDecoderEndFunc(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
   u64 *v5;
   System_Array_o *v7;
 
-  v3 = StringLiteral_22071;
+  v3 = "sdfPacModelDecoderEndFunc";
   Log(v3, 0);
   resrcTail = cb->resrcTail;
   v5 = Allocate(sdf_PacDecode2_AddressDecoder_t);
@@ -509,7 +645,7 @@ void sdfPacModelDecoderInit(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, sdf_PacDecode2
   struct sdf_PacDecode2_sdfPac2DecodeFunc_t_o *v7;
   s64 v8;
 
-  v5 = StringLiteral_22072;
+  v5 = "sdfPacModelDecoderInit";
   Log(v5, 0);
   sdfPacMemDecoderFuncInit(cb, hdr);
   v7 = Allocate(sdf_PacDecode2_sdfPac2DecodeFunc_t);
@@ -527,7 +663,7 @@ void sdfPacMotionDecoderEndFunc(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
   u64 *v5;
   System_Array_o *v7;
 
-  v3 = StringLiteral_22073;
+  v3 = "sdfPacMotionDecoderEndFunc";
   Log(v3, 0);
   resrcTail = cb->resrcTail;
   v5 = Allocate(sdf_PacDecode2_AddressDecoder_t);
@@ -546,7 +682,7 @@ void sdfPacMotionDecoderInit(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, sdf_PacDecode
   struct sdf_PacDecode2_sdfPac2DecodeFunc_t_o *v7;
   s64 v8;
 
-  v5 = StringLiteral_22074;
+  v5 = "sdfPackMotionDecoderInit";
   Log(v5, 0);
   sdfPacMemDecoderFuncInit(cb, hdr);
   v7 = Allocate(sdf_PacDecode2_sdfPac2DecodeFunc_t);
@@ -559,8 +695,115 @@ void sdfPacMotionDecoderInit(sdf_PacDecode2_sdfPac2DecodeCb_t *cb, sdf_PacDecode
 
 // 0x15db5c0
 void sdfPacNewBlock(sdf_PacDecode2_sdfPac2DecodeCb_t *cb) {
-    SDF_ASSERT(0);
-    sdf_PacDecode2_sdfPac2StdBlockHeader_t__Set(0, 0, 0);
+  s32 srcTotal;
+  System_Object_array *v4;
+  s64 *v6;
+  s64 *v7;
+  s32 v9;
+  s64 *v11;
+  s64 *v12;
+  s64 *v15;
+  s64 *v16;
+  Il2CppObject *v19;
+  s32 srcLength;
+  u64 *v28;
+  s32 v30;
+  s32 v31;
+  System_Object_array *v32;
+  s64 *v34;
+  s64 *v35;
+  s64 *v40;
+  s64 *v41;
+  Il2CppObject *v45;
+  s32 v46;
+  sdf_PacDecode2_sdfPac2Callback_t_o *callback;
+  s32 v49;
+  s32 v51;
+  s32 v52;
+  s32 v54;
+  s32 v55;
+  s32 v56;
+
+  srcTotal = cb->srcTotal;
+  v4 = NewSpecific(object, 6u);
+  v4->m_Items[0] = "sdfPacNewBlock : cb.srcTotal = ";
+  v56 = cb->srcTotal;
+  v6 = sub_8D3950(s32, &v56);
+  v7 = v6;
+  v4->m_Items[1] = v7;
+  v9 = srcTotal & 0x3F;
+  v4->m_Items[2] = ",leng = ";
+  v55 = v9;
+  v11 = sub_8D3950(s32, &v55);
+  v12 = v11;
+  v4->m_Items[3] = v12;
+  v4->m_Items[4] = ",HEADER_SIZE = ";
+  v54 = 16;
+  v15 = sub_8D3950(s32, &v54);
+  v16 = v15;
+  v4->m_Items[5] = v16;
+  v19 = Concat_5270224(v4);
+  else
+  {
+    Log(v19, 0);
+    if (v9)
+    {
+LABEL_32:
+      cb->stat = 1;
+      cb->rest = 64 - v9;
+      return;
+    }
+  }
+  srcLength = cb->srcLength;
+  SDF_ASSERT(srcLength > 15);
+  v28 = Allocate(sdf_PacDecode2_sdfPac2StdBlockHeader_t);
+  _ctor(v28, 0);
+  sdf_PacDecode2_sdfPac2StdBlockHeader_t__Set(v28, cb->srcData, cb->srcData_p);
+  *(v28 + 8) = cb->srcData_p + 16;
+  v30 = cb->srcLength;
+  cb->srcData_p += 16;
+  cb->srcLength = v30 - 16;
+  cb->srcTotal += 16;
+  ++cb->currBlockNum;
+  v31 = *(v28 + 17) & 0xF0;
+  v32 = NewSpecific(object, 4u);
+  v32->m_Items[0] = "header_add_size = ";
+  v56 = v31;
+  v34 = sub_8D3950(s32, &v56);
+  v35 = v34;
+  v32->m_Items[1] = v35;
+  v32->m_Items[2] = ",compression = ";
+  LOBYTE(v55) = *(v28 + 17);
+  v40 = sub_8D3950(qword_3F088F8, &v55);
+  v41 = v40;
+  v32->m_Items[3] = v41;
+  v45 = Concat_5270224(v32);
+  v46 = v31 + 16;
+  Log(v45, 0);
+  SDF_ASSERT(*(v28 + 5) >= v46, 0);
+  SDF_ASSERT(cb->srcLength >= v46);
+  callback = cb->callback;
+  cb->rest = *(v28 + 5) - v46;
+  v49 = Invoke(callback, cb, 0, v28);
+  if (v49 == 2)
+  {
+    cb->stat = 1;
+    cb->rest = (cb->rest + 63) & 0xFFFFFFC0;
+  }
+  else
+  {
+    v51 = v49;
+    if (v49 == 1)
+    {
+      v52 = -1;
+    }
+    else
+    {
+      SDF_ASSERT(v51 == 0);
+      v52 = 2;
+    }
+    cb->stat = v52;
+  }
 }
 
 // 0x15dcbb0

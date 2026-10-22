@@ -109,9 +109,13 @@ void *nbEncProcess2_5(dds3ProcessID_t *id) {
   v29 = 0;
   MainProcessData = nbGetMainProcessData();
   if (nbCheckLoadGroup(0))
+    goto LABEL_11;
   if (readtime)
   {
+LABEL_11:
     if ((MainProcessData->stat & 0x800) == 0)
+      goto LABEL_12;
+LABEL_34:
     for (i = 8; i != 18; ++i)
     {
       party = MainProcessData->party;
@@ -126,6 +130,7 @@ void *nbEncProcess2_5(dds3ProcessID_t *id) {
           v26->flag = flag & 0xFFFFFFF7;
       }
     }
+LABEL_45:
     v5 = Allocate(System_Func_dds3ProcessID_t__object_);
     object____ctor(
       v5,
@@ -136,6 +141,8 @@ void *nbEncProcess2_5(dds3ProcessID_t *id) {
   KernelCount = dds3GetKernelCount();
   readtime = KernelCount - readbasetime;
   if ((MainProcessData->stat & 0x800) != 0)
+    goto LABEL_34;
+LABEL_12:
   v5 = 0;
   if ((dds3GetProcessRunTime(&ida) & 7) == 0)
   {
@@ -157,6 +164,7 @@ void *nbEncProcess2_5(dds3ProcessID_t *id) {
       }
       ++v6;
       if (v8 >= 0xD)
+        goto LABEL_45;
     }
     v15->flag = v16 & 0xFFFFFFF7;
     nbAddHitEffKoukaPacket(1, 0, &v29, 4);
@@ -188,17 +196,25 @@ void *nbEncProcess2_55(dds3ProcessID_t *id) {
       form = v5->form;
       v9 = *(&form->obj.klass + v6);
       if ((*(v9 + 136) & 1) == 0)
+        goto LABEL_17;
         break;
       if (evtGetAgeOfMoon() == 8)
+        goto LABEL_16;
+LABEL_17:
       if (++v6 == 18)
       {
         stat = v5->stat;
+        goto LABEL_19;
       }
     }
     if (evtGetAgeOfMoon() != 8)
+      goto LABEL_17;
+LABEL_16:
     dds3ObjectBaseOnFlag((v9 + 152), 0x400u, 0, 0);
     *(*(*(v9 + 152) + 64LL) + 156LL) = 1128792064;
+    goto LABEL_17;
   }
+LABEL_19:
   if ((stat & 0x800) != 0)
   {
     nbGroupFormDispOn(1);
@@ -225,11 +241,28 @@ void *nbEncProcess2_55(dds3ProcessID_t *id) {
 
 // 0x1705f40
 void *nbEncProcess2_6(dds3ProcessID_t *id) {
-    nbGetMainProcessData();
-    nbCheckLoadGroup(0);
-    nbDestroyCache();
-    dds3GetKernelCount();
-    return 0;
+  nbMainProcessData_t_o *MainProcessData;
+  u64 *v4;
+  struct nbParty_t_array *party;
+  u32 KernelCount;
+  s32 readtime;
+
+  MainProcessData = nbGetMainProcessData();
+  v4 = 0;
+  if (!nbCheckLoadGroup(0))
+  {
+    else if (readtime)
+    {
+      goto LABEL_10;
+    }
+    KernelCount = dds3GetKernelCount();
+    readtime = KernelCount - readbasetime;
+    party = MainProcessData->party;
+    if (LODWORD(party->max_length))
+      goto LABEL_11;
+    goto LABEL_73;
+  }
+  return v4;
 }
 
 // 0x1705de0
@@ -296,7 +329,7 @@ void nbInitEncProcess(nbMainProcessData_t *data) {
     v4,
     0,
     Method_nbEncProcess_nbEncShutdown__);
-  target = dds3StartProcess(StringLiteral_21342, 0x3F9u, 1, 1, v3, 0, v4, 0, 0, 0);
+  target = dds3StartProcess("nb_enc", 0x3F9u, 1, 1, v3, 0, v4, 0, 0, 0);
   dds3LinkProcess(&data->MainProcessID, &target);
   data->EncProcessID = target;
   {

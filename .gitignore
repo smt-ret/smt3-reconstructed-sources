@@ -1,0 +1,5 @@
+/experiments/
+/tools/inputs/global-metadata.dat
+/tools/inputs/smt3hd_main.elf.c
+/tools/inputs/smt3hd_main.elf.h
+/tools/inputs/smt3hd_main.elf.map

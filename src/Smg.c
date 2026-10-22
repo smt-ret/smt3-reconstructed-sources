@@ -39,7 +39,7 @@ void _SmgTableInit(Smg *this);
 // 0x1d32e0
 void Awake(Smg *this) {
   Instance = this;
-  Log(StringLiteral_8936, 0);
+  Log("SMGテーブル Awake() です", 0);
 }
 
 // 0x1d3950
@@ -56,8 +56,33 @@ s32 FindId(s32 type, char *name) {
 
 // 0x1d3fb0
 s32 FindId_1916848(s32 type, s32 id) {
-    MidiWork___Set(0, 0, 0, 0, 0, 0, 0);
-    return 0;
+  s32 v3;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  s64 v8;
+  s32 MidiId;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v14;
+
+  v3 = id;
+  memset(&v14, 0, sizeof(v14));
+  if (type <= 7)
+    __asm { BR              X11 }
+  Values = Type___get_Values(Instance->_tableBgm);
+  Type___GetEnumerator(&v14, Values);
+  while ((sub_4D4B20(&v14) & 1) != 0)
+  {
+    v8 = sub_4D4CB0(&v14);
+    if (*(v8 + 48) == v3)
+    {
+      MidiWork___Set(FindOut, *(v8 + 16), *(v8 + 24), *(v8 + 32), *(v8 + 36), *(v8 + 40), v3, 0);
+      MidiId = FindOut->MidiId;
+      nullsub_48(&v14);
+      return MidiId;
+    }
+  }
+  nullsub_48(&v14);
+  MidiId = -1;
+  FindOut->DefineName = "";
+  return MidiId;
 }
 
 // 0x1d3b60
@@ -87,6 +112,7 @@ bool _Find(Smg *this, s32 type, char *name) {
   Il2CppObject *Item;
 
   if (op_Equality(FindOut->Key_DefineName, name, 0))
+    goto LABEL_7;
   if (!name)
   {
     LOBYTE(Table) = 0;
@@ -108,10 +134,11 @@ bool _Find(Smg *this, s32 type, char *name) {
         Item[2].monitor,
         Item[3].klass,
         0);
+LABEL_7:
       LOBYTE(Table) = 1;
       return Table;
     }
-    FindOut->DefineName = StringLiteral_416;
+    FindOut->DefineName = "";
     LOBYTE(Table) = 0;
   }
   return Table;
@@ -119,8 +146,46 @@ bool _Find(Smg *this, s32 type, char *name) {
 
 // 0x1d3be0
 bool _Find_1915872(Smg *this, s32 type, s32 id) {
-    MidiWork___Set(0, 0, 0, 0, 0, 0, 0);
-    return 0;
+  _BOOL8 v8;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  s64 v11;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v16;
+
+  memset(&v16, 0, sizeof(v16));
+  if (FindOut->Key_MidiId == id)
+  {
+    return &xmmword_0 + 1;
+  }
+  else
+  {
+    if (type <= 7)
+      __asm { BR              X10 }
+    Values = Type___get_Values(this->_tableBgm);
+    Type___GetEnumerator(&v16, Values);
+    while ((sub_4D4B20(&v16) & 1) != 0)
+    {
+      v11 = sub_4D4CB0(&v16);
+      if (*(v11 + 48) == id)
+      {
+        MidiWork___Set(
+          FindOut,
+          *(v11 + 16),
+          *(v11 + 24),
+          *(v11 + 32),
+          *(v11 + 36),
+          *(v11 + 40),
+          id,
+          0);
+        nullsub_48(&v16);
+        LOBYTE(v8) = 1;
+        return v8;
+      }
+    }
+    nullsub_48(&v16);
+    LOBYTE(v8) = 0;
+    FindOut->DefineName = "";
+  }
+  return v8;
 }
 
 // 0x1d3380
@@ -170,7 +235,7 @@ void _TblAdd_L_(Smg *this, s32 type, char *name, s32 id) {
   System_Collections_Generic_Dictionary_string__Smg__MidiWork__o *Table;
   u64 *v12;
 
-  v10 = Concat_5224608(name, StringLiteral_4906);
+  v10 = Concat_5224608(name, "_L_");
   Table = _GetTable(this, type, name);
   v12 = Allocate(Smg__MidiWork);
   MidiWork___ctor(v12, name, v10, id, 1);

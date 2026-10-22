@@ -123,12 +123,15 @@ s32 CheckFormCursor(s32 formindex, s32 ctype, s32 crule, s32 carea, s32 targetin
   if (ctype == 2 || (stat = data->stat, (v7 & 2) != 0) && (v7 & 1) != 0)
   {
     v16 = 1;
+    goto LABEL_7;
   }
   if ((v7 & 1) != 0)
   {
     if ((stat & 8) == 0)
     {
+LABEL_18:
       v16 = targetindex < 4;
+      goto LABEL_7;
     }
   }
   else
@@ -136,10 +139,13 @@ s32 CheckFormCursor(s32 formindex, s32 ctype, s32 crule, s32 carea, s32 targetin
     if ((v7 & 2) == 0)
     {
       v16 = 0;
+      goto LABEL_7;
     }
     if ((stat & 8) != 0)
+      goto LABEL_18;
   }
   v16 = (targetindex - 4) < 0xA;
+LABEL_7:
   if ((v8 & 1) != 0 && v16)
     v16 = formindex == targetindex;
   if ((v8 & 2) != 0 && v16)
@@ -213,6 +219,7 @@ void CursorSelect(nbTarSelProcessData_t **t) {
   {
     else if (DDS3_PADCHECK_REP(1))
     {
+LABEL_8:
       MemoryCommand(t);
       (*t)->stat = 0;
       return;
@@ -230,10 +237,15 @@ void CursorSelect(nbTarSelProcessData_t **t) {
       {
         enemycnt = v5->enemycnt;
         if (!LODWORD(v5->enemyno->max_length))
+          goto LABEL_29;
       }
       else if (nowcarea == 1)
       {
         enemycnt = v5->friendcnt;
+        if (!LODWORD(v5->friendno->max_length))
+        {
+LABEL_29:
+        }
       }
       else
       {
@@ -244,6 +256,7 @@ void CursorSelect(nbTarSelProcessData_t **t) {
         v9 = 0;
         v10 = enemycnt - 1;
         if (enemycnt > 1)
+          goto LABEL_34;
       }
       else
       {
@@ -251,32 +264,45 @@ void CursorSelect(nbTarSelProcessData_t **t) {
         v10 = enemycnt - 1;
         if (enemycnt > 1)
         {
+LABEL_34:
           if (DDS3_PADCHECK_TRIG(5))
+            goto LABEL_43;
           v12 = DDS3_PADCHECK_TRIG(7);
           if (!v9 && v12)
           {
+LABEL_43:
             if (v10 == (*t)->nowno)
             {
               (*t)->nowno = 0;
+              goto LABEL_59;
             }
           }
           if (DDS3_PADCHECK_REP(5))
+            goto LABEL_57;
           v15 = DDS3_PADCHECK_REP(7);
           v13 = 0;
           if (!v9 && v15)
           {
+LABEL_57:
             nowno = (*t)->nowno;
             if (v10 > nowno)
             {
               (*t)->nowno = nowno + 1;
+LABEL_59:
               v13 = 1;
+                goto LABEL_65;
+              goto LABEL_63;
             }
             v13 = 0;
           }
+            goto LABEL_65;
+LABEL_63:
+LABEL_65:
           if (!DDS3_PADCHECK_TRIG(4))
           {
             v18 = DDS3_PADCHECK_TRIG(6);
             if (v9 || !v18)
+              goto LABEL_113;
           }
           v19 = *t;
           if (!(*t)->nowno)
@@ -285,24 +311,38 @@ void CursorSelect(nbTarSelProcessData_t **t) {
           }
           else
           {
+LABEL_113:
             if (!DDS3_PADCHECK_REP(4))
             {
               v20 = DDS3_PADCHECK_REP(6);
               if (v9 || !v20)
+                goto LABEL_86;
             }
             v19 = *t;
             v21 = (*t)->nowno;
             v22 = __OFSUB__(v21, 1);
             v23 = v21 - 1;
+            if (v23 < 0 != v22)
+            {
+LABEL_86:
+                goto LABEL_89;
+              goto LABEL_87;
+            }
           }
           v13 = 1;
           v19->nowno = v23;
+          goto LABEL_86;
         }
       }
       v13 = 0;
+        goto LABEL_89;
+LABEL_87:
+LABEL_89:
       if (DDS3_PADCHECK_TRIG(6))
+        goto LABEL_94;
       if (DDS3_PADCHECK_TRIG(7))
       {
+LABEL_94:
         v25 = *t;
         v26 = (*t)->nowcarea;
         if (v26 == 2)
@@ -310,13 +350,16 @@ void CursorSelect(nbTarSelProcessData_t **t) {
           if (v25->friendcnt > 0)
           {
             v27 = 1;
+            goto LABEL_100;
           }
         }
         else if (v26 == 1 && v25->enemycnt >= 1)
         {
           v27 = 2;
+LABEL_100:
           v25->nowcarea = v27;
           (*t)->nowno = 0;
+LABEL_102:
           UpdateSelect(t);
           p2sdPlaySE(3);
           (*t)->jyokyotime = 0;
@@ -325,6 +368,7 @@ void CursorSelect(nbTarSelProcessData_t **t) {
       }
       if (!v13)
         return;
+      goto LABEL_102;
     }
   }
 }
@@ -363,17 +407,21 @@ void DispTargetHelp(nbTarSelProcessData_t **t) {
         break;
     }
     if (v3++ > 0xE)
+      goto LABEL_11;
   }
   if ((*t)->jyokyotime)
+    goto LABEL_11;
   UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(v3);
   if (!UnitWorkFromFormindex)
   {
+LABEL_11:
     v8 = *t;
     jyokyotime = (*t)->jyokyotime;
     v10 = __OFSUB__(jyokyotime, 1);
     v11 = jyokyotime - 1;
     if (v11 < 0 != v10)
       return;
+    goto LABEL_12;
   }
   id = UnitWorkFromFormindex->id;
   v16 = convDLCDevilNumber(id);
@@ -383,14 +431,38 @@ void DispTargetHelp(nbTarSelProcessData_t **t) {
   v10 = __OFSUB__(v17, 1);
   v11 = v17 - 1;
   if (v11 < 0 == v10)
+LABEL_12:
     v8->jyokyotime = v11;
 }
 
 // 0x15841b0
 nbTarSelProcessData_t *GetTarSelProcessData(void) {
-    dds3SearchProcessName(0);
-    dds3GetProcessData(0);
-    return 0;
+  nbTarSelProcessData_t_o *result;
+  nbTarSelProcessData_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v5;
+  s64 *v6;
+  dds3ProcessID_t_o *v7[3];
+  dds3ProcessID_t_o *id;
+
+  id = 0;
+  id = dds3SearchProcessName("nb_tarsel");
+  result = dds3GetProcessData(&id);
+  if (result)
+  {
+    klass = result->klass;
+    if (result->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbTarSelProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbTarSelProcessData_t, v7);
+      if ((v7[0] & 1) != 0)
+        v5 = v7[2];
+      else
+        v5 = v7 + 1;
+      v6 = sub_8C4940(v5);
+    }
+  }
+  return result;
 }
 
 // 0x1585b10
@@ -492,9 +564,14 @@ void SetCursor(nbTarSelProcessData_t **tar) {
   LOWORD(data) = UnitWorkPointer->prevtform;
   if ((*tar)->act)
   {
-    else    if (((*tar)->act->stat & 0x80) == 0)
+    else if (dds3CheckConfigBit(0xBu))
+    {
+      goto LABEL_18;
+    }
+    if (((*tar)->act->stat & 0x80) == 0)
       return;
   }
+LABEL_18:
   if (prevtarea == 2)
   {
     if ((*tar)->enemycnt >= 1)
@@ -514,6 +591,7 @@ void SetCursor(nbTarSelProcessData_t **tar) {
           if (++v12 >= (*tar)->enemycnt)
             return;
         }
+        goto LABEL_36;
       }
     }
   }
@@ -534,6 +612,7 @@ void SetCursor(nbTarSelProcessData_t **tar) {
         if (++v12 >= (*tar)->friendcnt)
           return;
       }
+LABEL_36:
       (*tar)->nowno = v12;
     }
   }
@@ -560,9 +639,11 @@ void UpdateSelect(nbTarSelProcessData_t **t) {
       form->m_Items[i]->stat &= ~8u;
       v5 = (*t)->data->form;
       if ((v5->m_Items[i]->stat & 4) == 0)
+        goto LABEL_25;
       v7 = *t;
       ctype = (*t)->ctype;
       if (ctype == 2)
+        goto LABEL_28;
       if (ctype == 1)
         break;
       if (!(*t)->ctype)
@@ -575,14 +656,17 @@ void UpdateSelect(nbTarSelProcessData_t **t) {
         else
         {
           if (nowcarea != 1)
+            goto LABEL_25;
           enemyno = v7->friendno;
         }
         nowno = v7->nowno;
         if (i == enemyno->m_Items[nowno])
         {
           (*t)->nowform = i;
+          goto LABEL_28;
         }
       }
+LABEL_25:
       if (++i == 16)
         return;
     }
@@ -590,17 +674,25 @@ void UpdateSelect(nbTarSelProcessData_t **t) {
     if (v11 == 2)
     {
       if ((v7->data->stat & 8) != 0)
+        goto LABEL_27;
       if ((i - 4) > 9)
+        goto LABEL_25;
     }
     else
     {
       if (v11 != 1)
+        goto LABEL_25;
       if ((v7->data->stat & 8) == 0)
       {
+LABEL_27:
         if (i >= 4)
+          goto LABEL_25;
+        goto LABEL_28;
       }
       if ((i - 4) >= 0xA)
+        goto LABEL_25;
     }
+LABEL_28:
     v14 = (*t)->data->form;
     v14->m_Items[i]->stat |= 8u;
   }
@@ -637,7 +729,7 @@ void nbInitTarSelProcess(nbMainProcessData_t *data) {
     v5,
     0,
     Method_nbTarSelProcess_nbTarSelShutdown__);
-  target = dds3StartProcess(StringLiteral_21604, 0x3F9u, 1, 1, v4, 0, v5, 0, v3, 0);
+  target = dds3StartProcess("nb_tarsel", 0x3F9u, 1, 1, v4, 0, v5, 0, v3, 0);
   dds3LinkProcess(&data->MainProcessID, &target);
   data->TarSelProcessID = target;
 }
@@ -649,9 +741,124 @@ void nbPnlSprite(s32 x, s32 y, s32 w, s32 h, s32 u, s32 v, s32 uw, s32 vh, s32 r
 
 // 0x15847e0
 s32 nbSetSelectOkMark(s32 partyindex, s32 ctype, s32 crule, s32 carea) {
-    GetTarSelProcessData();
-    CheckFormCursor(0, 0, 0, 0, 0);
-    return 0;
+  nbTarSelProcessData_t_o *TarSelProcessData;
+  s64 v11;
+  struct nbFormation_t_array *form;
+  u64 v13;
+  struct nbFormation_t_array *v15;
+  struct nbParty_t_array *party;
+  struct nbFormation_t_array *v19;
+  struct System_SByte_array *friendno;
+  struct System_SByte_array *enemyno;
+  s64 enemycnt;
+  u64 v26;
+  s64 v27;
+  signed s64 v28;
+  s64 v29;
+  struct System_SByte_array *v32;
+  struct nbFormation_t_array *v33;
+  u64 v35;
+  s64 v36;
+  struct System_SByte_array *v38;
+  f32 v39;
+  f32 v40;
+  struct nbFormation_t_array *v41;
+  s64 v43;
+  f32 v45;
+  struct System_SByte_array *v46;
+  u64 max_length_low;
+  s8 v48;
+  struct System_SByte_array *v50;
+  s64 v52;
+
+  TarSelProcessData = GetTarSelProcessData(*&partyindex);
+  v11 = 4;
+  *&TarSelProcessData->friendcnt = 0;
+  do
+  {
+    while (1)
+    {
+      form = TarSelProcessData->data->form;
+      v13 = v11 - 4;
+      *(*(&form->obj.klass + v11) + 136LL) &= ~4u;
+      v15 = TarSelProcessData->data->form;
+      *(*(&v15->obj.klass + v11) + 136LL) &= ~8u;
+      party = TarSelProcessData->data->party;
+      if (!CheckFormCursor(party->m_Items[partyindex]->formindex, ctype, crule, carea, v11 - 4))
+        goto LABEL_17;
+      v19 = TarSelProcessData->data->form;
+      *(*(&v19->obj.klass + v11) + 136LL) |= 4u;
+      if (v13 <= 3)
+        break;
+      if (v13 <= 0xD)
+      {
+        if ((TarSelProcessData->data->stat & 8) != 0)
+          goto LABEL_14;
+        goto LABEL_20;
+      }
+LABEL_17:
+      if (++v11 == 20)
+        goto LABEL_23;
+    }
+    if ((TarSelProcessData->data->stat & 8) == 0)
+    {
+LABEL_14:
+      friendno = TarSelProcessData->friendno;
+      friendno->m_Items[TarSelProcessData->friendcnt++] = v13;
+      goto LABEL_17;
+    }
+LABEL_20:
+    enemyno = TarSelProcessData->enemyno;
+    enemyno->m_Items[TarSelProcessData->enemycnt++] = v13;
+    ++v11;
+  }
+  while (v11 != 20);
+LABEL_23:
+  LODWORD(enemycnt) = TarSelProcessData->enemycnt;
+  if (enemycnt >= 2)
+  {
+    v26 = 0;
+    v27 = 33;
+    do
+    {
+      v28 = v26 + 1;
+      if ((v26 + 1) < enemycnt)
+      {
+        v29 = v27;
+        do
+        {
+          v32 = TarSelProcessData->enemyno;
+          v33 = TarSelProcessData->data->form;
+          v35 = v29 - 32;
+          v36 = v32->m_Items[v26];
+          sub_854710(&v33->m_Items[v36]->fields, 0);
+          v38 = TarSelProcessData->enemyno;
+          v40 = v39;
+          v41 = TarSelProcessData->data->form;
+          v43 = *(&v38->obj.klass + v29);
+          sub_854710(&v41->m_Items[v43]->fields, 0);
+          if (v40 > v45)
+          {
+            v46 = TarSelProcessData->enemyno;
+            max_length_low = LODWORD(v46->max_length);
+            v48 = v46->m_Items[v26];
+            TarSelProcessData->enemyno->m_Items[v26] = *(&TarSelProcessData->enemyno->obj.klass + v29);
+            v50 = TarSelProcessData->enemyno;
+            *(&v50->obj.klass + v29) = v48;
+          }
+          enemycnt = TarSelProcessData->enemycnt;
+          v52 = v29 - 31;
+          ++v29;
+        }
+        while (v52 < enemycnt);
+      }
+      ++v27;
+      ++v26;
+    }
+    while (v28 < enemycnt - 1);
+    LODWORD(enemycnt) = enemycnt;
+  }
+  return enemycnt + TarSelProcessData->friendcnt != 0;
 }
 
 // 0x1584330
@@ -697,7 +904,7 @@ s32 nbSetTargetProcess(nbActionProcessData_t *act, s32 partyindex, s32 ctype, s3
     if (op_Inequality(BattleUI, 0, 0))
     {
       transform = get_transform(BattleUI, 0);
-      v20 = Find(transform, StringLiteral_19226, 0);
+      v20 = Find(transform, "bmenu/normal_command/bmenu_cursur", 0);
       gameObject = get_gameObject(v20);
       if (get_activeSelf(gameObject))
         SetActive(gameObject, 0, 0);
@@ -709,17 +916,87 @@ s32 nbSetTargetProcess(nbActionProcessData_t *act, s32 partyindex, s32 ctype, s3
 
 // 0x1585830
 void *nbTarSelProcess1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    MemoryCommand(0);
-    CursorSelect(0);
-    AnimeTargetCursor(0);
-    OnOffTargetCursor(0);
-    DispTargetHelp(0);
+  nbTarSelProcessData_t_o *ProcessData;
+  nbTarSelProcessData_t_c *v3;
+  nbTarSelProcessData_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  struct nbActionProcessData_t_o *act;
+  nbTarSelProcessData_t_o *v14;
+  dds3ProcessID_t_o *v15[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  v14 = 0;
+  else
+  {
+    ProcessData = dds3GetProcessData(&ida);
+    if (!ProcessData)
+      goto LABEL_12;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbTarSelProcessData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, nbTarSelProcessData_t, v15);
+    if ((v15[0] & 1) != 0)
+      v6 = v15[2];
+    else
+      v6 = v15 + 1;
+    v7 = sub_8C4940(v6);
+  }
+LABEL_12:
+  v14 = ProcessData;
+  act = ProcessData->act;
+  if (act && (act->stat & 0x80) != 0)
+  {
+    if (ProcessData->stat == 1)
+    {
+      MemoryCommand(&v14, v3);
+      v14->stat = 0;
+    }
+    goto LABEL_19;
+  }
+  if (ProcessData->stat != 1 || (CursorSelect(&v14, v3), v14->stat))
+  {
+LABEL_19:
+    AnimeTargetCursor(&v14, v3);
+    OnOffTargetCursor(&v14);
+    DispTargetHelp(&v14);
     return 0;
+  }
+  v14->stat = 1;
+  AnimeTargetCursor(&v14, v3);
+  OnOffTargetCursor(&v14);
+  DispTargetHelp(&v14);
+  v14->stat = 0;
+  return 0;
 }
 
 // 0x15859f0
 void *nbTarSelShutdown(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    return 0;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  dds3ProcessID_t_o *v8[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ProcessData = dds3GetProcessData(&ida);
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbTarSelProcessData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, nbTarSelProcessData_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  ProcessData[1].klass->vtable[1].method = 0;
+  return 0;
 }

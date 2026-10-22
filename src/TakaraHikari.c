@@ -18,7 +18,6 @@ void Update(TakaraHikari *this) {
   UnityEngine_GameObject_o *MainCamera;
   UnityEngine_Transform_o *transform;
   UnityEngine_Transform_o *v8;
-  dds3KernelDraw_c *v10;
   f32 *static_fields;
   f32 v12;
   f32 v13;
@@ -47,7 +46,6 @@ void Update(TakaraHikari *this) {
     transform = get_transform(this->hikari_obj, 0);
     v8 = get_transform(MainCamera, 0);
     position = get_position(v8);
-    static_fields = v10->static_fields;
     v12 = static_fields[42];
     v13 = static_fields[43];
     v15 = static_fields[44];

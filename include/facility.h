@@ -345,8 +345,8 @@ struct fclDrawSprTbl_t {
 };
 
 struct fclSprTblArry_t {
-    fclSprTbl_t Tbl[UNKNOWN_ARRAY_SIZE];
-    fclDrawSprTbl_t Draw[UNKNOWN_ARRAY_SIZE];
+    fclSprTbl_t *Tbl;
+    fclDrawSprTbl_t *Draw;
 };
 
 struct fclSpriteBase_t {
@@ -549,10 +549,10 @@ struct cmbGlobalWork_t {
     s8 StatTarget;
     s8 ErrorFlag;
     sdfMemHandle_t *ScriptMH;
-    u8 pScriptData[UNKNOWN_ARRAY_SIZE];
+    u8 *pScriptData;
     dds3ProcessID_t *ScriptPID;
     sdfMemHandle_t *CollectMH;
-    u8 pCollectData[UNKNOWN_ARRAY_SIZE];
+    u8 *pCollectData;
     dds3ProcessID_t *PMPID;
     cmbModelPack_t *ModelPack[5];
     sdfVector4_t ModelPos[4];
@@ -643,7 +643,7 @@ struct fclRibbon_t {
     s32 ctr_deact;
     s32 ctr;
     s32 num;
-    fclribbon_elem_t pelem[UNKNOWN_ARRAY_SIZE];
+    fclribbon_elem_t *pelem;
 };
 
 struct cmbSelDev_t {
@@ -654,7 +654,7 @@ struct cmbSelDev_t {
 
 struct cmbModelPack_t {
     sdfMemHandle_t *MH;
-    u8 pData[UNKNOWN_ARRAY_SIZE];
+    u8 *pData;
     s32 DataSize;
     u16 DevilID;
     dds3ModelHandle_t *Model;
@@ -687,7 +687,7 @@ struct fclDataRag_t {
     lstListWindow_t *ItemWindow;
     lstListWindow_t *SeireiWindow;
     lstListWindow_t *MitamaWindow;
-    u8 pScriptData[UNKNOWN_ARRAY_SIZE];
+    u8 *pScriptData;
     dds3ProcessID_t *ScriptPID;
     sdfTexHandle_t *TexHandleBG;
     sdfTexHandle_t *TexHandle[2];
@@ -712,11 +712,11 @@ struct fclDataRecover_t {
     cmpYesNoInfo_t *YesNoInfo;
     lstListWindow_t *StockWindow;
     lstListWindow_t *SkillWindow;
-    u8 pScriptData[UNKNOWN_ARRAY_SIZE];
+    u8 *pScriptData;
     dds3ProcessID_t *ScriptPID;
     bool EffFlag;
     effHandle_t *EffHandle;
-    u8 EffD3P[UNKNOWN_ARRAY_SIZE];
+    u8 *EffD3P;
     dds3Basic_t *bas;
     sdfTexHandle_t *TexHandle[3];
     fclPanel_t *BackPanel;
@@ -740,7 +740,7 @@ struct fclDataShop_t {
     s8 HeartsFlag;
     fclItemList_t *SellItemList;
     s32 IncVal;
-    u8 pScriptData[UNKNOWN_ARRAY_SIZE];
+    u8 *pScriptData;
     dds3ProcessID_t *ScriptPID;
     sdfTexHandle_t *TexHandle[2];
     fclPanel_t *HelpPanel;
@@ -770,7 +770,7 @@ struct fclDataTerminal_t {
     s8 ActFlag;
     s8 ActStartFlag;
     sdfMemHandle_t *ScriptMH;
-    u8 pScriptData[UNKNOWN_ARRAY_SIZE];
+    u8 *pScriptData;
     dds3ProcessID_t *ScriptPID;
     sdfMemHandle_t *EvtScrMH;
     void *pEvtScrData;

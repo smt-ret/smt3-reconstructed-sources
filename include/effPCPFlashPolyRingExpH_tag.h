@@ -8,7 +8,7 @@ typedef struct effPCPFlashPolyRingExpParam_t effPCPFlashPolyRingExpParam_t;
 
 struct effPCPFlashPolyRingExpH_tag {
     effPCPFlashPolyRingExpParam_t *param;
-    effPCPFlashPolyRingExpHPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPFlashPolyRingExpHPart_tag *pPart;
     u32 frame;
     u32 abgr;
     f32 scale;

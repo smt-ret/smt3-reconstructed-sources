@@ -65,30 +65,36 @@ s32 Flow10_1(nbNegoProcessData_t **n) {
     v9 = evtBitCheck(8);
     v4 = *n;
     if (!v9 && !v4->negoreqtype)
+      goto LABEL_33;
   }
   if (v4->cnt6_37)
   {
-    RandIntA = dds3GetRandIntA(0xAu, StringLiteral_5325);
+    RandIntA = dds3GetRandIntA(0xAu, "10_1");
     v4 = *n;
     nextkouho = (*n)->nextkouho;
     max_length = nextkouho->max_length;
     if (RandIntA <= 5)
     {
       v14 = &nextkouho->m_Items[2];
+LABEL_37:
       v4->nextnegoid = *v14;
       return 0;
     }
+LABEL_34:
     v14 = &nextkouho->m_Items[1];
+    goto LABEL_37;
   }
   v15 = v4->nextkouho;
-  v16 = dds3GetRandIntA(2u, StringLiteral_5325);
+  v16 = dds3GetRandIntA(2u, "10_1");
   v4->nextnegoid = v15->m_Items[v16];
   ework = (*n)->ework;
   if (datGetRace(ework) == 33)
   {
     v4 = *n;
+LABEL_33:
     nextkouho = v4->nextkouho;
     max_length = nextkouho->max_length;
+    goto LABEL_34;
   }
   return 0;
 }
@@ -176,13 +182,14 @@ s32 Flow10_12(nbNegoProcessData_t **n) {
     v7 = v6;
   if (v4->cnt6_36)
   {
-    RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5328);
+    RandIntA = dds3GetRandIntA(0x64u, "10_12");
     v4 = *n;
     nextkouho = (*n)->nextkouho;
     max_length = nextkouho->max_length;
     if (RandIntA < v7)
     {
       m_Items = nextkouho->m_Items;
+      goto LABEL_27;
     }
   }
   else
@@ -191,6 +198,7 @@ s32 Flow10_12(nbNegoProcessData_t **n) {
     max_length = nextkouho->max_length;
   }
   m_Items = &nextkouho->m_Items[1];
+LABEL_27:
   v4->nextnegoid = *m_Items;
   return 0;
 }
@@ -206,7 +214,7 @@ s32 Flow10_13(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0xA0011u);
   v4 = *n;
   nextkouho = v4->nextkouho;
-  RandIntA = dds3GetRandIntA(3u, StringLiteral_5329);
+  RandIntA = dds3GetRandIntA(3u, "10_13");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   return 0;
 }
@@ -332,7 +340,7 @@ s32 Flow10_2(nbNegoProcessData_t **n) {
   if (nownegophase == 1)
   {
     nbAddNegoIdKouho(n, 0xA0003u);
-    RandIntA = dds3GetRandIntA(2u, StringLiteral_5326);
+    RandIntA = dds3GetRandIntA(2u, "10_2");
     flowmsg = (*n)->flowmsg;
     ekucyo = (*n)->ekucyo;
     nbDispNegoMessage(n, flowmsg->m_Items[ekucyo], RandIntA + 215, 0);
@@ -375,13 +383,14 @@ s32 Flow10_21(nbNegoProcessData_t **n) {
   v7 = v5 || v6 == 0;
   if (v7 || evtBitCheck(8))
   {
-    RandIntA = dds3GetRandIntA(0xAu, StringLiteral_5330);
+    RandIntA = dds3GetRandIntA(0xAu, "10_21");
     v9 = *n;
     nextkouho = v9->nextkouho;
     v11 = nextkouho[6];
     if (RandIntA >= 5)
     {
       v13 = nextkouho + 8;
+      goto LABEL_25;
     }
   }
   else
@@ -391,6 +400,7 @@ s32 Flow10_21(nbNegoProcessData_t **n) {
     v11 = nextkouho[6];
   }
   v13 = nextkouho + 9;
+LABEL_25:
   v9->nextnegoid = *v13;
   return 0;
 }
@@ -470,7 +480,7 @@ s32 Flow10_25(nbNegoProcessData_t **n) {
     case 5:
       break;
     case 2:
-      if (dds3GetRandIntA(2u, StringLiteral_5331))
+      if (dds3GetRandIntA(2u, "10_25"))
         v4 = 232;
       else
         v4 = 230;
@@ -493,6 +503,7 @@ s32 Flow10_25(nbNegoProcessData_t **n) {
   v10 = *n;
   if ((*n)->negoskillid != 395)
     return 1;
+LABEL_22:
   if (!v10->pwork->hp)
     return 1;
   nbAddNegoIdKouho(n, 0xA0021u);
@@ -503,16 +514,58 @@ s32 Flow10_25(nbNegoProcessData_t **n) {
 
 // 0x544ef0
 s32 Flow10_26(nbNegoProcessData_t **n) {
-    nbDispNegoMessage(0, 0, 0, 0);
-    nbAddNegoIdKouho(0, 0);
-    return 0;
+  struct System_Int32_array *flowmsg;
+  s64 ekucyo;
+  s32 v6;
+  nbNegoProcessData_t_o *v8;
+  struct System_Int32_array *temp_param;
+
+  flowmsg = (*n)->flowmsg;
+  ekucyo = (*n)->ekucyo;
+  v6 = flowmsg->m_Items[ekucyo];
+  nbDispNegoMessage(n, v6, 229, 0);
+  v8 = *n;
+  if ((*n)->negoskillid != 395)
+    return 1;
+LABEL_11:
+  if (!v8->pwork->hp)
+    return 1;
+  else
+  {
+      goto LABEL_15;
+  }
+  nbAddNegoIdKouho(n, 0xA0021u);
+  temp_param = (*n)->temp_param;
+  temp_param->m_Items[0] = 1;
+  return 0;
 }
 
 // 0x5450a0
 s32 Flow10_27(nbNegoProcessData_t **n) {
-    nbDispNegoMessage(0, 0, 0, 0);
-    nbAddNegoIdKouho(0, 0);
-    return 0;
+  struct System_Int32_array *flowmsg;
+  s64 ekucyo;
+  s32 v6;
+  nbNegoProcessData_t_o *v8;
+  struct System_Int32_array *temp_param;
+
+  flowmsg = (*n)->flowmsg;
+  ekucyo = (*n)->ekucyo;
+  v6 = flowmsg->m_Items[ekucyo];
+  nbDispNegoMessage(n, v6, 233, 0);
+  v8 = *n;
+  if ((*n)->negoskillid != 395)
+    return 1;
+LABEL_11:
+  if (!v8->pwork->hp)
+    return 1;
+  else
+  {
+      goto LABEL_15;
+  }
+  nbAddNegoIdKouho(n, 0xA0021u);
+  temp_param = (*n)->temp_param;
+  temp_param->m_Items[0] = 1;
+  return 0;
 }
 
 // 0x545250
@@ -771,7 +824,7 @@ s32 Flow10_7(nbNegoProcessData_t **n) {
     case 5:
       break;
     case 2:
-      if (dds3GetRandIntA(2u, StringLiteral_5327))
+      if (dds3GetRandIntA(2u, "10_7"))
         v4 = 222;
       else
         v4 = 220;
@@ -794,6 +847,7 @@ s32 Flow10_7(nbNegoProcessData_t **n) {
   v10 = *n;
   if ((*n)->negoskillid != 395)
     return 4;
+LABEL_22:
   if (!v10->pwork->hp)
     return 4;
   nbAddNegoIdKouho(n, 0xA0021u);
@@ -804,16 +858,58 @@ s32 Flow10_7(nbNegoProcessData_t **n) {
 
 // 0x543590
 s32 Flow10_8(nbNegoProcessData_t **n) {
-    nbDispNegoMessage(0, 0, 0, 0);
-    nbAddNegoIdKouho(0, 0);
-    return 0;
+  struct System_Int32_array *flowmsg;
+  s64 ekucyo;
+  s32 v6;
+  nbNegoProcessData_t_o *v8;
+  struct System_Int32_array *temp_param;
+
+  flowmsg = (*n)->flowmsg;
+  ekucyo = (*n)->ekucyo;
+  v6 = flowmsg->m_Items[ekucyo];
+  nbDispNegoMessage(n, v6, 219, 0);
+  v8 = *n;
+  if ((*n)->negoskillid != 395)
+    return 4;
+LABEL_11:
+  if (!v8->pwork->hp)
+    return 4;
+  else
+  {
+      goto LABEL_15;
+  }
+  nbAddNegoIdKouho(n, 0xA0021u);
+  temp_param = (*n)->temp_param;
+  temp_param->m_Items[0] = 4;
+  return 0;
 }
 
 // 0x543740
 s32 Flow10_9(nbNegoProcessData_t **n) {
-    nbDispNegoMessage(0, 0, 0, 0);
-    nbAddNegoIdKouho(0, 0);
-    return 0;
+  struct System_Int32_array *flowmsg;
+  s64 ekucyo;
+  s32 v6;
+  nbNegoProcessData_t_o *v8;
+  struct System_Int32_array *temp_param;
+
+  flowmsg = (*n)->flowmsg;
+  ekucyo = (*n)->ekucyo;
+  v6 = flowmsg->m_Items[ekucyo];
+  nbDispNegoMessage(n, v6, 223, 0);
+  v8 = *n;
+  if ((*n)->negoskillid != 395)
+    return 4;
+LABEL_11:
+  if (!v8->pwork->hp)
+    return 4;
+  else
+  {
+      goto LABEL_15;
+  }
+  nbAddNegoIdKouho(n, 0xA0021u);
+  temp_param = (*n)->temp_param;
+  temp_param->m_Items[0] = 4;
+  return 0;
 }
 
 // 0x5429b0

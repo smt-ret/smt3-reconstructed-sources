@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effPCPNeedleSpiral_tag {
     effPCPNeedleSpiralParam_t *param;
-    effPCPNeedleSpiralPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPNeedleSpiralPart_tag *pPart;
     u32 abgr;
     u32 number;
     dds3TrackPoly_t *hTrackPoly;

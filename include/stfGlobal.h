@@ -11,12 +11,12 @@ struct stfGlobal {
     sdfTexHandle_t *MaskSpriteHandle;
     sdfTexHandle_t *PicSpriteHandle;
     sdfTexHandle_t *CapcomSpriteHandle;
-    sdfMemHandle_t hFileLine[UNKNOWN_ARRAY_SIZE];
-    void pFileLine[UNKNOWN_ARRAY_SIZE];
-    sdfMemHandle_t hFileMask[UNKNOWN_ARRAY_SIZE];
-    void pFileMask[UNKNOWN_ARRAY_SIZE];
-    sdfMemHandle_t hFilePic[UNKNOWN_ARRAY_SIZE];
-    void pFilePic[UNKNOWN_ARRAY_SIZE];
+    sdfMemHandle_t *hFileLine;
+    void *pFileLine;
+    sdfMemHandle_t *hFileMask;
+    void *pFileMask;
+    sdfMemHandle_t *hFilePic;
+    void *pFilePic;
     sdfMemHandle_t *hFileFont1;
     void *pFileFont1;
     sdfMemHandle_t *hFileFont2;

@@ -293,8 +293,8 @@ typedef struct sdfModelDef_t sdfModelDef_t;
 
 struct fldResourcePathData_t {
     u32 nKey;
-    void pItem[UNKNOWN_ARRAY_SIZE];
-    u32 pKey[UNKNOWN_ARRAY_SIZE];
+    void *pItem;
+    u32 *pKey;
 };
 
 struct fldResourceLightPath_t {
@@ -382,7 +382,7 @@ struct fldResourceLight_t {
 
 struct fldAmAreaData_t {
     char *pName;
-    fldAmSBlock_t pSB[UNKNOWN_ARRAY_SIZE];
+    fldAmSBlock_t *pSB;
     u32 nSB;
     fldAmMdl_t *pMdl;
     fldAmXYZ_t *pPos;
@@ -394,7 +394,7 @@ struct DLCAmIcon_t {
     s32 blockID;
     s32 floorID;
     s32 nodeIdx;
-    fldAmIcon_t fldAmIcon[UNKNOWN_ARRAY_SIZE];
+    fldAmIcon_t *fldAmIcon;
 };
 
 struct fldAmMdl_t {
@@ -411,7 +411,7 @@ struct fldAmXYZ_t {
 struct fldAmSBlock_t {
     char *pName;
     u32 nodeIdx;
-    fldAmIcon_t pIcon[UNKNOWN_ARRAY_SIZE];
+    fldAmIcon_t *pIcon;
     u32 nIcon;
     s32 floor;
     fldAmXYZ_t *pPos0;
@@ -440,7 +440,7 @@ struct fldResPut_t {
     u32 EveIdx;
     u32 Visible;
     u32 _union;
-    u8 pDate[UNKNOWN_ARRAY_SIZE];
+    u8 *pDate;
     fldResPutEveBall_t *pEveBall;
 };
 
@@ -460,7 +460,7 @@ struct fldResHead_t {
     fldResHeadLink_t *resourceLink;
     char *SBlockName;
     u32 _union;
-    u8 pDate[UNKNOWN_ARRAY_SIZE];
+    u8 *pDate;
     fldResPut_t *pPut;
 };
 
@@ -471,7 +471,7 @@ struct fldResHeadAreaName_t {
 
 struct fldResHeadLink_t {
     u32 num;
-    fldResHeadLinkData_t data[UNKNOWN_ARRAY_SIZE];
+    fldResHeadLinkData_t *data;
 };
 
 struct fldResHeadLinkData_t {
@@ -664,8 +664,8 @@ struct fldResCollisionPoly_t {
     u32 nVertex;
     u32 nFace;
     u32 n3;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    fldResCollisionPolyFace_t pFace[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    fldResCollisionPolyFace_t *pFace;
     fldResCollPolyTome_t *pTome;
 };
 
@@ -727,7 +727,7 @@ struct fldSceneParam_t {
     s32 mode;
     u32 pointResrcID;
     s32 noUnit;
-    u16 pointResName[UNKNOWN_ARRAY_SIZE];
+    u16 *pointResName;
     s32 loadField;
     s32 loadArea;
     s32 loadScript;
@@ -737,8 +737,8 @@ struct fldSceneParam_t {
     s32 camMode;
     u32 padd1;
     u32 padd2;
-    u16 camName[UNKNOWN_ARRAY_SIZE];
-    u16 FoceScript[UNKNOWN_ARRAY_SIZE];
+    u16 *camName;
+    u16 *FoceScript;
     u32 loadMode;
     u32 pad[16];
 };
@@ -809,7 +809,7 @@ struct dds3SystemWork_t {
 
 struct fldAmFileHeader2_t {
     u32 pAmInfo;
-    fldAmAreaData_t pArea[UNKNOWN_ARRAY_SIZE];
+    fldAmAreaData_t *pArea;
     u32 nArea;
 };
 
@@ -929,7 +929,7 @@ struct fldResourcePathTable_t {
 
 struct fldResourcePathTableInfo_t {
     u32 nPathTable;
-    fldResourcePathTable_t pPathTableDat[UNKNOWN_ARRAY_SIZE];
+    fldResourcePathTable_t *pPathTableDat;
 };
 
 struct fldResCam_t {
@@ -938,14 +938,14 @@ struct fldResCam_t {
 
 struct fldResourceDataTable_t {
     u32 resourceID;
-    void pData[UNKNOWN_ARRAY_SIZE];
+    void *pData;
     u32 dataTop;
 };
 
 struct fldResourceTypeTable_t {
     u32 type;
     u32 nResourceDataTable;
-    fldResHead_t pResourceDataTable[UNKNOWN_ARRAY_SIZE];
+    fldResHead_t *pResourceDataTable;
 };
 
 struct fldConstruntObject_t {
@@ -983,16 +983,16 @@ struct fldConstruntAreaFL2_t {
 
 struct fldFileInfoHeaderFL1_t {
     u32 nResourceTypeTable;
-    fldResourceTypeTable_t pResourceTypeTable[UNKNOWN_ARRAY_SIZE];
+    fldResourceTypeTable_t *pResourceTypeTable;
     fldFileAreaDataFL1_t *pAreaData;
 };
 
 struct fldFileInfoHeaderFL2_t {
     u32 nResourceTypeTable;
-    fldResourceTypeTable_t pResourceTypeTable[UNKNOWN_ARRAY_SIZE];
+    fldResourceTypeTable_t *pResourceTypeTable;
     fldFileAreaDataFL2_t *pAreaData;
     u32 nArea;
-    fldConstruntAreaFL2_t pAreaTable[UNKNOWN_ARRAY_SIZE];
+    fldConstruntAreaFL2_t *pAreaTable;
 };
 
 struct fldFileHeader_t {
@@ -1014,16 +1014,16 @@ struct fldResourcePortal_t {
     u32 nVertex;
     u32 nFace;
     u32 attachAreaID[2];
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    sdfIVector3_t pFace[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    sdfIVector3_t *pFace;
 };
 
 struct fldResourceModelRange_t {
     u32 nVertex;
     u32 nFace;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    sdfIVector3_t pFace[UNKNOWN_ARRAY_SIZE];
-    void dummy[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    sdfIVector3_t *pFace;
+    void *dummy;
 };
 
 struct fldResourceRadiusRange_t {

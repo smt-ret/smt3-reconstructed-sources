@@ -20,23 +20,25 @@ void DevilStatusMode(bool sw, bool gc) {
   v6 = Empty_string_();
   if (sw)
   {
-    Log(StringLiteral_16212, v6, 0);
+    Log("DevilStatusMode = ON", v6, 0);
     RootGameObject = GetRootGameObject();
     if (op_Inequality(RootGameObject, 0, 0))
     {
       v11 = RootGameObject;
       v12 = 0;
+LABEL_29:
       SetActive(v11, v12, 0);
     }
   }
   else
   {
-    Log(StringLiteral_16213, v6, 0);
+    Log("DevilStatusMode = OFF", v6, 0);
     v15 = GetRootGameObject();
     if (op_Inequality(v15, 0, 0))
     {
       v11 = v15;
       v12 = 1;
+      goto LABEL_29;
     }
   }
   else
@@ -47,7 +49,7 @@ void DevilStatusMode(bool sw, bool gc) {
   }
   Collect(0);
   v18 = Empty_string_();
-  Log(StringLiteral_16214, v18, 0);
+  Log("!!!!! GC !!!!!", v18, 0);
 }
 
 // 0x1197bf0
@@ -56,8 +58,10 @@ bool IsZensyoMode(void) {
 
   if (!CMB_GBWK)
     return 0;
+LABEL_6:
   if (CMB_GBWK->SeqInfo->Current != 2)
     return 0;
+LABEL_9:
   return CMB_GBWK->bReadPhase;
 }
 
@@ -69,7 +73,7 @@ void OyajiOff(void) {
 
   if (op_Equality(OyajiObj, 0, 0))
   {
-    v5 = Find(StringLiteral_16215, 0);
+    v5 = Find("Character/npc_jakyo", 0);
     gameObject = get_gameObject(v5);
     OyajiObj = gameObject;
   }

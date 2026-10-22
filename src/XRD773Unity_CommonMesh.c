@@ -28,7 +28,71 @@ void SetPOS(XRD773Unity_CommonMesh_POS ***pos, s32 count, f32 x, f32 y, f32 z);
 
 // 0x134d7b0
 void *AllocateNativeArray(XRD773Unity_CommonMesh *this, s32 lenght) {
-    return 0;
+  s32 m_Length;
+  s32 v6;
+  void *m_Buffer;
+  s64 v8;
+  s64 v9;
+  s64 v10;
+  void *v11;
+  u64 *v12;
+  System_Tuple_NativeArray_Vector3___NativeArray_Color___o *v13;
+  void *v15;
+  s64 v16;
+  Unity_Collections_NativeArray_Vector3__o v17;
+  Unity_Collections_NativeArray_Color__o v18;
+
+  if ((byte_3F593BE & 1) != 0)
+  {
+    m_Length = this->positionNA.m_Length;
+    if (m_Length >= lenght)
+      goto LABEL_3;
+LABEL_8:
+    if (m_Length >= 1)
+      sub_7FD250(&this->positionNA);
+    v15 = 0;
+    v16 = 0;
+    sub_7FCEE0(&v15, lenght, 4u, 1);
+    v9 = v16;
+    this->positionNA.m_Buffer = v15;
+    *&this->positionNA.m_Length = v9;
+    v6 = this->colorNA.m_Length;
+    if (v6 < lenght)
+      goto LABEL_4;
+LABEL_11:
+    m_Buffer = this->colorNA.m_Buffer;
+    v8 = *&this->colorNA.m_Length;
+    goto LABEL_12;
+  }
+  m_Length = this->positionNA.m_Length;
+  if (m_Length < lenght)
+    goto LABEL_8;
+LABEL_3:
+  v6 = this->colorNA.m_Length;
+  if (v6 >= lenght)
+    goto LABEL_11;
+LABEL_4:
+  if (v6 >= 1)
+    sub_7FBE50(&this->colorNA);
+  v15 = 0;
+  v16 = 0;
+  sub_7FBAE0(&v15, lenght, 4u, 1);
+  m_Buffer = v15;
+  v8 = v16;
+  this->colorNA.m_Buffer = v15;
+  *&this->colorNA.m_Length = v8;
+LABEL_12:
+  this->nativePoints = lenght;
+  v11 = this->positionNA.m_Buffer;
+  v10 = *&this->positionNA.m_Length;
+  v12 = Allocate(System_Tuple_NativeArray_Vector3___NativeArray_Color);
+  v17.m_Buffer = v11;
+  *&v17.m_Length = v10;
+  v18.m_Buffer = m_Buffer;
+  *&v18.m_Length = v8;
+  v13 = v12;
+  _NativeArray_Color_____ctor(v12, v17, v18);
+  return v13;
 }
 
 // 0x134d920
@@ -40,12 +104,14 @@ s32 **AlocateIndexTable(XRD773Unity_CommonMesh *this, s32 point) {
     result = this->index;
     if (SLODWORD(result->max_length) >= point)
       return result;
+LABEL_5:
     result = NewSpecific(s32, point);
     this->index = result;
     return result;
   }
   result = this->index;
   if (SLODWORD(result->max_length) < point)
+    goto LABEL_5;
   return result;
 }
 
@@ -139,6 +205,10 @@ void FillIndexTable(XRD773Unity_CommonMesh *this, s32 cnt) {
     index = v6;
     v8 = 0;
     v9 = v5 - 1;
+    if (!LODWORD(v6->max_length))
+    {
+LABEL_7:
+    }
     while (1)
     {
       index->m_Items[v8] = v8;
@@ -146,6 +216,7 @@ void FillIndexTable(XRD773Unity_CommonMesh *this, s32 cnt) {
         break;
       index = this->index;
       if (++v8 >= LODWORD(index->max_length))
+        goto LABEL_7;
     }
   }
 }
@@ -192,6 +263,20 @@ sdfVector2_t **GetUvTable(XRD773Unity_CommonMesh *this) {
 
 // 0x134d5f0
 void OnDestroy(XRD773Unity_CommonMesh *this) {
+  UnityEngine_Object_o *mesh;
+  UnityEngine_MeshFilter_o *Component_GUILayer;
+  s32 m_Length;
+
+  mesh = this->mesh;
+  Destroy_27360000(mesh);
+  Component_GUILayer = GetComponent_GUILayer_(this);
+  set_sharedMesh(Component_GUILayer, 0);
+  m_Length = this->positionNA.m_Length;
+  this->mesh = 0;
+  if (m_Length >= 1)
+    sub_7FD250(&this->positionNA);
+  if (this->colorNA.m_Length >= 1)
+    sub_7FBE50(&this->colorNA);
 }
 
 // 0x134ddb0
@@ -240,10 +325,80 @@ void SetCOL4(XRD773Unity_CommonMesh_COL ***col, s32 count, s32 r, s32 g, s32 b) 
 
 // 0x134dab0
 void SetColor(XRD773Unity_CommonMesh *this, void col, s32 length) {
+  s64 v5;
+  void *m_Buffer;
+  struct UnityEngine_Color_array *color;
+  Unity_Collections_NativeArray_Color__o v9;
+  Unity_Collections_NativeArray_T__o v10;
+
+  v9 = col;
+  v5 = *&col.m_Length;
+  m_Buffer = col.m_Buffer;
+  color = this->color;
+  if (color && v5 == LODWORD(color->max_length))
+  {
+    if (v5 >= length)
+    {
+      v10.m_Buffer = m_Buffer;
+      *&v10.m_Length = v5;
+      _Copy_8373120(v10, 0, color, 0, length);
+    }
+  }
+  else
+  {
+    this->color = sub_7FBED0(&v9);
+  }
 }
 
 // 0x134e340
 void SetColorTable(XRD773Unity_CommonMesh *this, XRD773Unity_CommonMesh_COL **col) {
+  struct UnityEngine_Color_array *v5;
+  u32 *max_length;
+  struct UnityEngine_Color_array *color;
+  s64 v8;
+  u64 v9;
+  u8 *v11;
+  s32 v12;
+  s32 v14;
+  f32 v15;
+  s32 v16;
+  s32 v17;
+  s32 v18;
+  s64 v20;
+  s64 v21;
+
+  v5 = NewSpecific(UnityEngine_Color, LODWORD(col->max_length));
+  this->color = v5;
+  max_length = col->max_length;
+  if (max_length >= 1)
+  {
+    color = v5;
+    v8 = 0;
+    v9 = 0;
+    while (1)
+    {
+      v11 = col->m_Items[v9];
+      v12 = v11[16];
+      v14 = v11[20];
+      v15 = v11[24] / 255.0;
+      v20 = 0;
+      v21 = 0;
+      sub_19EC630(&v20, v12 / 255.0, v14 / 255.0, v15, 0.5);
+      v16 = HIDWORD(v20);
+      v18 = v21;
+      v17 = HIDWORD(v21);
+      max_length = (color + v8);
+      max_length[8] = v20;
+      max_length[9] = v16;
+      max_length[10] = v18;
+      max_length[11] = v17;
+      LODWORD(max_length) = col->max_length;
+      if (++v9 >= max_length)
+        break;
+      color = this->color;
+      v8 += 16;
+    }
+  }
 }
 
 // 0x134db90
@@ -352,10 +507,77 @@ void SetPOS4(XRD773Unity_CommonMesh_POS ***pos, s32 count, f32 x, f32 y, f32 z, 
 
 // 0x134d9c0
 void SetPosition(XRD773Unity_CommonMesh *this, void pos, s32 length) {
+  s64 v5;
+  void *m_Buffer;
+  struct UnityEngine_Vector3_array *position;
+  Unity_Collections_NativeArray_Vector3__o v9;
+  Unity_Collections_NativeArray_T__o v10;
+
+  v9 = pos;
+  v5 = *&pos.m_Length;
+  m_Buffer = pos.m_Buffer;
+  position = this->position;
+  if (position && v5 == LODWORD(position->max_length))
+  {
+    if (v5 >= length)
+    {
+      v10.m_Buffer = m_Buffer;
+      *&v10.m_Length = v5;
+      _Copy_8378240(v10, 0, position, 0, length);
+    }
+  }
+  else
+  {
+    this->position = sub_7FD2D0(&v9);
+  }
 }
 
 // 0x134dfe0
 void SetPositionTable(XRD773Unity_CommonMesh *this, XRD773Unity_CommonMesh_POS **pos) {
+  struct UnityEngine_Vector3_array *v5;
+  u32 *max_length;
+  struct UnityEngine_Vector3_array *position;
+  s64 v8;
+  u64 v9;
+  XRD773Unity_CommonMesh_POS_o *v11;
+  f32 z;
+  f32 v14;
+  f32 x;
+  s32 v16;
+  s32 v17;
+  s64 v19;
+  s32 v20;
+
+  v5 = NewSpecific(UnityEngine_Vector3, LODWORD(pos->max_length));
+  this->position = v5;
+  max_length = pos->max_length;
+  if (max_length >= 1)
+  {
+    position = v5;
+    v8 = 0;
+    v9 = 0;
+    while (1)
+    {
+      v11 = pos->m_Items[v9];
+      z = v11->z;
+      v14 = -v11->y;
+      x = v11->x;
+      v20 = 0;
+      v19 = 0;
+      sub_8524C0(&v19, x, v14, z);
+      v16 = HIDWORD(v19);
+      v17 = v20;
+      max_length = (position + v8);
+      max_length[8] = v19;
+      max_length[9] = v16;
+      max_length[10] = v17;
+      LODWORD(max_length) = pos->max_length;
+      if (++v9 >= max_length)
+        break;
+      position = this->position;
+      v8 += 12;
+    }
+  }
 }
 
 // 0x134daa0
@@ -365,6 +587,28 @@ void SetPosition_20241056(XRD773Unity_CommonMesh *this, sdfVector3_t **pos) {
 
 // 0x134de00
 void SetSprite(XRD773Unity_CommonMesh *this, void *sprite) {
+  struct UnityEngine_Texture_o *texture;
+  UnityEngine_Rect_o textureRect;
+
+  *&textureRect.m_XMin = 0;
+  texture = get_texture(sprite);
+  if (!this->use_texture)
+  {
+    this->use_texture = 1;
+    (this->klass->vtable._6__SetDrawMode.methodPtr)(
+      this,
+      this->draw_mode,
+      this->klass->vtable._6__SetDrawMode.method);
+  }
+  this->texture = texture;
+  this->ou = 0.0;
+  this->ov = (texture->klass->vtable._6_get_height.methodPtr)(
+                      texture,
+                      texture->klass->vtable._6_get_height.method);
+  textureRect = get_textureRect(sprite);
+  this->ou = sub_1A1D9D0(&textureRect);
+  textureRect = get_textureRect(sprite);
+  this->ov = sub_1A1DA70(&textureRect);
 }
 
 // 0x134dd30
@@ -429,6 +673,61 @@ void SetUseIndexMax(XRD773Unity_CommonMesh *this, s32 index) {
 
 // 0x134e180
 void SetUvTable(XRD773Unity_CommonMesh *this, XRD773Unity_CommonMesh_POS **pos) {
+  struct UnityEngine_Vector2_array *v5;
+  struct UnityEngine_Vector2_array *uv;
+  s64 v7;
+  u64 v8;
+  XRD773Unity_CommonMesh_POS_o **m_Items;
+  f32 ou;
+  f32 x;
+  s32 v13;
+  f32 ov;
+  s32 v15;
+  f32 y;
+  s32 v18;
+  s32 v19;
+  char *v21;
+  u32 max_length;
+  s64 v23;
+
+  if (this->use_texture)
+  {
+    v5 = NewSpecific(UnityEngine_Vector2, LODWORD(pos->max_length));
+    this->uv = v5;
+    if (pos->max_length >= 1)
+    {
+      uv = v5;
+      v7 = 0;
+      v8 = 0;
+      m_Items = pos->m_Items;
+      ou = this->ou;
+      while (1)
+      {
+        x = m_Items[v8]->x;
+        v13 = (this->texture->klass->vtable._4_get_width.methodPtr)(
+                this->texture,
+                this->texture->klass->vtable._4_get_width.method);
+        ov = this->ov;
+        v15 = v13;
+        y = m_Items[v8]->y;
+        v18 = (this->texture->klass->vtable._6_get_height.methodPtr)(
+                this->texture,
+                this->texture->klass->vtable._6_get_height.method);
+        v23 = 0;
+        sub_851710(&v23, (ou + x) / v15, (ov - y) / v18);
+        v19 = HIDWORD(v23);
+        v21 = uv + v7;
+        *(v21 + 8) = v23;
+        *(v21 + 9) = v19;
+        max_length = pos->max_length;
+        if (++v8 >= max_length)
+          break;
+        uv = this->uv;
+        v7 += 8;
+        ou = this->ou;
+      }
+    }
+  }
 }
 
 // 0x134e320

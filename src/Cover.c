@@ -30,10 +30,10 @@ void Awake(Cover *this) {
   DontDestroyOnLoad(gameObject);
   __scene = this;
   transform = get_transform(this, 0);
-  v8 = Find(transform, StringLiteral_4660, 0);
+  v8 = Find(transform, "Blinder", 0);
   __blinder = GetComponent_GUILayer_(v8);
   v9 = get_transform(this, 0);
-  v10 = Find(v9, StringLiteral_4661, 0);
+  v10 = Find(v9, "titleloading", 0);
   __load_mark = GetComponent_GUILayer_(v10);
 }
 
@@ -64,15 +64,11 @@ void *Loading(Cover *this, char *scene) {
 
 // 0xfe4130
 void WaitOpen(Cover *this, bool wait) {
-  Cover_c *v4;
-  struct Cover_StaticFields *static_fields;
   UnityEngine_AsyncOperation_o *op;
 
   open = !wait;
-  static_fields = v4->static_fields;
-  op = static_fields->op;
   if (op)
   {
-    set_allowSceneActivation(op, static_fields->open);
+    set_allowSceneActivation(op, open);
   }
 }

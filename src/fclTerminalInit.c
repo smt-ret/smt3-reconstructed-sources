@@ -22,7 +22,7 @@ static char *gNmlTerminalMenuStr3[4];
 static char *gSmlTerminalMenuStr[4];
 static s8 FCL_NML_TERM_MENU_ARRAY;
 static s8 FCL_SML_TERM_MENU_ARRAY;
-static u8 gCommandFlag[UNKNOWN_ARRAY_SIZE];
+static u8 *gCommandFlag;
 
 void ButtonGuideDispOff(void);
 s32 CMP_XM(s32 a);
@@ -90,9 +90,7 @@ s8 fclChkTerminalProcess(void) {
 
 // 0xf7d690
 void *fclDestroyTerminal(dds3ProcessID_t *PID) {
-  fclTerminalInit_c *v3;
   struct fclTerminalInit_StaticFields **p_static_fields;
-  struct fclTerminalInit_StaticFields *static_fields;
   struct fclDataTerminal_t_o *GBWK;
   s32 TerminalType;
   s32 TerminalNo;
@@ -103,11 +101,9 @@ void *fclDestroyTerminal(dds3ProcessID_t *PID) {
   System_String_o *Appendix;
   System_String_o *v22;
 
-  p_static_fields = &v3->static_fields;
-  static_fields = v3->static_fields;
-  if (static_fields->GBWK)
+  if (GBWK)
   {
-    static_fields->gProcessStat = 0;
+    gProcessStat = 0;
     GBWK = (*p_static_fields)->GBWK;
     TerminalType = GBWK->TerminalType;
     TerminalNo = GBWK->TerminalNo;
@@ -116,16 +112,16 @@ void *fclDestroyTerminal(dds3ProcessID_t *PID) {
     fclScriptForcedEnd(ScriptPID);
     FinalizeGameObject();
     FinalizeUI();
-    Remove(StringLiteral_16475, 0);
-    Remove(StringLiteral_16174, 0);
+    Remove("TERMINAL_MES_DATA", 0);
+    Remove("FACILITY", 0);
     WindowDispOff(0);
     asset_bc = get_asset_bc();
-    UnloadAB(asset_bc, StringLiteral_4703);
+    UnloadAB(asset_bc, "f804");
     v19 = get_asset_bc();
-    UnloadAB(v19, StringLiteral_4737);
+    UnloadAB(v19, "e804");
     v20 = get_asset_bc();
     Appendix = GetAppendix();
-    v22 = Concat_5224608(StringLiteral_4737, Appendix);
+    v22 = Concat_5224608("e804", Appendix);
     UnloadAB(v20, v22);
     GBWK = 0;
     trmEndBGM();
@@ -158,14 +154,14 @@ fclDataTerminal_t *fclInitTerminal(s32 TerminalType, s32 TerminalNo, cmpSeqInfo_
   cmpInitSeqInfo(SeqInfo, pParentSeqInfo);
   asset_bc = get_asset_bc();
   Appendix = GetAppendix();
-  v15 = Concat_5224608(StringLiteral_4737, Appendix);
+  v15 = Concat_5224608("e804", Appendix);
   v16 = GetAppendix();
-  v17 = Concat_5224608(StringLiteral_4737, v16);
+  v17 = Concat_5224608("e804", v16);
   Load(asset_bc, v15, v17, 0);
   v18 = get_asset_bc();
-  Load(v18, StringLiteral_4737, StringLiteral_4737, 0);
+  Load(v18, "e804", "e804", 0);
   v19 = get_asset_bc();
-  Load(v19, StringLiteral_4703, StringLiteral_4703, 0);
+  Load(v19, "f804", "f804", 0);
   v21 = v7->SeqInfo;
   v7->Initialized = 0;
   v21->Current = 0;
@@ -174,6 +170,7 @@ fclDataTerminal_t *fclInitTerminal(s32 TerminalType, s32 TerminalNo, cmpSeqInfo_
   v7->ScriptPID = 0;
   v7->TerminalType = v6;
   v7->TerminalNo = v5;
+LABEL_19:
   gEventStat = 0;
   nbResetEncountCount();
   InitializeModelCameraForUnity();
@@ -198,9 +195,11 @@ void fclInitTerminalCore(s32 TerminalType, s32 TerminalNo, fclDataTerminal_t *pD
   {
     trmCreateTerminalList(pData, *&TerminalNo);
     if (!flg)
+      goto LABEL_10;
   }
   CmdSelInfo = pData->CmdSelInfo;
   trmInitRootMenu(v8, v7, CmdSelInfo, pData);
+LABEL_10:
   TransWindow = pData->TransWindow;
   TerminalCnt = pData->TerminalCnt;
   TexHandle = pData->TexHandle;
@@ -210,10 +209,40 @@ void fclInitTerminalCore(s32 TerminalType, s32 TerminalNo, fclDataTerminal_t *pD
 
 // 0xf7dfb0
 s32 fclTerminal(void) {
-    scrSetIntReturnValue(0);
-    IsLoad(0, 0);
-    trmStartBGM(0, 0, 0);
-    return 0;
+  u32 gProcessStat;
+  s32 gEventStat;
+  AssetBundleCtrl_o *asset_bc;
+
+  else
+  {
+    if (gProcessStat >= 2)
+      goto LABEL_6;
+  }
+  gCallMode = 1;
+  if (gEventStat == 5)
+  {
+    gEventStat = 3;
+    GBWK->SeqInfo->Current = 0;
+    GBWK->SeqInfo->Change = 1;
+    GBWK->EventEnd = 0;
+    goto LABEL_42;
+  }
+  if (gEventStat != 4)
+  {
+    if (gEventStat == 2)
+    {
+      asset_bc = get_asset_bc();
+      if (IsLoad(asset_bc, "e804"))
+      {
+        trmStartBGM(GBWK->TerminalType, GBWK->TerminalNo, 0);
+        gEventStat = 3;
+      }
+    }
+    goto LABEL_42;
+  }
+  gEventStat = 5;
+  scrSetIntReturnValue(2);
+  return 1;
 }
 
 // 0xf7e5e0
@@ -249,35 +278,55 @@ s32 fclTerminalEnableTalk(void) {
 // 0xf7e2f0
 s32 fclTerminalMenuMask(void) {
   s32 IntPara;
-  struct fclTerminalInit_StaticFields *static_fields;
   struct System_Byte_array *gCommandFlag;
 
   IntPara = scrGetIntPara(0);
   else
   {
-    static_fields = fclTerminalInit->static_fields;
-    if (IntPara >= static_fields->FCL_NML_TERM_MENU_ARRAY)
+    if (IntPara >= FCL_NML_TERM_MENU_ARRAY)
       return 1;
   }
-  gCommandFlag = static_fields->gCommandFlag;
   gCommandFlag->m_Items[IntPara] |= 1u;
   return 1;
 }
 
 // 0xf7e400
 s32 fclTerminalMenuMaskDef(void) {
-    return 0;
+  s64 v2;
+  u64 v4;
+  struct System_Byte_array *gCommandFlag;
+
+  v2 = 32;
+  v4 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    if (v4 >= FCL_NML_TERM_MENU_ARRAY)
+      return 1;
+    else
+    {
+      if (v4 >= LODWORD(gCommandFlag->max_length))
+        goto LABEL_12;
+    }
+    *(&gCommandFlag->obj.klass + v2++) = 0;
+    v4 = v2 - 32;
+      goto LABEL_6;
+  }
 }
 
 // 0xf7dd60
 s32 fclTerminalProcessEnd(void) {
   if (evtBitCheck(58))
+    goto LABEL_7;
   if (!fldProc_CallSisetuReturn())
     return 0;
+LABEL_7:
   FadeOutWindow();
-  dds3KillProcessName(StringLiteral_16476, 1);
-  dds3KillProcessName(StringLiteral_16477, 1);
-  dds3KillProcessName(StringLiteral_16478, 1);
+  dds3KillProcessName("terminal", 1);
+  dds3KillProcessName("terminal_draw", 1);
+  dds3KillProcessName("terminal_update", 1);
   return 1;
 }
 
@@ -300,14 +349,14 @@ void fclTerminalProcessStart(s32 TerminalType, s32 TerminalNo) {
     0,
     Method_fclTerminalCalc_trmCalc__);
   data = GBWK;
-  dds3StartProcess(StringLiteral_16476, 0x404u, 1, 1, v7, 0, 0, 0, data, 0);
+  dds3StartProcess("terminal", 0x404u, 1, 1, v7, 0, 0, 0, data, 0);
   v10 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v10,
     0,
     Method_fclTerminalDraw_trmDraw__);
   dds3StartProcess(
-    StringLiteral_16477,
+    "terminal_draw",
     0x2B14u,
     1,
     1,
@@ -328,7 +377,7 @@ void fclTerminalProcessStart(s32 TerminalType, s32 TerminalNo) {
     0,
     Method_fclTerminalInit_fclDestroyTerminal__);
   dds3StartProcess(
-    StringLiteral_16478,
+    "terminal_update",
     0x5210u,
     1,
     1,
@@ -368,12 +417,12 @@ void fclUpdateTerminalInit(fclDataTerminal_t *data) {
   s32 TerminalType;
   s32 TerminalNo;
 
-  LoadKeys(1, StringLiteral_4737, 0);
-  LoadKeys(3, StringLiteral_4737, 0);
+  LoadKeys(1, "e804", 0);
+  LoadKeys(3, "e804", 0);
   asset_bc = get_asset_bc();
-  data->pScriptData = LoadFileByte(asset_bc, StringLiteral_4737, StringLiteral_16474);
-  LoadLocalizeText(StringLiteral_4737, StringLiteral_16475);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_16174);
+  data->pScriptData = LoadFileByte(asset_bc, "e804", "dds3data/facility/scr/terminal/message.bf.bytes");
+  LoadLocalizeText("e804", "TERMINAL_MES_DATA");
+  LoadLocalizeText("common", "FACILITY");
   InitializeUI(804);
   InitializeGameObject();
   TerminalType = data->TerminalType;
@@ -389,7 +438,8 @@ s8 trmChkEventWait(void) {
   System_String_o *v7;
   System_String_o *pBuf;
 
-  pBuf = StringLiteral_416;
+  pBuf = "";
+LABEL_7:
   else if (gEventStat == 2)
   {
     return 1;
@@ -409,26 +459,114 @@ s8 trmChkEventWait(void) {
 
 // 0xf7c5e0
 s32 trmChkJumpSmallToLearge(fclDataTerminal_t *pData) {
+  s64 i;
+  struct System_SByte_array *TerminalList;
+  u64 *v7;
+  struct System_SByte_array *v9;
+  s32 v12;
+  s64 v13;
+  char v15[4];
+
+  if (pData->TerminalCnt < 1)
     return 0;
+  for (i = 32; ; ++i)
+  {
+    TerminalList = pData->TerminalList;
+    v15[0] = *(&TerminalList->obj.klass + i);
+    v7 = sub_8D3950(sbyte, v15);
+    Write_2930400("{0:x}\n", v7);
+    v9 = pData->TerminalList;
+    v12 = *(&v9->obj.klass + i);
+    if (v12 == *(&_get_Item(
+                     fldHitData->_fldSaveSml,
+                     pData->TerminalNo)->isLongReference
+                + 1))
+      break;
+    v13 = i - 31;
+    if (v13 >= pData->TerminalCnt)
+      return 0;
+  }
+  return 1;
 }
 
 // 0xf7ba80
 s8 trmCreateEventProcessName(s32 Type, char **pBuf) {
-    trmGetEventNo(0, 0);
+  s32 EventNo;
+  u64 *v7;
+  s64 *v8;
+  s32 v10;
+  s32 v11;
+
+  EventNo = trmGetEventNo(1, GBWK);
+  if (EventNo < 0)
     return 0;
+  if (Type)
+  {
+    v10 = EventNo;
+    v7 = sub_8D3950(s32, &v10);
+    v8 = &"e{0:D}_trm";
+  }
+  else
+  {
+    v11 = EventNo;
+    v7 = sub_8D3950(s32, &v11);
+    v8 = &"e{0:D}_main";
+  }
+  *pBuf = Format(*v8, v7, 0);
+  return 1;
 }
 
 // 0xf7bf20
 void trmCreateTerminalList(fclDataTerminal_t *pDataTerminal) {
-    evtBitCheck(0);
-    DLCTerminalList(0);
+  u64 i;
+  struct System_Int32_array *gFldSaveNmlIdxTbl;
+  s32 v7;
+  System_WeakReference_o *Item;
+  u32 TerminalCnt;
+  struct System_SByte_array *TerminalList;
+  u64 *v16;
+  s8 v17[4];
+  fclDataTerminal_t_o *term;
+
+  term = pDataTerminal;
+  pDataTerminal->TerminalCnt = 0;
+  for (i = 0; i != 32; ++i)
+  {
+    v7 = gFldSaveNmlIdxTbl->m_Items[i];
+    if (term->TerminalType || v7 != term->TerminalNo)
+    {
+      if (*(&_get_Item(
+                fldHitData->_fldSaveNml,
+                v7)->isLongReference
+           + 1))
+      {
+        Item = _get_Item(
+                 fldHitData->_fldSaveNml,
+                 v7);
+        if (evtBitCheck(*(&Item->isLongReference + 1), 0))
+        {
+          TerminalCnt = term->TerminalCnt;
+          TerminalList = term->TerminalList;
+          ++term->TerminalCnt;
+          TerminalList->m_Items[TerminalCnt] = v7;
+        }
+      }
+    }
+  }
+  if (evtBitCheck(1217))
+  {
+    DLCTerminalList(&term);
+  }
+  v17[0] = term->TerminalCnt;
+  v16 = sub_8D3950(sbyte, v17);
+  Write_2930400("Transport count = {0:D}\n", v16);
 }
 
 // 0xf7bb80
 void trmEndBGM(void) {
   s32 Id;
 
-  Id = FindId(0, StringLiteral_11772);
+  Id = FindId(0, "TERM_BGM01");
   p2sdFadeOut(Id);
 }
 
@@ -438,7 +576,7 @@ s8 trmEndEvent(s32 BgmMode) {
   System_String_o *v10;
   System_String_o *pBuf;
 
-  pBuf = StringLiteral_416;
+  pBuf = "";
   if (BgmMode)
   {
     trmEndBGM();
@@ -512,6 +650,7 @@ s32 trmGetEventNo(s32 Mode, fclDataTerminal_t *pData) {
       }
       else
       {
+LABEL_21:
         v9 = 804;
       }
     }
@@ -522,7 +661,13 @@ s32 trmGetEventNo(s32 Mode, fclDataTerminal_t *pData) {
       {
         case 1u:
           if (evtBitCheck(13))
+            goto LABEL_21;
           v11 = evtBitCheck(9);
+          if (v11)
+          {
+              goto LABEL_52;
+            goto LABEL_50;
+          }
           v24 = gCommandFlag;
           v24->m_Items[0] |= 2u;
           if (Mode)
@@ -534,6 +679,7 @@ s32 trmGetEventNo(s32 Mode, fclDataTerminal_t *pData) {
           break;
         case 2u:
           if (evtBitCheck(13))
+            goto LABEL_21;
           if (evtBitCheck(9) && evtBitCheck(10))
           {
             v18 = gCommandFlag;
@@ -548,10 +694,13 @@ s32 trmGetEventNo(s32 Mode, fclDataTerminal_t *pData) {
           else
           {
             {
+LABEL_50:
             }
+LABEL_52:
             v21 = gCommandFlag;
             v21->m_Items[0] |= 2u;
             if (!Mode)
+              goto LABEL_21;
             v23 = pData->CmdSelInfo->CursorInfo->CursorPos;
             ++v23->InvisibleListNums;
             v9 = 804;
@@ -569,6 +718,7 @@ s32 trmGetEventNo(s32 Mode, fclDataTerminal_t *pData) {
           break;
         case 9u:
           if (evtBitCheck(83))
+            goto LABEL_21;
           if (evtBitCheck(79))
           {
             v9 = 662;
@@ -608,9 +758,46 @@ s32 trmGetEventStat(void) {
 
 // 0xf7c760
 void trmInitRootMenu(s8 TerminalType, u16 TerminalNo, cmpCmdSelInfo_t *pCmdSelInfo, fclDataTerminal_t *pData) {
-    SetRootMenuText(0, 0);
-    trmChkJumpSmallToLearge(0);
-    trmSetNmlRootMenu(0, 0, 0);
+  System_String_array *gSmlTerminalMenuStr;
+  cmpCursorInfo_t_o *CursorInfo;
+  struct System_Byte_array *v20;
+  struct System_Byte_array *gCommandFlag;
+  System_Byte_array *v24;
+  cmpCmdSelInfo_t_o *csel;
+
+  csel = pCmdSelInfo;
+  Clear(gCommandFlag, 0, gCommandFlag->max_length, 0);
+  if (TerminalType)
+  {
+    SetRootMenuText(&csel, gSmlTerminalMenuStr);
+    if (trmChkJumpSmallToLearge(pData))
+    {
+        goto LABEL_28;
+LABEL_15:
+LABEL_28:
+      gCommandFlag->m_Items[2] |= 2u;
+      pCmdSelInfo->CursorInfo->CursorPos->InvisibleListNums = 1;
+      CursorInfo = pCmdSelInfo->CursorInfo;
+        goto LABEL_31;
+LABEL_21:
+      goto LABEL_31;
+    }
+    else
+    {
+      v20 = gCommandFlag;
+      if (!LODWORD(v20->max_length))
+        goto LABEL_26;
+    }
+    v20->m_Items[0] |= 1u;
+      goto LABEL_28;
+    goto LABEL_15;
+  }
+  trmSetNmlRootMenu(TerminalNo, pCmdSelInfo, pData);
+  CursorInfo = pCmdSelInfo->CursorInfo;
+    goto LABEL_21;
+LABEL_31:
+  v24 = gCommandFlag;
+  cmpSetCursorFlag(CursorInfo, v24);
 }
 
 // 0xf7c150
@@ -648,6 +835,7 @@ void trmSetNmlRootMenu(u16 TerminalNo, cmpCmdSelInfo_t *pCmdSelInfo, fclDataTerm
     p_gNmlTerminalMenuStr2 = &gNmlTerminalMenuStr2;
     if (TerminalNo >= 0x20u)
     {
+LABEL_11:
       p_gNmlTerminalMenuStr2 = &gNmlTerminalMenuStr3;
     }
   }
@@ -655,8 +843,10 @@ void trmSetNmlRootMenu(u16 TerminalNo, cmpCmdSelInfo_t *pCmdSelInfo, fclDataTerm
   {
     p_gNmlTerminalMenuStr2 = &gNmlTerminalMenuStr;
     if (TerminalNo >= 0x20u)
+      goto LABEL_11;
   }
   v11 = *p_gNmlTerminalMenuStr2;
+LABEL_23:
   _Clear(menu_msg);
   SetRootMenuText(&csel, v11);
   gCommandFlag->m_Items[2] |= 2u;
@@ -665,14 +855,11 @@ void trmSetNmlRootMenu(u16 TerminalNo, cmpCmdSelInfo_t *pCmdSelInfo, fclDataTerm
 
 // 0xf7be00
 void trmSetProcessTerm(void) {
-  fclTerminalInit_c *v2;
-  struct fclTerminalInit_StaticFields *static_fields;
   dds3ProcessID_t_o *ScriptPID;
 
-  static_fields = v2->static_fields;
-  if (static_fields->gCallMode)
+  if (gCallMode)
   {
-    ScriptPID = static_fields->GBWK->ScriptPID;
+    ScriptPID = GBWK->ScriptPID;
     fclScriptForcedEnd(ScriptPID);
     gEventStat = 6;
     gProcessStat = 2;
@@ -688,26 +875,24 @@ void trmStartBGM(s32 TerminalType, s32 TerminalNo, bool nocheck) {
   EventNo = trmGetEventNo(0, GBWK, nocheck);
   if (TerminalType || nocheck || TerminalNo > 9 || ((1 << TerminalNo) & 0x20A) == 0 || EventNo == 804)
   {
-    Id = FindId(0, StringLiteral_11772);
+    Id = FindId(0, "TERM_BGM01");
     p2sdPlayBGM(Id);
   }
 }
 
 // 0xf78770
 s8 trmStartEvent(void) {
-  fclTerminalInit_c *v3;
-  struct fclTerminalInit_StaticFields *static_fields;
   s32 gEventStat;
   s32 EventNo;
 
-  static_fields = v3->static_fields;
-  gEventStat = static_fields->gEventStat;
+LABEL_7:
   if (gEventStat == 6 || gEventStat == 2)
     return 1;
   if (gEventStat)
     return 0;
   if (trmGetEventNo(1, GBWK) < 0)
     return 0;
+LABEL_20:
   EventNo = trmGetEventNo(1, GBWK);
   evtStartEvent(EventNo);
   gEventStat = 2;

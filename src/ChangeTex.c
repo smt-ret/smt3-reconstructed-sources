@@ -61,46 +61,48 @@ void ChangeSprite(ChangeTex *this, void **sprData, char *loadPath, bool checkPla
   v9 = Allocate(ChangeTex___c__DisplayClass7_0);
   _ctor(v9, 0);
   v9[1].klass = sprData;
-  if (!op_Equality(loadPath, StringLiteral_416, 0))
+  if (!op_Equality(loadPath, "", 0))
   {
     Language = GetLanguage(0);
     if (Language <= 7)
     {
-      v13 = StringLiteral_416;
+      v13 = "";
       v14 = *off_3B22D40[Language];
       if (checkPlatform)
       {
         Platform = GetPlatform(0);
         if (Platform == 2)
         {
-          v16 = StringLiteral_4642;
-          v17 = &StringLiteral_4643;
+          v16 = "_steam";
+          v17 = &"steam/";
         }
         else if (Platform == 1)
         {
-          v16 = StringLiteral_4640;
-          v17 = &StringLiteral_4641;
+          v16 = "_ps4";
+          v17 = &"ps4/";
         }
         else
         {
           v16 = v13;
           if (Platform)
-          v16 = StringLiteral_4638;
-          v17 = &StringLiteral_4639;
+            goto LABEL_20;
+          v16 = "_switch";
+          v17 = &"switch/";
         }
         v13 = *v17;
       }
       else
       {
-        v16 = StringLiteral_416;
+        v16 = "";
       }
-      v18 = Concat_5221536(StringLiteral_4644, v16, v14);
-      v19 = StringLiteral_4645;
+LABEL_20:
+      v18 = Concat_5221536("ui_tex", v16, v14);
+      v19 = "tex/";
       v20 = v18;
-      v21 = Concat_5271136(StringLiteral_4646, v14, StringLiteral_74, v13);
-      v22 = StringLiteral_4647;
+      v21 = Concat_5271136("tex", v14, "/", v13);
+      v22 = "_ja.";
       v23 = v21;
-      v24 = Concat_5221536(v14, v16, StringLiteral_87);
+      v24 = Concat_5221536(v14, v16, ".");
       v25 = Replace_5267216(loadPath, v19, v23);
       this->changePath = Replace_5267216(v25, v22, v24);
       asset_bc = get_asset_bc();
@@ -149,7 +151,7 @@ void ChangeSprite(ChangeTex *this, void **sprData, char *loadPath, bool checkPla
                 }
                 else
                 {
-                  v45 = Concat_5224608(StringLiteral_4648, this->changePath);
+                  v45 = Concat_5224608("ERROR NON SPRITE", this->changePath);
                   {
                   }
                   Log(v45, 0);

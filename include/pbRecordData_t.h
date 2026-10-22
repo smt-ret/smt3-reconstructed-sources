@@ -10,7 +10,7 @@ struct pbRecordData_t {
     u8 c_num;
     u8 b_num;
     u8 f_num;
-    pbRecordCharData_t c[UNKNOWN_ARRAY_SIZE];
-    pbRecordMapData_t blk[UNKNOWN_ARRAY_SIZE];
-    pbRecordMapData_t flor[UNKNOWN_ARRAY_SIZE];
+    pbRecordCharData_t *c;
+    pbRecordMapData_t *blk;
+    pbRecordMapData_t *flor;
 };

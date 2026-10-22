@@ -1,7 +1,7 @@
 #include "types.h"
 
-static char txt[UNKNOWN_ARRAY_SIZE];
-static char txt_loc[UNKNOWN_ARRAY_SIZE];
+static char *txt;
+static char *txt_loc;
 
 char *GetLocalizeText(char *ID);
 bool IsDLC(void);
@@ -25,27 +25,36 @@ char *Get(s32 id) {
   s64 *v12;
 
   v4 = convDLCDevilNumber(id);
-  else  if (v4 == 192)
+  else if (!IsZensyoMode())
   {
-    v12 = &StringLiteral_12705;
+    goto LABEL_13;
+  }
+  if (v4 == 192)
+  {
+    v12 = &"<DEVILMC_L0192>";
+    goto LABEL_39;
   }
   if (v4 == 191)
   {
-    v12 = &StringLiteral_12704;
+LABEL_21:
+    v12 = &"<DEVIL_L0192>";
+LABEL_39:
     v9 = *v12;
     return GetLocalizeText(v9);
   }
+LABEL_13:
   v9 = txt_loc->m_Items[v4];
   v10 = evtBitCheck(3712);
   v11 = v4 - 339;
   if (v10)
   {
     if (v11 < 3 || v4 == 192)
+      goto LABEL_21;
   }
   else if (v11 < 3 || v4 == 192)
   {
     if (IsDLC())
-      v9 = Replace_5267216(v9, StringLiteral_12706, StringLiteral_416);
+      v9 = Replace_5267216(v9, "MC", "");
   }
   return GetLocalizeText(v9);
 }
@@ -60,14 +69,14 @@ char *GetEncyc(s32 id) {
   v3 = convDLCDevilNumber(id);
   if (v3 == 192)
   {
-    v6 = StringLiteral_12705;
+    v6 = "<DEVILMC_L0192>";
   }
   else
   {
     v5 = v3;
     if (v3 == 191)
     {
-      v6 = StringLiteral_12704;
+      v6 = "<DEVIL_L0192>";
     }
     else
     {
@@ -85,20 +94,25 @@ char *GetTag(s32 id) {
   System_String_o *v10;
 
   v4 = convDLCDevilNumber(id);
-  else  if (v4 == 192)
+  else if (!IsZensyoMode())
   {
-    v6 = &StringLiteral_12705;
+    goto LABEL_13;
+  }
+  if (v4 == 192)
+  {
+    v6 = &"<DEVILMC_L0192>";
     return *v6;
   }
   if (v4 == 191)
   {
-    v6 = &StringLiteral_12704;
+    v6 = &"<DEVIL_L0192>";
     return *v6;
   }
+LABEL_13:
   v10 = txt_loc->m_Items[v4];
   if ((v4 - 339) >= 3 && v4 != 192)
     return v10;
   if (IsDLC())
-    return Replace_5267216(v10, StringLiteral_12706, StringLiteral_416);
+    return Replace_5267216(v10, "MC", "");
   return v10;
 }

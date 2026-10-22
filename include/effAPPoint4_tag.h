@@ -9,7 +9,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effAPPoint4_tag {
     effAPPoint4Param_t *param;
-    effAPPoint4Part_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effAPPoint4Part_tag *pPart;
     effBezier4P_t *pBezier4P;
     sdfMemHandle_t *hMem;
 };

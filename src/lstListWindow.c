@@ -23,7 +23,7 @@ void lstDisableItemAttr(s32 Pos, u8 Attr, lstListWindow_t *pListWindow) {
 
   if (Pos >= 256)
   {
-    SDF_ABORT1(StringLiteral_17068);
+    SDF_ABORT1("Illegal access listwindow item attr.");
   }
   ItemAttr = pListWindow->ItemAttr;
   ItemAttr->m_Items[Pos] &= ~Attr;
@@ -103,7 +103,7 @@ void lstEnableItemAttr(s32 Pos, u8 Attr, lstListWindow_t *pListWindow) {
 
   if (Pos >= 256)
   {
-    SDF_ABORT1(StringLiteral_17068);
+    SDF_ABORT1("Illegal access listwindow item attr.");
   }
   ItemAttr = pListWindow->ItemAttr;
   ItemAttr->m_Items[Pos] |= Attr;

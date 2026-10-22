@@ -52,7 +52,7 @@ s32 Flow8_12(nbNegoProcessData_t **n) {
   nownegophase = (*n)->nownegophase;
   if (nownegophase == 1)
   {
-    RandIntA = dds3GetRandIntA(2u, StringLiteral_5305);
+    RandIntA = dds3GetRandIntA(2u, "8_12");
     flowmsg = (*n)->flowmsg;
     ekucyo = (*n)->ekucyo;
     v10 = RandIntA + 164;
@@ -93,7 +93,7 @@ s32 Flow8_14(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0x80010u);
   v4 = *n;
   nextkouho = v4->nextkouho;
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_5306);
+  RandIntA = dds3GetRandIntA(2u, "8_14");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   return 0;
 }
@@ -191,7 +191,7 @@ s32 Flow8_5(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0x80007u);
   v4 = *n;
   nextkouho = v4->nextkouho;
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_5304);
+  RandIntA = dds3GetRandIntA(2u, "8_5");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   return 0;
 }

@@ -77,7 +77,6 @@ void DLCDevilAssetLoad(void) {
   UnityEngine_Object_o *DLCDevilDataExp;
   AssetBundleCtrl_o *v8;
   UnityEngine_Object_o *Asset;
-  struct dds3KernelMain_StaticFields *static_fields;
   s64 typeHierarchyDepth;
   UnityEngine_Object_o *v13;
   AssetBundleCtrl_o *v14;
@@ -85,10 +84,10 @@ void DLCDevilAssetLoad(void) {
   UnityEngine_Object_o *DLCDevilDataMaka;
   AssetBundleCtrl_o *v21;
   UnityEngine_Object_o *v24;
-  struct dds3KernelMain_StaticFields *v25;
   s64 v26;
   UnityEngine_Object_o *v27;
 
+LABEL_7:
   asset_bc = get_asset_bc();
   dlc = get_dlc(asset_bc);
   if (Check(dlc, 6, 0))
@@ -100,14 +99,14 @@ void DLCDevilAssetLoad(void) {
       }
       Asset = LoadAsset(
                 v8,
-                StringLiteral_14752,
+                "devildata_exp",
                 DLC6DataAssetPath,
-                StringLiteral_14752,
+                "devildata_exp",
                 0);
       else
       {
-        static_fields = dds3KernelMain->static_fields;
         if (!Asset)
+          goto LABEL_34;
       }
       if (Asset->klass->_2.typeHierarchyDepth >= typeHierarchyDepth)
       {
@@ -115,11 +114,15 @@ void DLCDevilAssetLoad(void) {
           v13 = Asset;
         else
           v13 = 0;
+        goto LABEL_35;
       }
+LABEL_34:
       v13 = 0;
-      static_fields->DLCDevilDataExp = v13;
+LABEL_35:
+      DLCDevilDataExp = v13;
     }
   }
+LABEL_40:
   v14 = get_asset_bc();
   v15 = get_dlc(v14);
   if (Check(v15, 7, 0))
@@ -131,14 +134,14 @@ void DLCDevilAssetLoad(void) {
       }
       v24 = LoadAsset(
               v21,
-              StringLiteral_14753,
+              "devildata_maka",
               DLC7DataAssetPath,
-              StringLiteral_14753,
+              "devildata_maka",
               0);
       else
       {
-        v25 = dds3KernelMain->static_fields;
         if (!v24)
+          goto LABEL_67;
       }
       if (v24->klass->_2.typeHierarchyDepth >= v26)
       {
@@ -146,9 +149,12 @@ void DLCDevilAssetLoad(void) {
           v27 = v24;
         else
           v27 = 0;
+        goto LABEL_68;
       }
+LABEL_67:
       v27 = 0;
-      v25->DLCDevilDataMaka = v27;
+LABEL_68:
+      DLCDevilDataMaka = v27;
     }
   }
 }
@@ -164,21 +170,23 @@ void DLCDevilLoad(void) {
   AssetBundleCtrl_o *v10;
   DlcFileCtr_o *v11;
 
+LABEL_7:
   asset_bc = get_asset_bc();
   dlc = get_dlc(asset_bc);
   if (Check(dlc, 6, 0))
   {
     v5 = get_asset_bc();
     v6 = get_dlc(v5);
-    Load(v6, StringLiteral_14752, 6, StringLiteral_14752, 0);
+    Load(v6, "devildata_exp", 6, "devildata_exp", 0);
   }
+LABEL_19:
   v7 = get_asset_bc();
   v8 = get_dlc(v7);
   if (Check(v8, 7, 0))
   {
     v10 = get_asset_bc();
     v11 = get_dlc(v10);
-    Load(v11, StringLiteral_14753, 7, StringLiteral_14753, 0);
+    Load(v11, "devildata_maka", 7, "devildata_maka", 0);
   }
 }
 
@@ -285,7 +293,7 @@ void dds3FirstInit(void) {
   UnityEngine_GameObject_o *BrighTextMesh;
   u64 *v35;
 
-  Log(StringLiteral_14741, 0);
+  Log("dds3KernelMain:dds3FirstInit", 0);
   dds3InitDrawEnv();
   dds3PadInitialize();
   v5 = Allocate(System_Func_dds3ProcessID_t__object_);
@@ -293,32 +301,32 @@ void dds3FirstInit(void) {
     v5,
     0,
     Method_dds3KernelProcess_dds3FirstProcess__);
-  dds3StartProcess(StringLiteral_14742, 0, 0, 0, v5, 0, 0, 0, 0, 0);
+  dds3StartProcess("1st", 0, 0, 0, v5, 0, 0, 0, 0, 0);
   v7 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v7,
     0,
     Method_dds3KernelProcess_dds3DrawFirstProcess__);
-  dds3StartProcess(StringLiteral_14743, 0x2710u, 0, 0, v7, 0, 0, 0, 0, 0);
+  dds3StartProcess("draw1st", 0x2710u, 0, 0, v7, 0, 0, 0, 0, 0);
   v8 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v8,
     0,
     Method_dds3KernelProcess_dds3DrawProcess__);
-  dds3StartProcess(StringLiteral_14744, 0x4E20u, 0, 0, v8, 0, 0, 0, 0, 0);
+  dds3StartProcess("RequestDraw", 0x4E20u, 0, 0, v8, 0, 0, 0, 0, 0);
   dds3TheWorld = 0;
   v11 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v11,
     0,
     Method_dds3KernelProcess_dds3BasicMainProcess__);
-  dds3StartProcess(StringLiteral_14745, 0x3FCu, 1, 1, v11, 0, 0, 0, 0, 0);
+  dds3StartProcess("basic_main", 0x3FCu, 1, 1, v11, 0, 0, 0, 0, 0);
   v12 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v12,
     0,
     Method_dds3KernelProcess_dds3BasicDrawProcess__);
-  dds3StartProcess(StringLiteral_14746, 0x2B09u, 1, 1, v12, 0, 0, 0, 0, 0);
+  dds3StartProcess("basic_draw", 0x2B09u, 1, 1, v12, 0, 0, 0, 0, 0);
   frInitFontTable(256, 512);
   v14 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
@@ -330,7 +338,7 @@ void dds3FirstInit(void) {
     v15,
     0,
     Method_frFont_frDestroyFontTable__);
-  started = dds3StartProcess(StringLiteral_14747, 0x4E1Fu, 0, 0, v14, 0, v15, 0, 0, 0);
+  started = dds3StartProcess("font_sys", 0x4E1Fu, 0, 0, v14, 0, v15, 0, 0, 0);
   create_interface(started);
   itfMesMngInitializeManager();
   sndInit();
@@ -358,7 +366,7 @@ void dds3FirstInit(void) {
     v35,
     0,
     Method_ButtonGuide_ButtonGuideMain__);
-  dds3StartProcess(StringLiteral_14748, 0x5214u, 0, 0, v35, 0, 0, 0, 0, 0);
+  dds3StartProcess("ButtonGuide", 0x5214u, 0, 0, v35, 0, 0, 0, 0, 0);
 }
 
 // 0x14e1a30
@@ -442,16 +450,51 @@ void dds3UnityInit(void) {
 
 // 0x14e1e60
 void m_dds3KernelMainInit(void) {
-  Log(StringLiteral_14749, 0);
+  Log("dds3KernelMain:m_dds3KernelMainInit", 0);
   dds3FirstInit();
   Start(dds3UnityTimeStopWatch);
 }
 
 // 0x14e1f10
 void m_dds3KernelMainLoop(void) {
-    dds3Effect_UpdateBigin();
-    dds3PadUpdate();
+  f64 v3;
+  f32 dds3UnityRunTime_Now;
+  u32 dds3PauseTime;
+  u32 v15;
+  s64 ticks;
+
+  ticks = 0;
+  Stop(dds3UnityTimeStopWatch);
+  ticks = get_Elapsed(dds3UnityTimeStopWatch)._ticks;
+  v3 = sub_3156B0(&ticks);
+  *&v3 = v3;
+  dds3UnityRunTime_Now = *&v3
+                                                               - dds3UnityRunTime_Old;
+  dds3UnityRunTime_Old = *&v3;
+  Start(dds3UnityTimeStopWatch);
+  RunTime = dds3UnityRunTime_Now;
+  dds3Effect_UpdateBigin();
+  dds3PadUpdate();
+  if (!dds3PauseSign)
+  {
     dds3ProcessMain();
-    PadEi();
-    dds3Effect_UpdateEnd();
+    ++dds3FrameCount;
+    dds3FrameID ^= 1u;
+    goto LABEL_38;
+  }
+  PadEi();
+  if (!dds3PauseTime)
+    goto LABEL_38;
+  v15 = dds3PauseTime - 1;
+  dds3PauseTime = v15;
+  if (v15)
+    goto LABEL_38;
+LABEL_26:
+  dds3PauseSign = 0;
+  {
+LABEL_39:
+  }
+LABEL_41:
+  dds3Effect_UpdateEnd();
+  ++dds3RunCount;
 }

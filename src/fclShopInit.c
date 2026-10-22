@@ -77,34 +77,44 @@ void shpInitItemWindow(lstListWindow_t *pListWindow);
 
 // 0x19a62a0
 s8 fclChkShopProcess(void) {
-  struct fclShopInit_StaticFields *static_fields;
   s32 gProcessStat;
 
-  static_fields = fclShopInit->static_fields;
-  gProcessStat = static_fields->gProcessStat;
   if (gProcessStat == 1)
     return 1;
+LABEL_6:
   if (gProcessStat != 2)
     return 0;
-  static_fields->gProcessStat = 0;
+  gProcessStat = 0;
   return 0;
 }
 
 // 0x19a5760
 void *fclDestroyShop(dds3ProcessID_t *PID) {
-    fclShopTexFree(0);
-    fclScriptForcedEnd(0);
+  fclDataShop_t_o *GBWK;
+  dds3ProcessID_t_o *ScriptPID;
+  s32 Id;
+
+  if (GBWK)
+  {
+    fclShopTexFree(GBWK);
+    ScriptPID = GBWK->ScriptPID;
+    fclScriptForcedEnd(ScriptPID);
+    GBWK->pScriptData = 0;
     fclShopEventEnd();
+    GBWK = 0;
+    gProcessStat = 2;
     evtDisableMoonDraw();
-    FindId(0, 0);
-    p2sdFadeOut(0);
-    FinalizeUI();
-    WindowDispOff(0);
-    Remove(0);
-    IsLoad(0, 0);
-    UnloadAB(0, 0);
-    GetAppendix();
-    return 0;
+    Id = FindId(0, "SHOPSND3_BGM00");
+    p2sdFadeOut(Id);
+    else if ((byte_3F5ABF4 & 1) != 0)
+    {
+      goto LABEL_26;
+    }
+    goto LABEL_26;
+  }
+LABEL_63:
+  PID->func_ans = -1;
+  return 0;
 }
 
 // 0x19a4a10
@@ -124,11 +134,8 @@ fclDataShop_t *fclInitShop(s8 Place, cmpSeqInfo_t *pParentSeqInfo) {
   System_String_o *v30;
   AssetBundleCtrl_o *v31;
   AssetBundleCtrl_o *v32;
-  fclShopInit_c *v34;
   bool v35;
   s32 v36;
-  struct fclShopInit_StaticFields *static_fields;
-  struct fclShopInit_StaticFields *v38;
   AssetBundleCtrl_o *v39;
   AssetBundleCtrl_o *v42;
 
@@ -160,14 +167,14 @@ fclDataShop_t *fclInitShop(s8 Place, cmpSeqInfo_t *pParentSeqInfo) {
   InitializeModelCameraForUnity();
   asset_bc = get_asset_bc();
   Appendix = GetAppendix();
-  v28 = Concat_5224608(StringLiteral_4691, Appendix);
+  v28 = Concat_5224608("e802", Appendix);
   v29 = GetAppendix();
-  v30 = Concat_5224608(StringLiteral_4691, v29);
+  v30 = Concat_5224608("e802", v29);
   Load(asset_bc, v28, v30, 0);
   v31 = get_asset_bc();
-  Load(v31, StringLiteral_4691, StringLiteral_4691, 0);
+  Load(v31, "e802", "e802", 0);
   v32 = get_asset_bc();
-  Load(v32, StringLiteral_16430, StringLiteral_16430, 0);
+  Load(v32, "f802", "f802", 0);
   if (mPlace == 1)
   {
     v35 = !evtBitCheck(2353);
@@ -175,22 +182,23 @@ fclDataShop_t *fclInitShop(s8 Place, cmpSeqInfo_t *pParentSeqInfo) {
       v36 = 2;
     else
       v36 = 0;
+      goto LABEL_38;
   }
   else
   {
     v36 = 0;
+      goto LABEL_38;
   }
+LABEL_38:
   OwnerID = v36;
-  static_fields = v34->static_fields;
-  if (static_fields->mPlace == 5)
+  if (mPlace == 5)
   {
-    static_fields->OwnerID = 1;
+    OwnerID = 1;
   }
   VoiceName = 0;
-  v38 = v34->static_fields;
-  if (v38->OwnerID == 2)
+  if (OwnerID == 2)
   {
-    v38->VoiceName = StringLiteral_16431;
+    VoiceName = "v0x3c";
     v39 = get_asset_bc();
     if (!IsLoad(v39, VoiceName))
     {
@@ -204,8 +212,11 @@ fclDataShop_t *fclInitShop(s8 Place, cmpSeqInfo_t *pParentSeqInfo) {
 
 // 0x19a5d30
 void fclShopEventEnd(void) {
-    dds3KillProcessName(0, 0);
+  dds3KillProcessName("e802_main", 1);
+  else
+  {
     fclFreeStage();
+  }
 }
 
 // 0x19a09d0
@@ -253,36 +264,36 @@ void fclShopLoadMesScript(fclDataShop_t *pData, s32 Place) {
   evtBitOff(2812);
   if (Place == 5)
   {
-    v6 = StringLiteral_16440;
+    v6 = "dds3data/facility/scr/shop/mes_g.bf.bytes";
     evtBitOn(2812);
     v7 = 2;
   }
   else if (Place == 1 && !evtBitCheck(2353))
   {
-    v6 = StringLiteral_16439;
+    v6 = "dds3data/facility/scr/shop/mes_f.bf.bytes";
     v7 = 1;
   }
   else
   {
-    v6 = StringLiteral_16438;
+    v6 = "dds3data/facility/scr/shop/message.bf.bytes";
     v7 = 0;
   }
   asset_bc = get_asset_bc();
-  pData->pScriptData = LoadFileByte(asset_bc, StringLiteral_4691, v6);
+  pData->pScriptData = LoadFileByte(asset_bc, "e802", v6);
   if (v7 == 2)
   {
-    v10 = StringLiteral_4691;
-    v11 = &StringLiteral_16433;
+    v10 = "e802";
+    v11 = &"MES_GARAKUTA";
   }
   else if (v7 == 1)
   {
-    v10 = StringLiteral_4691;
-    v11 = &StringLiteral_16434;
+    v10 = "e802";
+    v11 = &"MES_F";
   }
   else
   {
-    v10 = StringLiteral_4691;
-    v11 = &StringLiteral_16432;
+    v10 = "e802";
+    v11 = &"SHOP_MES_DATA";
   }
   LoadLocalizeText(v10, *v11);
 }
@@ -291,18 +302,83 @@ void fclShopLoadMesScript(fclDataShop_t *pData, s32 Place) {
 s32 fclShopProcessEnd(void) {
   if (!fldProc_CallSisetuReturn())
     return 0;
+LABEL_6:
   FadeOutWindow();
-  dds3KillProcessName(StringLiteral_16442, 1);
-  dds3KillProcessName(StringLiteral_16443, 1);
-  dds3KillProcessName(StringLiteral_16444, 1);
+  dds3KillProcessName("shop", 1);
+  dds3KillProcessName("shop_draw", 1);
+  dds3KillProcessName("shop_update", 1);
   return 1;
 }
 
 // 0x19a5e90
 void fclShopProcessStart(void *pPlace) {
-    fclInitShop(0, 0);
-    FclDebug(0, 0);
-    dds3StartProcess(0, 0, 0, 0, 0, 0, 0);
+  u64 *v4;
+  struct fclDataShop_t_o *inited;
+  Il2CppObject *GBWK;
+  u64 *v12;
+  Il2CppObject *data;
+  u64 *v15;
+  u64 *v16;
+  u64 *v17;
+  char v18[4];
+
+  if (pPlace)
+    LODWORD(pPlace) = *il2cp::SizeOf(pPlace, s32);
+  v18[0] = pPlace;
+  v4 = sub_8D3950(sbyte, v18);
+  Write_2930400("shop : place = {0:D}\n", v4);
+  else if (GBWK)
+  {
+    return;
+  }
+  inited = fclInitShop(pPlace, 0);
+  GBWK = inited;
+  FclDebug(3, GBWK);
+  v12 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v12,
+    0,
+    Method_fclShopCalc_shpCalc__);
+  data = GBWK;
+  dds3StartProcess("shop", 0x402u, 1, 1, v12, 0, 0, 0, data, 0);
+  v15 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v15,
+    0,
+    Method_fclShopDraw_shpDraw__);
+  dds3StartProcess(
+    "shop_draw",
+    0x2B12u,
+    1,
+    1,
+    v15,
+    0,
+    0,
+    0,
+    GBWK,
+    0);
+  v16 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v16,
+    0,
+    Method_fclShopUpdate_shpUpdate__);
+  v17 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v17,
+    0,
+    Method_fclShopInit_fclDestroyShop__);
+  dds3StartProcess(
+    "shop_update",
+    0x520Eu,
+    1,
+    1,
+    v16,
+    0,
+    v17,
+    0,
+    GBWK,
+    0);
+  gProcessStat = 1;
 }
 
 // 0x19a5c00
@@ -313,6 +389,7 @@ void fclShopTexFree(fclDataShop_t *pData) {
 
   v3 = 0;
   {
+LABEL_6:
   }
   while (v3 < SLODWORD(gFclShopTexFile->max_length))
   {
@@ -320,25 +397,61 @@ void fclShopTexFree(fclDataShop_t *pData) {
     v7 = TexHandle->m_Items[v3];
     sdfTexFree(v7);
     ++v3;
+      goto LABEL_6;
   }
-  Write(StringLiteral_16437, 0);
+  Write("SHOP : Tex free.\n", 0);
 }
 
 // 0x19a5050
 void fclShopTexLoad(fclDataShop_t *pData) {
-    fclLoadTexture(0);
-    fclSetPanelTex(0, 0, 0, 0, 0, 0);
+  char v3;
+  u32 max_length;
+  struct sdfTexHandle_t_array *TexHandle;
+  s64 *Texture;
+  s64 v12;
+  fclPanel_t_o *BackPanel;
+  struct sdfTexHandle_t_array *v15;
+
+  v3 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length = gFclShopTexFile->max_length;
+    if (v3 >= max_length)
+      break;
+    TexHandle = pData->TexHandle;
+    else if (max_length <= v3)
+    {
+      goto LABEL_12;
+    }
+    else
+    {
+      Texture = fclLoadTexture(fclShare);
+      if (Texture)
+        goto LABEL_16;
+    }
+    v12 = v3;
+    ++v3;
+    TexHandle->m_Items[v12] = Texture;
+      goto LABEL_6;
+  }
+  BackPanel = pData->BackPanel;
+  v15 = pData->TexHandle;
+  fclSetPanelTex(BackPanel, 0, 0, 0x100u, 0x80u, v15->m_Items[1]);
+  Write("SHOP : Tex load.\n", 0);
 }
 
 // 0x19a5370
 void fclShopUpdateInit(fclDataShop_t *data) {
   s32 Id;
 
-  LoadKeys(1, StringLiteral_4691, 0);
-  LoadKeys(3, StringLiteral_4691, 0);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_16174);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_5045);
-  Id = FindId(0, StringLiteral_11811);
+  LoadKeys(1, "e802", 0);
+  LoadKeys(3, "e802", 0);
+  LoadLocalizeText("common", "FACILITY");
+  LoadLocalizeText("common", "DATITEMHELP");
+  Id = FindId(0, "SHOPSND3_BGM00");
   p2sdPlayBGM(Id);
   InitializeUI(802);
   SetButtonGuide(0, 0);
@@ -365,6 +478,7 @@ s32 shpGetPay(void) {
 
   if (!GBWK)
     return 0;
+LABEL_6:
   return GBWK->PayMoney;
 }
 

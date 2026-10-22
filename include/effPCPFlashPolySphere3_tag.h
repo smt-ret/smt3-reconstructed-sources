@@ -8,7 +8,7 @@ typedef struct effPCPFlashPolySphere3_tag effPCPFlashPolySphere3_tag;
 
 struct effPCPFlashPolySphere3_tag {
     effPCPFlashPolySphere3Param_t *param;
-    effPCPFlashPolySphere3Part_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPFlashPolySphere3Part_tag *pPart;
     u32 frame;
     u32 abgr;
     f32 scale;

@@ -4,7 +4,7 @@ typedef struct DLCDevilData DLCDevilData;
 typedef struct datEncountPack_s datEncountPack_t;
 
 static s32 datEncountBase;
-static datEncountPack_t tbl[UNKNOWN_ARRAY_SIZE];
+static datEncountPack_t *tbl;
 
 void DLCDevilAssetLoad(void);
 datEncountPack_t *GetDevilEncountPackData(DLCDevilData *this, s32 id);

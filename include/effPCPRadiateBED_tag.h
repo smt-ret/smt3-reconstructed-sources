@@ -9,7 +9,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effPCPRadiateBED_tag {
     effPCPRadiateBEDParam_t *param;
-    effPCPRadiateBEDPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPRadiateBEDPart_tag *pPart;
     effBTL_t *hBED;
     u8 original;
     f32 scale;

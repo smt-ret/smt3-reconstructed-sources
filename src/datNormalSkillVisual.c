@@ -56,10 +56,12 @@ datNormalSkillVisual_t *Get(s32 id) {
         m_Items = &v31->m_Items[7];
         break;
       default:
+        goto LABEL_11;
     }
   }
   else
   {
+LABEL_11:
     m_Items = &tbl->m_Items[id];
   }
   return *m_Items;

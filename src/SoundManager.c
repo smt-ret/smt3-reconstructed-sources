@@ -27,8 +27,8 @@ struct SoundManager {
     s32 _3DSE_PS2DPAN_CENTER;
     s32 _3DSE_ATAN_TIMES;
     s32 _3DSE_atandim[32];
-    void gMixer_bgm[UNKNOWN_ARRAY_SIZE];
-    void gMixer_se[UNKNOWN_ARRAY_SIZE];
+    void *gMixer_bgm;
+    void *gMixer_se;
 };
 
 struct SoundManager__ChannelWork {
@@ -150,6 +150,7 @@ s32 Atan(SoundManager *this, s32 x, s32 y) {
     {
       v11 = x < 0;
       v10 = 90;
+      goto LABEL_23;
     }
     v6 = this->_3DSE_ATAN_TIMES - 1;
     if (v4 >= v5)
@@ -176,6 +177,7 @@ s32 Atan(SoundManager *this, s32 x, s32 y) {
     v10 = 0;
   }
   v11 = x < 0;
+LABEL_23:
   if (v11)
     return -v10;
   else
@@ -190,18 +192,44 @@ void CallbackVoice(SoundManager *this) {
 
 // 0x133ce60
 bool ChkVoicePlaying(void) {
+LABEL_7:
   return nowVoicePlaying;
 }
 
 // 0x133a670
 void ContinueBGM(char *name) {
-    FindId(0, 0);
-    ContinueBGM_20162336(0);
+  s32 Id;
+  s32 v5;
+
+  Id = FindId(0, name);
+  else
+  {
+    v5 = Id;
+  }
+  ContinueBGM_20162336(v5);
 }
 
 // 0x133a720
 void ContinueBGM_20162336(s32 id) {
-    _PlayBGM(0, 0, 0, 0);
+  s32 nowPlayBgmMidiId;
+  System_String_o *v5;
+  Il2CppObject *v7;
+  Il2CppObject *v9;
+  s32 ida;
+
+  ida = id;
+  v5 = sub_232A70(&ida, "X8");
+  if (nowPlayBgmMidiId == id)
+  {
+    v7 = Concat_5221536("ContinueBGM(", v5, ") 再生中と同じなのでキャンセルです", 0);
+    Log(v7, 0);
+  }
+  else
+  {
+    v9 = Concat_5221536("ContinueBGM(", v5, ") BGMリクエストです", 0);
+    Log(v9, 0);
+    _PlayBGM(Instance, ida, 1.0, -1.0);
+  }
 }
 
 // 0x13328d0
@@ -242,6 +270,10 @@ void DeleteVoiceALL(void) {
     {
       else
       {
+        if (v10 >= max_length)
+        {
+LABEL_13:
+        }
       }
       _DeleteVoice(Instance, v5->m_Items[v10]);
       LODWORD(max_length) = v5->max_length;
@@ -261,7 +293,25 @@ void FadeinBGM(char *name, f32 fadetime) {
 
 // 0x133a4f0
 void FadeinBGM_20161776(s32 id, f32 fadetime) {
-    _PlayBGM(0, 0, 0, 0);
+  s32 nowPlayBgmMidiId;
+  System_String_o *v7;
+  Il2CppObject *v9;
+  Il2CppObject *v11;
+  s32 ida;
+
+  ida = id;
+  v7 = sub_232A70(&ida, "X8");
+  if (nowPlayBgmMidiId == id)
+  {
+    v9 = Concat_5221536("FadeinBGM(", v7, ") 再生中と同じなのでキャンセルです", 0);
+    Log(v9, 0);
+  }
+  else
+  {
+    v11 = Concat_5221536("FadeinBGM(", v7, ") BGMリクエストです", 0);
+    Log(v11, 0);
+    _PlayBGM(Instance, ida, fadetime, 0.0);
+  }
 }
 
 // 0x133b770
@@ -269,6 +319,7 @@ void FadeoutBGM(char *name, f32 fadeTime) {
   s32 Id;
 
   Id = FindId(0, name);
+LABEL_10:
   _StopBGM_Core(Instance, Id, fadeTime);
 }
 
@@ -296,7 +347,7 @@ f32 GetMovieVolume(void) {
   value = 0.0;
   Float = GetFloat(
             Instance->Mixer,
-            StringLiteral_12182,
+            "MovieVolume",
             &value,
             0);
   result = value;
@@ -366,16 +417,24 @@ bool IsBGMFadeOut(void) {
     }
     sourceBgmArray = Instance->_sourceBgmArray;
     if (!LODWORD(sourceBgmArray->max_length))
+      goto LABEL_47;
+    goto LABEL_11;
   }
   v2 = Instance;
   p_channelBgmArray = &v2->_channelBgmArray;
   sourceBgmArray = v2->_sourceBgmArray;
+  if (!LODWORD(sourceBgmArray->max_length))
+  {
+LABEL_47:
+  }
+LABEL_11:
   v7 = sourceBgmArray->m_Items[0];
   clip = get_clip(v7);
   if (op_Equality(clip, 0, 0))
   {
     v12 = 0;
     (*p_channelBgmArray)->m_Items[0]->status = 0;
+      goto LABEL_19;
   }
   else
   {
@@ -384,11 +443,15 @@ bool IsBGMFadeOut(void) {
     {
       RemoveAllData(isPlaying, v7, 0);
       v12 = 0;
+        goto LABEL_28;
+      goto LABEL_19;
     }
     v12 = (*p_channelBgmArray)->m_Items[0]->status == 2;
     {
+LABEL_19:
     }
   }
+LABEL_28:
   v17 = Instance->_sourceBgmArray;
   v19 = v17->m_Items[1];
   v22 = get_clip(v19);
@@ -431,17 +494,25 @@ bool IsBGMStopped(void) {
   v5 = sourceBgmArray->m_Items[0];
   clip = get_clip(v5);
   if (op_Equality(clip, 0, 0))
+    goto LABEL_27;
   channelBgmArray = Instance->_channelBgmArray;
   if (channelBgmArray->m_Items[0]->Key_MidiId)
   {
+LABEL_27:
     v14 = 1;
+      goto LABEL_28;
+    goto LABEL_21;
   }
   volume = get_volume(v5);
   if (volume <= 0.0)
   {
     RemoveAllData(v16, v5, 0);
+    goto LABEL_27;
   }
   v14 = 0;
+    goto LABEL_28;
+LABEL_21:
+LABEL_28:
   v17 = Instance->_sourceBgmArray;
   v19 = v17->m_Items[1];
   v21 = get_clip(v19);
@@ -489,6 +560,7 @@ void LoadSE(char *name) {
   s32 Id;
 
   Id = FindId(1, name);
+LABEL_10:
   _LoadSE(Instance, Id);
 }
 
@@ -504,13 +576,38 @@ void LoadVoice(char *name) {
 
 // 0x1335340
 void PlayBGM(char *name) {
-    FindId(0, 0);
-    PlayBGM_20160448(0);
+  s32 Id;
+  s32 v5;
+
+  Id = FindId(0, name);
+  else
+  {
+    v5 = Id;
+  }
+  PlayBGM_20160448(v5);
 }
 
 // 0x1339fc0
 void PlayBGM_20160448(s32 id) {
-    _PlayBGM(0, 0, 0, 0);
+  s32 nowPlayBgmMidiId;
+  System_String_o *v5;
+  Il2CppObject *v7;
+  Il2CppObject *v9;
+  s32 ida;
+
+  ida = id;
+  v5 = sub_232A70(&ida, "X8");
+  if (nowPlayBgmMidiId == id)
+  {
+    v7 = Concat_5221536("PlayBGM(", v5, ") 再生中と同じなのでキャンセルです", 0);
+    Log(v7, 0);
+  }
+  else
+  {
+    v9 = Concat_5221536("PlayBGM(", v5, ") BGMリクエストです", 0);
+    Log(v9, 0);
+    _PlayBGM(Instance, ida, 0.0, 0.0);
+  }
 }
 
 // 0x1335470
@@ -518,6 +615,7 @@ s32 PlaySE(char *name) {
   s32 Id;
 
   Id = FindId(1, name);
+LABEL_10:
   return _PlaySE_Ex(Instance, Id, 1.0, 0.0);
 }
 
@@ -566,12 +664,95 @@ void PushContinueBGM(SoundManager *this, char *name, f32 clipTime) {
 
 // 0x1338a70
 void RemoveAllData(SoundManager *this, void *src, s32 index) {
-    _StopFadeCoroutine(0, 0);
+  UnityEngine_Object_o *clip;
+  u64 *v9;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  s64 v14;
+  UnityEngine_Object_o *v15;
+  System_String_o *name;
+  UnityEngine_Object_o *v17;
+  System_String_o *v18;
+  s32 v20;
+  System_Collections_Generic_Dictionary_Font__HashSet_Text___o *poolBgm;
+  System_WeakReference_o *Item;
+  struct SoundManager__ChannelWork_array *channelBgmArray;
+  struct SoundManager__ChannelWork_array *v28;
+  struct SoundManager__ChannelWork_array *v30;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v32;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v33;
+
+  memset(&v33, 0, sizeof(v33));
+  if (!op_Equality(src, 0, 0))
+  {
+    clip = get_clip(src);
+    if (!op_Equality(clip, 0, 0))
+    {
+      Stop(src);
+      _StopFadeCoroutine(Instance, index);
+      v9 = Allocate(System_Collections_Generic_List_SoundManager__SoundWork_);
+      __ctor(
+        v9);
+      _Clear(v9);
+      Values = Type___get_Values(Instance->_poolBgm);
+      Type___GetEnumerator(&v32, Values);
+      v33 = v32;
+      while ((sub_4D4B20(&v33) & 1) != 0)
+      {
+        v14 = sub_4D4CB0(&v33);
+        v15 = *(v14 + 40);
+        if (!op_Equality(v15, 0, 0))
+        {
+          name = get_name(*(v14 + 40), 0);
+          v17 = get_clip(src);
+          v18 = get_name(v17);
+          if (Equals_5234480(name, v18))
+            _Add(v9, v14);
+        }
+      }
+      nullsub_48(&v33);
+      if (_get_Count(v9) >= 1)
+      {
+        v20 = 0;
+        do
+        {
+          poolBgm = Instance->_poolBgm;
+          Item = _get_Item(
+                   v9,
+                   v20);
+          HashSet_Text____Remove(poolBgm, *&Item->fields);
+          ++v20;
+        }
+        while (v20 < _get_Count(v9));
+      }
+      set_clip(src, 0);
+      channelBgmArray = Instance->_channelBgmArray;
+      channelBgmArray->m_Items[index]->Key_DefineName = "";
+      v28 = Instance->_channelBgmArray;
+      v28->m_Items[index]->Key_MidiId = 0;
+      v30 = Instance->_channelBgmArray;
+      v30->m_Items[index]->status = 0;
+    }
+  }
 }
 
 // 0x1335ff0
 void SoundManagerInit(void) {
-    _SoundManagerInit(0);
+  u64 *v4;
+
+  Log("SoundManagerInit()です", 0);
+  else if (Instance)
+  {
+    goto LABEL_9;
+  }
+  Log("Instance new です", 0);
+  v4 = Allocate(SoundManager);
+  _ctor(v4);
+  Instance = v4;
+  {
+LABEL_10:
+  }
+LABEL_20:
+  _SoundManagerInit(Instance);
 }
 
 // 0x133bba0
@@ -600,12 +781,82 @@ void StopBGM(char *name) {
   s32 Id;
 
   Id = FindId(0, name);
+LABEL_10:
   _StopBGM_Core(Instance, Id, 0.1);
 }
 
 // 0x13386a0
 void StopBGMALL_Compulsion(bool flg) {
-    RemoveAllData(0, 0, 0);
+  struct SoundManager_o *v3;
+  struct SoundManager__ChannelWork_array **p_channelBgmArray;
+  struct UnityEngine_AudioSource_array *sourceBgmArray;
+  struct SoundManager_o *Instance;
+  UnityEngine_AudioSource_o *v7;
+  s32 Key_MidiId;
+  SoundManager_o *v10;
+  struct UnityEngine_AudioSource_array *v17;
+  struct SoundManager__ChannelWork_array *v19;
+  UnityEngine_AudioSource_o *v20;
+  s32 v21;
+  SoundManager_o *v24;
+  SoundManager_o *v29;
+
+  {
+    else
+    {
+      p_channelBgmArray = &Instance->_channelBgmArray;
+    }
+    sourceBgmArray = Instance->_sourceBgmArray;
+    if (!LODWORD(sourceBgmArray->max_length))
+      goto LABEL_25;
+    goto LABEL_11;
+  }
+  v3 = Instance;
+  p_channelBgmArray = &v3->_channelBgmArray;
+  sourceBgmArray = v3->_sourceBgmArray;
+  if (!LODWORD(sourceBgmArray->max_length))
+  {
+LABEL_25:
+  }
+LABEL_11:
+  v7 = sourceBgmArray->m_Items[0];
+  Key_MidiId = (*p_channelBgmArray)->m_Items[0]->Key_MidiId;
+  if (!Key_MidiId)
+    goto LABEL_28;
+  if (Key_MidiId != nowPlayBgmMidiId)
+    goto LABEL_28;
+LABEL_16:
+  if (!flg || !get_isPlaying(v7, 0) || get_volume(v7) <= 0.0)
+    goto LABEL_34;
+  RemoveAllData(v10, v7, 0);
+  nowPlayBgmName = "";
+  nowPlayBgmMidiId = 0;
+  {
+LABEL_35:
+  }
+LABEL_37:
+  v17 = Instance->_sourceBgmArray;
+  v19 = *p_channelBgmArray;
+  v20 = v17->m_Items[1];
+  v21 = v19->m_Items[1]->Key_MidiId;
+  if (v21)
+  {
+    else if (v21 == nowPlayBgmMidiId)
+    {
+LABEL_44:
+      if (flg && get_isPlaying(v20, 0) && get_volume(v20) > 0.0)
+      {
+        RemoveAllData(v24, v20, 1);
+        nowPlayBgmName = "";
+        nowPlayBgmMidiId = 0;
+      }
+      return;
+    }
+  }
+  if (!get_isPlaying(v20, 0) || get_volume(v20) == 0.0)
+  {
+    RemoveAllData(v29, v20, 1);
+  }
 }
 
 // 0x133b6f0
@@ -623,6 +874,7 @@ void StopSE(char *name) {
   s32 Id;
 
   Id = FindId(1, name);
+LABEL_10:
   _StopSE_Core(Instance, Id);
 }
 
@@ -654,7 +906,6 @@ void StopVoice_Compulsion(void) {
   UnityEngine_AudioClip_o *v13;
   System_Collections_IEnumerator_o *v15;
 
-  static_fields = SoundCoroutine->static_fields;
   monitor = (*static_fields)[1].monitor;
   if (monitor)
     StopCoroutine_27344864(*static_fields, monitor);
@@ -668,6 +919,7 @@ void StopVoice_Compulsion(void) {
       v9 = sourceVoiceArray->m_Items[v7];
       clip = get_clip(v9);
       if (op_Equality(clip, 0, 0))
+        goto LABEL_25;
       time = get_time(v9, 0);
       v13 = get_clip(v9);
       if (time >= (get_length(v13) + -0.1))
@@ -677,6 +929,7 @@ void StopVoice_Compulsion(void) {
         LODWORD(max_length) = sourceVoiceArray->max_length;
         if (++v7 >= max_length)
         {
+LABEL_28:
           break;
         }
       }
@@ -684,8 +937,10 @@ void StopVoice_Compulsion(void) {
       {
         v15 = StopVOICE_FadeOut(v9, 0.05);
         StartCoroutine_27343696(Instance, v15);
+LABEL_25:
         LODWORD(max_length) = sourceVoiceArray->max_length;
         if (++v7 >= max_length)
+          goto LABEL_28;
       }
     }
   }
@@ -707,25 +962,25 @@ void UpdateAudioVolume(s32 type) {
     Bit = cfgGetBit(2u);
     else
     {
-      v6 = &StringLiteral_12156;
+      v6 = &"Voice";
     }
   }
   else if (type == 1)
   {
     Bit = cfgGetBit(1u);
-    v6 = &StringLiteral_12154;
+    v6 = &"SE";
   }
   else if (type)
   {
     Bit = cfgGetBit(3u);
-    v6 = &StringLiteral_12157;
+    v6 = &"Movie";
   }
   else
   {
     Bit = cfgGetBit(0);
     else
     {
-      v6 = &StringLiteral_12152;
+      v6 = &"BGM";
     }
   }
   MatchingGroups = FindMatchingGroups(Instance->Mixer, *v6);
@@ -735,38 +990,116 @@ void UpdateAudioVolume(s32 type) {
     {
       v12 = log10f(Bit / 5.0) * 20.0;
       if (type != 2)
+        goto LABEL_39;
     }
     else
     {
       v12 = -80.0;
       if (type != 2)
       {
+LABEL_39:
         if (type == 1)
         {
-          v15 = &StringLiteral_12180;
+          v15 = &"SEVolume";
         }
         else if (type)
         {
-          v15 = &StringLiteral_12182;
+          v15 = &"MovieVolume";
         }
         else
         {
-          v15 = &StringLiteral_12179;
+          v15 = &"BGMVolume";
         }
+LABEL_59:
         SetFloat(Instance->Mixer, *v15, v12);
         return;
       }
     }
-    v15 = &StringLiteral_12181;
+    v15 = &"VoiceVolume";
+    goto LABEL_59;
   }
 }
 
 // 0x133b320
 void UpdateBgmSoundWork(SoundManager *this) {
+  System_Collections_Generic_Dictionary_KeyCollection_TKey__TValue__o *Keys;
+  Il2CppObject *v4;
+  Il2CppObject *Item;
+  s32 v6;
+  Il2CppObject *v7;
+  bool v8;
+  Il2CppObject *v10;
+  UnityEngine_Object_o *monitor;
+  System_Collections_Generic_Dictionary_KeyCollection_Enumerator_TKey__TValue__o v13;
+  System_Collections_Generic_Dictionary_KeyCollection_Enumerator_TKey__TValue__o v14;
+
+  memset(&v14, 0, sizeof(v14));
+  Keys = string___get_Keys(this->_poolBgm);
+  object___GetEnumerator(
+    &v13,
+    Keys);
+  v14 = v13;
+  while ((sub_4402C0(&v14) & 1) != 0)
+  {
+    v4 = sub_440450(&v14);
+    Item = object___get_Item(this->_poolBgm, v4);
+    v6 = HIDWORD(Item[3].klass) + 1;
+    v7 = Item;
+    v8 = HIDWORD(Item[3].klass) - 3 < 0;
+    HIDWORD(Item[3].klass) = v6;
+    if (v8 == __OFSUB__(v6, 4))
+    {
+      v10 = Concat_5221536("UpdateBgmSoundWork() REMOVE:[", v4, "]古いワークを破棄です", 0);
+      Log(v10, 0);
+      monitor = v7[2].monitor;
+      if (op_Implicit(monitor, 0))
+        UnloadAudioData(v7[2].monitor);
+      HashSet_Text____Remove(this->_poolBgm, v4);
+      break;
+    }
+  }
+  nullsub_33(&v14);
 }
 
 // 0x133c9d0
 void UpdateVoiceSoundWork(SoundManager *this) {
+  System_Collections_Generic_Dictionary_KeyCollection_TKey__TValue__o *Keys;
+  Il2CppObject *v4;
+  Il2CppObject *Item;
+  s32 v6;
+  Il2CppObject *v7;
+  bool v8;
+  Il2CppObject *v10;
+  UnityEngine_Object_o *monitor;
+  System_Collections_Generic_Dictionary_KeyCollection_Enumerator_TKey__TValue__o v13;
+  System_Collections_Generic_Dictionary_KeyCollection_Enumerator_TKey__TValue__o v14;
+
+  memset(&v14, 0, sizeof(v14));
+  Keys = string___get_Keys(this->_poolVoice);
+  object___GetEnumerator(
+    &v13,
+    Keys);
+  v14 = v13;
+  while ((sub_4402C0(&v14) & 1) != 0)
+  {
+    v4 = sub_440450(&v14);
+    Item = object___get_Item(this->_poolVoice, v4);
+    v6 = HIDWORD(Item[3].klass) + 1;
+    v7 = Item;
+    v8 = HIDWORD(Item[3].klass) - 2 < 0;
+    HIDWORD(Item[3].klass) = v6;
+    if (v8 == __OFSUB__(v6, 3))
+    {
+      v10 = Concat_5221536("UpdateVoiceSoundWork() REMOVE:[", v4, "]", 0);
+      Log(v10, 0);
+      monitor = v7[2].monitor;
+      if (op_Implicit(monitor, 0))
+        UnloadAudioData(v7[2].monitor);
+      HashSet_Text____Remove(this->_poolVoice, v4);
+      break;
+    }
+  }
+  nullsub_33(&v14);
 }
 
 // 0x133cf20
@@ -813,6 +1146,7 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
   sourceBgmArray = this->_sourceBgmArray;
   v13 = sourceBgmArray->m_Items[0];
   if (!get_isPlaying(v13, 0))
+    goto LABEL_8;
   channelBgmArray = this->_channelBgmArray;
   if (!channelBgmArray->m_Items[0]->Key_MidiId)
   {
@@ -822,6 +1156,7 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
   }
   else
   {
+LABEL_8:
     v15 = -1;
   }
   v16 = fmaxf(crossFadeTime, 0.1);
@@ -837,10 +1172,14 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
   v22 = this->_sourceBgmArray;
   v24 = v22->m_Items[1];
   if (!get_isPlaying(v24, 0))
+    goto LABEL_21;
   v25 = this->_channelBgmArray;
   if (v25->m_Items[1]->Key_MidiId)
   {
+LABEL_21:
     if (!get_isPlaying(v24, 0))
+      goto LABEL_34;
+    goto LABEL_22;
   }
   v35 = get_clip(v24);
   v36 = get_name(v35);
@@ -848,6 +1187,7 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
     v15 = 1;
   if (get_isPlaying(v24, 0))
   {
+LABEL_22:
     v27 = this->_channelBgmArray;
     if (v27->m_Items[1]->Key_MidiId)
     {
@@ -855,6 +1195,7 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
       _StopBGM_Core(this, v29->m_Items[1]->Key_MidiId, v16);
     }
   }
+LABEL_34:
   if (Animator___ContainsKey(this->_poolBgm, name))
   {
     Item = object___get_Item(this->_poolBgm, name);
@@ -870,6 +1211,7 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
         v57 = this->_sourceBgmArray;
         v56 = v57->m_Items[1];
         if (get_isPlaying(v56, 0))
+          goto LABEL_77;
         v59 = 1;
       }
       else
@@ -903,6 +1245,7 @@ void _CrossFadePlayBGM_Core(SoundManager *this, char *name, s32 id, f32 crossFad
     LODWORD(v54[4]->_1.namespaze) = id;
     nowPlayBgmName = name;
     nowPlayBgmMidiId = id;
+LABEL_77:
     UpdateBgmSoundWork(this);
   }
 }
@@ -939,6 +1282,7 @@ void _DeleteBGM(SoundManager *this, char *name) {
     clip = get_clip(v7);
     v9 = get_name(clip);
     if (Contains(v9, name, 0))
+      goto LABEL_11;
   }
   v10 = this->_sourceBgmArray;
   v7 = v10->m_Items[1];
@@ -947,9 +1291,10 @@ void _DeleteBGM(SoundManager *this, char *name) {
         v13 = get_name(v12),
         Contains(v13, name, 0)))
   {
+LABEL_11:
     v14 = get_clip(v7);
     v15 = get_name(v14);
-    v17 = Concat_5224608(StringLiteral_12164, v15);
+    v17 = Concat_5224608("サウンドCLIPは再生中(FadeOut含む)なので自動破棄で処理します :", v15, 0);
     Log(v17, 0);
   }
   else if (Animator___ContainsKey(this->_poolBgm, name))
@@ -993,10 +1338,12 @@ void _DeleteSE(SoundManager *this, char *name) {
     monitor = Item[2].monitor;
     else if (!op_Implicit(monitor, 0))
     {
+LABEL_8:
       HashSet_Text____Remove(this->_poolSe, name);
       return;
     }
     UnloadAudioData(Item[2].monitor);
+    goto LABEL_8;
   }
 }
 
@@ -1011,10 +1358,12 @@ void _DeleteVoice(SoundManager *this, char *name) {
     monitor = Item[2].monitor;
     else if (!op_Implicit(monitor, 0))
     {
+LABEL_8:
       HashSet_Text____Remove(this->_poolVoice, name);
       return;
     }
     UnloadAudioData(Item[2].monitor);
+    goto LABEL_8;
   }
 }
 
@@ -1036,12 +1385,20 @@ void _LoadBGM_Core(SoundManager *this, s32 id) {
     v9 = _LoadCheckBGM(this, FindOut->MidiId);
     if (v9)
     {
-      v12 = Concat_5221536(StringLiteral_12162, FindOut->FileName, StringLiteral_12161);
+      v12 = Concat_5221536(
+              " LoadBgm(",
+              FindOut->FileName,
+              ") ロード済なので skip です",
+              0);
       Log(v12, 0);
     }
     else
     {
-      v14 = Concat_5221536(StringLiteral_12162, FindOut->FileName, StringLiteral_12163);
+      v14 = Concat_5221536(
+              " LoadBgm(",
+              FindOut->FileName,
+              ") ロードします",
+              0);
       Log(v14, 0);
       DefineName = FindOut->DefineName;
       FileName = FindOut->FileName;
@@ -1057,12 +1414,48 @@ void _LoadBGM_Core(SoundManager *this, s32 id) {
 
 // 0x1339b50
 bool _LoadCheckBGM(SoundManager *this, s32 id) {
-    return 0;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  bool v6;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v8;
+
+  memset(&v8, 0, sizeof(v8));
+  Values = Type___get_Values(this->_poolBgm);
+  Type___GetEnumerator(&v8, Values);
+  while ((sub_4D4B20(&v8) & 1) != 0)
+  {
+    if (*(sub_4D4CB0(&v8) + 24) == id)
+    {
+      v6 = 1;
+      goto LABEL_8;
+    }
+  }
+  v6 = 0;
+LABEL_8:
+  nullsub_48(&v8);
+  return v6;
 }
 
 // 0x1337400
 bool _LoadCheckSE(SoundManager *this, s32 id) {
-    return 0;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  bool v6;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v8;
+
+  memset(&v8, 0, sizeof(v8));
+  Values = Type___get_Values(this->_poolSe);
+  Type___GetEnumerator(&v8, Values);
+  while ((sub_4D4B20(&v8) & 1) != 0)
+  {
+    if (*(sub_4D4CB0(&v8) + 24) == id)
+    {
+      v6 = 1;
+      goto LABEL_8;
+    }
+  }
+  v6 = 0;
+LABEL_8:
+  nullsub_48(&v8);
+  return v6;
 }
 
 // 0x1336fd0
@@ -1074,14 +1467,14 @@ void _LoadResideSE(SoundManager *this) {
   System_String_o *v11;
   System_String_o *v13;
 
-  Log(StringLiteral_12159, 0);
-  v3 = StringLiteral_4611;
+  Log("常駐SEロード です", 0);
+  v3 = "common";
   v5 = IsLocalizeKey(v3);
   _loadse(v5);
-  v7 = StringLiteral_5155;
+  v7 = "fcmn";
   v9 = IsLocalizeKey(v7);
   _loadse(v9);
-  v11 = StringLiteral_5039;
+  v11 = "battle";
   v13 = IsLocalizeKey(v11);
   _loadse(v13);
 }
@@ -1101,7 +1494,11 @@ void _LoadSE(SoundManager *this, s32 id) {
   {
     if (_LoadCheckSE(this, FindOut->MidiId))
     {
-      v11 = Concat_5221536(StringLiteral_12160, FindOut->FileName, StringLiteral_12161);
+      v11 = Concat_5221536(
+              " LoadSe(",
+              FindOut->FileName,
+              ") ロード済なので skip です",
+              0);
       Log(v11, 0);
     }
     else
@@ -1126,7 +1523,7 @@ void _LoadVoice(SoundManager *this, char *name) {
 
   if (!Animator___ContainsKey(this->_poolVoice, name))
   {
-    v6 = Concat_5221536(StringLiteral_12174, name, StringLiteral_12163);
+    v6 = Concat_5221536(" LoadVoice(", name, ") ロードします", 0);
     Log(v6, 0);
     poolVoice = this->_poolVoice;
     v8 = Allocate(SoundManager__SoundWork);
@@ -1137,8 +1534,57 @@ void _LoadVoice(SoundManager *this, char *name) {
 
 // 0x133a140
 void _PlayBGM(SoundManager *this, s32 id, f32 fadetime, f32 starttime) {
-    _LoadBGM_Core(0, 0);
-    _CrossFadePlayBGM_Core(0, 0, 0, 0, 0);
+  f32 v5;
+  s32 v7;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  s64 v11;
+  s64 v13;
+  Il2CppObject *v14;
+  f32 v15;
+  System_String_o *v16;
+  Il2CppObject *v18;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v19;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v20;
+  f32 v21;
+
+  v5 = starttime;
+  v7 = id;
+  v21 = starttime;
+  memset(&v20, 0, sizeof(v20));
+LABEL_7:
+  _LoadBGM_Core(Instance, v7);
+  Values = Type___get_Values(this->_poolBgm);
+  Type___GetEnumerator(&v19, Values);
+  v20 = v19;
+  while ((sub_4D4B20(&v20) & 1) != 0)
+  {
+    v11 = sub_4D4CB0(&v20);
+    v13 = v11;
+    if (*(v11 + 24) == v7)
+    {
+      if (v5 < 0.0)
+      {
+        v14 = *(v11 + 16);
+        if (Animator___ContainsKey(this->_poolBgm, v14))
+        {
+          v15 = *&object___get_Item(this->_poolBgm, v14)[3].monitor;
+        }
+        else
+        {
+          v15 = 0.0;
+        }
+        v21 = v15;
+        v16 = sub_4FDC70(&v21, "F2");
+        v18 = Concat_5221536("starttime : ", v16, "sec");
+        Log(v18, 0);
+        v5 = v21;
+        v7 = *(v13 + 24);
+      }
+      _CrossFadePlayBGM_Core(this, *(v13 + 16), v7, fadetime, v5);
+      break;
+    }
+  }
+  nullsub_48(&v20);
 }
 
 // 0x1337b00
@@ -1316,10 +1762,15 @@ s32 _PlaySE_Core(SoundManager *this, void *audioClip, bool loop, f32 volume, f32
   {
     gMixer_se = this->gMixer_se;
     if (!LODWORD(gMixer_se->max_length))
+      goto LABEL_70;
   }
   else
   {
     gMixer_se = this->gMixer_bgm;
+    if (!LODWORD(gMixer_se->max_length))
+    {
+LABEL_70:
+    }
   }
   set_outputAudioMixerGroup(v17, gMixer_se->m_Items[0]);
   set_clip(v17, audioClip);
@@ -1335,16 +1786,127 @@ s32 _PlaySE_Core(SoundManager *this, void *audioClip, bool loop, f32 volume, f32
 
 // 0x1337830
 s32 _PlaySE_Ex(SoundManager *this, s32 id, f32 volume, f32 pan) {
-    _PlaySE_Core(0, 0, 0, 0, 0, 0, 0);
-    return 0;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  s32 v10;
+  s64 v11;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v14;
+
+  memset(&v14, 0, sizeof(v14));
+  Values = Type___get_Values(this->_poolSe);
+  Type___GetEnumerator(&v14, Values);
+  v10 = -1;
+  while ((sub_4D4B20(&v14) & 1) != 0)
+  {
+    v11 = sub_4D4CB0(&v14);
+    if (*(v11 + 24) == id)
+    {
+      v10 = _PlaySE_Core(this, *(v11 + 40), *(v11 + 48), volume, pan, *(v11 + 16), id);
+      break;
+    }
+  }
+  nullsub_48(&v14);
+  return v10;
 }
 
 // 0x133c5e0
 void _PlayVoice(SoundManager *this, char *name) {
-    _LoadVoice(0, 0);
-    UpdateVoiceSoundWork(0);
-    HalfBgm_Voice(0, 0);
-    PlayVoiceCallback(0, 0, 0, 0);
+  UnityEngine_MonoBehaviour_o **static_fields;
+  UnityEngine_Coroutine_o *monitor;
+  Il2CppObject *Item;
+  UnityEngine_AudioClip_o *v9;
+  u64 *v10;
+  u64 *_9__99_0;
+  Il2CppObject *v15;
+  System_Delegate_o *v16;
+  UnityEngine_Events_UnityAction_c *v17;
+  UnityEngine_Events_UnityAction_o *v18;
+  char *v19;
+  s64 *v20;
+  struct UnityEngine_AudioSource_array *sourceVoiceArray;
+  il2cpp_array_size_t max_length;
+  u64 v23;
+  UnityEngine_AudioSource_o *v25;
+  System_Collections_IEnumerator_o *v27;
+  UnityEngine_MonoBehaviour_o **v28;
+  UnityEngine_MonoBehaviour_o *v29;
+  UnityEngine_Coroutine_o *v30;
+  u64 v32[3];
+
+  monitor = (*static_fields)[1].monitor;
+  if (monitor)
+    StopCoroutine_27344864(*static_fields, monitor);
+  nowVoicePlaying = 0;
+  _LoadVoice(Instance, name);
+  if (Animator___ContainsKey(this->_poolVoice, name))
+  {
+    Item = object___get_Item(this->_poolVoice, name);
+    HIDWORD(Item[3].klass) = 0;
+    v9 = Item[2].monitor;
+    v10 = Allocate(UnityEngine_Events_UnityAction);
+    _ctor(v10, this, Method_SoundManager_CallbackVoice__, 0);
+    else
+    {
+      _9__99_0 = __9__99_0;
+      if (_9__99_0)
+        goto LABEL_24;
+    }
+    v15 = __9;
+    _9__99_0 = Allocate(UnityEngine_Events_UnityAction);
+    _ctor(_9__99_0, v15, Method_SoundManager___c___PlayVoice_b__99_0__, 0);
+    __9__99_0 = _9__99_0;
+LABEL_24:
+    v16 = Combine(v10, _9__99_0, 0);
+    v18 = v16;
+    if (v16)
+    {
+      if (v16->klass != UnityEngine_Events_UnityAction)
+      {
+        sub_8FC2C0(v16->klass->_1.element_class, UnityEngine_Events_UnityAction, v32);
+        if ((v32[0] & 1) != 0)
+          v19 = v32[2];
+        else
+          v19 = v32 + 1;
+        v20 = sub_8C4940(v19);
+      }
+    }
+    sourceVoiceArray = this->_sourceVoiceArray;
+    max_length = sourceVoiceArray->max_length;
+    if (max_length < 1)
+    {
+LABEL_36:
+      {
+LABEL_47:
+        nowVoicePlaying = 1;
+        UpdateVoiceSoundWork(this, v17);
+        HalfBgm_Voice(this, 1);
+        return;
+      }
+    }
+    else
+    {
+      v23 = 0;
+      while (1)
+      {
+        v25 = sourceVoiceArray->m_Items[v23];
+        if (!get_isPlaying(v25, 0))
+          break;
+        LODWORD(max_length) = sourceVoiceArray->max_length;
+        if (++v23 >= max_length)
+          goto LABEL_36;
+      }
+      v27 = PlayVoiceCallback(v25, v9, 1.0, v18);
+      v29 = *v28;
+      v30 = (*v28)[1].monitor;
+      if (v30)
+      {
+        StopCoroutine_27344864(*v28, v30);
+        v29[1].monitor = 0;
+      }
+      v29[1].monitor = StartCoroutine_27343696(v29, v27);
+        goto LABEL_47;
+    }
+    goto LABEL_47;
+  }
 }
 
 // 0x1336220
@@ -1408,20 +1970,20 @@ void _SoundManagerInit(SoundManager *this) {
   struct UnityEngine_AudioSource_array *v97;
   UnityEngine_Audio_AudioMixerGroup_array *v99;
 
-  Log(StringLiteral_12147, 0);
+  Log("GameObject new 「SoundManagerObj」 です", 0);
   object = this->_object;
   if (op_Equality(object, 0, 0))
   {
     v6 = Allocate(UnityEngine_GameObject);
-    _ctor(v6, StringLiteral_12148, 0);
+    _ctor(v6, "SoundManagerObj", 0);
     this->_object = v6;
     DontDestroyOnLoad(v6);
-    this->Mixer = Load_object_(StringLiteral_12149);
+    this->Mixer = Load_object_("dds3AudioMixer");
   }
-  Log(StringLiteral_12150, 0);
+  Log("SoundManagerObj に 各.cs を AddComponent です", 0);
   AddComponent_object_(this->_object);
   AddComponent_object_(this->_object);
-  Log(StringLiteral_12151, 0);
+  Log("BGM用 チャンネル作成 です", 0);
   this->_sourceBgmArray = NewSpecific(UnityEngine_AudioSource, 2u);
   this->_channelBgmArray = NewSpecific(SoundManager__ChannelWork, 2u);
   v8 = 0;
@@ -1432,7 +1994,7 @@ void _SoundManagerInit(SoundManager *this) {
     v13 = AddComponent_object_(this->_object);
     v14 = v13;
     *&sourceBgmArray[2 * v11 + 8] = v14;
-    MatchingGroups = FindMatchingGroups(this->Mixer, StringLiteral_12152);
+    MatchingGroups = FindMatchingGroups(this->Mixer, "BGM");
     v17 = this->_sourceBgmArray;
     v19 = v17->m_Items[v11];
     set_outputAudioMixerGroup(v19, MatchingGroups->m_Items[0]);
@@ -1449,7 +2011,7 @@ void _SoundManagerInit(SoundManager *this) {
     channelBgmArray = this->_channelBgmArray;
     v32 = Allocate(SoundManager__ChannelWork);
     _ctor(v32, 0);
-    v34 = StringLiteral_416;
+    v34 = "";
     *(v32 + 14) = 0;
     v32[2] = v34;
     v32[5] = 0;
@@ -1460,7 +2022,7 @@ void _SoundManagerInit(SoundManager *this) {
     v8 = 1;
   }
   while (!v11);
-  Log(StringLiteral_12153, 0);
+  Log("SE用 チャンネル作成 です", 0);
   this->_sourceSeArray = NewSpecific(UnityEngine_AudioSource, 0x10u);
   v36 = 0;
   this->_channelSeArray = NewSpecific(SoundManager__ChannelWork, 0x10u);
@@ -1470,7 +2032,7 @@ void _SoundManagerInit(SoundManager *this) {
     v40 = AddComponent_object_(this->_object);
     v41 = v40;
     *&sourceSeArray[2 * v36 + 8] = v41;
-    v43 = FindMatchingGroups(this->Mixer, StringLiteral_12154);
+    v43 = FindMatchingGroups(this->Mixer, "SE");
     v44 = this->_sourceSeArray;
     v46 = v44->m_Items[v36];
     set_outputAudioMixerGroup(v46, v43->m_Items[0]);
@@ -1487,7 +2049,7 @@ void _SoundManagerInit(SoundManager *this) {
     channelSeArray = this->_channelSeArray;
     v59 = Allocate(SoundManager__ChannelWork);
     _ctor(v59, 0);
-    v61 = StringLiteral_416;
+    v61 = "";
     *(v59 + 14) = 0;
     v59[2] = v61;
     v59[5] = 0;
@@ -1498,14 +2060,14 @@ void _SoundManagerInit(SoundManager *this) {
     *(v63 + 4) = v59;
   }
   while (v36 != 16);
-  Log(StringLiteral_12155, 0);
+  Log("VOICE用 チャンネル作成 です", 0);
   v64 = NewSpecific(UnityEngine_AudioSource, 2u);
   this->_sourceVoiceArray = v64;
   v65 = v64;
   v66 = AddComponent_object_(this->_object);
   v67 = v66;
   v65->m_Items[0] = v67;
-  v69 = FindMatchingGroups(this->Mixer, StringLiteral_12156);
+  v69 = FindMatchingGroups(this->Mixer, "Voice");
   sourceVoiceArray = this->_sourceVoiceArray;
   v71 = sourceVoiceArray->m_Items[0];
   set_outputAudioMixerGroup(v71, v69->m_Items[0]);
@@ -1523,7 +2085,7 @@ void _SoundManagerInit(SoundManager *this) {
   v83 = AddComponent_object_(this->_object);
   v84 = v83;
   v82->m_Items[1] = v84;
-  v86 = FindMatchingGroups(this->Mixer, StringLiteral_12156);
+  v86 = FindMatchingGroups(this->Mixer, "Voice");
   v87 = this->_sourceVoiceArray;
   v88 = v87->m_Items[1];
   set_outputAudioMixerGroup(v88, v86->m_Items[0]);
@@ -1538,16 +2100,16 @@ void _SoundManagerInit(SoundManager *this) {
   v97 = this->_sourceVoiceArray;
   set_spatialBlend(v97->m_Items[1], 0.0);
   this->_sourceMovie = AddComponent_object_(this->_object);
-  v99 = FindMatchingGroups(this->Mixer, StringLiteral_12157);
+  v99 = FindMatchingGroups(this->Mixer, "Movie");
   set_outputAudioMixerGroup(this->_sourceMovie, v99->m_Items[0]);
   set_loop(this->_sourceMovie, 0);
   set_playOnAwake(this->_sourceMovie, 0);
   set_volume(this->_sourceMovie, 1.0);
   set_panStereo(this->_sourceMovie, 0.0);
   set_spatialBlend(this->_sourceMovie, 0.0);
-  this->gMixer_bgm = FindMatchingGroups(this->Mixer, StringLiteral_12152);
-  this->gMixer_se = FindMatchingGroups(this->Mixer, StringLiteral_12154);
-  Log(StringLiteral_12158, 0);
+  this->gMixer_bgm = FindMatchingGroups(this->Mixer, "BGM");
+  this->gMixer_se = FindMatchingGroups(this->Mixer, "SE");
+  Log("SMG TABLE 初期化 です", 0);
   SmgTableInit();
   Initialize();
 }
@@ -1629,10 +2191,8 @@ void _StopBGM_Core(SoundManager *this, s32 id, f32 fadeTime) {
   System_Collections_IEnumerator_o *v22;
   struct SoundManager__ChannelWork_array *v23;
   struct SoundManager__ChannelWork_array *v25;
-  SoundManager_c *v27;
   s32 Key_MidiId;
   struct SoundManager_StaticFields **p_static_fields;
-  struct SoundManager_StaticFields *static_fields;
   struct SoundManager__ChannelWork_array *v31;
   struct SoundManager__ChannelWork_array *v33;
 
@@ -1666,15 +2226,13 @@ void _StopBGM_Core(SoundManager *this, s32 id, f32 fadeTime) {
     }
     v25 = this->_channelBgmArray;
     Key_MidiId = v25->m_Items[v9]->Key_MidiId;
-    p_static_fields = &v27->static_fields;
-    static_fields = v27->static_fields;
-    if (Key_MidiId == static_fields->nowPlayBgmMidiId)
+    if (Key_MidiId == nowPlayBgmMidiId)
     {
-      static_fields->nowPlayBgmName = StringLiteral_416;
+      nowPlayBgmName = "";
       (*p_static_fields)->nowPlayBgmMidiId = 0;
     }
     v31 = this->_channelBgmArray;
-    v31->m_Items[v9]->Key_DefineName = StringLiteral_416;
+    v31->m_Items[v9]->Key_DefineName = "";
     v33 = this->_channelBgmArray;
     v33->m_Items[v9]->Key_MidiId = 0;
     v7 = 1;
@@ -1710,10 +2268,10 @@ void _StopSE_Core(SoundManager *this, s32 id) {
     sourceSeArray = this->_sourceSeArray;
     v8 = *(&sourceSeArray->obj.klass + i);
     if (!get_isPlaying(v8, 0))
+      goto LABEL_16;
     if (id == 5701728)
     {
       v10 = StopSE_FadeOut(v8, 0.15);
-      static_fields = SoundCoroutine->static_fields;
       v12 = *static_fields;
       klass = (*static_fields)[2].klass;
       if (klass)
@@ -1722,12 +2280,20 @@ void _StopSE_Core(SoundManager *this, s32 id) {
         v12[2].klass = 0;
       }
       v12[2].klass = StartCoroutine_27343696(v12, v10);
+LABEL_16:
       v14 = this->_channelSeArray;
       if (v19 >= LODWORD(v14->max_length))
+        goto LABEL_17;
+      goto LABEL_18;
     }
     Stop(v8);
     v14 = this->_channelSeArray;
-    *(*(&v14->obj.klass + i) + 16LL) = StringLiteral_416;
+    if (v19 >= LODWORD(v14->max_length))
+    {
+LABEL_17:
+    }
+LABEL_18:
+    *(*(&v14->obj.klass + i) + 16LL) = "";
     v16 = this->_channelSeArray;
     *(*(&v16->obj.klass + i) + 24LL) = 0;
   }
@@ -1741,7 +2307,6 @@ void _StopVoice(SoundManager *this) {
   UnityEngine_AudioSource_o *v7;
   System_Collections_IEnumerator_o *v8;
 
-  static_fields = SoundCoroutine->static_fields;
   monitor = (*static_fields)[1].monitor;
   if (monitor)
     StopCoroutine_27344864(*static_fields, monitor);
@@ -1773,6 +2338,7 @@ void p2sdAdpcmStreamStop(void) {
 
 // 0x133dca0
 void p2sdBGMStopAll(void) {
+LABEL_7:
   _StopBGM_Core(Instance, -1, 0.1);
 }
 
@@ -1805,12 +2371,24 @@ void p2sdBGMVolume(s32 vol) {
 
 // 0x133e380
 void p2sdContinue(s32 MidiNo) {
-    ContinueBGM_20162336(0);
+  s32 v3;
+
+  else
+  {
+    v3 = MidiNo;
+  }
+  ContinueBGM_20162336(v3);
 }
 
 // 0x133e400
 void p2sdContinue_20177920(char *define_name) {
-    ContinueBGM(0);
+  System_String_o *v3;
+
+  else
+  {
+    v3 = define_name;
+  }
+  ContinueBGM(v3);
 }
 
 // 0x133bcf0
@@ -1853,6 +2431,7 @@ void p2sdFadeIn_20177136(char *define_name) {
 
 // 0x133e240
 void p2sdFadeOut(s32 MidiNo) {
+LABEL_7:
   _StopBGM_Core(Instance, MidiNo, 2.0);
 }
 
@@ -1917,9 +2496,11 @@ void p2sdMelodyTrans(s32 MidiNo) {
   {
     v5 = nowPlayBgmMidiId + 1;
     v6 = 1.0;
+    goto LABEL_9;
   }
   v6 = 1.0;
   v5 = MidiNo;
+LABEL_9:
   FadeinBGM_20161776(v5, v6);
 }
 
@@ -1930,45 +2511,137 @@ void p2sdOutputMode(s32 output_mode) {
 
 // 0x133e480
 void p2sdPause(s32 MidiNo) {
+LABEL_7:
   _StopBGM_Core(Instance, MidiNo, 0.1);
 }
 
 // 0x133e550
 void p2sdPause_20178256(char *define_name) {
-    StopBGM(0);
+  System_String_o *v3;
+
+  else
+  {
+    v3 = define_name;
+  }
+  StopBGM(v3);
 }
 
 // 0x133dba0
 void p2sdPlayBGM(s32 MidiNo) {
-    PlayBGM_20160448(0);
+  s32 v3;
+
+  else
+  {
+    v3 = MidiNo;
+  }
+  PlayBGM_20160448(v3);
 }
 
 // 0x133dc20
 void p2sdPlayBGM_20175904(char *define_name) {
-    PlayBGM(0);
+  System_String_o *v3;
+
+  else
+  {
+    v3 = define_name;
+  }
+  PlayBGM(v3);
 }
 
 // 0x133d0b0
 void p2sdPlaySE(s32 MidiNo) {
+LABEL_7:
   _PlaySE_Ex(Instance, MidiNo, 1.0, 0.0);
 }
 
 // 0x133d180
 void p2sdPlaySE_20173184(char *define_name) {
-    PlaySE(0);
+  System_String_o *v3;
+
+  else
+  {
+    v3 = define_name;
+  }
+  PlaySE(v3);
 }
 
 // 0x133e8f0
 void p2sdPlaySE_Dead(s32 devil_id) {
-    Get(0);
-    evtBitCheck(0);
-    PlaySE(0);
+  u16 v3;
+  u16 v4;
+  System_String_array *v5;
+  s64 *v7;
+  s64 *v8;
+  s64 *v10;
+  s64 *v15;
+  s64 *v16;
+  System_String_o *v19;
+  s64 *v21;
+  System_String_o *v22;
+  s32 v25;
+
+  v25 = 0;
+  v3 = Get(devil_id, 0);
+  v25 = v3;
+  v4 = v3;
+  v5 = NewSpecific(string, 5u);
+  v5->m_Items[0] = "D";
+  v7 = sub_232A70(&v25, "000");
+  v8 = v7;
+  v5->m_Items[1] = v8;
+  v5->m_Items[2] = "_MSE";
+  if (v4 <= 0xFFu)
+    v10 = &"X2";
+  else
+    v10 = &"X3";
+  v15 = sub_232A70(&v25, *v10);
+  v16 = v15;
+  v5->m_Items[3] = v16;
+  v5->m_Items[4] = "_23";
+  v19 = Concat_5271600(v5);
+  if (v25 == 192)
+  {
+    if (evtBitCheck(3712))
+      v21 = &"D192M_MSEC0_23";
+    else
+      v21 = &"D192R_MSEC0_23";
+    v22 = *v21;
+  }
+  else
+  {
+    v22 = v19;
+  }
+  PlaySE(v22);
 }
 
 // 0x133ecc0
 void p2sdPlaySE_Fld(s32 MidiNo) {
-    FindId_1916848(0, 0);
-    _PlaySE_Ex(0, 0, 0, 0);
+  s32 fieldID;
+  SoundManager_o *Instance;
+  f32 v8;
+  s32 v9;
+  s32 Id_1916848;
+
+  fieldID = fldGb->fieldID;
+  if (fieldID == 35 && (MidiNo == 55 || MidiNo == 36))
+    MidiNo |= 0x100u;
+  if ((MidiNo > 0x39u || ((1LL << MidiNo) & 0x3802EDF00000000LL) == 0) && MidiNo != 311 && MidiNo != 292)
+  {
+    Id_1916848 = FindId_1916848(1, MidiNo);
+LABEL_31:
+    if ((byte_3F593DE & 1) != 0)
+      goto LABEL_33;
+    goto LABEL_32;
+  }
+  if (MidiNo != 34 || fieldID > 9)
+  {
+    Id_1916848 = MidiNo | 0x400000;
+    goto LABEL_31;
+  }
+  v8 = 1.0;
+  v9 = 4194368;
+LABEL_26:
+  _PlaySE_Ex(Instance, v9, v8, 0.0);
 }
 
 // 0x133d200
@@ -2035,6 +2708,7 @@ void p2sdPlaySe3DEx(s32 MidiNo, f32 posx, f32 posy, f32 posz, s32 limit) {
   struct SoundManager__ChannelWork_array *v36;
 
   Id_1916848 = FindId_1916848(1, MidiNo);
+LABEL_10:
   v15 = _PlaySE_Ex(Instance, Id_1916848, 0.0, 0.0);
   if (v15 != -1)
   {
@@ -2159,6 +2833,7 @@ void p2sdSet3DPan(SoundManager *this, s32 ch) {
       v34 = _3DSE_PS2DPAN_CENTER - 70 * v24 * v22 / 100;
       if (v16 >= 11)
       {
+LABEL_38:
         v36 = this->_channelSeArray;
         lim = v36->m_Items[v7]->lim;
         if (lim <= 3)
@@ -2167,12 +2842,14 @@ void p2sdSet3DPan(SoundManager *this, s32 ch) {
         if (v39 >= 100)
           v39 = 100;
         v35 = v39 * v35 / 100;
+LABEL_47:
         if (127 * v35 > 12699)
         {
           v40 = 127;
           v41 = this->_channelSeArray;
           if (LODWORD(v41->max_length) > ch)
           {
+LABEL_52:
             v41->m_Items[v7]->ps2_vol = v40;
             v43 = this->_channelSeArray;
             v43->m_Items[v7]->ps2_pan = v34;
@@ -2196,6 +2873,7 @@ void p2sdSet3DPan(SoundManager *this, s32 ch) {
           v40 = 127 * v35 / 100;
           v41 = this->_channelSeArray;
           if (LODWORD(v41->max_length) > ch)
+            goto LABEL_52;
         }
       }
     }
@@ -2221,8 +2899,10 @@ void p2sdSet3DPan(SoundManager *this, s32 ch) {
       else
         v35 = v32;
       if (v16 >= 11)
+        goto LABEL_38;
     }
     v34 = _3DSE_PS2DPAN_CENTER + ((v34 - _3DSE_PS2DPAN_CENTER) >> 1);
+    goto LABEL_47;
   }
 }
 
@@ -2279,12 +2959,14 @@ void p2sdSetStandPos(f32 Cposx, f32 Cposy, f32 Cposz, f32 Pposx, f32 Pposy, f32 
 
 // 0x133e5d0
 void p2sdSndStop(s32 MidiNo) {
+LABEL_7:
   _StopSE_Core(Instance, MidiNo);
   _StopBGM_Core(Instance, MidiNo, 0.1);
 }
 
 // 0x133e760
 void p2sdSndStopAll(void) {
+LABEL_7:
   _StopSE_Core(Instance, -1);
   _StopBGM_Core(Instance, -1, 0.1);
   _StopVoice(Instance);
@@ -2315,7 +2997,7 @@ void p2sdSndStop_Fld(s32 MidiNo) {
 
 // 0x133ec40
 bool p2sdStatusSE_Dead(void) {
-  return _StatusSE_NameHead(Instance, StringLiteral_358, StringLiteral_12177);
+  return _StatusSE_NameHead(Instance, "D", "_23");
 }
 
 // 0x133c260

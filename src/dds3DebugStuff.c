@@ -65,10 +65,12 @@ f32 dds3DebugFloatEditEx(f32 aValue, f32 aMin, f32 aMax, f32 aSmall, f32 aLarge,
       if (v12 < 0)
       {
         v23 = aValue - aLarge;
+        goto LABEL_34;
       }
       if ((v12 & 2) != 0)
       {
         v20 = aValue - aLarge;
+LABEL_38:
         if (v20 >= aMin)
           return v20;
         else
@@ -90,8 +92,10 @@ f32 dds3DebugFloatEditEx(f32 aValue, f32 aMin, f32 aMax, f32 aSmall, f32 aLarge,
           if ((v18 & 2) == 0)
             return v7;
           v20 = aValue - aSmall;
+          goto LABEL_38;
         }
         v23 = aValue - aSmall;
+LABEL_34:
         if (v23 >= aMin)
           return v23;
         else

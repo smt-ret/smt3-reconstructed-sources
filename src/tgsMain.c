@@ -22,9 +22,9 @@ static s32 F061_01;
 static s32 P2SDREQ_OK;
 static s32 P2SDREQ_CANSEL;
 static s32 P2SDREQ_CURSOR_NORMAL;
-static void htitMem_v[UNKNOWN_ARRAY_SIZE];
-static void hmoaMem_v[UNKNOWN_ARRAY_SIZE];
-static void hmodMem_v[UNKNOWN_ARRAY_SIZE];
+static void *htitMem_v;
+static void *hmoaMem_v;
+static void *hmodMem_v;
 static char *tit_textbl[5];
 static char *moa_textbl[4];
 static char *mod_textbl[4];
@@ -213,6 +213,7 @@ void TgsTitle_DrawMode(s32 flg) {
     v41 = v36->m_Items[2];
     v42 = v35->hmoatex;
     if (LODWORD(v42->max_length) <= 2)
+      goto LABEL_47;
   }
   else
   {
@@ -238,6 +239,10 @@ void TgsTitle_DrawMode(s32 flg) {
     rgba2 = v37;
     v41 = v51->m_Items[2];
     v42 = v50->hmodtex;
+    if (LODWORD(v42->max_length) <= 2)
+    {
+LABEL_47:
+    }
   }
   eglLinkSprite(0, 0, 512, 448, 0, 0, 512, 448, v37, v38, rgba2, v41, v42->m_Items[2]);
 }
@@ -298,6 +303,7 @@ void TgsTitle_DrawTitle(s32 flg) {
 
 // 0x18543a0
 s8 TgsTitle_FadeTitle(s32 flg) {
+  tgsMain_c *v3;
   s16 v4;
   s32 v5;
   s16 v7;
@@ -408,8 +414,14 @@ s8 TgsTitle_FadeTitle(s32 flg) {
     v13 = 8;
     v9->bg_maskrgba = v12;
     v14 = 0;
+    if ((v3->_2.bitflags2 & 2) != 0)
+    {
+LABEL_22:
+      goto LABEL_25;
+    }
     while (1)
     {
+LABEL_25:
       v15 = gGlobal->mode_rgba;
       v17 = *(&v15->obj.klass + 4 * v13 + 3) - 16;
       if (v17 >= 100)
@@ -435,6 +447,7 @@ s8 TgsTitle_FadeTitle(s32 flg) {
       if (v13 == 11)
         break;
       v14 = ++v13 - 8;
+        goto LABEL_22;
     }
     if (v12 > 0)
       return 0;
@@ -537,17 +550,21 @@ void TgsTitle_MCurDraw(s32 flg) {
     v14 = gGlobal;
     if (v14->ModePos)
     {
+LABEL_24:
       else
       {
         v15 = v14->mode_rgba;
         if (LODWORD(v15->max_length) >= 4)
         {
+LABEL_27:
           v16 = v15->m_Items[3];
           rgba1 = v16;
           rgba2 = v16;
           rgba3 = v15->m_Items[3];
           hmoatex = v14->hmoatex;
           if (LODWORD(hmoatex->max_length) <= 3)
+            goto LABEL_38;
+          goto LABEL_39;
         }
       }
     }
@@ -557,14 +574,22 @@ void TgsTitle_MCurDraw(s32 flg) {
     v13 = 0;
     v14 = gGlobal;
     if (v14->ModePos)
+      goto LABEL_24;
   }
   v18 = v14->mode_rgba;
   if (LODWORD(v18->max_length) < 4)
+    goto LABEL_44;
+LABEL_34:
   v16 = v18->m_Items[3];
   rgba1 = v16;
   rgba2 = v16;
   rgba3 = v18->m_Items[3];
   hmoatex = v14->hmodtex;
+  if (LODWORD(hmoatex->max_length) <= 3)
+  {
+LABEL_38:
+  }
+LABEL_39:
   th = hmoatex->m_Items[3];
   eglLinkSprite(80, v9, 256, 128, 0, 0, 256, 128, v16, rgba1, rgba2, rgba3, th);
 }
@@ -768,94 +793,60 @@ void TgsTitle_SpriteDelete_Vram(s32 sw) {
 
 // 0x1851f40
 void TgsTitle_SpriteLoad(s32 flg) {
-  tgsMain_c *v3;
-  struct tgsMain_StaticFields *static_fields;
   struct sdfMemHandle_t_array *hmodMem;
-  tgsMain_c *v6;
-  tgsMain_c *v7;
-  struct tgsMain_StaticFields *v8;
   struct sdfMemHandle_t_array *htitMem;
-  tgsMain_c *v10;
-  tgsMain_c *v11;
-  struct tgsMain_StaticFields *v12;
   struct sdfMemHandle_t_array *hmoaMem;
-  tgsMain_c *v14;
-  struct tgsMain_StaticFields *v18;
   struct sdfMemHandle_t_array *v19;
-  tgsMain_c *v20;
-  struct tgsMain_StaticFields *v24;
   struct sdfMemHandle_t_array *v25;
-  tgsMain_c *v26;
-  struct tgsMain_StaticFields *v30;
   struct sdfMemHandle_t_array *v31;
-  tgsMain_c *v32;
-  struct tgsMain_StaticFields *v36;
   struct sdfMemHandle_t_array *v37;
-  tgsMain_c *v38;
-  struct tgsMain_StaticFields *v42;
   struct sdfMemHandle_t_array *v43;
-  struct tgsMain_StaticFields *v48;
   struct sdfMemHandle_t_array *v49;
-  tgsMain_c *v50;
-  struct tgsMain_StaticFields *v54;
   struct sdfMemHandle_t_array *v55;
-  tgsMain_c *v56;
-  struct tgsMain_StaticFields *v60;
   struct sdfMemHandle_t_array *v61;
-  tgsMain_c *v62;
-  struct tgsMain_StaticFields *v66;
-  struct tgsMain_StaticFields *v72;
   struct sdfMemHandle_t_array *v73;
 
   if (flg)
   {
     if (flg == 1)
     {
-      static_fields = v3->static_fields;
-      hmodMem = static_fields->gGlobal->hmodMem;
+      hmodMem = gGlobal->hmodMem;
       hmodMem->m_Items[0] = 0;
-      v18 = v6->static_fields;
-      v19 = v18->gGlobal->hmodMem;
+      v19 = gGlobal->hmodMem;
       v19->m_Items[1] = 0;
-      v36 = v20->static_fields;
-      v37 = v36->gGlobal->hmodMem;
+      v37 = gGlobal->hmodMem;
       v37->m_Items[2] = 0;
-      v42 = v38->static_fields;
-      v43 = v42->gGlobal->hmodMem;
-      if ((v42->hmodMem_v->max_length & 0xFFFFFFFC) == 0)
+      v43 = gGlobal->hmodMem;
+      if ((hmodMem_v->max_length & 0xFFFFFFFC) == 0)
+        goto LABEL_107;
     }
     else
     {
-      v12 = v11->static_fields;
-      hmoaMem = v12->gGlobal->hmoaMem;
+      hmoaMem = gGlobal->hmoaMem;
       hmoaMem->m_Items[0] = 0;
-      v30 = v14->static_fields;
-      v31 = v30->gGlobal->hmoaMem;
+      v31 = gGlobal->hmoaMem;
       v31->m_Items[1] = 0;
-      v60 = v32->static_fields;
-      v61 = v60->gGlobal->hmoaMem;
+      v61 = gGlobal->hmoaMem;
       v61->m_Items[2] = 0;
-      v66 = v62->static_fields;
-      v43 = v66->gGlobal->hmoaMem;
+      v43 = gGlobal->hmoaMem;
+      if ((hmoaMem_v->max_length & 0xFFFFFFFC) == 0)
+      {
+LABEL_107:
+      }
     }
     v43->m_Items[3] = 0;
   }
   else
   {
-    v8 = v7->static_fields;
-    htitMem = v8->gGlobal->htitMem;
+    htitMem = gGlobal->htitMem;
     htitMem->m_Items[0] = 0;
-    v24 = v10->static_fields;
-    v25 = v24->gGlobal->htitMem;
+    v25 = gGlobal->htitMem;
     v25->m_Items[1] = 0;
-    v48 = v26->static_fields;
-    v49 = v48->gGlobal->htitMem;
+    v49 = gGlobal->htitMem;
     v49->m_Items[2] = 0;
-    v54 = v50->static_fields;
-    v55 = v54->gGlobal->htitMem;
+    v55 = gGlobal->htitMem;
     v55->m_Items[3] = 0;
-    v72 = v56->static_fields;
-    v73 = v72->gGlobal->htitMem;
+    v73 = gGlobal->htitMem;
     v73->m_Items[4] = 0;
   }
 }
@@ -863,93 +854,71 @@ void TgsTitle_SpriteLoad(s32 flg) {
 // 0x18528c0
 void TgsTitle_SpriteSetVram(s32 sw) {
   s64 i;
-  tgsMain_c *v5;
   u64 v6;
-  struct tgsMain_StaticFields *v7;
   struct System_Object_array *htitMem_v;
   u32 *htittex;
   Il2CppObject *v11;
   s64 *v12;
   s64 *v13;
-  tgsMain_c *v15;
-  struct tgsMain_StaticFields *static_fields;
   struct System_Object_array *hmodMem_v;
   struct sdfTexHandle_t_array *hmodtex;
   Il2CppObject *v20;
   s64 *v21;
   s64 *v23;
-  tgsMain_c *v24;
-  tgsMain_c *v25;
-  struct tgsMain_StaticFields *v26;
   struct System_Object_array *hmoaMem_v;
   struct sdfTexHandle_t_array *hmoatex;
   Il2CppObject *v30;
   s64 *v31;
   s64 *v33;
-  tgsMain_c *v34;
-  struct tgsMain_StaticFields *v37;
   struct System_Object_array *v38;
   struct sdfTexHandle_t_array *v39;
   Il2CppObject *v40;
   s64 *v42;
   s64 *v44;
-  tgsMain_c *v45;
-  struct tgsMain_StaticFields *v48;
   struct System_Object_array *v49;
   struct sdfTexHandle_t_array *v50;
   Il2CppObject *v51;
   s64 *v53;
   s64 *v55;
-  tgsMain_c *v56;
-  struct tgsMain_StaticFields *v59;
   struct System_Object_array *v60;
   struct sdfTexHandle_t_array *v61;
   Il2CppObject *v63;
   s64 *v64;
   s64 *v66;
-  tgsMain_c *v69;
-  struct tgsMain_StaticFields *v70;
   struct sdfTexHandle_t_array *v71;
   struct System_Object_array *v72;
-  struct tgsMain_StaticFields *v75;
   struct System_Object_array *v76;
   struct sdfTexHandle_t_array *v77;
   Il2CppObject *v79;
   s64 *v80;
   s64 *v81;
-  tgsMain_c *v84;
-  struct tgsMain_StaticFields *v85;
   Il2CppObject *v87;
   s64 *v88;
   s64 *v89;
 
   if (sw == 1)
   {
-    static_fields = v15->static_fields;
-    hmodMem_v = static_fields->hmodMem_v;
-    hmodtex = static_fields->gGlobal->hmodtex;
+    hmodtex = gGlobal->hmodtex;
     v20 = hmodMem_v->m_Items[0];
     v21 = sdfTexSet(v20);
     v23 = v21;
     hmodtex->m_Items[0] = v23;
-    v37 = v24->static_fields;
-    v38 = v37->hmodMem_v;
-    v39 = v37->gGlobal->hmodtex;
+    v38 = hmodMem_v;
+    v39 = gGlobal->hmodtex;
     v40 = v38->m_Items[1];
     v42 = sdfTexSet(v40);
     v44 = v42;
     v39->m_Items[1] = v44;
-    v59 = v45->static_fields;
-    v60 = v59->hmodMem_v;
-    v61 = v59->gGlobal->hmodtex;
+    v60 = hmodMem_v;
+    v61 = gGlobal->hmodtex;
     v63 = v60->m_Items[2];
     v64 = sdfTexSet(v63);
     v66 = v64;
     v61->m_Items[2] = v66;
-    v70 = v69->static_fields;
-    v71 = v70->gGlobal->hmodtex;
-    v72 = v70->hmodMem_v;
+    v71 = gGlobal->hmodtex;
+    v72 = hmodMem_v;
     if ((v72->max_length & 0xFFFFFFFC) == 0)
+      goto LABEL_108;
   }
   else
   {
@@ -958,9 +927,7 @@ void TgsTitle_SpriteSetVram(s32 sw) {
       for (i = 4; i != 9; ++i)
       {
         v6 = i - 4;
-        v7 = v5->static_fields;
-        htitMem_v = v7->htitMem_v;
-        htittex = v7->gGlobal->htittex;
+        htittex = gGlobal->htittex;
         v11 = *(&htitMem_v->obj.klass + i);
         v12 = sdfTexSet(v11);
         v13 = v12;
@@ -968,30 +935,29 @@ void TgsTitle_SpriteSetVram(s32 sw) {
       }
       return;
     }
-    v26 = v25->static_fields;
-    hmoaMem_v = v26->hmoaMem_v;
-    hmoatex = v26->gGlobal->hmoatex;
+    hmoatex = gGlobal->hmoatex;
     v30 = hmoaMem_v->m_Items[0];
     v31 = sdfTexSet(v30);
     v33 = v31;
     hmoatex->m_Items[0] = v33;
-    v48 = v34->static_fields;
-    v49 = v48->hmoaMem_v;
-    v50 = v48->gGlobal->hmoatex;
+    v49 = hmoaMem_v;
+    v50 = gGlobal->hmoatex;
     v51 = v49->m_Items[1];
     v53 = sdfTexSet(v51);
     v55 = v53;
     v50->m_Items[1] = v55;
-    v75 = v56->static_fields;
-    v76 = v75->hmoaMem_v;
-    v77 = v75->gGlobal->hmoatex;
+    v76 = hmoaMem_v;
+    v77 = gGlobal->hmoatex;
     v79 = v76->m_Items[2];
     v80 = sdfTexSet(v79);
     v81 = v80;
     v77->m_Items[2] = v81;
-    v85 = v84->static_fields;
-    v71 = v85->gGlobal->hmoatex;
-    v72 = v85->hmoaMem_v;
+    v71 = gGlobal->hmoatex;
+    v72 = hmoaMem_v;
+    if ((v72->max_length & 0xFFFFFFFC) == 0)
+    {
+LABEL_108:
+    }
   }
   v87 = v72->m_Items[3];
   v88 = sdfTexSet(v87);
@@ -1046,12 +1012,75 @@ void sdfMemFreeDelayed(sdfMemHandle_t *aHandle) {
 
 // 0x1855c60
 void tgsCheckPadInput(void) {
-    DDS3_PADCHECK_REP(0);
+  tgsMain_c *v3;
+  s32 v4;
+  bool v5;
+  struct tgsGlobal_o *gGlobal;
+  struct tgsGlobal_o *v7;
+
+  else if (DDS3_PADCHECK_REP(4))
+  {
+    goto LABEL_6;
+  }
+  v5 = DDS3_PADCHECK_REP(5);
+  if (v5)
+  {
+    v4 = 1;
+    goto LABEL_19;
+  }
+LABEL_20:
+  else
+  {
+    if ((gGlobal->ModePos & 0x80000000) == 0)
+      goto LABEL_23;
+  }
+  gGlobal->ModePos = 1;
+  if ((v3->_2.bitflags2 & 2) != 0)
+  {
+LABEL_24:
+  }
+LABEL_31:
+  v7 = gGlobal;
+  if (v7->ModePos >= 2)
+  {
+    v7->ModePos = 0;
+  }
 }
 
 // 0x1855e50
 void tgsCheckPadInput2(void) {
-    DDS3_PADCHECK_REP(0);
+  bool v5;
+  tgsMain_c *v6;
+  struct tgsGlobal_o *gGlobal;
+  struct tgsGlobal_o *v8;
+
+  else if (!DDS3_PADCHECK_REP(6))
+  {
+    goto LABEL_10;
+  }
+  --gGlobal->YnPos;
+LABEL_10:
+  v5 = DDS3_PADCHECK_REP(7);
+  if (v5)
+  {
+    ++gGlobal->YnPos;
+  }
+  else
+  {
+    if ((gGlobal->YnPos & 0x80000000) == 0)
+      goto LABEL_21;
+  }
+  gGlobal->YnPos = 1;
+  if ((v6->_2.bitflags2 & 2) != 0)
+  {
+LABEL_22:
+  }
+LABEL_31:
+  v8 = gGlobal;
+  if (v8->YnPos >= 2)
+  {
+    v8->YnPos = 0;
+  }
 }
 
 // 0x18565f0
@@ -1101,9 +1130,52 @@ s32 tgsGemeMode(void) {
 
 // 0x1856380
 void tgsInit(s32 mode) {
-    sdfMemLock(0);
-    tgsInitSprite();
-    dds3StartProcess(0, 0, 0, 0, 0, 0, 0);
+  u64 *v2;
+  u64 *v3;
+  Il2CppObject *v6;
+  tgsMain_c *v7;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v11;
+  s64 *v12;
+  u64 *v16;
+  u64 v18[3];
+
+  v2 = Allocate(sdfMemHandle_t);
+  sdfMemHandle_t___ctor(v2);
+  v3 = Allocate(sdfMemHandle_t);
+  sdfMemHandle_t___ctor(v3);
+  v6 = sdfMemLock(v3);
+  else
+  {
+    if (!v6)
+      goto LABEL_15;
+  }
+  klass = v6->klass;
+  if (v6->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != tgsGlobal)
+  {
+    sub_8FC2C0(klass->_1.element_class, tgsGlobal, v18);
+    if ((v18[0] & 1) != 0)
+      v11 = v18[2];
+    else
+      v11 = v18 + 1;
+    v12 = sub_8C4940(v11);
+  }
+LABEL_15:
+  gGlobal = v6;
+  gGlobal->step = 0;
+  gGlobal->cnt = 0;
+  gGlobal->ModePos = 0;
+  gGlobal->YnPos = 0;
+  tgsInitSprite(v7);
+  dds3BackColor = 0x80000000;
+  v16 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v16,
+    0,
+    Method_tgsMain_tgs_Main__);
+  dds3StartProcess("tgsProc", 0x2B19u, 0, 0, v16, 0, 0, 0, 0, 0);
 }
 
 // 0x18561c0
@@ -1111,7 +1183,7 @@ void tgsInitSprite(void) {
   struct tgsGlobal_o *gGlobal;
   sdfTexHandle_t_o *Texture;
 
-  Texture = fclLoadTexture(StringLiteral_22458);
+  Texture = fclLoadTexture("/tgs/coution.tmx");
   gGlobal->KotowariSpriteHandle = Texture;
   TgsTitle_MemoryInit(Texture);
   TgsTitle_SpriteLoad(0);
@@ -1122,28 +1194,104 @@ void tgsInitSprite(void) {
 
 // 0x1851610
 void tgsLoad(s32 mode) {
+  System_Char_array *v3;
+  u64 *v4;
+  u64 *v5;
+  u64 *v6;
+  struct sdfMemHandle_t_o *mh;
+  u64 *v10;
+  s32 v12;
+
+  v3 = NewSpecific(char, 0x40u);
+  CreateString_5280336(0, v3);
+  v4 = Allocate(sdfMemHandle_t);
+  sdfMemHandle_t___ctor(v4);
+  v5 = Allocate(sdfMemHandle_t);
+  sdfMemHandle_t___ctor(v5);
+  v6 = Allocate(object);
+  _ctor(v6, 0);
+  mh = DDS3_GBWK->mh;
+  v12 = mode;
+  v10 = sub_8D3950(s32, &v12);
+  Format("/tgs/SAVE{0:D}.TGS", v10, 0);
+  DDS3_GBWK->mh = mh;
 }
 
 // 0x1855a40
 void tgsNext1(void) {
-    dds3GlobalWorkUserInit2(0);
-    tgsLoad(0);
-    evtBitOn(0);
+  u64 *v7;
+  s32 v8;
+  s32 v9;
+  char v10[136];
+  fldSceneParam_t_o pParam;
+
+  memset(&pParam, 0, sizeof(pParam));
+  sub_F87580(&pParam);
+  dds3GlobalWorkUserInit2(0);
+  tgsLoad(gGemeMode);
+  evtBitOn(2802);
+  evtBitOn(3087);
+  evtBitOn(320);
+  NoClip = 0;
+  EncountOn = 1;
+  if (gGemeMode)
+  {
     fldProcNext(0, 0);
-    fldSetSceneParam2(0, 0, 0, 0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
+    fldSetSceneParam2(&pParam, 40, 1, "");
+    memcpy(v10, &pParam, sizeof(v10));
+    v7 = sub_8D3950(fldSceneParam_t, v10);
+    v8 = 7;
+    v9 = 2;
+  }
+  else
+  {
+    fldProcNext(23, 723);
+    *v10 = 723;
+    v7 = sub_8D3950(s32, v10);
+    v8 = 8;
+    v9 = 4;
+  }
+  dds3AdminiCallSequence(v8, v7, v9, 0);
 }
 
 // 0x18513f0
 void tgsSave(s32 mode) {
-    sdfFileGetHostRoot();
+  System_Char_array *v3;
+  u8 sdfHddReady;
+  u64 *v8;
+  System_String_o *v9;
+  Il2CppObject *HostRoot;
+  u64 *v12;
+  Il2CppObject *v13;
+  s32 v16;
+  s32 v17;
+
+  v3 = NewSpecific(char, 0x40u);
+  CreateString_5280336(0, v3);
+  else if (ToBoolean_2953824(sdfHddReady))
+  {
+LABEL_9:
+    v17 = mode;
+    v8 = sub_8D3950(s32, &v17);
+    v9 = Format("pfs0:tgs/SAVE{0:D}.TGS", v8, 0);
+    goto LABEL_15;
+  }
+  v16 = mode;
+  HostRoot = sdfFileGetHostRoot();
+  v12 = sub_8D3950(s32, &v16);
+  v9 = Format_5268592("{0}tgs/SAVE{1:D}.TGS", HostRoot, v12);
+LABEL_15:
+  v13 = v9;
+  Write_2930400("tgsSave fname:{0}\n", v13);
+  ToSByte_2958352(v13);
 }
 
 // 0x18570a0
 s32 tgsShutDown(void) {
+LABEL_7:
   tgsDestroySprite();
   gGlobal = 0;
-  dds3KillProcessName(StringLiteral_22459, 1);
+  dds3KillProcessName("tgsProc", 1);
   return 0;
 }
 
@@ -1157,29 +1305,207 @@ s32 tgsStart(s32 mode) {
 
 // 0x1856660
 dds3ProcessFunc_t *tgs_Main(dds3ProcessID_t *id) {
-    rsetOtOfs(0);
-    rsetAlpha(0);
-    rsetTest(0, 0, 0, 0, 0, 0, 0, 0);
-    p2sdLoadCheckMidi(0);
-    p2sdLoadSMGFile(0);
-    TgsTitle_GetAlpha();
-    TgsTitle_DrawTitle(0);
-    dds3FadeIn(0, 0, 0, 0);
-    p2sdFadeIn(0);
-    tgsCheckPadInput();
-    DDS3_PADCHECK_TRIG(0);
-    TgsTitle_SpriteSetVram(0);
-    TgsTitle_ModeRGBASet();
-    DDS3_PAD2CHECK_TRIG(0);
-    tgsSave(0);
-    tgsCheckPadInput2();
-    TgsTitle_DrawMask();
-    TgsTitle_DrawMode(0);
-    p2sdFadeOut(0);
-    dds3FadeOut(0, 0, 0, 0);
-    tgsDrawKotowari();
-    dds3FadeCheck();
-    dds3CreateGameData(0);
-    tgsNext1();
-    return 0;
+  u64 v3;
+  struct tgsMain_StaticFields *static_fields;
+  struct tgsGlobal_o *gGlobal;
+  s32 F061_SMG;
+  s32 v10;
+  struct tgsGlobal_o *v12;
+  s32 v13;
+  s32 v14;
+  s32 F061_01;
+  s16 v28;
+  s32 v29;
+  s32 v31;
+  struct tgsMain_StaticFields *v38;
+  struct tgsMain_StaticFields **v43;
+  struct tgsGlobal_o *v44;
+  struct tgsGlobal_o *v48;
+  s32 v49;
+  s32 v52;
+  s16 v58;
+  s32 v59;
+  s32 v60;
+  bool v65;
+  struct tgsMain_StaticFields **p_static_fields;
+  struct tgsGlobal_o *v70;
+  s32 v72;
+
+  rsetOtOfs(72);
+  rsetAlpha(0);
+  rsetTest(1, 0, 128, 3, 0, 0, 1, 1);
+  static_fields = *(v3 + 184);
+  switch (gGlobal->step)
+  {
+    case 0:
+      v10 = p2sdLoadCheckMidi(F061_SMG);
+      if (v10)
+      {
+        gGlobal->cnt = 0;
+        v12 = gGlobal;
+        v13 = 2;
+        goto LABEL_177;
+      }
+      v60 = F061_SMG;
+      p2sdLoadSMGFile(v60);
+      gGlobal->cnt = 0;
+      goto LABEL_145;
+    case 1:
+      v14 = F061_SMG;
+      if (!p2sdLoadCheckMidi(v14))
+        return 0;
+      gGlobal->cnt = 0;
+LABEL_145:
+      v12 = gGlobal;
+      v13 = v12->step + 1;
+      goto LABEL_177;
+    case 2:
+      TgsTitle_GetAlpha(v3);
+      TgsTitle_DrawTitle(0);
+      dds3FadeIn(0, 0, 0, 0x14u);
+      gGlobal->cnt = 0;
+      ++gGlobal->step;
+      p2sdFadeIn(F061_01);
+      return 0;
+    case 3:
+      tgsCheckPadInput(v3);
+      TgsTitle_GetAlpha();
+      TgsTitle_DrawTitle(0);
+      if (!DDS3_PADCHECK_TRIG(1))
+      {
+        if (!DDS3_PADCHECK_TRIG(12))
+          goto LABEL_157;
+      }
+      if ((v28 & 0x200) != 0)
+      {
+        v29 = v28 & 0x200;
+        if (gGlobal->ModePos)
+          goto LABEL_59;
+      }
+      else
+      {
+        v29 = 0;
+        if (gGlobal->ModePos)
+        {
+LABEL_59:
+          v31 = 2;
+          gGemeMode = 1;
+          goto LABEL_153;
+        }
+      }
+      gGemeMode = 0;
+      v31 = 1;
+LABEL_153:
+      TgsTitle_SpriteSetVram(v31);
+      TgsTitle_ModeRGBASet();
+      gGlobal->cnt = 0;
+      gGlobal->step = 6;
+      gGlobal->YnPos = 0;
+LABEL_157:
+      v65 = DDS3_PAD2CHECK_TRIG(3);
+      if (ToBoolean_2953792(v65))
+      {
+        tgsSave(gGlobal->ModePos);
+      }
+      return 0;
+    case 4:
+      tgsCheckPadInput2(v3);
+      TgsTitle_DrawTitle(1);
+      TgsTitle_DrawMask();
+      TgsTitle_DrawMode(0);
+      if (DDS3_PADCHECK_TRIG(3))
+      {
+        gGlobal->cnt = 0;
+        goto LABEL_176;
+      }
+      if (!DDS3_PADCHECK_TRIG(1))
+      {
+        if (!DDS3_PADCHECK_TRIG(12))
+          return 0;
+      }
+      if ((v58 & 0x200) != 0)
+      {
+        v59 = v58 & 0x200;
+      }
+      else
+      {
+        v59 = 0;
+      }
+      v70 = gGlobal;
+      if (gGlobal->YnPos)
+      {
+        v70->cnt = 0;
+        v38 = *p_static_fields;
+LABEL_176:
+        v12 = gGlobal;
+        v13 = 7;
+LABEL_177:
+        v12->step = v13;
+        return 0;
+      }
+      v72 = F061_01;
+      p2sdFadeOut(v72);
+      gGlobal->cnt = 0;
+      v48 = gGlobal;
+      v49 = 8;
+LABEL_110:
+      v48->step = v49;
+      dds3FadeOut(0, 0, 0, 0x14u);
+      return 0;
+    case 6:
+    case 7:
+      if ((*(v3 + 295) & 2) != 0 && !*(v3 + 216))
+      TgsTitle_DrawTitle(1);
+      TgsTitle_DrawMask();
+      TgsTitle_DrawMode(1);
+      return 0;
+    case 8:
+      if ((*(v3 + 295) & 2) != 0 && !*(v3 + 216))
+      TgsTitle_DrawTitle(1);
+      TgsTitle_DrawMask();
+      TgsTitle_DrawMode(0);
+      ++gGlobal->cnt;
+      v44 = (*v43)->gGlobal;
+      if (v44->cnt < 21)
+        return 0;
+      v44->cnt = 0;
+      v12 = (*v43)->gGlobal;
+      v13 = 9;
+      goto LABEL_177;
+    case 9:
+      if (!gGlobal->cnt)
+      {
+        dds3FadeIn(0, 0, 0, 0xFu);
+      }
+      tgsDrawKotowari(v3);
+      ++gGlobal->cnt;
+      if (gGlobal->cnt <= 90)
+      {
+        if (!DDS3_PADCHECK_TRIG(1))
+        {
+          if (!DDS3_PADCHECK_TRIG(3))
+          {
+            if (!DDS3_PADCHECK_TRIG(12))
+              return 0;
+          }
+        }
+      }
+      gGlobal->cnt = 0;
+      v48 = gGlobal;
+      v49 = 10;
+      goto LABEL_110;
+    case 0xA:
+      tgsDrawKotowari(v3);
+      v52 = dds3FadeCheck();
+      if (!ToBoolean_2953872(v52))
+      {
+        gGlobal->cnt = 0;
+        gGlobal->step = 5;
+        dds3CreateGameData(0);
+        tgsNext1();
+      }
+      return 0;
+    default:
+      return 0;
+  }
 }

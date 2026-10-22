@@ -105,37 +105,245 @@ void sdf3DMakeFogPacket(sdf3DFogPacket_t *aPacket, sdf3DFogParam_t *aParam) {
 
 // 0x17ca330
 void sdf3DMakeLightParallelPacket(sdf3DLightParallelPacket_t *aPacket, sdf3DLight_t **aLights, sdfVector4_t aAmbient) {
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__STOREVECTOR_B(0);
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
+  f32 w;
+  f32 z;
+  f32 y;
+  f32 x;
+  struct UnityEngine_Vector4_array *color;
+  u64 v12;
+  sdf3DLight_t_o *v13;
+  s64 i;
+  sdf3DLight_t_o *v16;
+  struct UnityEngine_Vector4_array *normal;
+  struct UnityEngine_Vector4_array *v19;
+  struct UnityEngine_Vector4_array *v21;
+  struct UnityEngine_Vector4_array *v23;
+  struct UnityEngine_Vector4_array *v25;
+  struct UnityEngine_Vector4_array *v27;
+  struct UnityEngine_Vector4_array *v29;
+  struct UnityEngine_Vector4_array *v31;
+  struct UnityEngine_Vector4_array *v33;
+  struct UnityEngine_Vector4_array *v35;
+  struct UnityEngine_Vector4_array *v37;
+  struct UnityEngine_Vector4_array *v39;
+  f32 v42;
+  f32 v43;
+  f32 v45;
+  f32 v46;
+  sdfVu0_c *v48;
+  s32 v49;
+  s32 v50;
+  f32 v51;
+  struct sdf3D_StaticFields *static_fields;
+  s64 v56;
+  s64 v57;
+  s64 v58;
+  s64 v59;
+  s64 v60;
+  s64 v61;
+  s64 v62;
+  UnityEngine_Matrix4x4_o v63;
+  u64 dest[8];
+  s64 v65;
+  s64 v66;
+  UnityEngine_Vector4_o v67;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector4_o v69;
+  UnityEngine_Vector4_o v70;
+
+  w = aAmbient.w;
+  z = aAmbient.z;
+  y = aAmbient.y;
+  x = aAmbient.x;
+  v69.x = x;
+  v69.y = y;
+  v69.z = z;
+  v69.w = w;
+  *&v67.x = 0;
+  *&v67.z = 0;
+  v65 = 0;
+  v66 = 0;
+  memset(dest, 0, sizeof(dest));
+  *&p.x = 0;
+  *&p.z = 0;
+  SDF_VU0__LOADVECTOR_B(v69);
+  color = aPacket->color;
+  SDF_VU0__STOREVECTOR_B(&color->m_Items[3]);
+  v12 = 0;
+  v13 = 0;
+  for (i = 32; i != 80; i += 16)
+  {
+    while (1)
+    {
+      v16 = aLights->m_Items[v12];
+      if (!v16)
+        break;
+      if (!v13)
+        v13 = aLights->m_Items[v12];
+      SDF_VU0__LOADVECTOR(v16->v);
+      SDF_VU0__NORMALIZE();
+      SDF_VU0__SCALEVECTOR(-1.0);
+      SDF_VU0__STOREVECTOR(&p);
+      normal = aPacket->normal;
+      sub_854710(&p, 0);
+      sub_854930(normal->m_Items, v12);
+      v19 = aPacket->normal;
+      sub_854710(&p, 1u);
+      sub_854930(&v19->m_Items[1], v12);
+      v21 = aPacket->normal;
+      sub_854710(&p, 2u);
+      sub_854930(&v21->m_Items[2], v12);
+      SDF_VU0__LOADVECTOR(v16->color);
+      SDF_VU0__ADDVECTOR_B_A();
+      v23 = aPacket->color;
+      SDF_VU0__STOREVECTOR((v23 + i), 0);
+      i += 16;
+      ++v12;
+      if (i == 80)
+        goto LABEL_36;
+    }
+    v25 = aPacket->normal;
+    sub_854930(v25->m_Items, v12);
+    v27 = aPacket->normal;
+    sub_854930(&v27->m_Items[1], v12);
+    v29 = aPacket->normal;
+    sub_854930(&v29->m_Items[2], v12);
+    v31 = aPacket->color;
+    sub_854930(v31 + i, 0);
+    v33 = aPacket->color;
+    sub_854930(v33 + i, 1u);
+    v35 = aPacket->color;
+    sub_854930(v35 + i, 2u);
+    v37 = aPacket->color;
+    sub_854930(v37 + i, 3u);
+    ++v12;
+  }
+LABEL_36:
+  v39 = aPacket->color;
+  SDF_VU0__STOREVECTOR_B(&v39->m_Items[4]);
+  if (v13)
+  {
+    *&v67.x = 0;
+    *&v67.z = 0;
+    SDF_VU0__LOADVECTOR(v13->v);
     SDF_VU0__NORMALIZE();
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__STOREVECTOR(0);
-    SDF_VU0__ADDVECTOR_B_A();
     SDF_VU0__VECTOR_W_SET_ZERO();
     SDF_VU0__SET_ROW2();
-    sdfFabs(0);
+    SDF_VU0__STOREVECTOR(&v67);
+    sub_854710(&v67, 0);
+    v43 = v42;
+    if (sdfFabs(v43) >= 0.000001)
+      goto LABEL_48;
+    sub_854710(&v67, 2u);
+    v46 = v45;
+    if (sdfFabs(v46) >= 0.000001)
+    {
+LABEL_48:
+      sub_854690(&v65, 0.0, 0.0, 0.0, 0.0);
+      memmove(dest, v48->static_fields, 0x40u);
+      sub_19FFB10(dest, 1, 0);
+      LODWORD(v65) = v49;
+      memmove(dest, sdfVu0->static_fields, 0x40u);
+      sub_19FFB10(dest, 1, 1);
+      HIDWORD(v65) = v50;
+      memmove(dest, sdfVu0->static_fields, 0x40u);
+      sub_19FFB10(dest, 1, 2);
+      v70.z = v51;
+      *&v66 = v51;
+      v70.w = *(&v66 + 1);
+      *&v70.x = v65;
+    }
+    else
+    {
+      sub_854710(&v67, 1u);
+      sub_854930(&v67, 0);
+      sub_854930(&v67, 1u);
+      sub_854930(&v67, 2u);
+      sub_854930(&v67, 3u);
+      v70 = v67;
+    }
+    SDF_VU0__LOADVECTOR_B(v70);
     SDF_VU0__OUTERPRODUCT();
+    SDF_VU0__NORMALIZE();
+    SDF_VU0__VECTOR_W_SET_ZERO();
     SDF_VU0__SET_ROW0();
     SDF_VU0__COPYVECTOR_A_TO_B();
     SDF_VU0__GET_ROW2();
+    SDF_VU0__OUTERPRODUCT();
+    SDF_VU0__VECTOR_W_SET_ZERO();
     SDF_VU0__SET_ROW1();
     SDF_VU0__RESET_ROW3();
     DiagMatrix();
-    SDF_VU0__LOADVECTOR_MTXCOL_B(0);
+    SDF_VU0__LOADVECTOR(v13->v);
+    SDF_VU0__NORMALIZE();
+    v56 = *&sdfCameraTm.m00;
+    v57 = *&sdfCameraTm.m20;
+    v58 = *&sdfCameraTm.m21;
+    *&v63.m01 = *&sdfCameraTm.m01;
+    *&v63.m21 = v58;
+    *&v63.m00 = v56;
+    *&v63.m20 = v57;
+    v59 = *&sdfCameraTm.m02;
+    v60 = *&sdfCameraTm.m22;
+    v62 = *&sdfCameraTm.m03;
+    v61 = *&sdfCameraTm.m23;
+    *&v63.m03 = v62;
+    *&v63.m23 = v61;
+    *&v63.m02 = v59;
+    *&v63.m22 = v60;
+    SDF_VU0__LOADVECTOR_MTXCOL_B(&v63);
     SDF_VU0__ADDVECTOR();
     SDF_VU0__NEGVECTOR_XYZ();
+    SDF_VU0__NORMALIZE();
     SDF_VU0__SET_ROW3();
-    SDF_VU0__STOREMATRIX(0);
-    SDF_VU0__STOREIDENTITY(0);
+    SDF_VU0__STOREMATRIX(&aPacket->TM);
+  }
+  else
+  {
+    SDF_VU0__STOREIDENTITY(&aPacket->TM);
+  }
 }
 
 // 0x17c9f80
 void sdf3DMakeScreenParam(sdf3DScreenParam_t **aParam) {
-    SDF_VU0__STOREIDENTITY(0);
-    SDF_VU0__LOADMATRIX(0);
-    MultMatrix(0);
-    SDF_VU0__STOREMATRIX(0);
+  f32 fovy;
+  UnityEngine_Matrix4x4_o v6;
+  UnityEngine_Matrix4x4_o v7;
+  UnityEngine_Matrix4x4_o v8;
+  UnityEngine_Matrix4x4_o aMatrix;
+
+  memset(&aMatrix, 0, sizeof(aMatrix));
+  SDF_VU0__STOREIDENTITY(&aMatrix);
+  sub_19FFD30(&aMatrix, 0, 0);
+  sub_19FFD30(&aMatrix, 1, 1);
+  sub_19FFD30(&aMatrix, 2, 2);
+  sub_19FFD30(&aMatrix, 3, 2);
+  v8 = aMatrix;
+  SDF_VU0__LOADMATRIX(&v8);
+  SDF_VU0__STOREIDENTITY(&aMatrix);
+  if (((*aParam)->flags & 2) != 0)
+  {
+    fovy = (*aParam)->fovy;
+    tanf(fovy * 0.5);
+  }
+  sub_19FFD30(&aMatrix, 0, 0);
+  sub_19FFD30(&aMatrix, 1, 1);
+  sub_19FFD30(&aMatrix, 2, 2);
+  sub_19FFD30(&aMatrix, 2, 3);
+  sub_19FFD30(&aMatrix, 3, 2);
+  sub_19FFD30(&aMatrix, 3, 3);
+  v7 = aMatrix;
+  v6 = v7;
+  MultMatrix(&v6);
+  SDF_VU0__STOREMATRIX(&(*aParam)->TM, 0);
+  sub_854930(&(*aParam)->scale, 0);
+  sub_854930(&(*aParam)->scale, 1u);
+  sub_854930(&(*aParam)->scale, 2u);
+  sub_854930(&(*aParam)->scale, 3u);
+  sub_854930(&(*aParam)->trans, 0);
+  sub_854930(&(*aParam)->trans, 1u);
+  sub_854930(&(*aParam)->trans, 2u);
+  sub_854930(&(*aParam)->trans, 3u);
 }
 
 // 0x17c9d10

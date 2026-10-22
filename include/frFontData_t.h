@@ -11,8 +11,8 @@ struct frFontData_t {
     frFontHeader_t *header;
     s32 prop_size;
     s32 ysht_size;
-    s8 prop[UNKNOWN_ARRAY_SIZE];
+    s8 *prop;
     s8 ysht;
-    GsFont_t trans[UNKNOWN_ARRAY_SIZE];
+    GsFont_t *trans;
     void *data;
 };

@@ -8,7 +8,7 @@ typedef struct sdfDrawTag_t sdfDrawTag_t;
 
 struct movieViewerWork_t {
     dds3ProcessID_t *procId;
-    movieFileItem_tag fileItems[UNKNOWN_ARRAY_SIZE];
+    movieFileItem_tag *fileItems;
     s16 fileListTopIndex;
     s16 fileListIndex;
     s16 fileListCount;

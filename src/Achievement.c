@@ -9,7 +9,7 @@ void Initialize(void *gameObj) {
   Il2CppObject *v2;
   u64 *v3;
 
-  v2 = StringLiteral_4527;
+  v2 = "Achievement#Initialize";
   Log(v2, 0);
   v3 = Allocate(AchivementDummyID);
   _ctor(v3, 0);
@@ -23,6 +23,14 @@ void Log(char *log) {
 
 // 0xfd4890
 void Unlock(s32 id) {
+  System_String_o *v2;
+  Il2CppObject *v4;
+  s32 v5;
+
+  v5 = id;
+  v2 = sub_232970(&v5);
+  v4 = Concat_5224608("Achievement#Unlock(s32)=", v2, 0);
+  Log(v4, 0);
 }
 
 // 0xfd4950
@@ -31,6 +39,6 @@ void Unlock_16599376(char *id) {
   Il2CppObject *v5;
 
   v3 = (id->klass->vtable._3_ToString.methodPtr)(id, id->klass->vtable._3_ToString.method);
-  v5 = Concat_5224608(StringLiteral_4529, v3);
+  v5 = Concat_5224608("Achievement#Unlock(string)=", v3, 0);
   Log(v5, 0);
 }

@@ -98,7 +98,7 @@ static bDrawText bsetText;
 static char *ModelViewerSetCameraSubModeCons_camera_mode_str[2];
 static char *ModelViewerSetObjectSubModeCons_object_mode_str[2];
 static char *ModelViewerSetArrangeCons_strs[5];
-static s32 ModelViewerSetOptionCons_cursor_y_tbl[UNKNOWN_ARRAY_SIZE];
+static s32 *ModelViewerSetOptionCons_cursor_y_tbl;
 static char *ModelViewerSetOptionCons_msgs[3];
 static sdfVector4_t ModelViewerSetCenterAxis_line_points[6];
 static u32 ModelViewerSetCenterAxis_line_colors[6];
@@ -169,18 +169,103 @@ char *nbLoadStartUnitPack(s32 unitid);
 
 // 0x12a7f00
 void InitModelViewer(void) {
-    ViewerDispOn(0);
-    ModelViewerInitCamera();
-    SDF_DEGtoRAD(0);
-    ModelViewerLoadModel();
-    dds3StartProcess(0, 0, 0, 0, 0, 0, 0);
-    ModelViewerStartModeProc();
+  Il2CppObject *v2;
+  u32 *gc_desc;
+  u32 *v8;
+  struct sdf3DScreenParam_t_o *dds3ScreenParam;
+  struct sdf3DLight_t_array *dds3DirLights;
+  sdf3DLight_t_o *v15;
+  s64 v16;
+  f32 v17;
+  f32 v18;
+  struct dds3ModelHandle_t_array *modelHandle;
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+  u64 *v25;
+  u64 *v27;
+  dds3ProcessID_t_o *started;
+  s64 v29;
+  s64 v30;
+
+  v29 = 0;
+  v30 = 0;
+  else if (modelViewerWork)
+  {
+    goto LABEL_13;
+  }
+  v2 = Allocate(ModelViewer_modelViewerWork_t);
+  v2[7].monitor = NewSpecific(s32, 3u);
+  v2[14].monitor = NewSpecific(dds3ModelHandle_t, 0xCu);
+  _ctor(v2, 0);
+  modelViewerWork = v2;
+LABEL_13:
+  ViewerDispOn(kernelObject);
+  *(v6[2].klass->_1.gc_desc + 10) = 1;
+  *(v6[2].klass->_1.gc_desc + 11) = 1;
+  gc_desc = v6[2].klass->_1.gc_desc;
+  gc_desc[21] = 1;
+  gc_desc[23] = 1;
+  v8 = v6[2].klass->_1.gc_desc;
+  v8[22] = 0;
+  v8[24] = 0;
+  *(v6[2].klass->_1.gc_desc + 8) = 0;
+  *(v6[2].klass->_1.gc_desc + 9) = 0;
+  *(v6[2].klass->_1.gc_desc + 25) = 0;
+  *(v6[2].klass->_1.gc_desc + 32) = 0;
+  *(v6[2].klass->_1.gc_desc + 33) = 0;
+  *(v6[2].klass->_1.gc_desc + 36) = 0;
+  *(v6[2].klass->_1.gc_desc + 37) = 0;
+  *(v6[2].klass->_1.gc_desc + 12) = 0;
+  *(v6[2].klass->_1.gc_desc + 45) = 1065353216;
+  *(v6[2].klass->_1.gc_desc + 14) = 0;
+  *(v6[2].klass->_1.gc_desc + 15) = 1;
+  ModelViewerInitCamera();
+  dds3ScreenParam->fovy = SDF_DEGtoRAD(25.0);
+  sub_854690(&v29, 0.9811, 0.3967, 0.3606, 0.0);
+  v15 = dds3DirLights->m_Items[0];
+  v16 = 4;
+  v18 = *&v30;
+  v17 = *(&v30 + 1);
+  *&v15->v.x = v29;
+  v15->v.z = v18;
+  v15->v.w = v17;
+  do
+  {
+    modelHandle = modelViewerWork->modelHandle;
+    *(&modelHandle->obj.klass + v16++) = 0;
+  }
+  while (v16 != 16);
+  ModelViewerLoadModel();
+  modelViewerWork->modelCount = 1;
+  v25 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v25,
+    0,
+    Method_ModelViewer_ModelViewerProc__);
+  modelViewerWork->procId = dds3StartProcess(
+                                     "modelViewer",
+                                     0x2AFFu,
+                                     1,
+                                     0,
+                                     v25,
+                                     0,
+                                     0,
+                                     0,
+                                     0,
+                                     0);
+  v27 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v27,
+    0,
+    Method_ModelViewer_ModelViewerDrawEndProc__);
+  started = dds3StartProcess("modelViewerEnd", 0x2B01u, 1, 0, v27, 0, 0, 0, 0, 0);
+  modelViewerWork->modeProcId = 0;
+  ModelViewerStartModeProc(started);
 }
 
 // 0x12a2c70
 void KillModelViewer(void) {
-  dds3KillProcessName(StringLiteral_5247, 0);
-  dds3KillProcessName(StringLiteral_5248, 0);
+  dds3KillProcessName("modelViewer", 0);
+  dds3KillProcessName("modelViewerEnd", 0);
 }
 
 // 0x12a6120
@@ -227,6 +312,7 @@ void ModelViewerArrange(void) {
             ModelViewerHandleRotate(v6);
             ModelViewerLoadModel();
           }
+          goto LABEL_72;
         case 1:
           if (modelViewerWork->modelCount >= 2)
           {
@@ -235,23 +321,26 @@ void ModelViewerArrange(void) {
             ModelViewerHandleBackRotate(v6);
             --modelViewerWork->modelCount;
           }
+          goto LABEL_72;
         case 2:
           if (modelViewerWork->modelCount >= 2)
           {
-            if ((*(v6 + 295) & 2) != 0 && !*(v6 + 216))
             ModelViewerHandleRotate(v6);
           }
+          goto LABEL_72;
         case 3:
           if (modelViewerWork->modelCount >= 2)
           {
-            if ((*(v6 + 295) & 2) != 0 && !*(v6 + 216))
             ModelViewerHandleBackRotate(v6);
           }
+          goto LABEL_72;
         case 4:
           v14 = 0;
           if ((*(v6 + 295) & 2) != 0)
+            goto LABEL_54;
           break;
         default:
+          goto LABEL_72;
       }
       while (1)
       {
@@ -261,16 +350,23 @@ void ModelViewerArrange(void) {
         if ((*(v6 + 295) & 2) != 0 && !*(v6 + 216))
         {
           v16 = modelViewerWork->modelHandle;
+          if (v14 >= LODWORD(v16->max_length))
+          {
+LABEL_60:
+          }
         }
         else
         {
           v16 = *(v15 + 232);
           if (v14 >= LODWORD(v16->max_length))
+            goto LABEL_60;
         }
         ++v14;
         {
+LABEL_54:
         }
       }
+LABEL_72:
       v21 = modelViewerWork;
       v21->modelMajor = 0;
       v21->modelMajorWrk = 0;
@@ -290,22 +386,10 @@ void *ModelViewerArrangeProc(dds3ProcessID_t *aProcId) {
 
 // 0x12a3840
 void ModelViewerCamera(void) {
-    DDS3_PADCHECK_TRIG(0);
-    DDS3_PADCHECK_PRESS(0);
-    SDF_VU0__LOADIDENTITYVECTOR();
-    SDF_VU0__LOADVECTOR_MTXCOL_B(0);
-    FromRotation_B(0);
-    Mult();
-    ToMatrix();
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__SUBVECTOR();
-    SDF_VU0__APPLYMATRIX_XYZ1();
-    SDF_VU0__ADDVECTOR();
-    SDF_VU0__STOREVECTOR(0);
-    SDF_VU0__SCALEVECTOR_B(0);
-    SDF_VU0__COPYVECTOR_A_TO_B();
-    ModelViewerInitCamera();
+  if (!DDS3_PADCHECK_TRIG(12))
+    goto LABEL_11;
+LABEL_6:
+  ModelViewerInitCamera();
 }
 
 // 0x12a37d0
@@ -316,11 +400,83 @@ void *ModelViewerCameraProc(dds3ProcessID_t *aProcId) {
 
 // 0x12a7b00
 void *ModelViewerDrawEndProc(dds3ProcessID_t *aProcId) {
-    IsLoad(0, 0);
-    GetFname(0);
-    LoadPrefab_16624656(0, 0, 0, 0);
-    nbLoadStartUnitPack(0);
-    return 0;
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+  AssetBundleCtrl_o *asset_bc;
+  s32 read_minor;
+  System_String_o *Fname;
+  AssetBundleCtrl_o *v12;
+  System_String_o *akey;
+  AssetBundleCtrl_o *v14;
+  System_String_o *v15;
+  Il2CppObject *Prefab_16624656;
+  UnityEngine_GameObject_o *v19;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *v23;
+  UnityEngine_Transform_o *v25;
+  UnityEngine_Transform_o *Child;
+  struct ModelViewer_modelViewerWork_t_o *v28;
+  f32 v29;
+  f32 v30;
+  f32 v31;
+  f32 v32;
+  UnityEngine_GameObject_o *gameObject;
+  Il2CppObject *Component_object;
+  struct ModelViewer_modelViewerWork_t_o *v37;
+  UnityEngine_Quaternion_o rotation;
+  UnityEngine_Quaternion_o v40;
+
+  *&rotation.x = 0;
+  *&rotation.z = 0;
+  if (modelViewerWork->read_flag)
+  {
+    else if (modelViewerWork->modelMajor != 1)
+    {
+      return 0;
+    }
+    asset_bc = get_asset_bc();
+    if (IsLoad(asset_bc, modelViewerWork->akey))
+    {
+      read_minor = modelViewerWork->read_minor;
+      Fname = GetFname(read_minor);
+      v12 = get_asset_bc();
+      akey = modelViewerWork->akey;
+      v14 = v12;
+      v15 = Concat_5224608("charactor/b/", Fname);
+      Prefab_16624656 = LoadPrefab_16624656(v14, akey, v15, Fname);
+      if (op_Inequality(Prefab_16624656, 0, 0))
+      {
+        v19 = Find("Character", 0);
+        transform = get_transform(v19, 0);
+        v23 = Instantiate_object__425664(Prefab_16624656, transform, 0);
+        modelViewerWork->modelobj = v23;
+        v25 = get_transform(v23, 0);
+        Child = GetChild(v25, 0);
+        rotation = get_rotation(Child);
+        sub_1A1CAE0(&rotation.x, 0);
+        v28 = modelViewerWork;
+        v28->modelrot.x = v29;
+        v28->modelrot.y = 180.0;
+        v28->modelrot.z = v30;
+        v31 = v29;
+        v32 = v30;
+        {
+        }
+        v40 = Euler(v31, 180.0, v32);
+        set_rotation(Child, v40);
+        gameObject = get_gameObject(Child);
+        Component_object = GetComponent_object_(gameObject);
+        modelViewerWork->modelanm = Component_object;
+        modelViewerWork->read_flag = 0;
+      }
+      else
+      {
+        v37 = modelViewerWork;
+        v37->akey = nbLoadStartUnitPack(61);
+        modelViewerWork->read_minor = 61;
+      }
+    }
+  }
+  return 0;
 }
 
 // 0x12a7af0
@@ -330,8 +486,74 @@ void ModelViewerDrawMarkPos(dds3ModelHandle_t *handle) {
 
 // 0x12a5b00
 void ModelViewerEffect(void) {
-    DDS3_PADCHECK_TRIG(0);
-    DDS3_PADCHECK_REP(0);
+  s32 effectMode;
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+  s32 effectCursor;
+  s16 v20;
+  s32 v21;
+  struct ModelViewer_modelViewerWork_t_o *v22;
+  s32 v23;
+  struct ModelViewer_modelViewerWork_t_o *v26;
+  s32 v27;
+
+  effectMode = modelViewerWork->effectMode;
+  if (effectMode == 1)
+  {
+    DDS3_PADCHECK_TRIG(3);
+    modelViewerWork->effectMode = 0;
+  }
+  else
+  {
+    if (effectMode)
+      return;
+ if (DDS3_PADCHECK_TRIG(7))
+    {
+      goto LABEL_21;
+    }
+    else if (DDS3_PADCHECK_REP(7))
+    {
+      goto LABEL_51;
+    }
+    if (DDS3_PADCHECK_TRIG(6))
+    {
+      if ((v20 & 0x200) != 0)
+      {
+        v21 = v20 & 0x200;
+        v22 = modelViewerWork;
+        v23 = v22->effectCursor;
+        if (!v23)
+          goto LABEL_100;
+      }
+      else
+      {
+        v21 = 0;
+        v22 = modelViewerWork;
+        v23 = v22->effectCursor;
+        if (!v23)
+        {
+LABEL_100:
+          v22->effectCursor = -1;
+          return;
+        }
+      }
+      v22->effectCursor = v23 - 1;
+    }
+    else
+    {
+      if (DDS3_PADCHECK_REP(6))
+      {
+        v26 = modelViewerWork;
+        v27 = v26->effectCursor;
+        if (v27 >= 1)
+        {
+          v26->effectCursor = v27 - 1;
+        }
+      }
+      else
+      {
+      }
+    }
+  }
 }
 
 // 0x12a6f40
@@ -392,6 +614,7 @@ void ModelViewerHandleBackRotate(void) {
   {
     LODWORD(v14) = 0;
     if ((v8 & 0x200) == 0)
+      goto LABEL_26;
   }
   else
   {
@@ -410,9 +633,14 @@ void ModelViewerHandleBackRotate(void) {
     }
     while (v11 != v14);
     if ((v19 & 0x200) == 0)
+      goto LABEL_26;
   }
+LABEL_26:
   v20 = modelViewerWork->modelHandle;
   if (!v6)
+    goto LABEL_28;
+LABEL_27:
+LABEL_28:
   v20->m_Items[v14] = v6;
 }
 
@@ -451,35 +679,30 @@ void ModelViewerHandleRotate(void) {
   {
     v9 = modelViewerWork->modelHandle;
     if (!v7)
+      goto LABEL_27;
   }
+LABEL_27:
   v9->m_Items[0] = v7;
 }
 
 // 0x12a67a0
 void ModelViewerInitCamera(void) {
-  ModelViewer_c *v2;
-  struct ModelViewer_StaticFields *static_fields;
   f32 w;
-  struct ModelViewer_StaticFields *v5;
   f32 v6;
-  struct ModelViewer_StaticFields *v7;
   f32 v8;
 
-  static_fields = v2->static_fields;
-  *&static_fields->modelViewerEyePos.x = *&static_fields->modelViewerEyeDefault.x;
-  w = static_fields->modelViewerEyeDefault.w;
-  static_fields->modelViewerEyePos.z = static_fields->modelViewerEyeDefault.z;
-  static_fields->modelViewerEyePos.w = w;
-  v5 = v2->static_fields;
-  *&v5->modelViewerTargetPos.x = *&v5->modelViewerTargetDefault.x;
-  v6 = v5->modelViewerTargetDefault.w;
-  v5->modelViewerTargetPos.z = v5->modelViewerTargetDefault.z;
-  v5->modelViewerTargetPos.w = v6;
-  v7 = v2->static_fields;
-  *&v7->modelViewerUpVector.x = *&v7->modelViewerUpDefault.x;
-  v8 = v7->modelViewerUpDefault.w;
-  v7->modelViewerUpVector.z = v7->modelViewerUpDefault.z;
-  v7->modelViewerUpVector.w = v8;
+  *&modelViewerEyePos.x = *&modelViewerEyeDefault.x;
+  w = modelViewerEyeDefault.w;
+  modelViewerEyePos.z = modelViewerEyeDefault.z;
+  modelViewerEyePos.w = w;
+  *&modelViewerTargetPos.x = *&modelViewerTargetDefault.x;
+  v6 = modelViewerTargetDefault.w;
+  modelViewerTargetPos.z = modelViewerTargetDefault.z;
+  modelViewerTargetPos.w = v6;
+  *&modelViewerUpVector.x = *&modelViewerUpDefault.x;
+  v8 = modelViewerUpDefault.w;
+  modelViewerUpVector.z = modelViewerUpDefault.z;
+  modelViewerUpVector.w = v8;
   modelViewerWork->cameraMode = 0;
 }
 
@@ -537,8 +760,6 @@ void ModelViewerModel(void) {
   struct ModelViewer_modelViewerWork_t_o *v22;
   s32 v23;
   s32 v24;
-  struct ModelViewer_StaticFields *static_fields;
-  ModelViewer_c *v30;
   struct ModelViewer_modelViewerWork_t_o *v33;
   AssetBundleCtrl_o *asset_bc;
   UnityEngine_Object_o *modelobj;
@@ -571,6 +792,7 @@ void ModelViewerModel(void) {
         p_modelMajorWrk = &v14->modelMajorWrk;
         NumOfMajor = mdlGetNumOfMajor();
         if (!ModelViewerMoveCursorUD(p_modelMajorWrk, NumOfMajor, 1))
+          goto LABEL_77;
         modelMajorWrk = modelViewerWork->modelMajorWrk;
         NumOfMinor = mdlGetNumOfMinor(modelMajorWrk);
         v22 = modelViewerWork;
@@ -583,16 +805,21 @@ void ModelViewerModel(void) {
         v23 = v14->modelMajorWrk;
         v24 = mdlGetNumOfMinor(v23);
         if (!ModelViewerMoveCursorUD(&modelViewerWork->modelMinorWrk, v24, v6))
+          goto LABEL_77;
         return;
       case 2:
-        static_fields = ModelViewer->static_fields;
+          goto LABEL_144;
+        goto LABEL_143;
       case 3:
         if (!ModelViewerMoveCursorUD(&v14->smoothFrame, 100, 10))
+          goto LABEL_77;
         return;
       case 4:
         if (!ModelViewerMoveCursorUD(&v14->beforeFrame, 100, 10))
+          goto LABEL_77;
         return;
       default:
+LABEL_77:
         if (DDS3_PADCHECK_TRIG(12))
           return;
         if (modelViewerWork->modelCursor <= 1)
@@ -601,8 +828,10 @@ void ModelViewerModel(void) {
           {
             v33 = modelViewerWork;
             if (v33->modelMajor != v33->modelMajorWrk)
+              goto LABEL_148;
             if (v33->modelMinor != v33->modelMinorWrk)
             {
+LABEL_148:
               asset_bc = get_asset_bc();
               UnloadAB(asset_bc, modelViewerWork->akey);
               modelobj = modelViewerWork->modelobj;
@@ -626,8 +855,12 @@ void ModelViewerModel(void) {
           }
           return;
         }
-        static_fields = v30->static_fields;
-        v14 = static_fields->modelViewerWork;
+          goto LABEL_142;
+LABEL_140:
+LABEL_142:
+LABEL_143:
+        v14 = modelViewerWork;
+LABEL_144:
         return;
     }
   }
@@ -665,6 +898,8 @@ void ModelViewerMotion(void) {
       v7 = v4 + 1;
     else
       v7 = v6;
+      goto LABEL_32;
+    goto LABEL_18;
   }
   if (DDS3_PADCHECK_REP(6))
   {
@@ -678,6 +913,9 @@ void ModelViewerMotion(void) {
       v7 = v10;
     else
       v7 = v9;
+      goto LABEL_32;
+LABEL_18:
+LABEL_32:
     modelViewerWork->motionSpeed = v7 * 0.01;
   }
   v12 = DDS3_PADCHECK_TRIG(3);
@@ -690,13 +928,16 @@ void ModelViewerMotion(void) {
   {
     else if (DDS3_PADCHECK_PRESS(5))
     {
+LABEL_48:
       v17 = 1;
+LABEL_61:
       modelViewerWork->motionSeek = v17;
       return;
     }
     if (DDS3_PADCHECK_PRESS(4))
     {
       v17 = -1;
+      goto LABEL_61;
     }
   }
 }
@@ -709,30 +950,397 @@ void *ModelViewerMotionProc(dds3ProcessID_t *aProcId) {
 
 // 0x12a6130
 s32 ModelViewerMoveCursorLR(s32 *aCursorPtr, s32 aMax) {
-    DDS3_PADCHECK_TRIG(0);
-    DDS3_PADCHECK_REP(0);
-    return 0;
+  s32 v5;
+  s32 v6;
+  s32 v8;
+  s32 result;
+  bool v12;
+
+  v5 = *aCursorPtr;
+  v6 = aMax - 1;
+  if (DDS3_PADCHECK_TRIG(5))
+  {
+    if (v5 < v6)
+      v8 = v5 + 1;
+    else
+      v8 = 0;
+LABEL_10:
+    *aCursorPtr = v8;
+    result = 1;
+    modelViewerWork->cursorTimer = 0;
+    return result;
+  }
+  else if (DDS3_PADCHECK_REP(5))
+  {
+LABEL_18:
+    if (v5 >= v6)
+      return 0;
+    v8 = v5 + 1;
+    goto LABEL_10;
+  }
+  else if (DDS3_PADCHECK_TRIG(4))
+  {
+    goto LABEL_25;
+  }
+  v12 = DDS3_PADCHECK_REP(4);
+  result = 0;
+  v8 = v5 - 1;
+  if (v5 >= 1 && v12)
+    goto LABEL_10;
+  return result;
 }
 
 // 0x12a62d0
 s32 ModelViewerMoveCursorUD(s32 *aCursorPtr, s32 aMax, s32 aLarge) {
-    DDS3_PADCHECK_TRIG(0);
-    DDS3_PADCHECK_REP(0);
+  s32 v7;
+  s32 v8;
+  s32 result;
+  bool v11;
+
+  v7 = *aCursorPtr;
+  v8 = aMax - 1;
+  if (DDS3_PADCHECK_TRIG(7))
+  {
+    if (v7 < v8)
+      v8 = v7 + 1;
+    else
+      v8 = 0;
+    goto LABEL_55;
+  }
+  else if (DDS3_PADCHECK_REP(7))
+  {
+    goto LABEL_13;
+  }
+  else if (DDS3_PADCHECK_TRIG(6))
+  {
+    goto LABEL_19;
+  }
+  if (DDS3_PADCHECK_REP(6))
+  {
+    v8 = v7 - 1;
+    if (v7 >= 1)
+      goto LABEL_55;
     return 0;
+  }
+  if (!aLarge)
+    return 0;
+  if (DDS3_PADCHECK_TRIG(11))
+  {
+    if (v7 >= v8)
+    {
+      v8 = 0;
+      goto LABEL_55;
+    }
+    goto LABEL_40;
+  }
+  if (DDS3_PADCHECK_REP(11))
+  {
+    if (v7 >= v8)
+      return 0;
+LABEL_40:
+    if (v7 + aLarge <= v8)
+      v8 = v7 + aLarge;
+    goto LABEL_55;
+  }
+  if (DDS3_PADCHECK_TRIG(10))
+  {
+    if (v7 < 1)
+      goto LABEL_55;
+    goto LABEL_54;
+  }
+  v11 = DDS3_PADCHECK_REP(10);
+  result = 0;
+  if (v7 >= 1 && v11)
+  {
+LABEL_54:
+    v8 = (v7 - aLarge) & ~((v7 - aLarge) >> 31);
+    goto LABEL_55;
+  }
+  return result;
 }
 
 // 0x12a42e0
 void ModelViewerObject(void) {
-    DDS3_PADCHECK_TRIG(0);
-    SDF_VU0__LOADIDENTITYVECTOR();
-    DDS3_PADCHECK_PRESS(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    FromRotation_B(0);
+  s16 v8;
+  s32 v9;
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+  sdfVu0_c *v13;
+  f32 v14;
+  f32 v16;
+  sdfVu0_c *v20;
+  f32 v22;
+  sdfVu0_c *v26;
+  f32 v27;
+  sdfVu0_c *v29;
+  sdfVu0_c *v31;
+  f32 v32;
+  sdfVu0_c *v34;
+  sdfVu0_c *v36;
+  sdfVu0_c *v38;
+  struct dds3KernelDraw_StaticFields *static_fields;
+  s64 v44;
+  s64 v45;
+  s64 v46;
+  s64 v47;
+  s64 v48;
+  s64 v49;
+  s64 v50;
+  s64 v56;
+  s64 v57;
+  s64 v58;
+  s64 v59;
+  s64 v60;
+  s64 v61;
+  s64 v62;
+  s64 v68;
+  s64 v69;
+  s64 v70;
+  s64 v71;
+  s64 v72;
+  s64 v73;
+  s64 v74;
+  UnityEngine_Matrix4x4_o v77;
+  UnityEngine_Matrix4x4_o v78;
+  UnityEngine_Matrix4x4_o v79;
+  u64 dest[8];
+  UnityEngine_Vector4_o v81;
+  UnityEngine_Vector4_o v82;
+  UnityEngine_Vector4_o v83;
+  UnityEngine_Vector4_o v84;
+  UnityEngine_Vector4_o v85;
+  UnityEngine_Vector4_o v86;
+  UnityEngine_Vector4_o v87;
+  UnityEngine_Vector4_o v88;
+
+  memset(dest, 0, sizeof(dest));
+  else if (DDS3_PADCHECK_TRIG(0))
+  {
+LABEL_6:
+    modelViewerWork->objectMode ^= 1u;
+    return;
+  }
+  else if (DDS3_PADCHECK_TRIG(12))
+  {
+    goto LABEL_14;
+  }
+  if ((v8 & 0x200) == 0)
+  {
+    v9 = 0;
+    if (modelViewerWork->hideConsFlag)
+      goto LABEL_22;
+LABEL_38:
+    if (modelViewerWork->objectMode)
+    {
+      if (DDS3_PADCHECK_PRESS(1))
+      {
+        v16 = 0.0087266;
+          goto LABEL_72;
+      }
+      else
+      {
+        if (DDS3_PADCHECK_PRESS(3))
+          v16 = 0.13963;
+        else
+          v16 = 0.034907;
+        {
+LABEL_72:
+          if (DDS3_PADCHECK_PRESS(5))
+          {
+            memmove(dest, v26->static_fields, 0x40u);
+            sub_1A00880(dest, 1u);
+            SDF_VU0__LOADVECTOR_B(v83);
+            v27 = v16;
+          }
+          else
+          {
+            if (!DDS3_PADCHECK_PRESS(4))
+            {
+LABEL_91:
+              if (DDS3_PADCHECK_PRESS(6))
+              {
+                memmove(dest, v31->static_fields, 0x40u);
+                sub_1A00880(dest, 0);
+                SDF_VU0__LOADVECTOR_B(v85);
+                v32 = v16;
+              }
+              else
+              {
+                if (!DDS3_PADCHECK_PRESS(7))
+                  goto LABEL_108;
+                memmove(dest, v34->static_fields, 0x40u);
+                sub_1A00880(dest, 0);
+                SDF_VU0__LOADVECTOR_B(v86);
+                v32 = -v16;
+              }
+              FromRotation_B(v32);
+              Mult();
+LABEL_108:
+              if (DDS3_PADCHECK_PRESS(9))
+              {
+                memmove(dest, v36->static_fields, 0x40u);
+                sub_1A00880(dest, 2u);
+                SDF_VU0__LOADVECTOR_B(v87);
+                v14 = v16;
+                goto LABEL_124;
+              }
+              if (DDS3_PADCHECK_PRESS(8))
+              {
+                memmove(dest, v38->static_fields, 0x40u);
+                sub_1A00880(dest, 2u);
+                SDF_VU0__LOADVECTOR_B(v88);
+                v14 = -v16;
+                goto LABEL_124;
+              }
+LABEL_125:
+                goto LABEL_126;
+LABEL_128:
+              return;
+            }
+            memmove(dest, v29->static_fields, 0x40u);
+            sub_1A00880(dest, 1u);
+            SDF_VU0__LOADVECTOR_B(v84);
+            v27 = -v16;
+          }
+          FromRotation_B(v27);
+          Mult();
+          goto LABEL_91;
+        }
+      }
+      goto LABEL_72;
+    }
+    if (DDS3_PADCHECK_PRESS(1))
+    {
+      v22 = 1.25;
+        goto LABEL_140;
+    }
+    else
+    {
+      if (DDS3_PADCHECK_PRESS(3))
+        v22 = 20.0;
+      else
+        v22 = 5.0;
+      {
+LABEL_140:
+        v44 = *&dds3CameraTM.m00;
+        v45 = *&dds3CameraTM.m20;
+        v46 = *&dds3CameraTM.m21;
+        *&v79.m01 = *&dds3CameraTM.m01;
+        *&v79.m21 = v46;
+        *&v79.m00 = v44;
+        *&v79.m20 = v45;
+        v47 = *&dds3CameraTM.m02;
+        v48 = *&dds3CameraTM.m22;
+        v50 = *&dds3CameraTM.m03;
+        v49 = *&dds3CameraTM.m23;
+        *&v79.m03 = v50;
+        *&v79.m23 = v49;
+        *&v79.m02 = v47;
+        *&v79.m22 = v48;
+        SDF_VU0__LOADVECTOR_MTXCOL_B(&v79);
+        SDF_VU0__SCALEVECTOR_B(v22);
+        if (DDS3_PADCHECK_PRESS(5))
+        {
+          SDF_VU0__ADDVECTOR();
+            goto LABEL_159;
+        }
+        else
+        {
+          if (DDS3_PADCHECK_PRESS(4))
+            SDF_VU0__SUBVECTOR();
+          {
+LABEL_159:
+            v56 = *&dds3CameraTM.m00;
+            v57 = *&dds3CameraTM.m20;
+            v58 = *&dds3CameraTM.m21;
+            *&v78.m01 = *&dds3CameraTM.m01;
+            *&v78.m21 = v58;
+            *&v78.m00 = v56;
+            *&v78.m20 = v57;
+            v59 = *&dds3CameraTM.m02;
+            v60 = *&dds3CameraTM.m22;
+            v62 = *&dds3CameraTM.m03;
+            v61 = *&dds3CameraTM.m23;
+            *&v78.m03 = v62;
+            *&v78.m23 = v61;
+            *&v78.m02 = v59;
+            *&v78.m22 = v60;
+            SDF_VU0__LOADVECTOR_MTXCOL_B(&v78);
+            SDF_VU0__SCALEVECTOR_B(v22);
+            if (DDS3_PADCHECK_PRESS(6))
+            {
+              SDF_VU0__ADDVECTOR();
+                goto LABEL_173;
+            }
+            else
+            {
+              if (DDS3_PADCHECK_PRESS(7))
+                SDF_VU0__SUBVECTOR();
+              {
+LABEL_173:
+                v68 = *&dds3CameraTM.m00;
+                v69 = *&dds3CameraTM.m20;
+                v70 = *&dds3CameraTM.m21;
+                *&v77.m01 = *&dds3CameraTM.m01;
+                *&v77.m21 = v70;
+                *&v77.m00 = v68;
+                *&v77.m20 = v69;
+                v71 = *&dds3CameraTM.m02;
+                v72 = *&dds3CameraTM.m22;
+                v74 = *&dds3CameraTM.m03;
+                v73 = *&dds3CameraTM.m23;
+                *&v77.m03 = v74;
+                *&v77.m23 = v73;
+                *&v77.m02 = v71;
+                *&v77.m22 = v72;
+                SDF_VU0__LOADVECTOR_MTXCOL_B(&v77);
+                SDF_VU0__SCALEVECTOR_B(v22);
+                if (DDS3_PADCHECK_PRESS(9))
+                {
+                  SDF_VU0__ADDVECTOR();
+                    goto LABEL_128;
+                }
+                else
+                {
+                  if (!DDS3_PADCHECK_PRESS(8))
+                    goto LABEL_125;
+                  SDF_VU0__SUBVECTOR();
+                    goto LABEL_128;
+                }
+LABEL_126:
+                goto LABEL_128;
+              }
+            }
+            goto LABEL_173;
+          }
+        }
+        goto LABEL_159;
+      }
+    }
+    goto LABEL_140;
+  }
+  v9 = v8 & 0x200;
+  if (!modelViewerWork->hideConsFlag)
+    goto LABEL_38;
+LABEL_22:
+  if (DDS3_PADCHECK_TRIG(5))
+  {
+    memmove(dest, v13->static_fields, 0x40u);
+    sub_1A00880(dest, 1u);
+    SDF_VU0__LOADVECTOR_B(v81);
+    v14 = 0.087266;
+LABEL_124:
+    FromRotation_B(v14);
     Mult();
-    SDF_VU0__LOADVECTOR_MTXCOL_B(0);
-    SDF_VU0__SCALEVECTOR_B(0);
-    SDF_VU0__ADDVECTOR();
-    SDF_VU0__SUBVECTOR();
+    goto LABEL_125;
+  }
+  if (DDS3_PADCHECK_TRIG(4))
+  {
+    memmove(dest, v20->static_fields, 0x40u);
+    sub_1A00880(dest, 1u);
+    SDF_VU0__LOADVECTOR_B(v82);
+    v14 = -0.087266;
+    goto LABEL_124;
+  }
 }
 
 // 0x12a4240
@@ -747,8 +1355,16 @@ void *ModelViewerObjectProc(dds3ProcessID_t *aProcId) {
 
 // 0x12a57c0
 void ModelViewerOption(void) {
-    ModelViewerMoveCursorUD(0, 0, 0);
-    DDS3_PADCHECK_TRIG(0);
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+
+  if (!modelViewerWork->optionMode)
+    goto LABEL_15;
+LABEL_6:
+  if (DDS3_PADCHECK_TRIG(1))
+    goto LABEL_33;
+LABEL_9:
+  if (DDS3_PADCHECK_TRIG(3))
+    goto LABEL_33;
 }
 
 // 0x12a5750
@@ -759,13 +1375,138 @@ void *ModelViewerOptionProc(dds3ProcessID_t *aProcId) {
 
 // 0x12a7350
 void *ModelViewerProc(dds3ProcessID_t *aProcId) {
-    DDS3_PADCHECK_TRIG(0);
-    ModelViewerStopModeProc();
-    DDS3_PADCHECK_REP(0);
-    ModelViewerStartModeProc();
-    DDS3_PAD2CHECK_TRIG(0);
-    ModelViewerSetModeCons();
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+  s32 v4;
+  struct ModelViewer_modelViewerWork_t_o *v5;
+  s32 modeSelCursor;
+  ModelViewer_c *v11;
+  s16 v13;
+  s32 v14;
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  struct ModelViewer_StaticFields *v24;
+  s64 v25;
+  f32 v27;
+  struct ModelViewer_StaticFields *v28;
+  s64 v29;
+  f32 v31;
+  bool v33;
+  u64 v34;
+  struct ModelViewer_modelViewerWork_t_o *v35;
+  s32 max_length;
+
+  ++modelViewerWork->cursorTimer;
+  v4 = modelViewerWork->cursorTimer + 1;
+  modelViewerWork->cursorTimer = v4;
+  if (v4 == 30)
+  {
+    modelViewerWork->cursorTimer = 0;
+  }
+  else
+  {
+    v5 = modelViewerWork;
+    if (v5->mode)
+    {
+LABEL_14:
+      if (DDS3_PADCHECK_TRIG(2))
+      {
+        ModelViewerStopModeProc();
+        modelViewerWork->modeSelCursor = modelViewerWork->mode
+                                                                                   - 1;
+        modelViewerWork->modeBack = modelViewerWork->mode;
+        modelViewerWork->mode = 0;
+          goto LABEL_74;
+LABEL_72:
+        goto LABEL_74;
+      }
+LABEL_71:
+        goto LABEL_74;
+      goto LABEL_72;
+    }
+  }
+  modeSelCursor = v5->modeSelCursor;
+  else if (!DDS3_PADCHECK_REP(7))
+  {
+    goto LABEL_38;
+  }
+  if (modeSelCursor < LODWORD(modelViewerModeStr->max_length) - 1)
+  {
+    if ((v11->_2.bitflags2 & 2) == 0)
+      goto LABEL_53;
+LABEL_35:
+LABEL_53:
+    modelViewerWork->modeSelCursor = modeSelCursor + 1;
+      goto LABEL_74;
+    goto LABEL_72;
+  }
+LABEL_38:
+  if (!DDS3_PADCHECK_TRIG(7))
+    goto LABEL_56;
+LABEL_41:
+  if ((v13 & 0x200) != 0)
+  {
+    v14 = v13 & 0x200;
+  }
+  else
+  {
+    v14 = 0;
+  }
+  if (modeSelCursor != LODWORD(modelViewerModeStr->max_length) - 1)
+  {
+    if (!v14)
+      goto LABEL_53;
+    goto LABEL_35;
+  }
+  modelViewerWork->modeSelCursor = 0;
+    goto LABEL_72;
+LABEL_74:
+  x = modelViewerEyePos.x;
+  y = modelViewerEyePos.y;
+  z = modelViewerEyePos.z;
+  w = modelViewerEyePos.w;
+  dds3CameraEyePos.x = x;
+  dds3CameraEyePos.y = y;
+  dds3CameraEyePos.z = z;
+  dds3CameraEyePos.w = w;
+  v25 = *&modelViewerTargetPos.x;
+  v27 = modelViewerTargetPos.z;
+  *&v24 = modelViewerTargetPos.w;
+  *&dds3CameraTargetPos.x = v25;
+  dds3CameraTargetPos.z = v27;
+  LODWORD(dds3CameraTargetPos.w) = v24;
+  v29 = *&modelViewerUpVector.x;
+  v31 = modelViewerUpVector.z;
+  *&v28 = modelViewerUpVector.w;
+  *&dds3CameraUpVector.x = v29;
+  dds3CameraUpVector.z = v31;
+  LODWORD(dds3CameraUpVector.w) = v28;
+  v33 = DDS3_PAD2CHECK_TRIG(1);
+  if (v33)
+  {
+    *(*(*(v34 + 184) + 8LL) + 64LL) ^= 1u;
+  }
+  if ((*(v34 + 295) & 2) != 0 && !*(v34 + 216))
+  {
+    v35 = modelViewerWork;
+    if (v35->hideConsFlag)
+      goto LABEL_88;
+LABEL_92:
+    ModelViewerSetModeCons(v34);
     return 0;
+  }
+  v35 = *(*(v34 + 184) + 8LL);
+  if (!v35->hideConsFlag)
+    goto LABEL_92;
+LABEL_88:
+  if ((*(v34 + 295) & 2) != 0 && !*(v34 + 216))
+  {
+    v35 = modelViewerWork;
+  }
+  if (v35->mode != 3)
+    goto LABEL_92;
+  return 0;
 }
 
 // 0x12a2d20
@@ -804,7 +1545,7 @@ void ModelViewerSetModeCons(void) {
 
   initBtlMenuObj(0, 0, 240, 32, 0);
   PreBtlMenuObj(0);
-  v3 = btlDevPrintf(0, 0, 0, 0, StringLiteral_5249, 0);
+  v3 = btlDevPrintf(0, 0, 0, 0, "MODE  :", 0);
   btlDrawTagLink(&bsetText, v3, 0);
   SetBtlMenuObj(0);
 }
@@ -821,11 +1562,46 @@ void ModelViewerSetModelCons(void) {
 
 // 0x12a3530
 void ModelViewerSetModelSelCons(void) {
-    initBtlMenuObj(0, 0, 0, 0, 0);
-    PreBtlMenuObj(0);
-    btlDevPrintf(0, 0, 0, 0, 0, 0);
-    btlDrawTagLink(0, (bDrawText){0}, 0);
-    SetBtlMenuObj(0);
+  s32 width;
+  s32 height;
+  s16 v6;
+  s32 v7;
+  struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
+  s32 v9;
+  System_String_o *v11;
+  s32 v13;
+  System_String_o *v15;
+  s64 v16;
+  bDrawText_o v17;
+  bDrawText_o v18;
+  bDrawText_o v19;
+
+  v16 = 0;
+  width = get_width(0);
+  height = get_height(0);
+  initBtlMenuObj(width - 240, height - 64, 240, 32, 1);
+  PreBtlMenuObj(1);
+  if ((v6 & 0x200) != 0)
+  {
+    v7 = v6 & 0x200;
+  }
+  else
+  {
+    v7 = 0;
+  }
+  HIDWORD(v16) = modelViewerWork->modelMajorWrk;
+  v9 = 4 * (modelViewerWork->modelCursor == 0);
+  LODWORD(v16) = modelViewerWork->modelMinorWrk;
+  v11 = sub_232A70(&v16 + 1, "x1");
+  v17 = btlDevPrintf(0, 0, 0, v9, v11, 1);
+  btlDrawTagLink(&bsetText, v17, 1);
+  v18 = btlDevPrintf(0, 0, 0, 0, "-", 1);
+  btlDrawTagLink(&bsetText, v18, 1);
+  v13 = 4 * (modelViewerWork->modelCursor == 1);
+  v15 = sub_232A70(&v16, "x3");
+  v19 = btlDevPrintf(0, 0, 0, v13, v15, 1);
+  btlDrawTagLink(&bsetText, v19, 1);
+  SetBtlMenuObj(1);
 }
 
 // 0x12a5090
@@ -860,7 +1636,6 @@ void ModelViewerSingleMotion(void) {
 
 // 0x12a7180
 void ModelViewerStartModeProc(void) {
-  struct ModelViewer_StaticFields *static_fields;
   struct ModelViewer_modelViewerWork_t_o *modelViewerWork;
   struct ModelViewer_ModelViewerModeProcTable_t_array *ModelViewerModeProcTable;
   s64 v7;
@@ -874,9 +1649,6 @@ void ModelViewerStartModeProc(void) {
   Il2CppObject *data;
 
   ModelViewerStopModeProc();
-  static_fields = ModelViewer->static_fields;
-  modelViewerWork = static_fields->modelViewerWork;
-  ModelViewerModeProcTable = static_fields->ModelViewerModeProcTable;
   v7 = modelViewerWork->mode - 1LL;
   max_length = ModelViewerModeProcTable->max_length;
   v9 = modelViewerWork->mode - 1LL;
@@ -929,7 +1701,7 @@ void *ModelViewerTextureProc(dds3ProcessID_t *aProcId) {
 
 // 0x12a6ec0
 s32 TimeGraphExist(void) {
-  return dds3SearchProcessName(StringLiteral_5252) != 0;
+  return dds3SearchProcessName("DebugTimeGrph") != 0;
 }
 
 // 0x12a2b80

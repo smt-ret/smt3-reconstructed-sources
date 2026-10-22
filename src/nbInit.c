@@ -69,5 +69,8 @@ void nbExit(void) {
 
 // 0x19738f0
 void nbInitPlayerData(void) {
+  else
+  {
     nbInitPlayer();
+  }
 }

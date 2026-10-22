@@ -8,12 +8,12 @@ typedef struct XRD773Unity_GraphicManager_DRAW XRD773Unity_GraphicManager_DRAW;
 
 struct XRD773Unity_GraphicManager {
     bool update;
-    void palette_mat[UNKNOWN_ARRAY_SIZE];
-    void normal_mat[UNKNOWN_ARRAY_SIZE];
-    void plane_mat[UNKNOWN_ARRAY_SIZE];
-    void extra_mat[UNKNOWN_ARRAY_SIZE];
-    void commonmesh_mat[UNKNOWN_ARRAY_SIZE];
-    void render_texture[UNKNOWN_ARRAY_SIZE];
+    void *palette_mat;
+    void *normal_mat;
+    void *plane_mat;
+    void *extra_mat;
+    void *commonmesh_mat[32];
+    void *render_texture;
     s32 rt_side;
     s32 layer;
 };
@@ -148,17 +148,21 @@ void LateUpdate(XRD773Unity_GraphicManager_CommonObject *this) {
   UnityEngine_GameObject_o *v4;
 
   if (!this->chk_hide)
+    goto LABEL_13;
   {
     if (!get_Instance()->update)
+      goto LABEL_13;
   }
   else if (!get_Instance(XRD773Unity_GraphicManager)->update)
   {
+LABEL_13:
     (this->klass->vtable._65535__ctor.methodPtr)(this, this->klass->vtable._65535__ctor.method);
     return;
   }
   if (!this->hide)
   {
     this->hide = 1;
+    goto LABEL_13;
   }
   gameObject = get_gameObject(this);
   if (get_activeSelf(gameObject))

@@ -9,16 +9,16 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct dds3NeedleModel_tag {
     sdfMatrix4_t matrix;
-    dds3NeedleModelPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    dds3NeedleModelPart_tag *pPart;
     u32 number;
     u32 blend;
-    f32 scale[UNKNOWN_ARRAY_SIZE];
+    f32 *scale;
     u32 point;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    sdfVector4_t pNormal[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    sdfVector4_t *pNormal;
+    u32 *pVC;
     sdfMemHandle_t *hVNMem;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
 };

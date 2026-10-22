@@ -17,7 +17,7 @@ void CallOnDestroy(ChildHD *this) {
 
 // 0xfe2b40
 char *GetMatelialKey(ChildHD *this) {
-  return StringLiteral_4650;
+  return "(cHD)";
 }
 
 // 0xfe2b90

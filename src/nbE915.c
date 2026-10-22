@@ -35,7 +35,7 @@ void nbUpdateEventProcessData(dds3ProcessID_t **id);
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 371)
     return 0;
-  Write(StringLiteral_21340, 0);
+  Write("ベルゼブブ死亡\n", 0);
   nbDelAllKoukaPacketType(43);
   ed->data->endtype = 1;
   return 1;
@@ -69,17 +69,90 @@ void nbBgmStop(void) {
 
 // 0x17052a0
 void *nbE915Process_1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbCameraBoss_BSBERU_E915_Init();
-    nbCameraBoss_BSBERU_E915_0_Set();
-    nbCameraSetState(0);
-    nbSetEnemyFormation(0);
-    nbSetPlayerFormation(0, 0);
-    nbCameraBoss_BSBERU_E915_1_Set();
-    nbGetEventForm();
-    nbFormDispOff2(0);
-    nbCameraBoss_BSBERU_E915_2_Set();
-    effBTLSkillStart(0, 0);
-    nbUpdateEventProcessData(0);
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v5;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  struct nbE915_funcDelegate_array *func;
+  s64 seq;
+  s32 time;
+  nbFormation_t_o *EventForm;
+  dds3ProcessID_t_o *v22[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  EventForm = 0;
+  ProcessData = dds3GetProcessData(&ida);
+  v5 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v22);
+      if ((v22[0] & 1) != 0)
+        v8 = v22[2];
+      else
+        v8 = v22 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  seq = v5->seq;
+  if (Invoke(func->m_Items[seq], v5))
+  {
+    ida->func_ans = -1;
     return 0;
+  }
+  time = v5->time;
+  if (time)
+  {
+    if (time > 109)
+      goto LABEL_22;
+LABEL_35:
+    if (!time)
+    {
+      nbCameraBoss_BSBERU_E915_Init();
+    }
+    nbCameraBoss_BSBERU_E915_0_Set();
+    goto LABEL_44;
+  }
+  nbCameraSetState(0x17u);
+  nbSetEnemyFormation(&v5->data);
+  nbSetPlayerFormation(&v5->data, 0);
+  time = v5->time;
+  if (time <= 109)
+    goto LABEL_35;
+LABEL_22:
+  if (time == 110)
+  {
+    nbCameraBoss_BSBERU_E915_1_Set();
+    if (v5->time)
+      goto LABEL_49;
+    goto LABEL_45;
+  }
+  if (time >= 250)
+  {
+    if (time == 250)
+    {
+      EventForm = nbGetEventForm();
+      nbFormDispOff2(&EventForm);
+      nbCameraBoss_BSBERU_E915_Init();
+    }
+    nbCameraBoss_BSBERU_E915_2_Set();
+    if (v5->time)
+      goto LABEL_49;
+    goto LABEL_45;
+  }
+LABEL_44:
+  if (!v5->time)
+  {
+LABEL_45:
+    effBTLSkillStart(0x203u, 0);
+  }
+LABEL_49:
+  nbUpdateEventProcessData(&ida);
+  return 0;
 }

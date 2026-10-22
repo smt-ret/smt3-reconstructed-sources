@@ -133,7 +133,7 @@ s32 CallDebug(s32 flg, void *data) {
   Il2CppObject *v9;
   u64 *v12;
 
-  Log(StringLiteral_14934, 0);
+  Log("dds3SequenceList:CallDebug()", 0);
   DebugObject = kernelObject->DebugObject;
   SetActive(DebugObject, 1, 0);
   LoadDefault(0);
@@ -148,7 +148,7 @@ s32 CallDebug(s32 flg, void *data) {
     v12,
     0,
     Method_dds3StartMenu_dds3StartMenuProcess__);
-  dds3StartProcess(StringLiteral_14935, 0x2AF9u, 0, 0, v12, 0, 0, 0, 0, 0);
+  dds3StartProcess("StartSel", 0x2AF9u, 0, 0, v12, 0, 0, 0, 0, 0);
   return 1;
 }
 
@@ -166,16 +166,18 @@ s32 CallEvent(s32 flg, void *data) {
   {
     if (flg)
       return 1;
-    Write(StringLiteral_14937, 0);
+    Write("start event!\n", 0);
     evtNextEventNo = *il2cp::SizeOf(data, s32);
     if (evtNextEventNo < 1)
       return 1;
+LABEL_17:
     evtInitSky();
     evtStartEvent(evtNextEventNo);
     return 1;
   }
-  Write(StringLiteral_14938, 0);
+  Write("イベント復帰!!\n", 0);
   if (evtNextEventNo >= 1)
+    goto LABEL_17;
   return 1;
 }
 
@@ -356,6 +358,8 @@ s32 CallNewBattleTest(s32 flg, void *data) {
     return 1;
   }
   if (fldBattleData.encountpack == -1)
+    goto LABEL_16;
+LABEL_12:
   if (data)
   {
     v7 = il2cp::SizeOf(data, nbNewBattleSeqData_t);
@@ -367,14 +371,75 @@ s32 CallNewBattleTest(s32 flg, void *data) {
 
 // 0x14fca50
 s32 CallPipe(s32 flg, void *data) {
+  Il2CppClass *v4;
+  s64 *Interface;
+  char *v7;
+  s64 *v8;
+  u32 v9;
+  s32 v10;
+  s32 v12;
+  u64 v17[3];
+
+  if (data)
+  {
+    Interface = QueryInterface(data, s32);
+    if (!Interface)
+    {
+      sub_8FC2C0(data->klass->_1.element_class, v4, v17);
+      if ((v17[0] & 1) != 0)
+        v7 = v17[2];
+      else
+        v7 = v17 + 1;
+      v8 = sub_8C4940(v7);
+    }
+    v9 = *(Interface + 6);
+    v10 = *(Interface + 8);
+    v12 = *(Interface + 9);
+    InitPipe(v10, v12);
+    fldGb->fieldID = 999;
+  }
+  else
+  {
     InitPipe(0, 0);
-    return 0;
+  }
+  return 1;
 }
 
 // 0x14fc750
 s32 CallPuzzleBoy(s32 flg, void *data) {
-    init_puzzleboy(0, 0);
-    return 0;
+  Il2CppClass *v4;
+  s64 *Interface;
+  char *v7;
+  s64 *v8;
+  s32 v9;
+  s32 v11;
+  u64 v14[3];
+
+  if (data)
+  {
+    Interface = QueryInterface(data, uint);
+    if (!Interface)
+    {
+      sub_8FC2C0(data->klass->_1.element_class, v4, v14);
+      if ((v14[0] & 1) != 0)
+        v7 = v14[2];
+      else
+        v7 = v14 + 1;
+      v8 = sub_8C4940(v7);
+    }
+    v9 = *(Interface + 8);
+
+    {
+      v9 = -1;
+    }
+    v11 = v9;
+  }
+  else
+  {
+    v11 = -1;
+  }
+  init_puzzleboy(1u, v11);
+  return 1;
 }
 
 // 0x14fb040
@@ -456,9 +521,46 @@ s32 CallTerminal(s32 flg, void *data) {
 
 // 0x14fbfc0
 s32 CallTerminalTest(s32 flg, void *data) {
+  Il2CppClass *v5;
+  s64 *Interface;
+  char *v8;
+  s64 *v9;
+  u32 v10;
+  s32 v11;
+  s32 v13;
+  s32 v14;
+  s32 v15;
+  u64 v18[3];
+
+  else
+  {
     evtInitSky();
-    fclTerminalProcessStart(0, 0);
-    return 0;
+    if (data)
+    {
+LABEL_6:
+      Interface = QueryInterface(data, s32);
+      if (!Interface)
+      {
+        sub_8FC2C0(data->klass->_1.element_class, v5, v18);
+        if ((v18[0] & 1) != 0)
+          v8 = v18[2];
+        else
+          v8 = v18 + 1;
+        v9 = sub_8C4940(v8);
+      }
+      v10 = *(Interface + 6);
+      v11 = *(Interface + 8);
+      v13 = *(Interface + 9);
+      v14 = v11;
+      v15 = v13;
+      goto LABEL_24;
+    }
+  }
+  v14 = 0;
+  v15 = 1;
+LABEL_24:
+  fclTerminalProcessStart(v14, v15);
+  return 1;
 }
 
 // 0x14fce50
@@ -619,7 +721,7 @@ s32 CheckNewBattle(void) {
 
 // 0x14fb500
 s32 CheckNewBattleTest(void) {
-  if (dds3SearchProcessName(StringLiteral_14940))
+  if (dds3SearchProcessName("battle test"))
     return 0;
   else if (dds3SearchProcessPriority(1018))
   {
@@ -681,7 +783,7 @@ s32 CheckShopTest(void) {
 
 // 0x14fcf60
 s32 CheckSndPtnTest(void) {
-  return dds3SearchProcessName(StringLiteral_14941) == 0;
+  return dds3SearchProcessName("SndPtnTest") == 0;
 }
 
 // 0x14fc6b0
@@ -767,17 +869,17 @@ s32 ExitDebug(void) {
   UnityEngine_GameObject_o *gameObject;
   UnityEngine_Object_o *v10;
 
-  Log(StringLiteral_14936, 0);
+  Log("dds3SequenceList:ExitDebug()", 0);
   if (op_Inequality(dispobj, 0, 0))
   {
-    v6 = Find(StringLiteral_14751, 0);
+    v6 = Find("Main Canvas/DebugMenu", 0);
     gameObject = get_gameObject(v6);
     SetActive(gameObject, 0, 0);
     v10 = dispobj;
     Destroy_27360000(v10);
     dispobj = 0;
   }
-  dds3KillProcessName(StringLiteral_14935, 1);
+  dds3KillProcessName("StartSel", 1);
   return 1;
 }
 
@@ -793,7 +895,7 @@ s32 ExitEndSave(void) {
 
 // 0x14fadb0
 s32 ExitEvent(void) {
-  Write(StringLiteral_14939, 0);
+  Write("ExitEvent\n", 0);
   evtExitSky();
   if (fldProcNextJump())
     return 0;
@@ -954,6 +1056,7 @@ s32 ExitRecoverTest(void) {
 s32 ExitResult2(void) {
   if (!fldProcNextJump())
     return -1;
+LABEL_6:
   rstResult2ProcessEnd();
   return 0;
 }

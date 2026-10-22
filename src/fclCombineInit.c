@@ -15,10 +15,10 @@ static char *gFclCombineTexFile[7];
 static cmbGlobalWork_t *CMB_GBWK;
 static s8 gProcessStat;
 static char *gCombineMenuStr[4];
-static u8 gCmdMenuFlag[UNKNOWN_ARRAY_SIZE];
+static u8 *gCmdMenuFlag;
 static char *gZensyoMenuStr[3];
 static char *gTalkMenuStr[8];
-static u8 gTalkMenuFlag[UNKNOWN_ARRAY_SIZE];
+static u8 *gTalkMenuFlag;
 static void *bgmkeys;
 static s32 bgmkeysidx;
 
@@ -85,7 +85,7 @@ dds3ProcessFunc_t *_fclCombineCalc(dds3ProcessID_t *PID) {
   if (fclChkSignal(1))
   {
     id = 0;
-    id = dds3SearchProcessName(StringLiteral_16163);
+    id = dds3SearchProcessName("e800_main");
     if (dds3GetProcessStat(&id) - 1 <= 2)
     {
       Current = CMB_GBWK->SeqInfo->Current;
@@ -93,14 +93,18 @@ dds3ProcessFunc_t *_fclCombineCalc(dds3ProcessID_t *PID) {
       {
         v7 = 1 << Current;
         if ((v7 & 0x173) != 0)
+          goto LABEL_21;
         if ((v7 & 0x6000C) != 0)
+          goto LABEL_32;
       }
       basic = dds3GetActiveScene();
       if (basic)
       {
         v8 = 0;
+LABEL_29:
         dds3VisibleSceneBasic(&basic, v8);
         {
+LABEL_35:
           v10 = CMB_GBWK->SeqInfo->Current;
           if (!CMB_GBWK->SeqInfo->Current || v10 == 18 || (v10 - 2) <= 2)
           {
@@ -117,13 +121,21 @@ dds3ProcessFunc_t *_fclCombineCalc(dds3ProcessID_t *PID) {
           cmbCalcSequence(PID);
           return 0;
         }
+LABEL_33:
+        goto LABEL_35;
       }
+LABEL_32:
+        goto LABEL_35;
+      goto LABEL_33;
     }
+LABEL_21:
     basic = dds3GetActiveScene();
     if (basic)
     {
       v8 = 1;
+      goto LABEL_29;
     }
+    goto LABEL_32;
   }
   return 0;
 }
@@ -139,33 +151,111 @@ void *_fclCombineDraw(dds3ProcessID_t *PID) {
 
 // 0x146bd90
 void *_fclCombineUpdate(dds3ProcessID_t *PID) {
-    fclChkSignal(0);
-    IsLoad(0, 0);
-    fclUpdateInit();
-    return 0;
+  fclCombineInit_c *v3;
+  AssetBundleCtrl_o *asset_bc;
+  AssetBundleCtrl_o *v12;
+  AssetBundleCtrl_o *v16;
+  System_String_o *Item;
+
+  else
+  {
+    if (CMB_GBWK->Initialized)
+      goto LABEL_6;
+  }
+  if (_get_Count(bgmkeys) == bgmkeysidx)
+  {
+    asset_bc = get_asset_bc();
+    if (IsLoad(asset_bc, "e800"))
+    {
+      v12 = get_asset_bc();
+      if (IsLoad(v12, "f800"))
+      {
+        fclUpdateInit();
+        CMB_GBWK->Initialized = 1;
+        if ((v3->_2.bitflags2 & 2) == 0)
+          goto LABEL_9;
+        goto LABEL_7;
+      }
+    }
+  }
+  else
+  {
+    v16 = get_asset_bc();
+    Item = _get_Item(
+             bgmkeys,
+             bgmkeysidx);
+    if (IsLoad(v16, Item))
+    {
+      ++bgmkeysidx;
+    }
+  }
+  return 0;
 }
 
 // 0x146c3c0
 s8 fclChkCombineProcess(void) {
-  struct fclCombineInit_StaticFields *static_fields;
   s32 gProcessStat;
 
-  static_fields = fclCombineInit->static_fields;
-  gProcessStat = static_fields->gProcessStat;
   if (gProcessStat == 1)
     return 1;
+LABEL_6:
   if (gProcessStat != 2)
     return 0;
-  static_fields->gProcessStat = 0;
+  gProcessStat = 0;
   return 0;
 }
 
 // 0x146a630
 void fclCombineBGM(s8 Mode) {
-    FindId(0, 0);
-    p2sdFadeIn(0);
-    p2sdFadeOut(0);
-    p2sdPlayBGM(0);
+  s32 inited;
+  s32 TokusyuBGM;
+  s64 *v7;
+  s32 Id;
+
+  inited = cmbChkGeneralStat();
+  TokusyuBGM = CMB_GBWK->TokusyuBGM;
+  if (TokusyuBGM == 2)
+  {
+    else
+    {
+      v7 = &"JYAKYO05_BGM00";
+    }
+  }
+  else if (TokusyuBGM == 1)
+  {
+    else
+    {
+      v7 = &"JYAKYO04_BGM00";
+    }
+  }
+  else if (inited)
+  {
+    if (inited == 1)
+    {
+      v7 = &"JYAKYO01_BGM00";
+    }
+    else
+    {
+      v7 = &"JYAKYO00_BGM00";
+    }
+  }
+  else
+  {
+    v7 = &"JYAKYO03_BGM00";
+  }
+  Id = FindId(0, *v7);
+  switch (Mode)
+  {
+    case 2:
+      p2sdFadeIn(Id);
+      break;
+    case 1:
+      p2sdFadeOut(Id);
+      break;
+    case 0:
+      p2sdPlayBGM(Id);
+      break;
+  }
 }
 
 // 0x1454b10
@@ -174,7 +264,7 @@ s8 fclCombineChkEventStat(void) {
   dds3ProcessID_t_o *id;
 
   id = 0;
-  id = dds3SearchProcessName(StringLiteral_16163);
+  id = dds3SearchProcessName("e800_main");
   ProcessStat = dds3GetProcessStat(&id);
   return ProcessStat == 1 || (ProcessStat & 0xFFFFFFFE) == 2;
 }
@@ -197,16 +287,18 @@ void *fclCombineDestroy(dds3ProcessID_t *PID) {
   System_String_o *Appendix;
   System_String_o *v42;
 
-  v4 = Concat(StringLiteral_16178, CMB_GBWK);
+  v4 = Concat("!!!!!! Unload Combine !!!!! : ", CMB_GBWK);
   v6 = Empty_string_();
   Log(v4, v6, 0);
   if (!CMB_GBWK)
+    goto LABEL_74;
+LABEL_14:
   gKeisyoListBuf = 0;
   cmpModelFreeResource();
   cmpModelEnd();
   ScriptPID = CMB_GBWK->ScriptPID;
   fclScriptForcedEnd(ScriptPID);
-  v12 = Concat(StringLiteral_16179, CMB_GBWK);
+  v12 = Concat("!!!!!! Unload Combine2 !!!!! : ", CMB_GBWK);
   v14 = Empty_string_();
   Log(v12, v14, 0);
   CMB_GBWK->pScriptData = 0;
@@ -220,16 +312,17 @@ void *fclCombineDestroy(dds3ProcessID_t *PID) {
   evtDisableMoonDraw();
   FinalizeGameObject();
   FinalizeUI();
-  Remove(StringLiteral_16177, 0);
-  Remove(StringLiteral_16176, 0);
-  Remove(StringLiteral_16175, 0);
-  Remove(StringLiteral_12292, 0);
-  Remove(StringLiteral_16174, 0);
+  Remove("BIRTH", 0);
+  Remove("TALK", 0);
+  Remove("MES_DATA", 0);
+  Remove("CAMP", 0);
+  Remove("FACILITY", 0);
   PlatformStr = GetPlatformStr();
-  v26 = Concat_5224608(StringLiteral_12292, PlatformStr);
+  v26 = Concat_5224608("CAMP", PlatformStr);
   Remove(v26, 0);
   v28 = 0;
   {
+LABEL_52:
   }
   while (v28 < _get_Count(bgmkeys))
   {
@@ -239,18 +332,20 @@ void *fclCombineDestroy(dds3ProcessID_t *PID) {
              v28);
     UnloadAB(asset_bc, Item);
     ++v28;
+      goto LABEL_52;
   }
   _Clear(bgmkeys);
   bgmkeysidx = 0;
   v37 = get_asset_bc();
-  UnloadAB(v37, StringLiteral_16165);
+  UnloadAB(v37, "f800");
   v38 = get_asset_bc();
-  UnloadAB(v38, StringLiteral_4897);
+  UnloadAB(v38, "e800");
   v40 = get_asset_bc();
   Appendix = GetAppendix();
-  v42 = Concat_5224608(StringLiteral_4897, Appendix);
+  v42 = Concat_5224608("e800", Appendix);
   UnloadAB(v40, v42);
   fldSetCharClr();
+LABEL_74:
   PID->func_ans = -1;
   return 0;
 }
@@ -259,8 +354,6 @@ void *fclCombineDestroy(dds3ProcessID_t *PID) {
 void fclCombineDisableCmdZensyo(void) {
   bool v1;
   bool v2;
-  fclCombineInit_c *v4;
-  struct fclCombineInit_StaticFields *static_fields;
   cmpCursorInfo_t_o *CursorInfo;
   System_Byte_array *gCmdMenuFlag;
   struct System_Byte_array *v9;
@@ -271,9 +364,7 @@ void fclCombineDisableCmdZensyo(void) {
   v2 = evtBitCheck(2208);
   if (!v1 && !v2)
   {
-    static_fields = v4->static_fields;
-    CursorInfo = static_fields->CMB_GBWK->CmdSelInfo->CursorInfo;
-    gCmdMenuFlag = static_fields->gCmdMenuFlag;
+    CursorInfo = CMB_GBWK->CmdSelInfo->CursorInfo;
     cmpSetCursorFlag(CursorInfo, gCmdMenuFlag);
     v9 = gCmdMenuFlag;
     if ((v9->m_Items[1] & 2) == 0)
@@ -288,8 +379,6 @@ void fclCombineDisableCmdZensyo(void) {
 
 // 0x1458ec0
 void fclCombineDisableTalkIkenie(void) {
-  fclCombineInit_c *v2;
-  struct fclCombineInit_StaticFields *static_fields;
   cmpCursorInfo_t_o *CursorInfo;
   System_Byte_array *gTalkMenuFlag;
   struct System_Byte_array *v7;
@@ -298,9 +387,7 @@ void fclCombineDisableTalkIkenie(void) {
 
   if (!evtBitCheck(37))
   {
-    static_fields = v2->static_fields;
-    CursorInfo = static_fields->CMB_GBWK->TalkSelInfo->CursorInfo;
-    gTalkMenuFlag = static_fields->gTalkMenuFlag;
+    CursorInfo = CMB_GBWK->TalkSelInfo->CursorInfo;
     cmpSetCursorFlag(CursorInfo, gTalkMenuFlag);
     v7 = gTalkMenuFlag;
     if ((v7->m_Items[2] & 2) == 0)
@@ -315,8 +402,6 @@ void fclCombineDisableTalkIkenie(void) {
 
 // 0x1459020
 void fclCombineDisableTalkMagatama(void) {
-  fclCombineInit_c *v2;
-  struct fclCombineInit_StaticFields *static_fields;
   cmpCursorInfo_t_o *CursorInfo;
   System_Byte_array *gTalkMenuFlag;
   struct System_Byte_array *v7;
@@ -325,9 +410,7 @@ void fclCombineDisableTalkMagatama(void) {
 
   if (evtBitCheck(163))
   {
-    static_fields = v2->static_fields;
-    CursorInfo = static_fields->CMB_GBWK->TalkSelInfo->CursorInfo;
-    gTalkMenuFlag = static_fields->gTalkMenuFlag;
+    CursorInfo = CMB_GBWK->TalkSelInfo->CursorInfo;
     cmpSetCursorFlag(CursorInfo, gTalkMenuFlag);
     v7 = gTalkMenuFlag;
     if ((v7->m_Items[6] & 2) == 0)
@@ -344,8 +427,6 @@ void fclCombineDisableTalkMagatama(void) {
 void fclCombineDisableTalkZensyo(void) {
   bool v1;
   bool v2;
-  fclCombineInit_c *v4;
-  struct fclCombineInit_StaticFields *static_fields;
   cmpCursorInfo_t_o *CursorInfo;
   System_Byte_array *gTalkMenuFlag;
   struct System_Byte_array *v9;
@@ -356,9 +437,7 @@ void fclCombineDisableTalkZensyo(void) {
   v2 = evtBitCheck(2208);
   if (!v1 && !v2)
   {
-    static_fields = v4->static_fields;
-    CursorInfo = static_fields->CMB_GBWK->TalkSelInfo->CursorInfo;
-    gTalkMenuFlag = static_fields->gTalkMenuFlag;
+    CursorInfo = CMB_GBWK->TalkSelInfo->CursorInfo;
     cmpSetCursorFlag(CursorInfo, gTalkMenuFlag);
     v9 = gTalkMenuFlag;
     if ((v9->m_Items[5] & 2) == 0)
@@ -423,11 +502,7 @@ void fclCombineInitialize(void) {
   AssetBundleCtrl_o *v15;
   AssetBundleCtrl_o *v16;
   s32 inited;
-  fclCombineInit_c *v21;
-  struct fclCombineInit_StaticFields *static_fields;
   s64 *v23;
-  fclCombineInit_c *v24;
-  fclCombineInit_c *v25;
   s32 v27;
   System_String_o *Item;
   System_String_o *v30;
@@ -445,42 +520,40 @@ void fclCombineInitialize(void) {
   cmpInitSeqInfo(SeqInfo, 0);
   asset_bc = get_asset_bc();
   Appendix = GetAppendix();
-  v12 = Concat_5224608(StringLiteral_4897, Appendix);
+  v12 = Concat_5224608("e800", Appendix);
   v13 = GetAppendix();
-  v14 = Concat_5224608(StringLiteral_4897, v13);
+  v14 = Concat_5224608("e800", v13);
   Load(asset_bc, v12, v14, 0);
   v15 = get_asset_bc();
-  Load(v15, StringLiteral_4897, StringLiteral_4897, 0);
+  Load(v15, "e800", "e800", 0);
   v16 = get_asset_bc();
-  Load(v16, StringLiteral_16165, StringLiteral_16165, 0);
+  Load(v16, "f800", "f800", 0);
   inited = cmbChkGeneralStat();
   _Clear(bgmkeys);
   bgmkeysidx = 0;
   fclCombineTokusyuBGM();
-  _Add(bgmkeys, StringLiteral_16166);
-  _Add(bgmkeys, StringLiteral_16167);
-  _Add(bgmkeys, StringLiteral_16168);
+  _Add(bgmkeys, "e800bgm4");
+  _Add(bgmkeys, "e800bgm5");
+  _Add(bgmkeys, "e800bgm6");
   if (inited)
   {
     if (inited == 1)
     {
-      static_fields = v21->static_fields;
-      v23 = &StringLiteral_16169;
+      v23 = &"e800bgm1";
     }
     else
     {
-      static_fields = v25->static_fields;
-      v23 = &StringLiteral_16171;
+      v23 = &"e800bgm0";
     }
   }
   else
   {
-    static_fields = v24->static_fields;
-    v23 = &StringLiteral_16170;
+    v23 = &"e800bgm3";
   }
-  _Add(static_fields->bgmkeys, *v23);
+  _Add(bgmkeys, *v23);
   v27 = 0;
   {
+LABEL_38:
   }
   while (v27 < _get_Count(bgmkeys))
   {
@@ -493,6 +566,7 @@ void fclCombineInitialize(void) {
             v27);
     Load(v33, Item, v30, 0);
     ++v27;
+      goto LABEL_38;
   }
   CMB_GBWK->Initialized = 0;
 }
@@ -501,10 +575,11 @@ void fclCombineInitialize(void) {
 s32 fclCombineProcessEnd(void) {
   if (!fldProc_CallSisetuReturn())
     return 0;
+LABEL_6:
   FadeOutWindow();
-  dds3KillProcessName(StringLiteral_16180, 1);
-  dds3KillProcessName(StringLiteral_16181, 1);
-  dds3KillProcessName(StringLiteral_16182, 1);
+  dds3KillProcessName("combine", 1);
+  dds3KillProcessName("combine_draw", 1);
+  dds3KillProcessName("combine_update", 1);
   return 1;
 }
 
@@ -521,13 +596,13 @@ void fclCombineProcessStart(void) {
     v3,
     0,
     Method_fclCombineInit__fclCombineCalc__);
-  dds3StartProcess(StringLiteral_16180, 0x400u, 1, 1, v3, 0, 0, 0, 0, 0);
+  dds3StartProcess("combine", 0x400u, 1, 1, v3, 0, 0, 0, 0, 0);
   v5 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v5,
     0,
     Method_fclCombineInit__fclCombineDraw__);
-  dds3StartProcess(StringLiteral_16181, 0x2B10u, 1, 1, v5, 0, 0, 0, 0, 0);
+  dds3StartProcess("combine_draw", 0x2B10u, 1, 1, v5, 0, 0, 0, 0, 0);
   v6 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v6,
@@ -538,32 +613,31 @@ void fclCombineProcessStart(void) {
     v7,
     0,
     Method_fclCombineInit_fclCombineDestroy__);
-  dds3StartProcess(StringLiteral_16182, 0x520Cu, 1, 1, v6, 0, v7, 0, 0, 0);
+  dds3StartProcess("combine_update", 0x520Cu, 1, 1, v6, 0, v7, 0, 0, 0);
   gProcessStat = 1;
 }
 
 // 0x146a270
 void fclCombineTexFree(void) {
   char v2;
-  fclCombineInit_c *v3;
-  struct fclCombineInit_StaticFields *static_fields;
   struct sdfTexHandle_t_array *TexHandle;
   sdfTexHandle_t_o *v7;
 
   v2 = 0;
   {
+LABEL_6:
   }
   while (1)
   {
-    static_fields = v3->static_fields;
-    if (v2 >= SLODWORD(static_fields->gFclCombineTexFile->max_length))
+    if (v2 >= SLODWORD(gFclCombineTexFile->max_length))
       break;
-    TexHandle = static_fields->CMB_GBWK->TexHandle;
+    TexHandle = CMB_GBWK->TexHandle;
     v7 = TexHandle->m_Items[v2];
     sdfTexFree(v7);
     ++v2;
+      goto LABEL_6;
   }
-  Write(StringLiteral_16164, 0);
+  Write("COMBINE : Tex free.\n", 0);
 }
 
 // 0x146a260
@@ -592,17 +666,21 @@ s32 fclCombineTokusyuBGM(void) {
       unitwork = DDS3_GBWK->unitwork;
       v9 = unitwork->m_Items[v4];
       if ((v9->flag & 1) == 0)
+        goto LABEL_18;
       id = v9->id;
       if (id == 82)
         break;
       if (id == 81)
         v5 |= 1u;
+LABEL_18:
       if (++v4 == 16)
+        goto LABEL_21;
     }
     v5 |= 2u;
     ++v4;
   }
   while (v4 != 16);
+LABEL_21:
   if (v5 == 3)
     return 0;
   else
@@ -611,18 +689,111 @@ s32 fclCombineTokusyuBGM(void) {
 
 // 0x146adf0
 void fclUpdateInit(void) {
-    LoadFileByte(0, 0, 0);
-    InitializeUI(0);
-    SetRootMenuText(0, 0);
-    InitializeGameObject();
-    evtDisableMoonCalc();
-    fclCombineInitPanelMover(0);
-    fclCombineTokusyuBGM();
-    fclCombineBGM(0);
-    fclSetVal(0, 0);
-    evtBitCheck(0);
-    fclCombineEventStart(0);
-    InitializeModelCameraForUnity();
-    LoadLocalizeText(0, 0);
-    GetPlatformStr();
+  struct cmbGlobalWork_t_o *CMB_GBWK;
+  AssetBundleCtrl_o *asset_bc;
+  struct cmbGlobalWork_t_o *v5;
+  AssetBundleCtrl_o *v6;
+  s64 v11;
+  fclCombineInit_c *v12;
+  u64 v13;
+  struct System_Byte_array *gCmdMenuFlag;
+  u64 max_length_low;
+  s64 v17;
+  u64 v18;
+  struct System_Byte_array *gTalkMenuFlag;
+  u64 v20;
+  struct cmbGlobalWork_t_o *v28;
+  bool v33;
+  System_String_o *PlatformStr;
+  System_String_o *v38;
+  System_String_o *v39;
+  System_String_o *v40;
+
+  asset_bc = get_asset_bc();
+  CMB_GBWK->pScriptData = LoadFileByte(asset_bc, "e800", "dds3data/facility/scr/combine/message.bf.bytes");
+  v5 = CMB_GBWK;
+  v6 = get_asset_bc();
+  v5->pCollectData = LoadFileByte(v6, "e800", "dds3data/facility/msg/combine/collect.bmd.bytes");
+  CMB_GBWK->SeqInfo->Current = 0;
+  CMB_GBWK->SeqInfo->Last = 0;
+  CMB_GBWK->SeqInfo->Change = 1;
+  InitializeUI(800);
+  CMB_GBWK->EventEnd = 0;
+  CMB_GBWK->bDrawDisabled = 0;
+  SetRootMenuText(&CMB_GBWK->CmdSelInfo, gCombineMenuStr);
+  SetRootMenuText(&CMB_GBWK->ZensyoSelInfo, gZensyoMenuStr);
+  SetRootMenuText(&CMB_GBWK->TalkSelInfo, gTalkMenuStr);
+  v11 = 32;
+  v13 = 0;
+  {
+LABEL_15:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(gCmdMenuFlag->max_length);
+    if (v13 >= max_length_low)
+      break;
+    else if (v13 >= max_length_low)
+    {
+      goto LABEL_21;
+    }
+    *(&gCmdMenuFlag->obj.klass + v11++) = 0;
+    v13 = v11 - 32;
+      goto LABEL_15;
+  }
+  v17 = 32;
+  v18 = 0;
+  if ((v12->_2.bitflags2 & 2) == 0)
+    goto LABEL_29;
+LABEL_27:
+LABEL_29:
+  while (1)
+  {
+    v20 = LODWORD(gTalkMenuFlag->max_length);
+    if (v18 >= v20)
+      break;
+    else if (v18 >= v20)
+    {
+      goto LABEL_33;
+    }
+    *(&gTalkMenuFlag->obj.klass + v17) = 0;
+    v18 = ++v17 - 32;
+      goto LABEL_27;
+  }
+  else
+  {
+    InitializeGameObject(fclCombineDraw);
+      goto LABEL_42;
+  }
+LABEL_42:
+  CMB_GBWK->HelpFlag = 0;
+  CMB_GBWK->StatFlag = 0;
+  CMB_GBWK->ErrorFlag = 0;
+  evtDisableMoonCalc();
+  cmpModelInit();
+  cmpModelEnd();
+  cmbInitEffParam();
+  fclCombineInitPanelMover(CMB_GBWK);
+  v28 = CMB_GBWK;
+  v28->TokusyuBGM = fclCombineTokusyuBGM();
+  fclCombineBGM(0);
+  fclSetVal(2, 0);
+  v33 = evtBitCheck(2325);
+  if (!v33)
+  {
+    CMB_GBWK->Jyakyo1st = 1;
+  }
+  fclCombineEventStart(1);
+  InitializeModelCameraForUnity();
+  LoadLocalizeText("common", "FACILITY");
+  LoadLocalizeText("common", "CAMP");
+  LoadLocalizeText("e800", "MES_DATA");
+  LoadLocalizeText("e800", "TALK");
+  LoadLocalizeText("common", "BIRTH");
+  PlatformStr = GetPlatformStr();
+  v38 = Concat_5224608("common", PlatformStr);
+  v39 = GetPlatformStr();
+  v40 = Concat_5224608("CAMP", v39);
+  LoadLocalizeText(v38, v40);
+  CMB_GBWK->bReadPhase = 0;
 }

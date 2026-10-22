@@ -52,6 +52,7 @@ void sdfAddressResolverUnity(u8 **aDataBody, u32 aOffset, u8 **aAddrInfoPtr, u32
         if ((v16 & 1) != 0)
           break;
         v17 = v16 >> 1;
+LABEL_20:
         v11 = 4 * v17 + v11;
         v25 = ToUInt32(aDataBody, v11, 0);
         Bytes_3927696 = GetBytes_3927696(v25 + aOffset);
@@ -68,6 +69,7 @@ void sdfAddressResolverUnity(u8 **aDataBody, u32 aOffset, u8 **aAddrInfoPtr, u32
       {
         v17 = (v16 & 0xFFFF00FF | (aAddrInfoPtr->m_Items[v12] << 8)) >> 2;
         v12 = v14 + 2;
+        goto LABEL_20;
       }
       if ((v16 & 4) == 0)
       {
@@ -77,6 +79,7 @@ void sdfAddressResolverUnity(u8 **aDataBody, u32 aOffset, u8 **aAddrInfoPtr, u32
         v24 = v16 & 0xFFFF00FF | (v21 << 8);
         v12 = v14 + 3;
         v17 = (v24 & 0xFF00FFFF | (aAddrInfoPtr->m_Items[v22] << 16)) >> 3;
+        goto LABEL_20;
       }
       v37 = &aDataBody->m_Items[v11 + 4];
       v38 = 0;
@@ -142,6 +145,7 @@ void sdfAddressResolverUnity2(u8 **dat, u32 packet, u32 aOffset, u32 aAddrInfoPt
         if ((v15 & 1) != 0)
           break;
         v16 = v15 >> 1;
+LABEL_19:
         v8 = 4 * v16 + v8;
         v24 = ToUInt32(dat, v8, 0) + aOffset;
         max_length = dat->max_length;
@@ -159,6 +163,7 @@ void sdfAddressResolverUnity2(u8 **dat, u32 packet, u32 aOffset, u32 aAddrInfoPt
       {
         v16 = (v15 & 0xFFFF00FF | (dat->m_Items[v12] << 8)) >> 2;
         v12 = v13 + 2;
+        goto LABEL_19;
       }
       if ((v15 & 4) == 0)
       {
@@ -168,6 +173,7 @@ void sdfAddressResolverUnity2(u8 **dat, u32 packet, u32 aOffset, u32 aAddrInfoPt
         v23 = dat + v21;
         v12 = v13 + 3;
         v16 = (v15 & 0xFF0000FF | (v20 << 8) | (v23[32] << 16)) >> 3;
+        goto LABEL_19;
       }
       v32 = 0;
       v33 = &dat->m_Items[v8 + 7];

@@ -40,7 +40,7 @@ void evtExitSky(void) {
   v1 = Allocate(dds3ProcessID_t);
   dds3ProcessID_t___ctor(v1);
   id = v1;
-  id = dds3SearchProcessName(StringLiteral_15987);
+  id = dds3SearchProcessName("sky");
   if (id)
   {
     dds3KillProcess(&id, 1);
@@ -70,7 +70,7 @@ dds3ProcessID_t *evtInitSky(void) {
     v4,
     0,
     Method_evtSky_evtSkyShutdown__);
-  return dds3StartProcess(StringLiteral_15987, 0x2B0Eu, 1, 1, v3, 0, v4, 0, 0, 0);
+  return dds3StartProcess("sky", 0x2B0Eu, 1, 1, v3, 0, v4, 0, 0, 0);
 }
 
 // 0x194e950
@@ -85,10 +85,7 @@ void evtSetSkyAlpha(s32 frame, s32 a) {
   s32 v8;
   s32 AlphaOfs;
   s16 v11;
-  evtSky_c *v13;
   s16 v14;
-  struct evtSky_StaticFields *v15;
-  struct evtSky_StaticFields *static_fields;
   s16 v17;
   s16 v19;
   s32 to_par;
@@ -111,6 +108,7 @@ void evtSetSkyAlpha(s32 frame, s32 a) {
       {
         v19 = 0;
       }
+      goto LABEL_47;
     }
     v11 = AlphaOfs;
     skyanow = 0;
@@ -121,24 +119,24 @@ void evtSetSkyAlpha(s32 frame, s32 a) {
     if (!(to_par | RgbPar) || RgbPar == 100 && to_par == 0)
     {
       skyabase_par = 0;
-      static_fields = v13->static_fields;
       v17 = 0;
     }
     else
     {
       skyabase_par = RgbPar;
       skyatarget_par = v14;
-      v15 = v13->static_fields;
-      if (!v15->skyabase_par)
+      if (!skyabase_par)
       {
-        v15->skyabase_par = 100;
+        skyabase_par = 100;
       }
-      static_fields = v13->static_fields;
-      if (static_fields->skyatarget_par)
+      if (skyatarget_par)
+        goto LABEL_43;
       v17 = 100;
     }
-    static_fields->skyatarget_par = v17;
+    skyatarget_par = v17;
+LABEL_43:
     v19 = 1;
+LABEL_47:
     skyanime = v19;
   }
 }
@@ -163,43 +161,29 @@ void *evtSkyShutdown(dds3ProcessID_t *id) {
 void evtUpdateSkyAlpha(void) {
   u32 v2;
   u32 v3;
-  evtSky_c *v4;
-  struct evtSky_StaticFields *static_fields;
-  struct evtSky_StaticFields *v6;
   f32 v7;
   s32 skyabase;
   s32 skyatarget;
-  evtSky_c *v11;
-  struct evtSky_StaticFields *v12;
-  struct evtSky_StaticFields *v13;
   s32 skyabase_par;
   s32 skyatarget_par;
-  struct evtSky_StaticFields *v16;
 
-  static_fields = v4->static_fields;
-  if (static_fields->skyanime)
+  if (skyanime)
   {
-    ++static_fields->skyanow;
-    v6 = evtSky->static_fields;
-    LOWORD(v2) = v6->skyanow;
-    LOWORD(v3) = v6->skyamax;
+    ++skyanow;
+    LOWORD(v2) = skyanow;
+    LOWORD(v3) = skyamax;
     v7 = v2 / v3;
-    skyabase = v6->skyabase;
-    skyatarget = v6->skyatarget;
     fldSkySetAlphaOfs((v7 * (skyatarget - skyabase)) + skyabase, 0);
-    v12 = evtSky->static_fields;
-    if (v12->skyabase_par)
-    if (v12->skyatarget_par)
+    if (skyabase_par)
+      goto LABEL_35;
+    if (skyatarget_par)
     {
-      v13 = v11->static_fields;
-      skyabase_par = v13->skyabase_par;
-      skyatarget_par = v13->skyatarget_par;
+LABEL_35:
       fldSkySet_RgbPar((v7 * (skyatarget_par - skyabase_par)) + skyabase_par, 0);
     }
-    v16 = v11->static_fields;
-    if (v16->skyanow >= v16->skyamax)
+    if (skyanow >= skyamax)
     {
-      v16->skyanime = 0;
+      skyanime = 0;
     }
   }
 }

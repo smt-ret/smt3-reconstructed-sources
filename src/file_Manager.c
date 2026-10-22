@@ -130,6 +130,7 @@ void fileExecQueue(void) {
         v15 = filename;
         v16 = v19;
         v17 = v7;
+        goto LABEL_24;
       }
     }
     else if (!queue->type)
@@ -151,6 +152,7 @@ void fileExecQueue(void) {
         v15 = v12;
         v16 = v13;
         v17 = queue;
+LABEL_24:
         queue->fileHandle = sdfFileCmdReadOpen(v15, v16, v17);
       }
     }
@@ -212,26 +214,160 @@ void fileLinkQueue(fileCb_t *fileHandle, s32 type, char *filename, fileEndCallba
   {
     *(v14 + 24) = fileHandle;
     *(v14 + 32) = fileHandle;
-    if ((*(v13 + 295) & 2) != 0 && !*(v13 + 216))
     fileExecQueue(v13);
   }
 }
 
 // 0xf89510
 fileCb_t *fileLoad(char *filename) {
-    fileLoadEx(0, 0, 0, 0);
-    return 0;
+  s64 v2;
+  fileEndCallback_t_o *v3;
+  Il2CppObject *v4;
+  System_String_o *v6;
+  s32 v8;
+
+  v8 = 0;
+  sub_8D3950(s32, &v8);
+  fileLoadEx(v6, v2, v3, v4);
+  return 0;
 }
 
 // 0xf89e10
 void fileLoadCallback(sdfFileCmdHandle_t *fileHandle, s32 cause, void *buffer, s32 length, void *data) {
-    sdfFileCmdFileSize(0);
-    sdfMemAllocFromTailDirect(0);
-    sdfMemAlloc2Direct(0);
-    sdfMemLock(0);
-    sdfFileCmdClose(0);
-    fileExecQueue();
-    sdfFileCmdFree(0);
+  s32 v8;
+  struct fileMngCb_tag_o *fileMngCb;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v14;
+  s64 *v15;
+  Il2CppClass *v16;
+  s32 v17;
+  Il2CppObject *v19;
+  u64 *v20;
+  u64 *v21;
+  struct fileCb_t_o *endCallbackLink;
+  Il2CppClass *v23;
+  Il2CppClass *v25;
+  Il2CppObject *v26;
+  char *v27;
+  char v28;
+  struct fileCb_t_o *monitor;
+  s32 fileExecStat;
+  u64 v34[3];
+
+  v8 = cause;
+  if (data)
+  {
+    klass = data->klass;
+    if (data->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fileCb_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fileCb_t, v34);
+      if ((v34[0] & 1) != 0)
+        v14 = v34[2];
+      else
+        v14 = v34 + 1;
+      v15 = sub_8C4940(v14);
+    }
+  }
+  switch (v8)
+  {
+    case 2:
+      data[2].monitor = fileHandle;
+      BYTE1(data[1].klass) = 2;
+      sdfFileCmdFileSize(fileHandle);
+      break;
+    case 4:
+      LODWORD(data[3].klass) = length;
+      HIDWORD(data[3].klass) = length;
+      if (BYTE3(data[1].klass))
+      {
+        v16 = sdfMemAllocFromTailDirect(length);
+        data[5].klass = v16;
+      }
+      else
+      {
+        v23 = sdfMemAlloc2Direct(length);
+        data[5].klass = v23;
+        if (!v23)
+        {
+          *(&data[1].klass + 1) = 2567;
+          return;
+        }
+        v25 = v23;
+        v16 = v25;
+      }
+      v26 = sdfMemLock(v16);
+      v27 = il2cp::SizeOf(v26, qword_3F088F8);
+      v28 = *v27;
+      LOBYTE(data[6].klass) = *v27;
+      LOBYTE(v34[0]) = v28;
+      data[5].monitor = sub_8D3950(qword_3F088F8, v34);
+      BYTE1(data[1].klass) = 3;
+        goto LABEL_46;
+      break;
+    case 5:
+      v17 = LODWORD(data[3].klass) - length;
+      LODWORD(data[3].klass) = v17;
+      if (v17)
+      {
+        LOBYTE(data[6].klass) += length;
+        BYTE1(data[1].klass) = 3;
+      }
+      else
+      {
+        BYTE1(data[1].klass) = 5;
+        if (fileMngCb->queue == data)
+        {
+          monitor = data[1].monitor;
+          fileMngCb->queue = monitor;
+          if (!monitor)
+            fileMngCb->queueTail = 0;
+        }
+      }
+      if (BYTE1(data[1].klass) == 5)
+      {
+        data[1].monitor = fileMngCb->closeLink;
+        fileMngCb->closeLink = data;
+        v31 = sdfFileCmdClose(fileHandle);
+        fileExecStat = 2;
+        fileExecQueue();
+      }
+      {
+LABEL_46:
+      }
+      break;
+    case 7:
+      sdfFileCmdFree(fileHandle);
+      data[2].monitor = 0;
+      BYTE1(data[1].klass) = 6;
+      if (data[3].monitor)
+      {
+        v19 = Allocate(fileCb_t);
+        v20 = Allocate(sdfFileCmdHandle_t);
+        sdfFileCmdHandle_t___ctor(v20);
+        v19[2].monitor = v20;
+        v21 = Allocate(sdfMemHandle_t);
+        sdfMemHandle_t___ctor(v21);
+        v19[5].klass = v21;
+        _ctor(v19, 0);
+        endCallbackLink = fileMngCb->endCallbackLink;
+        if (endCallbackLink)
+        {
+          do
+            endCallbackLink = endCallbackLink->callbackNext;
+          while (endCallbackLink);
+          loc_68 = data;
+        }
+        else
+        {
+          fileMngCb->endCallbackLink = data;
+        }
+      }
+      break;
+    default:
+      return;
+  }
 }
 
 // 0xf89440
@@ -253,16 +389,116 @@ fileCb_t *fileLoadEx(char *filename, s32 headOrTail, fileEndCallback_t *endCallb
 
 // 0xf89590
 fileCb_t *fileLoadUseTail(char *filename) {
-    fileLoadEx(0, 0, 0, 0);
-    return 0;
+  s64 v2;
+  fileEndCallback_t_o *v3;
+  Il2CppObject *v4;
+  System_String_o *v6;
+  s32 v8;
+
+  v8 = 0;
+  sub_8D3950(s32, &v8);
+  fileLoadEx(v6, v2, v3, v4);
+  return 0;
 }
 
 // 0xf89790
 s32 fileManager(void) {
-    fileExecCallback();
-    sdfPacDecode(0, 0, 0);
-    fileExecQueue();
-    return 0;
+  struct fileMngCb_tag_o *fileMngCb;
+  Il2CppObject *v4;
+  u64 *v5;
+  u64 *v6;
+  u64 *v7;
+  s64 index;
+  u64 *v12;
+  struct pacBlockData_t_array *data;
+  struct pacFileCb_t_o *handle;
+  struct pacBlockData_t_array *v16;
+  struct fileCb_t_o *v18;
+  u64 *v19;
+  struct pacFileCb_t_o **p_pacEndCallbackLink;
+  struct pacFileCb_t_o *v22;
+  u8 freeCount;
+  u8 v24;
+  u8 v25;
+  u64 *v28;
+  struct pacFileCb_t_o *pacEndCallbackLink;
+  fileCb_t_o *v32;
+  s32 v34;
+
+  v4 = Allocate(fileCb_t);
+  v5 = Allocate(sdfFileCmdHandle_t);
+  sdfFileCmdHandle_t___ctor(v5);
+  v4[2].monitor = v5;
+  v6 = Allocate(sdfMemHandle_t);
+  sdfMemHandle_t___ctor(v6);
+  v4[5].klass = v6;
+  _ctor(v4, 0);
+  v7 = Allocate(pacFileCb_t);
+  pacFileCb_t___ctor(v7);
+  fileExecCallback();
+  if (fileMngCb->activeCount)
+  {
+    do
+    {
+      while (1)
+      {
+        index = fileMngCb->index;
+        v34 = fileMngCb->buffer | (fileMngCb->index << 16);
+        v12 = sub_8D3950(s32, &v34);
+        data = fileMngCb->data;
+        handle = data->m_Items[index]->handle;
+        if (handle->_base->type == 1)
+          break;
+        if (!fileMngCb->activeCount)
+          goto LABEL_30;
+      }
+      if (!handle)
+        goto LABEL_21;
+      v16 = fileMngCb->data;
+      if (sdfPacDecode(handle->decodeCb, v12, v16->m_Items[index]->size) != -1)
+        goto LABEL_21;
+      else
+      {
+        v18 = handle->_base;
+        handle->decodeEnd = 1;
+        if (!v18->fendCallback)
+          goto LABEL_21;
+      }
+      v19 = Allocate(pacFileCb_t);
+      pacFileCb_t___ctor(v19);
+      p_pacEndCallbackLink = &fileMngCb->pacEndCallbackLink;
+      do
+      {
+        v22 = *p_pacEndCallbackLink;
+        p_pacEndCallbackLink = &(*p_pacEndCallbackLink)->endCallbackLink;
+      }
+      while (v22);
+LABEL_21:
+      freeCount = fileMngCb->freeCount;
+      if (index == 3)
+        v24 = 0;
+      else
+        v24 = index + 1;
+      fileMngCb->index = v24;
+      fileMngCb->freeCount = freeCount + 1;
+      v25 = fileMngCb->activeCount - 1;
+      fileMngCb->activeCount = v25;
+    }
+    while (v25);
+  }
+LABEL_30:
+  fileExecQueue();
+  v28 = Allocate(pacFileCb_t);
+  pacFileCb_t___ctor(v28);
+  pacEndCallbackLink = fileMngCb->pacEndCallbackLink;
+  while (pacEndCallbackLink)
+  {
+    v32 = pacEndCallbackLink->_base;
+    pacEndCallbackLink = pacEndCallbackLink->endCallbackLink;
+    if (v32->phase == 6)
+      fileEndCallback_t__Invoke(v32->fendCallback, v32, v32->endCallbackParm);
+  }
+  return fileMngCb->queue != 0;
 }
 
 // 0xf8a3d0
@@ -325,11 +561,13 @@ void fileSyncAll(void) {
   else
   {
     if (fileMngCb->queue)
+      goto LABEL_11;
   }
   while (fileMngCb->closeLink)
   {
     do
     {
+LABEL_11:
       fileManager();
     }
     while (fileMngCb->queue);
@@ -346,10 +584,14 @@ void fileSync_16292480(pacFileCb_t *pacFileHandle) {
     {
       base = pacFileHandle->_base;
       if (base->type != 1)
+        goto LABEL_10;
     }
     if (!pacFileHandle->decodeEnd)
+      goto LABEL_11;
+LABEL_10:
     if (base->phase == 6)
       break;
+LABEL_11:
     sdfFileCmdThreadSetHiPrio();
     fileManager();
   }
@@ -405,8 +647,13 @@ s32 pacFileHandleFree_(pacFileCb_t *pacHandle) {
 
 // 0xf89300
 pacFileCb_t *pacLoad(char *filename) {
-    pacLoadEx(0, 0, 0, 0, 0);
-    return 0;
+  u64 *v5;
+  s32 v7;
+
+  v7 = 0;
+  v5 = sub_8D3950(s32, &v7);
+  pacLoadEx(filename, 0, 0, 0, v5);
+  return 0;
 }
 
 // 0xf89df0
@@ -424,11 +671,12 @@ pacFileCb_t *pacLoadEx(char *filename, s32 headOrTail, sdfPacCallback_t *callbac
 
   v11 = Allocate(pacFileCb_t);
   pacFileCb_t___ctor(v11);
-  Write_2930400(StringLiteral_16542, filename);
+  Write_2930400("pac load {0}\n", filename);
   sdfPacInit(v11->decodeCb, callback);
   if (headOrTail)
     sdfPacSetFromTail(v11->decodeCb);
   base = v11->_base;
+LABEL_12:
   v17 = **(v16 + 184);
   base->type = 1;
   base->filename = filename;
@@ -445,7 +693,6 @@ pacFileCb_t *pacLoadEx(char *filename, s32 headOrTail, sdfPacCallback_t *callbac
   {
     *(v17 + 24) = base;
     *(v17 + 32) = base;
-    if ((*(v16 + 295) & 2) != 0 && !*(v16 + 216))
     fileExecQueue(v16);
   }
   return v11;
@@ -453,8 +700,13 @@ pacFileCb_t *pacLoadEx(char *filename, s32 headOrTail, sdfPacCallback_t *callbac
 
 // 0xf893a0
 pacFileCb_t *pacLoadUseTail(char *filename) {
-    pacLoadEx(0, 0, 0, 0, 0);
-    return 0;
+  u64 *v5;
+  s32 v7;
+
+  v7 = 0;
+  v5 = sub_8D3950(s32, &v7);
+  pacLoadEx(filename, 1, 0, 0, v5);
+  return 0;
 }
 
 // 0xf88fa0
@@ -464,5 +716,11 @@ void pacRead(pacFileCb_t *pacHandle) {
 
 // 0xf89b70
 void pacSync(pacFileCb_t *pacFileHandle) {
-    fileSync_16292480(0);
+  pacFileCb_t_o *v3;
+
+  else
+  {
+    v3 = pacFileHandle;
+  }
+  fileSync_16292480(v3);
 }

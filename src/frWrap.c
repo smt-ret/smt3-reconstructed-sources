@@ -3,7 +3,7 @@
 typedef struct TextManager TextManager;
 typedef struct _FRQ _FRQ;
 
-static u16 frwExchgStyle_frExchgTbl[UNKNOWN_ARRAY_SIZE];
+static u16 *frwExchgStyle_frExchgTbl;
 
 void Draw_20213616(TextManager *this, _FRQ *frq);
 u8 **EncodingSJIS(char *instr);
@@ -29,10 +29,98 @@ void frwFreeStaffFont(void) {
 
 // 0x13a5810
 _FRQ *frwGetFontEx(s32 X, s32 Y, s32 Pri, u32 Color, u8 **pStr, s8 ChangeStyle, s8 Mode, _FRQ *pFRQ, s32 ftype) {
-    frLinkFontString_20580272(0, 0, 0, 0, 0);
-    GetFontSize(0, 0);
-    Draw_20213616(0, 0);
-    return 0;
+  frFont_c *v18;
+  _FRQ_o *v20;
+  _FRQ_o *v22;
+  _FRQ_o *prev;
+  struct _TEXT_o *i;
+  struct _TEXT_o *j;
+  struct System_UInt32_array_array *frClutTbl;
+  s64 col_no;
+  System_UInt32_array *v30;
+  struct System_UInt32_array_array *v32;
+  s64 v33;
+  System_UInt32_array *v34;
+  struct _TEXT_o *str;
+  s32 v39;
+  struct _TEXT_o *next;
+  s32 v41;
+  s32 lw;
+  UnityEngine_Vector2_o FontSize;
+
+  NewSpecific(byte, 3u);
+  if (Mode)
+  {
+      goto LABEL_17;
+  }
+  else
+  {
+    gModeFlag |= 1u;
+    if ((v18->_2.bitflags2 & 2) == 0)
+      goto LABEL_17;
+  }
+LABEL_17:
+LABEL_19:
+  gModeFlag &= ~2u;
+  v20 = frLinkFontString_20580272(pStr, ChangeStyle, 0, 0, 0);
+  v22 = v20;
+  if (v20)
+  {
+    prev = v20;
+    do
+    {
+      for (i = prev->str; i; i = i->next)
+        i->color = Color;
+      prev = prev->prev;
+    }
+    while (prev);
+  }
+  for (j = v20->str; j; j = j->next)
+  {
+    col_no = j->col_no;
+    v30 = frClutTbl->m_Items[col_no];
+    j->color_base = v30->m_Items[15];
+    v32 = frClutTbl;
+    v33 = j->col_no;
+    v34 = v32->m_Items[v33];
+    j->color_edge = v34->m_Items[0];
+  }
+  v22->x = X;
+  v22->y = Y;
+  if (ftype != -1)
+  {
+    str = v22->str;
+    FontSize = GetFontSize(txtMgr, ftype);
+    v39 = FontSize.x;
+    do
+    {
+      str->width = FontSize.x;
+      str->height = FontSize.y;
+      str->lw = v39;
+      str->style = ftype;
+      str = str->next;
+    }
+    while (str);
+    v22->x_size = v39;
+    v22->y_size = FontSize.y;
+    else
+    {
+      next = v22->str;
+      if (next)
+        goto LABEL_50;
+    }
+    v41 = 0;
+LABEL_55:
+    v22->w_pxls = v41;
+  }
+  Draw_20213616(txtMgr, v22);
+LABEL_63:
+  gModeFlag |= 2u;
+  if (!Mode)
+  {
+    gModeFlag &= ~1u;
+  }
+  return v22;
 }
 
 // 0x13a6620
@@ -42,52 +130,72 @@ _FRQ *frwGetHelpFRQ(s32 X, s32 Y, u32 Z, s8 HelpType, u16 HelpID, s8 DrawMode) {
   System_Byte_array *v15;
   System_Byte_array *v16;
   frFont_c *v17;
-  frFont_c *v18;
-  struct frFont_StaticFields *static_fields;
   s8 gMessageSpaceX;
   _FRQ_o *result;
 
   if (HelpType == 2)
   {
     v13 = &datHeartsHelp;
+      goto LABEL_12;
+    goto LABEL_7;
   }
   if (HelpType == 1)
   {
     v13 = &datItemHelp;
+      goto LABEL_12;
+    goto LABEL_7;
   }
   if (HelpType)
   {
     v16 = 0;
     if (DrawMode != 1)
+      goto LABEL_16;
+LABEL_24:
     gModeFlag &= ~4u;
     if ((byte_3F59675 & 1) != 0)
     {
+LABEL_35:
       gModeFlag |= 8u;
       if ((v17->_2.bitflags2 & 2) == 0)
+        goto LABEL_53;
+      goto LABEL_49;
     }
+LABEL_33:
+LABEL_34:
+    goto LABEL_35;
   }
   v13 = &datSkillHelp;
   {
+LABEL_7:
     if (!*(v14 + 54))
     {
       v14 = *v13;
     }
   }
+LABEL_12:
   v15 = **(v14 + 23);
   v16 = MessageNumSearch(HelpID, v15, Z, HelpType);
   if (DrawMode == 1)
+    goto LABEL_24;
+LABEL_16:
   if (DrawMode == 2)
   {
     gModeFlag &= ~4u;
     if ((v17->_2.bitflags2 & 2) == 0)
+      goto LABEL_53;
+    goto LABEL_49;
   }
   if (DrawMode == 3)
   {
     if ((byte_3F59675 & 1) != 0)
+      goto LABEL_34;
+    goto LABEL_33;
   }
-  static_fields = v18->static_fields;
-  gMessageSpaceX = static_fields->gMessageSpaceX;
-  static_fields->gMessageSpaceX = 0;
+    goto LABEL_53;
+LABEL_49:
+LABEL_53:
+LABEL_55:
+  gMessageSpaceX = 0;
   result = MessageRequestEx2(X, Y, Z, 1u, 0, 0, 0x80u, v16, 0);
   return result;
 }
@@ -104,20 +212,23 @@ char *frwGetHelpForUnity(s32 X, s32 Y, u32 Z, s8 HelpType, u16 HelpID, s8 DrawMo
   {
     v10 = Get(HelpID, 0);
     if (DrawMode == 2)
+      goto LABEL_24;
   }
   else if (HelpType == 1)
   {
     v10 = Get(HelpID, 0);
     if (DrawMode == 2)
+      goto LABEL_24;
   }
   else if (HelpType)
   {
     v10 = 0;
     if (DrawMode == 2)
     {
-      v13 = Replace_5267216(v10, StringLiteral_3622, StringLiteral_416);
-      v11 = StringLiteral_16999;
-      v12 = StringLiteral_416;
+LABEL_24:
+      v13 = Replace_5267216(v10, "\n", "");
+      v11 = "<AF_DEL>";
+      v12 = "";
       return Replace_5267216(v13, v11, v12);
     }
   }
@@ -125,17 +236,18 @@ char *frwGetHelpForUnity(s32 X, s32 Y, u32 Z, s8 HelpType, u16 HelpID, s8 DrawMo
   {
     v10 = Get(HelpID, 0);
     if (DrawMode == 2)
+      goto LABEL_24;
   }
   if (DrawMode == 1)
   {
-    v15 = IndexOf_5260384(v10, StringLiteral_16999);
+    v15 = IndexOf_5260384(v10, "<AF_DEL>");
     if (v15 != -1)
       return Substring_5248048(v10, 0, v15);
   }
   else if (!DrawMode)
   {
-    v11 = StringLiteral_16999;
-    v12 = StringLiteral_416;
+    v11 = "<AF_DEL>";
+    v12 = "";
     v13 = v10;
     return Replace_5267216(v13, v11, v12);
   }
@@ -151,7 +263,7 @@ _FRQ *frwGetNumFontFRQ(s32 X, s32 Y, s32 Pri, u32 Color, u8 **pStr, _FRQ *pFRQ) 
   _FRQ_o *prev;
   struct _TEXT_o *i;
 
-  v13 = StringLiteral_416;
+  v13 = "";
   v16 = EncodingSJIS(v13);
   v19 = frLinkFontString_20580272(v16, 0, 0, 0, pFRQ);
   gModeFlag &= ~2u;
@@ -251,6 +363,7 @@ _FRQ *frwGetSmallFontFRQ2(s32 X, s32 Y, s32 Pri, u32 Color, u8 **pStr, _FRQ *pFR
     }
     while (v15 < max_length);
   }
+LABEL_31:
   gModeFlag |= 1u;
   gModeFlag &= ~2u;
   v30 = frLinkFontString_20580272(v13, 1, 0, 0, 0);

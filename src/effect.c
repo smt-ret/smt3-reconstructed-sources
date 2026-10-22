@@ -709,10 +709,73 @@ void dds3Effect_Blur_t__SetData(dds3Effect_Blur_t *this, u8 **data, s32 *pos) {
 
 // 0x19cf2b0
 dds3Effect_Blur_t **dds3Effect_Blur_t__pCopy(dds3Effect_Blur_t *this, void *pData, s32 *pos, s32 max) {
-    dds3Effect_Blur_t__Clear(0);
-    Byte2UInt32(0, 0);
-    Byte2Float(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v19;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  u64 v32[3];
+
+  v8 = max;
+  v9 = NewSpecific(dds3Effect_Blur_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v32);
+      if ((v32[0] & 1) != 0)
+        v12 = v32[2];
+      else
+        v12 = v32 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(dds3Effect_Blur_t);
+      _ctor(v16, 0);
+      dds3Effect_Blur_t__Clear(v16);
+      *&v14[2 * v15] = v16;
+      v19 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v19);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v15];
+      *(v24 + 20) = Byte2UInt32(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v15];
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v15];
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x19cf7b0
@@ -901,10 +964,64 @@ void dds3Effect_PartialMultiBlurParam_t__SetData(dds3Effect_PartialMultiBlurPara
 
 // 0x19d0010
 dds3Effect_PartialMultiBlurParam_t **dds3Effect_PartialMultiBlurParam_t__pCopy(dds3Effect_PartialMultiBlurParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_Blur_t__Clear(0);
-    dds3Effect_Blur_t__pCopy(0, 0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  u64 *v21;
+  dds3Effect_Blur_t_o *v23;
+  s64 v26;
+  dds3Effect_Blur_t_array *v27;
+  u64 v30[3];
+
+  v8 = max;
+  v9 = NewSpecific(dds3Effect_PartialMultiBlurParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v30);
+      if ((v30[0] & 1) != 0)
+        v12 = v30[2];
+      else
+        v12 = v30 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(dds3Effect_PartialMultiBlurParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      *pos += 4;
+      v21 = Allocate(dds3Effect_Blur_t);
+      _ctor(v21, 0);
+      dds3Effect_Blur_t__Clear(v21);
+      v26 = *&v14[2 * v15];
+      v27 = dds3Effect_Blur_t__pCopy(v23, Interface, pos, 1);
+      ++v15;
+      *(v26 + 24) = v27->m_Items[0];
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x19d02d0
@@ -1080,6 +1197,10 @@ void dds3FlashPolyList_t__Clear(dds3FlashPolyList_t *this, s32 vcnt) {
     pVertex = v6;
     v8 = 0;
     v9 = 32;
+    if (!LODWORD(v6->max_length))
+    {
+LABEL_7:
+    }
     while (1)
     {
       v11 = (&pVertex->obj.klass + v9);
@@ -1091,6 +1212,7 @@ void dds3FlashPolyList_t__Clear(dds3FlashPolyList_t *this, s32 vcnt) {
       ++v8;
       v9 += 16;
       if (v8 >= LODWORD(pVertex->max_length))
+        goto LABEL_7;
     }
   }
   this->pVC = NewSpecific(uint, v5);
@@ -1166,11 +1288,233 @@ void dds3MultiBillResource_tag__dCopy(dds3MultiBillResource_tag *this, dds3Multi
 
 // 0x19d0e70
 void dds3P2APolygon_tag__pCopy(dds3P2APolygon_tag *this, u8 **bytedata, s32 *bpos) {
-    Byte2Float(0, 0);
+  s32 v7;
+  s32 v8;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  s32 v12;
+  s32 v13;
+  s32 v14;
+  s32 v15;
+  s32 v16;
+  s32 v17;
+  s32 v18;
+  s32 v19;
+  s32 v20;
+  s32 v21;
+  s32 v22;
+  struct UnityEngine_Matrix4x4_o *p_rot;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  s32 v27;
+  s32 v28;
+  s32 v29;
+  s32 v30;
+  s32 v31;
+  s32 v32;
+  s32 v33;
+  s32 v34;
+  s32 v35;
+  s32 v36;
+  s32 v37;
+  s32 v38;
+
+  *&this->dir.m00 = 0;
+  *&this->dir.m03 = 0;
+  *&this->dir.m23 = 0;
+  *&this->dir.m20 = 0;
+  *&this->dir.m02 = 0;
+  *&this->dir.m22 = 0;
+  *&this->dir.m01 = 0;
+  *&this->dir.m21 = 0;
+  v7 = *bpos;
+  Byte2Float(bytedata, v7);
+  sub_19FFD30(&this->fields, 0, 0);
+  v8 = *bpos + 4;
+  *bpos = v8;
+  Byte2Float(bytedata, v8);
+  sub_19FFD30(&this->fields, 0, 1);
+  v9 = *bpos + 4;
+  *bpos = v9;
+  Byte2Float(bytedata, v9);
+  sub_19FFD30(&this->fields, 0, 2);
+  v10 = *bpos + 4;
+  *bpos = v10;
+  Byte2Float(bytedata, v10);
+  sub_19FFD30(&this->fields, 0, 3);
+  v11 = *bpos + 4;
+  *bpos = v11;
+  Byte2Float(bytedata, v11);
+  sub_19FFD30(&this->fields, 1, 0);
+  v12 = *bpos + 4;
+  *bpos = v12;
+  Byte2Float(bytedata, v12);
+  sub_19FFD30(&this->fields, 1, 1);
+  v13 = *bpos + 4;
+  *bpos = v13;
+  Byte2Float(bytedata, v13);
+  sub_19FFD30(&this->fields, 1, 2);
+  v14 = *bpos + 4;
+  *bpos = v14;
+  Byte2Float(bytedata, v14);
+  sub_19FFD30(&this->fields, 1, 3);
+  v15 = *bpos + 4;
+  *bpos = v15;
+  Byte2Float(bytedata, v15);
+  sub_19FFD30(&this->fields, 2, 0);
+  v16 = *bpos + 4;
+  *bpos = v16;
+  Byte2Float(bytedata, v16);
+  sub_19FFD30(&this->fields, 2, 1);
+  v17 = *bpos + 4;
+  *bpos = v17;
+  Byte2Float(bytedata, v17);
+  sub_19FFD30(&this->fields, 2, 2);
+  v18 = *bpos + 4;
+  *bpos = v18;
+  Byte2Float(bytedata, v18);
+  sub_19FFD30(&this->fields, 2, 3);
+  v19 = *bpos + 4;
+  *bpos = v19;
+  Byte2Float(bytedata, v19);
+  sub_19FFD30(&this->fields, 3, 0);
+  v20 = *bpos + 4;
+  *bpos = v20;
+  Byte2Float(bytedata, v20);
+  sub_19FFD30(&this->fields, 3, 1);
+  v21 = *bpos + 4;
+  *bpos = v21;
+  Byte2Float(bytedata, v21);
+  sub_19FFD30(&this->fields, 3, 2);
+  v22 = *bpos + 4;
+  *bpos = v22;
+  Byte2Float(bytedata, v22);
+  sub_19FFD30(&this->fields, 3, 3);
+  *bpos += 4;
+  *&this->rot.m00 = 0;
+  p_rot = &this->rot;
+  *&p_rot->m03 = 0;
+  *&p_rot->m23 = 0;
+  *&p_rot->m20 = 0;
+  *&p_rot->m02 = 0;
+  *&p_rot->m22 = 0;
+  *&p_rot->m01 = 0;
+  *&p_rot->m21 = 0;
+  Byte2Float(bytedata, *bpos);
+  sub_19FFD30(p_rot, 0, 0);
+  v24 = *bpos + 4;
+  *bpos = v24;
+  Byte2Float(bytedata, v24);
+  sub_19FFD30(p_rot, 0, 1);
+  v25 = *bpos + 4;
+  *bpos = v25;
+  Byte2Float(bytedata, v25);
+  sub_19FFD30(p_rot, 0, 2);
+  v26 = *bpos + 4;
+  *bpos = v26;
+  Byte2Float(bytedata, v26);
+  sub_19FFD30(p_rot, 0, 3);
+  v27 = *bpos + 4;
+  *bpos = v27;
+  Byte2Float(bytedata, v27);
+  sub_19FFD30(p_rot, 1, 0);
+  v28 = *bpos + 4;
+  *bpos = v28;
+  Byte2Float(bytedata, v28);
+  sub_19FFD30(p_rot, 1, 1);
+  v29 = *bpos + 4;
+  *bpos = v29;
+  Byte2Float(bytedata, v29);
+  sub_19FFD30(p_rot, 1, 2);
+  v30 = *bpos + 4;
+  *bpos = v30;
+  Byte2Float(bytedata, v30);
+  sub_19FFD30(p_rot, 1, 3);
+  v31 = *bpos + 4;
+  *bpos = v31;
+  Byte2Float(bytedata, v31);
+  sub_19FFD30(p_rot, 2, 0);
+  v32 = *bpos + 4;
+  *bpos = v32;
+  Byte2Float(bytedata, v32);
+  sub_19FFD30(p_rot, 2, 1);
+  v33 = *bpos + 4;
+  *bpos = v33;
+  Byte2Float(bytedata, v33);
+  sub_19FFD30(p_rot, 2, 2);
+  v34 = *bpos + 4;
+  *bpos = v34;
+  Byte2Float(bytedata, v34);
+  sub_19FFD30(p_rot, 2, 3);
+  v35 = *bpos + 4;
+  *bpos = v35;
+  Byte2Float(bytedata, v35);
+  sub_19FFD30(p_rot, 3, 0);
+  v36 = *bpos + 4;
+  *bpos = v36;
+  Byte2Float(bytedata, v36);
+  sub_19FFD30(p_rot, 3, 1);
+  v37 = *bpos + 4;
+  *bpos = v37;
+  Byte2Float(bytedata, v37);
+  sub_19FFD30(p_rot, 3, 2);
+  v38 = *bpos + 4;
+  *bpos = v38;
+  Byte2Float(bytedata, v38);
+  sub_19FFD30(p_rot, 3, 3);
+  *bpos += 4;
 }
 
 // 0x19d1560
 void dds3ParOffsetBuffParts_t__dCopy(dds3ParOffsetBuffParts_t *this, dds3ParOffsetBuffParts_t **dst) {
+  dds3ParOffsetBuffParts_t_o *v5;
+  struct UnityEngine_Vector3_array *pPosBuff;
+  u32 *max_length;
+  s64 v8;
+  u64 v9;
+  struct UnityEngine_Vector3_array *v10;
+  f32 x;
+  f32 z;
+  f32 y;
+  s32 v16;
+  s32 v17;
+  s64 v19;
+  s32 v20;
+
+  (*dst)->point = this->point;
+  (*dst)->count = this->count;
+  v5 = *dst;
+  v5->pPosBuff = NewSpecific(UnityEngine_Vector3, LODWORD(this->pPosBuff->max_length));
+  pPosBuff = this->pPosBuff;
+  max_length = pPosBuff->max_length;
+  if (max_length >= 1)
+  {
+    v8 = 0;
+    v9 = 0;
+    do
+    {
+      v10 = (*dst)->pPosBuff;
+      x = pPosBuff->m_Items[v8].x;
+      z = pPosBuff->m_Items[v8].z;
+      y = pPosBuff->m_Items[v8].y;
+      v20 = 0;
+      v19 = 0;
+      sub_8524C0(&v19, x, y, z);
+      v16 = HIDWORD(v19);
+      v17 = v20;
+      max_length = (v10 + v8 * 12);
+      ++v8;
+      max_length[8] = v19;
+      max_length[9] = v16;
+      max_length[10] = v17;
+      pPosBuff = this->pPosBuff;
+      LODWORD(max_length) = pPosBuff->max_length;
+      ++v9;
+    }
+    while (v9 < max_length);
+  }
 }
 
 // 0x19d14b0
@@ -1451,21 +1795,587 @@ void dds3Particle_Basic_t__Clear(dds3Particle_Basic_t *this) {
 
 // 0x19d28b0
 void dds3Particle_Basic_t__dCopy(dds3Particle_Basic_t *this, dds3Particle_Basic_t **dst) {
-    dds3Particle_EffItem_t__dCopy(0, 0);
-    dds3ParticleColorAnim_t__dCopy(0, 0);
-    dds3Particle_SparkOffset_t3__dCopy(0, 0, 0);
-    dds3Particle_SmokeOffset_t3__dCopy(0, 0, 0);
-    dds3Particle_SphereSpiral2_t3__dCopy(0, 0, 0);
+  dds3Particle_Basic_t_o *v5;
+  u64 *v6;
+  struct dds3Particle_Effect_t_o *effect;
+  dds3Particle_Basic_t_o *v8;
+  struct dds3Particle_Effect_t_o *v9;
+  u64 *v10;
+  dds3Particle_Basic_t_o *v12;
+  u64 *v13;
+  dds3Particle_Basic_t_o *v15;
+  u64 *v16;
+  struct dds3Particle_Expansion_t_o *exp;
+  dds3Particle_Basic_t_o *v18;
+  dds3Particle_Basic_t_o *v19;
+  struct UnityEngine_Matrix4x4_o *p_rot;
+  struct UnityEngine_Matrix4x4_o *v21;
+  struct UnityEngine_Matrix4x4_o *v22;
+  struct UnityEngine_Matrix4x4_o *v23;
+  struct UnityEngine_Matrix4x4_o *v24;
+  struct UnityEngine_Matrix4x4_o *v25;
+  struct UnityEngine_Matrix4x4_o *v26;
+  struct UnityEngine_Matrix4x4_o *v27;
+  struct UnityEngine_Matrix4x4_o *v28;
+  struct UnityEngine_Matrix4x4_o *v29;
+  struct UnityEngine_Matrix4x4_o *v30;
+  struct UnityEngine_Matrix4x4_o *v31;
+  struct UnityEngine_Matrix4x4_o *v32;
+  struct UnityEngine_Matrix4x4_o *v33;
+  struct UnityEngine_Matrix4x4_o *v34;
+  struct UnityEngine_Matrix4x4_o *v35;
+  dds3Particle_Basic_t_o *v36;
+  dds3Particle_Basic_t_o *v37;
+  u64 *v38;
+  dds3Particle_Basic_t_o *v39;
+  struct dds3Particle_Spiral_t3_o *pSpiral;
+  dds3Particle_Basic_t_o *v41;
+  u64 *v42;
+  dds3Particle_Basic_t_o *v43;
+  struct dds3Particle_Smoke_t3_o *pSmoke;
+  dds3Particle_Basic_t_o *v45;
+  u64 *v46;
+  dds3Particle_Basic_t_o *v47;
+  struct dds3Particle_Spark_t3_o *pSpark;
+  dds3Particle_Basic_t_o *v49;
+  u64 *v50;
+  dds3Particle_Basic_t_o *v51;
+  struct dds3Particle_Radiate_t3_o *pRadiate;
+  dds3Particle_Basic_t_o *v53;
+  u64 *v54;
+  dds3Particle_Basic_t_o *v55;
+  struct dds3Particle_SphereSpiral_t3_o *pSphereSpiral;
+  dds3Particle_Basic_t_o *v57;
+  u64 *v58;
+  dds3Particle_Basic_t_o *v59;
+  struct dds3Particle_SphereSmoke_t3_o *pSphereSmoke;
+  dds3Particle_Basic_t_o *v61;
+  u64 *v62;
+  dds3Particle_Basic_t_o *v63;
+  struct dds3Particle_SphereRing_t3_o *pSphereRing;
+  dds3Particle_Basic_t_o *v65;
+  u64 *v66;
+  dds3Particle_Basic_t_o *v67;
+  struct dds3Particle_Spark2_t3_o *pSpark2;
+  dds3Particle_Basic_t_o *v69;
+  u64 *v70;
+  dds3Particle_Basic_t_o *v71;
+  struct dds3Particle_SphereAtom_t3_o *pSphereAtom;
+  dds3Particle_Basic_t_o *v73;
+  u64 *v74;
+  dds3Particle_Basic_t_o *v75;
+  u64 *v76;
+  dds3Particle_Basic_t_o *v78;
+  u64 *v79;
+  dds3Particle_Basic_t_o *v81;
+  u64 *v82;
+
+  (*dst)->pos.x = this->pos.x;
+  (*dst)->pos.y = this->pos.y;
+  (*dst)->pos.z = this->pos.z;
+  (*dst)->pos.w = this->pos.w;
+  (*dst)->scale.x = this->scale.x;
+  (*dst)->scale.y = this->scale.y;
+  (*dst)->scale.z = this->scale.z;
+  (*dst)->scale.w = this->scale.w;
+  (*dst)->number = this->number;
+  (*dst)->numberO = this->numberO;
+  (*dst)->frame = this->frame;
+  (*dst)->billno = this->billno;
+  (*dst)->billmode = this->billmode;
+  if (this->effect)
+  {
+    v5 = *dst;
+    v6 = Allocate(dds3Particle_Effect_t);
+    _ctor(v6, 0);
+    v5->effect = v6;
+    effect = this->effect;
+    v8 = *dst;
+    v8->effect->type = effect->type;
+    v9 = v8->effect;
+    v10 = Allocate(dds3Particle_EffItem_t);
+    _ctor(v10, 0);
+    v9->param = v10;
+    dds3Particle_EffItem_t__dCopy(effect->param, &v8->effect->param);
+  }
+  if (this->color)
+  {
+    v12 = *dst;
+    v13 = Allocate(dds3ParticleColorAnim_t);
+    _ctor(v13, 0);
+    v12->color = v13;
+    dds3ParticleColorAnim_t__dCopy(this->color, &(*dst)->color);
+  }
+  if (this->exp)
+  {
+    v15 = *dst;
+    v16 = Allocate(dds3Particle_Expansion_t);
+    _ctor(v16, 0);
+    v15->exp = v16;
+    exp = this->exp;
+    v18 = *dst;
+    (*dst)->exp->scl = exp->scl;
+    v18->exp->rot_s = exp->rot_s;
+    v18->exp->scl_r = exp->scl_r;
+    v18->exp->rot_r = exp->rot_r;
+    v18->exp->rot_type = exp->rot_type;
+  }
+  (*dst)->struct_size = this->struct_size;
+  (*dst)->d_frame = this->d_frame;
+  v19 = *dst;
+  *&v19->rot.m03 = 0;
+  *&v19->rot.m23 = 0;
+  *&v19->rot.m02 = 0;
+  *&v19->rot.m22 = 0;
+  *&v19->rot.m01 = 0;
+  *&v19->rot.m21 = 0;
+  *&v19->rot.m00 = 0;
+  *&v19->rot.m20 = 0;
+  p_rot = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 0, 0);
+  sub_19FFD30(p_rot, 0, 0);
+  v21 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 0, 1);
+  sub_19FFD30(v21, 0, 1);
+  v22 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 0, 2);
+  sub_19FFD30(v22, 0, 2);
+  v23 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 0, 3);
+  sub_19FFD30(v23, 0, 3);
+  v24 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 1, 0);
+  sub_19FFD30(v24, 1, 0);
+  v25 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 1, 1);
+  sub_19FFD30(v25, 1, 1);
+  v26 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 1, 2);
+  sub_19FFD30(v26, 1, 2);
+  v27 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 1, 3);
+  sub_19FFD30(v27, 1, 3);
+  v28 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 2, 0);
+  sub_19FFD30(v28, 2, 0);
+  v29 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 2, 1);
+  sub_19FFD30(v29, 2, 1);
+  v30 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 2, 2);
+  sub_19FFD30(v30, 2, 2);
+  v31 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 2, 3);
+  sub_19FFD30(v31, 2, 3);
+  v32 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 3, 0);
+  sub_19FFD30(v32, 3, 0);
+  v33 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 3, 1);
+  sub_19FFD30(v33, 3, 1);
+  v34 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 3, 2);
+  sub_19FFD30(v34, 3, 2);
+  v35 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 3, 3);
+  sub_19FFD30(v35, 3, 3);
+  (*dst)->abgr = this->abgr;
+  (*dst)->hBillboard = this->hBillboard;
+  v36 = *dst;
+  *&v36->rot_b.m23 = 0;
+  *&v36->rot_b.m03 = 0;
+  *&v36->rot_b.m22 = 0;
+  *&v36->rot_b.m02 = 0;
+  *&v36->rot_b.m21 = 0;
+  *&v36->rot_b.m01 = 0;
+  *&v36->rot_b.m20 = 0;
+  *&v36->rot_b.m00 = 0;
+  if (this->pSpiral)
+  {
+    v37 = *dst;
+    v38 = Allocate(dds3Particle_Spiral_t3);
+    _ctor(v38, 0);
+    v37->pSpiral = v38;
+    v39 = *dst;
+    pSpiral = this->pSpiral;
+    (*dst)->pSpiral->basic = *dst;
+    v39->pSpiral->type = pSpiral->type;
+    v39->pSpiral->loop = pSpiral->loop;
+    v39->pSpiral->timing = pSpiral->timing;
+    v39->pSpiral->radius = pSpiral->radius;
+    v39->pSpiral->simu_num = pSpiral->simu_num;
+    v39->pSpiral->up_s = pSpiral->up_s;
+    v39->pSpiral->roll_s = pSpiral->roll_s;
+    v39->pSpiral->radius_e = pSpiral->radius_e;
+    v39->pSpiral->accele = pSpiral->accele;
+    v39->pSpiral->radius_s_r = pSpiral->radius_s_r;
+    v39->pSpiral->radius_e_r = pSpiral->radius_e_r;
+  }
+  if (this->pSmoke)
+  {
+    v41 = *dst;
+    v42 = Allocate(dds3Particle_Smoke_t3);
+    _ctor(v42, 0);
+    v41->pSmoke = v42;
+    v43 = *dst;
+    pSmoke = this->pSmoke;
+    (*dst)->pSmoke->basic = *dst;
+    v43->pSmoke->loop = pSmoke->loop;
+    v43->pSmoke->timing = pSmoke->timing;
+    v43->pSmoke->radius = pSmoke->radius;
+    v43->pSmoke->up_s = pSmoke->up_s;
+    v43->pSmoke->angle_s = pSmoke->angle_s;
+    v43->pSmoke->amplitude = pSmoke->amplitude;
+    v43->pSmoke->amplitude_s = pSmoke->amplitude_s;
+    v43->pSmoke->accele = pSmoke->accele;
+    v43->pSmoke->up_s_r = pSmoke->up_s_r;
+    v43->pSmoke->ampli_r = pSmoke->ampli_r;
+  }
+  if (this->pSpark)
+  {
+    v45 = *dst;
+    v46 = Allocate(dds3Particle_Spark_t3);
+    _ctor(v46, 0);
+    v45->pSpark = v46;
+    v47 = *dst;
+    pSpark = this->pSpark;
+    (*dst)->pSpark->basic = *dst;
+    v47->pSpark->type = pSpark->type;
+    v47->pSpark->loop = pSpark->loop;
+    v47->pSpark->timing = pSpark->timing;
+    v47->pSpark->random = pSpark->random;
+    v47->pSpark->radius = pSpark->radius;
+    v47->pSpark->spread = pSpark->spread;
+    v47->pSpark->gravity = pSpark->gravity;
+    v47->pSpark->speed = pSpark->speed;
+    v47->pSpark->accele = pSpark->accele;
+    v47->pSpark->speed_r = pSpark->speed_r;
+  }
+  if (this->pRadiate)
+  {
+    v49 = *dst;
+    v50 = Allocate(dds3Particle_Radiate_t3);
+    _ctor(v50, 0);
+    v49->pRadiate = v50;
+    v51 = *dst;
+    pRadiate = this->pRadiate;
+    (*dst)->pRadiate->basic = *dst;
+    v51->pRadiate->type = pRadiate->type;
+    v51->pRadiate->loop = pRadiate->loop;
+    v51->pRadiate->interval = pRadiate->interval;
+    v51->pRadiate->random = pRadiate->random;
+    v51->pRadiate->split = pRadiate->split;
+    v51->pRadiate->angle = pRadiate->angle;
+    v51->pRadiate->speed = pRadiate->speed;
+  }
+  if (this->pSphereSpiral)
+  {
+    v53 = *dst;
+    v54 = Allocate(dds3Particle_SphereSpiral_t3);
+    _ctor(v54, 0);
+    v53->pSphereSpiral = v54;
+    v55 = *dst;
+    pSphereSpiral = this->pSphereSpiral;
+    (*dst)->pSphereSpiral->basic = *dst;
+    v55->pSphereSpiral->type = pSphereSpiral->type;
+    v55->pSphereSpiral->loop = pSphereSpiral->loop;
+    v55->pSphereSpiral->timing = pSphereSpiral->timing;
+    v55->pSphereSpiral->radius = pSphereSpiral->radius;
+    v55->pSphereSpiral->roll_s = pSphereSpiral->roll_s;
+    v55->pSphereSpiral->radius_e = pSphereSpiral->radius_e;
+    v55->pSphereSpiral->radius_s_r = pSphereSpiral->radius_s_r;
+    v55->pSphereSpiral->radius_e_r = pSphereSpiral->radius_e_r;
+  }
+  if (this->pSphereSmoke)
+  {
+    v57 = *dst;
+    v58 = Allocate(dds3Particle_SphereSmoke_t3);
+    _ctor(v58, 0);
+    v57->pSphereSmoke = v58;
+    v59 = *dst;
+    pSphereSmoke = this->pSphereSmoke;
+    (*dst)->pSphereSmoke->basic = *dst;
+    v59->pSphereSmoke->loop = pSphereSmoke->loop;
+    v59->pSphereSmoke->timing = pSphereSmoke->timing;
+    v59->pSphereSmoke->radius = pSphereSmoke->radius;
+    v59->pSphereSmoke->up_s = pSphereSmoke->up_s;
+    v59->pSphereSmoke->angle_s = pSphereSmoke->angle_s;
+    v59->pSphereSmoke->amplitude = pSphereSmoke->amplitude;
+    v59->pSphereSmoke->amplitude_s = pSphereSmoke->amplitude_s;
+    v59->pSphereSmoke->accele = pSphereSmoke->accele;
+    v59->pSphereSmoke->up_s_r = pSphereSmoke->up_s_r;
+    v59->pSphereSmoke->ampli_r = pSphereSmoke->ampli_r;
+    v59->pSphereSmoke->radius_s_r = pSphereSmoke->radius_s_r;
+  }
+  if (this->pSphereRing)
+  {
+    v61 = *dst;
+    v62 = Allocate(dds3Particle_SphereRing_t3);
+    _ctor(v62, 0);
+    v61->pSphereRing = v62;
+    v63 = *dst;
+    pSphereRing = this->pSphereRing;
+    (*dst)->pSphereRing->basic = *dst;
+    v63->pSphereRing->type = pSphereRing->type;
+    v63->pSphereRing->loop = pSphereRing->loop;
+    v63->pSphereRing->timing = pSphereRing->timing;
+    v63->pSphereRing->radius = pSphereRing->radius;
+    v63->pSphereRing->radius_r = pSphereRing->radius_r;
+    v63->pSphereRing->simu_num = pSphereRing->simu_num;
+    v63->pSphereRing->roll_s = pSphereRing->roll_s;
+  }
+  if (this->pSpark2)
+  {
+    v65 = *dst;
+    v66 = Allocate(dds3Particle_Spark2_t3);
+    _ctor(v66, 0);
+    v65->pSpark2 = v66;
+    v67 = *dst;
+    pSpark2 = this->pSpark2;
+    (*dst)->pSpark2->basic = *dst;
+    v67->pSpark2->type = pSpark2->type;
+    v67->pSpark2->loop = pSpark2->loop;
+    v67->pSpark2->timing = pSpark2->timing;
+    v67->pSpark2->random = pSpark2->random;
+    v67->pSpark2->radius = pSpark2->radius;
+    v67->pSpark2->spread = pSpark2->spread;
+    v67->pSpark2->gravity = pSpark2->gravity;
+    v67->pSpark2->speed = pSpark2->speed;
+    v67->pSpark2->accele = pSpark2->accele;
+    v67->pSpark2->speed_r = pSpark2->speed_r;
+    v67->pSpark2->angle = pSpark2->angle;
+    v67->pSpark2->reserve1 = pSpark2->reserve1;
+    v67->pSpark2->reserve2 = pSpark2->reserve2;
+  }
+  if (this->pSphereAtom)
+  {
+    v69 = *dst;
+    v70 = Allocate(dds3Particle_SphereAtom_t3);
+    _ctor(v70, 0);
+    v69->pSphereAtom = v70;
+    v71 = *dst;
+    pSphereAtom = this->pSphereAtom;
+    (*dst)->pSphereAtom->basic = *dst;
+    v71->pSphereAtom->type = pSphereAtom->type;
+    v71->pSphereAtom->loop = pSphereAtom->loop;
+    v71->pSphereAtom->timing = pSphereAtom->timing;
+    v71->pSphereAtom->radius = pSphereAtom->radius;
+    v71->pSphereAtom->radius_e = pSphereAtom->radius_e;
+    v71->pSphereAtom->speed = pSphereAtom->speed;
+    v71->pSphereAtom->accele = pSphereAtom->accele;
+  }
+  if (this->pNop)
+  {
+    v73 = *dst;
+    v74 = Allocate(dds3Particle_Nop_t3);
+    _ctor(v74, 0);
+    v73->pNop = v74;
+    (*dst)->pNop->basic = *dst;
+  }
+  if (this->pSparkOffset)
+  {
+    v75 = *dst;
+    v76 = Allocate(dds3Particle_SparkOffset_t3);
+    _ctor(v76, 0);
+    v75->pSparkOffset = v76;
+    dds3Particle_SparkOffset_t3__dCopy(this->pSparkOffset, &(*dst)->pSparkOffset, *dst);
+  }
+  if (this->pSmokeOffset)
+  {
+    v78 = *dst;
+    v79 = Allocate(dds3Particle_SmokeOffset_t3);
+    _ctor(v79, 0);
+    v78->pSmokeOffset = v79;
+    dds3Particle_SmokeOffset_t3__dCopy(this->pSmokeOffset, &(*dst)->pSmokeOffset, *dst);
+  }
+  if (this->pSphereSpiral2)
+  {
+    v81 = *dst;
+    v82 = Allocate(dds3Particle_SphereSpiral2_t3);
+    _ctor(v82, 0);
+    v81->pSphereSpiral2 = v82;
+    dds3Particle_SphereSpiral2_t3__dCopy(
+      this->pSphereSpiral2,
+      &(*dst)->pSphereSpiral2,
+      *dst);
+  }
+  (*dst)->uniqueid = this->uniqueid;
+  (*dst)->par_scl_raito = this->par_scl_raito;
+  (*dst)->eff_scl_raito = this->eff_scl_raito;
 }
 
 // 0x19d20d0
 void dds3Particle_Basic_t__pCopy(dds3Particle_Basic_t *this, u8 **bytedata, s32 *bpos) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    Byte2UInt16(0, 0);
-    dds3Particle_Effect_t__pCopy(0, 0, 0);
-    dds3ParticleColorAnim_t__pCopy(0, 0, 0);
-    dds3Particle_Expansion_t__pCopy(0, 0, 0);
+  s32 v7;
+  s32 v8;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  s32 v12;
+  s32 v13;
+  s32 v14;
+  s32 v15;
+  s32 v16;
+  s32 v17;
+  u64 *v18;
+  u64 *v20;
+  u64 *v22;
+  s32 v24;
+  struct UnityEngine_Matrix4x4_o *p_rot;
+  s32 v26;
+  s32 v27;
+  s32 v28;
+  s32 v29;
+  s32 v30;
+  s32 v31;
+  s32 v32;
+  s32 v33;
+  s32 v34;
+  s32 v35;
+  s32 v36;
+  s32 v37;
+  s32 v38;
+  s32 v39;
+  s32 v40;
+  s32 v41;
+
+  v7 = *bpos;
+  this->pos.x = Byte2Float(bytedata, v7);
+  v8 = *bpos + 4;
+  *bpos = v8;
+  this->pos.y = Byte2Float(bytedata, v8);
+  v9 = *bpos + 4;
+  *bpos = v9;
+  this->pos.z = Byte2Float(bytedata, v9);
+  v10 = *bpos + 4;
+  *bpos = v10;
+  this->pos.w = Byte2Float(bytedata, v10);
+  v11 = *bpos + 4;
+  *bpos = v11;
+  this->scale.x = Byte2Float(bytedata, v11);
+  v12 = *bpos + 4;
+  *bpos = v12;
+  this->scale.y = Byte2Float(bytedata, v12);
+  v13 = *bpos + 4;
+  *bpos = v13;
+  this->scale.z = Byte2Float(bytedata, v13);
+  v14 = *bpos + 4;
+  *bpos = v14;
+  this->scale.w = Byte2Float(bytedata, v14);
+  v15 = *bpos + 4;
+  *bpos = v15;
+  this->number = Byte2UInt32(bytedata, v15);
+  *bpos += 4;
+  this->numberO = this->number;
+  this->frame = Byte2UInt32(bytedata, *bpos);
+  v16 = *bpos + 4;
+  *bpos = v16;
+  this->billno = Byte2UInt32(bytedata, v16);
+  v17 = *bpos + 4;
+  *bpos = v17;
+  this->billmode = Byte2UInt16(bytedata, v17);
+  *bpos += 4;
+  v18 = Allocate(dds3Particle_Effect_t);
+  _ctor(v18, 0);
+  this->effect = v18;
+  dds3Particle_Effect_t__pCopy(v18, bytedata, bpos);
+  v20 = Allocate(dds3ParticleColorAnim_t);
+  _ctor(v20, 0);
+  this->color = v20;
+  dds3ParticleColorAnim_t__pCopy(v20, bytedata, bpos);
+  v22 = Allocate(dds3Particle_Expansion_t);
+  _ctor(v22, 0);
+  this->exp = v22;
+  dds3Particle_Expansion_t__pCopy(v22, bytedata, bpos);
+  this->struct_size = Byte2UInt32(bytedata, *bpos);
+  v24 = *bpos + 4;
+  *bpos = v24;
+  this->d_frame = Byte2UInt32(bytedata, v24);
+  *bpos += 12;
+  *&this->rot.m00 = 0;
+  p_rot = &this->rot;
+  *&p_rot->m03 = 0;
+  *&p_rot->m23 = 0;
+  *&p_rot->m20 = 0;
+  *&p_rot->m02 = 0;
+  *&p_rot->m22 = 0;
+  *&p_rot->m01 = 0;
+  *&p_rot->m21 = 0;
+  Byte2Float(bytedata, *bpos);
+  sub_19FFD30(p_rot, 0, 0);
+  v26 = *bpos + 4;
+  *bpos = v26;
+  Byte2Float(bytedata, v26);
+  sub_19FFD30(p_rot, 0, 1);
+  v27 = *bpos + 4;
+  *bpos = v27;
+  Byte2Float(bytedata, v27);
+  sub_19FFD30(p_rot, 0, 2);
+  v28 = *bpos + 4;
+  *bpos = v28;
+  Byte2Float(bytedata, v28);
+  sub_19FFD30(p_rot, 0, 3);
+  v29 = *bpos + 4;
+  *bpos = v29;
+  Byte2Float(bytedata, v29);
+  sub_19FFD30(p_rot, 1, 0);
+  v30 = *bpos + 4;
+  *bpos = v30;
+  Byte2Float(bytedata, v30);
+  sub_19FFD30(p_rot, 1, 1);
+  v31 = *bpos + 4;
+  *bpos = v31;
+  Byte2Float(bytedata, v31);
+  sub_19FFD30(p_rot, 1, 2);
+  v32 = *bpos + 4;
+  *bpos = v32;
+  Byte2Float(bytedata, v32);
+  sub_19FFD30(p_rot, 1, 3);
+  v33 = *bpos + 4;
+  *bpos = v33;
+  Byte2Float(bytedata, v33);
+  sub_19FFD30(p_rot, 2, 0);
+  v34 = *bpos + 4;
+  *bpos = v34;
+  Byte2Float(bytedata, v34);
+  sub_19FFD30(p_rot, 2, 1);
+  v35 = *bpos + 4;
+  *bpos = v35;
+  Byte2Float(bytedata, v35);
+  sub_19FFD30(p_rot, 2, 2);
+  v36 = *bpos + 4;
+  *bpos = v36;
+  Byte2Float(bytedata, v36);
+  sub_19FFD30(p_rot, 2, 3);
+  v37 = *bpos + 4;
+  *bpos = v37;
+  Byte2Float(bytedata, v37);
+  sub_19FFD30(p_rot, 3, 0);
+  v38 = *bpos + 4;
+  *bpos = v38;
+  Byte2Float(bytedata, v38);
+  sub_19FFD30(p_rot, 3, 1);
+  v39 = *bpos + 4;
+  *bpos = v39;
+  Byte2Float(bytedata, v39);
+  sub_19FFD30(p_rot, 3, 2);
+  v40 = *bpos + 4;
+  *bpos = v40;
+  Byte2Float(bytedata, v40);
+  sub_19FFD30(p_rot, 3, 3);
+  v41 = *bpos + 4;
+  *bpos = v41;
+  LODWORD(p_rot[1].m00) = Byte2UInt32(bytedata, v41);
+  *bpos += 16;
+  *&p_rot[2].m11 = 0;
+  *&p_rot[2].m30 = 0;
+  *&p_rot[2].m10 = 0;
+  *&p_rot[1].m33 = 0;
+  *&p_rot[1].m13 = 0;
+  *&p_rot[1].m32 = 0;
+  *&p_rot[1].m12 = 0;
+  *&p_rot[1].m31 = 0;
+  *bpos += 80;
 }
 
 // 0x19d40c0
@@ -1928,9 +2838,12 @@ void dds3Particle_SmokeOffset_t3__pCopy(dds3Particle_SmokeOffset_t3 *this, u8 **
     reserve = v22;
     v26 = 0;
     {
+LABEL_12:
+      goto LABEL_14;
     }
     while (1)
     {
+LABEL_14:
       v28 = Byte2UInt32(bytedata, v24);
       reserve->m_Items[v26] = v28;
       v24 = *bpos + 4;
@@ -1939,6 +2852,7 @@ void dds3Particle_SmokeOffset_t3__pCopy(dds3Particle_SmokeOffset_t3 *this, u8 **
         break;
       reserve = this->reserve;
       ++v26;
+        goto LABEL_12;
     }
   }
 }
@@ -2827,13 +3741,247 @@ void dds3Particle_Track_t__pCopy(dds3Particle_Track_t *this, u8 **bytedata, s32 
 
 // 0x19d71e0
 void dds3SpPoly_Basic_t__pClone(dds3SpPoly_Basic_t *this, dds3SpPoly_Basic_t **dst) {
+  dds3SpPoly_Basic_t_o *v3;
+  struct UnityEngine_Matrix4x4_o *p_rot;
+  struct UnityEngine_Matrix4x4_o *v7;
+  struct UnityEngine_Matrix4x4_o *v8;
+  struct UnityEngine_Matrix4x4_o *v9;
+  struct UnityEngine_Matrix4x4_o *v10;
+  struct UnityEngine_Matrix4x4_o *v11;
+  struct UnityEngine_Matrix4x4_o *v12;
+  struct UnityEngine_Matrix4x4_o *v13;
+  struct UnityEngine_Matrix4x4_o *v14;
+  struct UnityEngine_Matrix4x4_o *v15;
+  struct UnityEngine_Matrix4x4_o *v16;
+  struct UnityEngine_Matrix4x4_o *v17;
+  struct UnityEngine_Matrix4x4_o *v18;
+  struct UnityEngine_Matrix4x4_o *v19;
+  struct UnityEngine_Matrix4x4_o *v20;
+  struct UnityEngine_Matrix4x4_o *v21;
+  struct UnityEngine_Matrix4x4_o *v22;
+
+  (*dst)->pos.x = this->pos.x;
+  (*dst)->pos.y = this->pos.y;
+  (*dst)->pos.z = this->pos.z;
+  (*dst)->pos.w = this->pos.w;
+  (*dst)->number = this->number;
+  (*dst)->frame = this->frame;
+  (*dst)->struct_size = this->struct_size;
+  (*dst)->d_frame = this->d_frame;
+  v3 = *dst;
+  *&v3->rot.m03 = 0;
+  *&v3->rot.m23 = 0;
+  *&v3->rot.m02 = 0;
+  *&v3->rot.m22 = 0;
+  p_rot = &this->rot;
+  *&v3->rot.m01 = 0;
+  *&v3->rot.m21 = 0;
+  *&v3->rot.m00 = 0;
+  *&v3->rot.m20 = 0;
+  v7 = &(*dst)->rot;
+  sub_19FFB10(&this->rot, 0, 0);
+  sub_19FFD30(v7, 0, 0);
+  v8 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 0, 1);
+  sub_19FFD30(v8, 0, 1);
+  v9 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 0, 2);
+  sub_19FFD30(v9, 0, 2);
+  v10 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 0, 3);
+  sub_19FFD30(v10, 0, 3);
+  v11 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 1, 0);
+  sub_19FFD30(v11, 1, 0);
+  v12 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 1, 1);
+  sub_19FFD30(v12, 1, 1);
+  v13 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 1, 2);
+  sub_19FFD30(v13, 1, 2);
+  v14 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 1, 3);
+  sub_19FFD30(v14, 1, 3);
+  v15 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 2, 0);
+  sub_19FFD30(v15, 2, 0);
+  v16 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 2, 1);
+  sub_19FFD30(v16, 2, 1);
+  v17 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 2, 2);
+  sub_19FFD30(v17, 2, 2);
+  v18 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 2, 3);
+  sub_19FFD30(v18, 2, 3);
+  v19 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 3, 0);
+  sub_19FFD30(v19, 3, 0);
+  v20 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 3, 1);
+  sub_19FFD30(v20, 3, 1);
+  v21 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 3, 2);
+  sub_19FFD30(v21, 3, 2);
+  v22 = &(*dst)->rot;
+  sub_19FFB10(p_rot, 3, 3);
+  sub_19FFD30(v22, 3, 3);
+  (*dst)->abgr = this->abgr;
+  (*dst)->loop = this->loop;
+  (*dst)->mode = this->mode;
+  (*dst)->alpha_s = this->alpha_s;
+  (*dst)->alpha_e = this->alpha_e;
+  (*dst)->pRing_Old = 0;
+  (*dst)->pRing = 0;
+  (*dst)->pSphereRing = 0;
+  (*dst)->pRollRing = 0;
 }
 
 // 0x19d6d00
 void dds3SpPoly_Basic_t__pCopy(dds3SpPoly_Basic_t *this, u8 **bytedata, s32 *bpos) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    Byte2UInt16(0, 0);
+  s32 v7;
+  s32 v8;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  s32 v12;
+  s32 v13;
+  s32 v14;
+  s32 v15;
+  s32 v16;
+  s32 v17;
+  s32 v18;
+  s32 v19;
+  s32 v20;
+  s32 v21;
+  s32 v22;
+  s32 v23;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  s32 v27;
+  s32 v28;
+  s32 v29;
+  s32 v30;
+  s64 v31;
+  s32 v33;
+  s32 v34;
+  s32 v35;
+
+  v7 = *bpos;
+  this->pos.x = Byte2Float(bytedata, v7);
+  v8 = *bpos + 4;
+  *bpos = v8;
+  this->pos.y = Byte2Float(bytedata, v8);
+  v9 = *bpos + 4;
+  *bpos = v9;
+  this->pos.z = Byte2Float(bytedata, v9);
+  v10 = *bpos + 4;
+  *bpos = v10;
+  this->pos.w = Byte2Float(bytedata, v10);
+  v11 = *bpos + 4;
+  *bpos = v11;
+  this->number = Byte2UInt32(bytedata, v11);
+  v12 = *bpos + 4;
+  *bpos = v12;
+  this->frame = Byte2UInt32(bytedata, v12);
+  v13 = *bpos + 4;
+  *bpos = v13;
+  this->struct_size = Byte2UInt32(bytedata, v13);
+  v14 = *bpos + 4;
+  *bpos = v14;
+  this->d_frame = Byte2UInt32(bytedata, v14);
+  *bpos += 4;
+  *&this->rot.m00 = 0;
+  *&this->rot.m03 = 0;
+  *&this->rot.m23 = 0;
+  *&this->rot.m20 = 0;
+  *&this->rot.m02 = 0;
+  *&this->rot.m22 = 0;
+  *&this->rot.m01 = 0;
+  *&this->rot.m21 = 0;
+  Byte2Float(bytedata, *bpos);
+  sub_19FFD30(&this->rot, 0, 0);
+  v15 = *bpos + 4;
+  *bpos = v15;
+  Byte2Float(bytedata, v15);
+  sub_19FFD30(&this->rot, 0, 1);
+  v16 = *bpos + 4;
+  *bpos = v16;
+  Byte2Float(bytedata, v16);
+  sub_19FFD30(&this->rot, 0, 2);
+  v17 = *bpos + 4;
+  *bpos = v17;
+  Byte2Float(bytedata, v17);
+  sub_19FFD30(&this->rot, 0, 3);
+  v18 = *bpos + 4;
+  *bpos = v18;
+  Byte2Float(bytedata, v18);
+  sub_19FFD30(&this->rot, 1, 0);
+  v19 = *bpos + 4;
+  *bpos = v19;
+  Byte2Float(bytedata, v19);
+  sub_19FFD30(&this->rot, 1, 1);
+  v20 = *bpos + 4;
+  *bpos = v20;
+  Byte2Float(bytedata, v20);
+  sub_19FFD30(&this->rot, 1, 2);
+  v21 = *bpos + 4;
+  *bpos = v21;
+  Byte2Float(bytedata, v21);
+  sub_19FFD30(&this->rot, 1, 3);
+  v22 = *bpos + 4;
+  *bpos = v22;
+  Byte2Float(bytedata, v22);
+  sub_19FFD30(&this->rot, 2, 0);
+  v23 = *bpos + 4;
+  *bpos = v23;
+  Byte2Float(bytedata, v23);
+  sub_19FFD30(&this->rot, 2, 1);
+  v24 = *bpos + 4;
+  *bpos = v24;
+  Byte2Float(bytedata, v24);
+  sub_19FFD30(&this->rot, 2, 2);
+  v25 = *bpos + 4;
+  *bpos = v25;
+  Byte2Float(bytedata, v25);
+  sub_19FFD30(&this->rot, 2, 3);
+  v26 = *bpos + 4;
+  *bpos = v26;
+  Byte2Float(bytedata, v26);
+  sub_19FFD30(&this->rot, 3, 0);
+  v27 = *bpos + 4;
+  *bpos = v27;
+  Byte2Float(bytedata, v27);
+  sub_19FFD30(&this->rot, 3, 1);
+  v28 = *bpos + 4;
+  *bpos = v28;
+  Byte2Float(bytedata, v28);
+  sub_19FFD30(&this->rot, 3, 2);
+  v29 = *bpos + 4;
+  *bpos = v29;
+  Byte2Float(bytedata, v29);
+  sub_19FFD30(&this->rot, 3, 3);
+  v30 = *bpos + 4;
+  *bpos = v30;
+  this->abgr = Byte2UInt32(bytedata, v30);
+  v31 = *bpos + 4LL;
+  *bpos = v31;
+  this->loop = bytedata->m_Items[v31];
+  v33 = *bpos + 2;
+  *bpos = v33;
+  this->mode = Byte2UInt16(bytedata, v33);
+  v34 = *bpos + 2;
+  *bpos = v34;
+  this->alpha_s = Byte2UInt32(bytedata, v34);
+  v35 = *bpos + 4;
+  *bpos = v35;
+  this->alpha_e = Byte2UInt32(bytedata, v35);
+  *bpos += 84;
+  this->pSphereRing = 0;
+  this->pRollRing = 0;
+  this->pRing_Old = 0;
+  this->pRing = 0;
 }
 
 // 0x19d75f0
@@ -3173,11 +4321,210 @@ void dds3SpPoly_SphereRing_t3__pCopy(dds3SpPoly_SphereRing_t3 *this, u8 **byteda
 
 // 0x19d83d0
 void dds3TrackPolyList_t__dCopy(dds3TrackPolyList_t *this, dds3TrackPolyList_t **dst) {
+  dds3TrackPolyList_t_o *v5;
+  struct UnityEngine_Vector4_array *pVertex;
+  u32 *max_length;
+  dds3TrackPolyList_t_o *v8;
+  s64 v9;
+  u64 v10;
+  struct UnityEngine_Vector4_array *v11;
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  s32 v18;
+  s32 v19;
+  s32 v20;
+  struct System_UInt32_array *pVC;
+  il2cpp_array_size_t v23;
+  dds3TrackPolyList_t_o *v24;
+  s64 v25;
+  struct System_UInt32_array *v26;
+  s32 v28;
+  s64 v30;
+  s64 v31;
+  s64 v32;
+
+  v5 = *dst;
+  v5->pVertex = NewSpecific(UnityEngine_Vector4, LODWORD(this->pVertex->max_length));
+  pVertex = this->pVertex;
+  max_length = pVertex->max_length;
+  v8 = *dst;
+  if (max_length >= 1)
+  {
+    v9 = 0;
+    v10 = 0;
+    do
+    {
+      v11 = v8->pVertex;
+      x = pVertex->m_Items[v9].x;
+      y = pVertex->m_Items[v9].y;
+      w = pVertex->m_Items[v9].w;
+      z = pVertex->m_Items[v9].z;
+      v31 = 0;
+      v32 = 0;
+      sub_854690(&v31, x, y, z, w);
+      v18 = HIDWORD(v31);
+      v20 = v32;
+      v19 = HIDWORD(v32);
+      max_length = (v11 + v9 * 16);
+      ++v9;
+      max_length[8] = v31;
+      max_length[9] = v18;
+      max_length[10] = v20;
+      max_length[11] = v19;
+      pVertex = this->pVertex;
+      LODWORD(max_length) = pVertex->max_length;
+      v8 = *dst;
+      ++v10;
+    }
+    while (v10 < max_length);
+  }
+  v8->pVC = NewSpecific(uint, LODWORD(this->pVC->max_length));
+  pVC = this->pVC;
+  v23 = pVC->max_length;
+  v24 = *dst;
+  if (v23 >= 1)
+  {
+    v25 = 8;
+    do
+    {
+      v26 = v24->pVC;
+      v28 = *(&pVC->obj.klass + v25);
+      *(&v26->obj.klass + v25) = v28;
+      pVC = this->pVC;
+      LODWORD(v23) = pVC->max_length;
+      v24 = *dst;
+      v30 = v25 - 7;
+      ++v25;
+    }
+    while (v30 < v23);
+  }
+  v24->count = this->count;
+  (*dst)->rec = this->rec;
+  (*dst)->color = this->color;
 }
 
 // 0x19d68f0
 void dds3TrackPoly_t__dCopy(dds3TrackPoly_t *this, dds3TrackPoly_t **dst) {
-    dds3TrackPolyList_t__dCopy(0, 0);
+  dds3TrackPoly_t_o *v5;
+  dds3TrackPoly_t_o *v6;
+  u64 v7;
+  u32 *trackList;
+  u64 *v10;
+  struct dds3TrackPolyList_t_array *v13;
+  dds3TrackPolyList_t_o *v15;
+  struct dds3TrackPolyList_t_array *v16;
+  struct UnityEngine_Vector4_array *pVertex;
+  u32 *max_length;
+  dds3TrackPoly_t_o *v20;
+  s64 v21;
+  u64 v22;
+  struct UnityEngine_Vector4_array *v23;
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  s32 v30;
+  s32 v31;
+  s32 v32;
+  struct System_UInt32_array *pVC;
+  il2cpp_array_size_t v35;
+  dds3TrackPoly_t_o *v36;
+  s64 v37;
+  struct System_UInt32_array *v38;
+  s32 v40;
+  s64 v42;
+  s64 v43;
+  s64 v44;
+
+  (*dst)->type = this->type;
+  (*dst)->mode = this->mode;
+  (*dst)->number = this->number;
+  (*dst)->point = this->point;
+  (*dst)->rec = this->rec;
+  (*dst)->hMem = this->hMem;
+  v5 = *dst;
+  v5->trackList = NewSpecific(
+                           dds3TrackPolyList_t,
+                           LODWORD(this->trackList->max_length));
+  v6 = *dst;
+  if (SLODWORD(this->trackList->max_length) >= 1)
+  {
+    v7 = 0;
+    do
+    {
+      trackList = v6->trackList;
+      v10 = Allocate(dds3TrackPolyList_t);
+      _ctor(v10, 0);
+      *&trackList[2 * v7 + 8] = v10;
+      v13 = this->trackList;
+      v15 = v13->m_Items[v7];
+      v16 = (*dst)->trackList;
+      dds3TrackPolyList_t__dCopy(v15, &v16->m_Items[v7]);
+      v6 = *dst;
+      ++v7;
+    }
+    while (v7 < SLODWORD(this->trackList->max_length));
+  }
+  v6->pVertex = NewSpecific(UnityEngine_Vector4, LODWORD(this->pVertex->max_length));
+  pVertex = this->pVertex;
+  max_length = pVertex->max_length;
+  v20 = *dst;
+  if (max_length >= 1)
+  {
+    v21 = 0;
+    v22 = 0;
+    do
+    {
+      v23 = v20->pVertex;
+      x = pVertex->m_Items[v21].x;
+      y = pVertex->m_Items[v21].y;
+      w = pVertex->m_Items[v21].w;
+      z = pVertex->m_Items[v21].z;
+      v43 = 0;
+      v44 = 0;
+      sub_854690(&v43, x, y, z, w);
+      v30 = HIDWORD(v43);
+      v32 = v44;
+      v31 = HIDWORD(v44);
+      max_length = (v23 + v21 * 16);
+      ++v21;
+      max_length[8] = v43;
+      max_length[9] = v30;
+      max_length[10] = v32;
+      max_length[11] = v31;
+      pVertex = this->pVertex;
+      LODWORD(max_length) = pVertex->max_length;
+      v20 = *dst;
+      ++v22;
+    }
+    while (v22 < max_length);
+  }
+  v20->pVC = NewSpecific(uint, LODWORD(this->pVC->max_length));
+  pVC = this->pVC;
+  v35 = pVC->max_length;
+  v36 = *dst;
+  if (v35 >= 1)
+  {
+    v37 = 8;
+    do
+    {
+      v38 = v36->pVC;
+      v40 = *(&pVC->obj.klass + v37);
+      *(&v38->obj.klass + v37) = v40;
+      pVC = this->pVC;
+      LODWORD(v35) = pVC->max_length;
+      v36 = *dst;
+      v42 = v37 - 7;
+      ++v37;
+    }
+    while (v42 < v35);
+  }
+  v36->pMat = this->pMat;
+  (*dst)->next = this->next;
+  (*dst)->d_next = this->d_next;
+  (*dst)->alf_raito = this->alf_raito;
 }
 
 // 0x19d8670
@@ -3672,6 +5019,59 @@ void effBTL_t__Clear(effBTL_t *this) {
 
 // 0x19db130
 void effBezier4PPart_t__Clear(effBezier4PPart_t *this) {
+  u64 *v3;
+  s32 v4;
+  s32 v5;
+  s32 v7;
+  s32 v8;
+  s32 v10;
+  s32 v11;
+  s32 v13;
+  s32 v14;
+  s64 v16;
+  s32 v17;
+  s64 v18;
+  s32 v19;
+  s64 v20;
+  s32 v21;
+  s64 v22;
+  s32 v23;
+
+  v3 = NewSpecific(UnityEngine_Vector3, 4u);
+  v23 = 0;
+  v22 = 0;
+  sub_8524C0(&v22, 0.0, 0.0, 0.0);
+  v4 = HIDWORD(v22);
+  v5 = v23;
+  *(v3 + 8) = v22;
+  *(v3 + 9) = v4;
+  *(v3 + 10) = v5;
+  v21 = 0;
+  v20 = 0;
+  sub_8524C0(&v20, 0.0, 0.0, 0.0);
+  v7 = HIDWORD(v20);
+  v8 = v21;
+  *(v3 + 11) = v20;
+  *(v3 + 12) = v7;
+  *(v3 + 13) = v8;
+  v19 = 0;
+  v18 = 0;
+  sub_8524C0(&v18, 0.0, 0.0, 0.0);
+  v10 = HIDWORD(v18);
+  v11 = v19;
+  *(v3 + 14) = v18;
+  *(v3 + 15) = v10;
+  *(v3 + 16) = v11;
+  v17 = 0;
+  v16 = 0;
+  sub_8524C0(&v16, 0.0, 0.0, 0.0);
+  v13 = HIDWORD(v16);
+  v14 = v17;
+  *(v3 + 17) = v16;
+  *(v3 + 18) = v13;
+  *(v3 + 19) = v14;
+  this->point = v3;
+  *&this->weight = 0;
 }
 
 // 0x19db2f0
@@ -3828,9 +5228,12 @@ void effMagaCylinderParam_t__bCopy(effMagaCylinderParam_t *this, u8 **bytedata, 
   reserve = v26;
   v30 = 0;
   {
+LABEL_11:
+    goto LABEL_13;
   }
   while (1)
   {
+LABEL_13:
     v32 = Byte2UInt32(bytedata, v28);
     reserve->m_Items[v30] = v32;
     v28 = *bPos + 4;
@@ -3839,6 +5242,7 @@ void effMagaCylinderParam_t__bCopy(effMagaCylinderParam_t *this, u8 **bytedata, 
       break;
     reserve = this->reserve;
     ++v30;
+      goto LABEL_11;
   }
 }
 
@@ -4150,6 +5554,10 @@ void effMagaPoint4Param_t__bCopy(effMagaPoint4Param_t *this, u8 **bytedata, s32 
   v9 = v7;
   v10 = 0;
   v11 = 0;
+  if (!LODWORD(v7->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     v13 = v9 + v10 * 16;
@@ -4183,6 +5591,7 @@ void effMagaPoint4Param_t__bCopy(effMagaPoint4Param_t *this, u8 **bytedata, s32 
     ++v11;
     ++v10;
     if (v11 >= LODWORD(v9->max_length))
+      goto LABEL_6;
   }
   this->loop = bytedata->m_Items[v31];
   v33 = *bPos + 4;
@@ -4230,9 +5639,12 @@ void effMagaPoint4Param_t__bCopy(effMagaPoint4Param_t *this, u8 **bytedata, s32 
   reserve = v60;
   v64 = 0;
   {
+LABEL_47:
+    goto LABEL_49;
   }
   while (1)
   {
+LABEL_49:
     v66 = Byte2UInt32(bytedata, v62);
     reserve->m_Items[v64] = v66;
     v62 = *bPos + 4;
@@ -4241,6 +5653,7 @@ void effMagaPoint4Param_t__bCopy(effMagaPoint4Param_t *this, u8 **bytedata, s32 
       break;
     reserve = this->reserve;
     ++v64;
+      goto LABEL_47;
   }
 }
 
@@ -4526,9 +5939,12 @@ void effMagaSmokeConvParam_t__bCopy(effMagaSmokeConvParam_t *this, u8 **bytedata
   reserve = v33;
   v37 = 0;
   {
+LABEL_11:
+    goto LABEL_13;
   }
   while (1)
   {
+LABEL_13:
     v39 = Byte2UInt32(bytedata, v35);
     reserve->m_Items[v37] = v39;
     v35 = *bPos + 4;
@@ -4537,6 +5953,7 @@ void effMagaSmokeConvParam_t__bCopy(effMagaSmokeConvParam_t *this, u8 **bytedata
       break;
     reserve = this->reserve;
     ++v37;
+      goto LABEL_11;
   }
 }
 
@@ -4685,9 +6102,12 @@ void effMagaSmokeParam_t__bCopy(effMagaSmokeParam_t *this, u8 **bytedata, s32 *b
   reserve = v26;
   v30 = 0;
   {
+LABEL_11:
+    goto LABEL_13;
   }
   while (1)
   {
+LABEL_13:
     v32 = Byte2UInt32(bytedata, v28);
     reserve->m_Items[v30] = v32;
     v28 = *bPos + 4;
@@ -4696,6 +6116,7 @@ void effMagaSmokeParam_t__bCopy(effMagaSmokeParam_t *this, u8 **bytedata, s32 *b
       break;
     reserve = this->reserve;
     ++v30;
+      goto LABEL_11;
   }
 }
 
@@ -4844,9 +6265,12 @@ void effMagaSpiralParam_t__bCopy(effMagaSpiralParam_t *this, u8 **bytedata, s32 
   reserve = v27;
   v31 = 0;
   {
+LABEL_11:
+    goto LABEL_13;
   }
   while (1)
   {
+LABEL_13:
     v33 = Byte2UInt32(bytedata, v29);
     reserve->m_Items[v31] = v33;
     v29 = *bPos + 4;
@@ -4855,6 +6279,7 @@ void effMagaSpiralParam_t__bCopy(effMagaSpiralParam_t *this, u8 **bytedata, s32 
       break;
     reserve = this->reserve;
     ++v31;
+      goto LABEL_11;
   }
 }
 
@@ -4955,16 +6380,322 @@ void effMagatuhiParams_t__pClone(effMagatuhiParams_t *this, effMagatuhiParams_t 
 
 // 0x19de300
 effPCPAgiFireball2Param_t **effPCPAgiFireball2Param_t__pCopy(effPCPAgiFireball2Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    effPCPAgiFireballParam_t__pCopy(0, 0, 0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u32 *v13;
+  s64 *v14;
+  u64 v15;
+  Il2CppObject *v24;
+  Il2CppClass *klass;
+  s32 v28;
+  u32 v30;
+  s32 v32;
+  s64 v34;
+  u32 v36;
+  s32 v38;
+  s64 v40;
+  u32 v41;
+  u64 *v43;
+  u64 *v44;
+  s64 *v46;
+  s64 *v49;
+  s64 v51;
+  effPCPAgiFireballParam_t_array *v53;
+  s64 *v54;
+  u64 *v57;
+  s64 *v59;
+  s64 v62;
+  effPCPAgiFireballParam_t_array *v64;
+  s64 *v65;
+  u64 *v68;
+  s64 *v70;
+  s64 v74;
+  effPCPAgiFireballParam_t_array *v76;
+  s64 *v77;
+  s64 v81;
+  u64 v82[3];
+
+  v81 = max;
+  v8 = NewSpecific(effPCPAgiFireball2Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v82);
+      if ((v82[0] & 1) != 0)
+        v11 = v82[2];
+      else
+        v11 = v82 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = v8 + 8;
+    v14 = &effPCPAgiFireballParam_t;
+    v15 = 0;
+    do
+    {
+      v24 = Allocate(effPCPAgiFireball2Param_t);
+      v24[1].klass = NewSpecific(s32, 3u);
+      v24[1].monitor = NewSpecific(*v14, 3u);
+      _ctor(v24, 0);
+      *&v13[2 * v15] = v24;
+      klass = v24[1].klass;
+      v28 = *pos;
+      v30 = Byte2UInt32(Interface, v28);
+      LODWORD(klass->_1.byval_arg.data) = v30;
+      v32 = *pos + 4;
+      *pos = v32;
+      v34 = *(*&v13[2 * v15] + 16LL);
+      v36 = Byte2UInt32(Interface, v32);
+      *(v34 + 36) = v36;
+      v38 = *pos + 4;
+      *pos = v38;
+      v40 = *(*&v13[2 * v15] + 16LL);
+      v41 = Byte2UInt32(Interface, v38);
+      *(v40 + 40) = v41;
+      *pos += 4;
+      v43 = NewSpecific(*v14, 3u);
+      v44 = Allocate(effPCPAgiFireballParam_t);
+      effPCPAgiFireballParam_t___ctor(v44);
+      if (v44)
+      {
+        v46 = QueryInterface(v44, *(*v43 + 64LL));
+      }
+      v43[4] = v44;
+      v49 = v14;
+      v51 = *(*&v13[2 * v15] + 24LL);
+      v53 = effPCPAgiFireballParam_t__pCopy(v46, Interface, pos, 1);
+      v54 = v53->m_Items[0];
+      *(v51 + 32) = v54;
+      v57 = Allocate(effPCPAgiFireballParam_t);
+      effPCPAgiFireballParam_t___ctor(v57);
+      if (v57)
+      {
+        v59 = QueryInterface(v57, *(*v43 + 64LL));
+      }
+      v43[5] = v57;
+      v62 = *(*&v13[2 * v15] + 24LL);
+      v64 = effPCPAgiFireballParam_t__pCopy(v59, Interface, pos, 1);
+      v65 = v64->m_Items[0];
+      *(v62 + 40) = v65;
+      v68 = Allocate(effPCPAgiFireballParam_t);
+      effPCPAgiFireballParam_t___ctor(v68);
+      if (v68)
+      {
+        v70 = QueryInterface(v68, *(*v43 + 64LL));
+      }
+      v14 = v49;
+      v43[6] = v68;
+      v74 = *(*&v13[2 * v15] + 24LL);
+      v76 = effPCPAgiFireballParam_t__pCopy(v70, Interface, pos, 1);
+      v77 = v76->m_Items[0];
+      ++v15;
+      *(v74 + 48) = v77;
+    }
+    while (v81 != v15);
+  }
+  return v8;
 }
 
 // 0x19debb0
 effPCPAgiFireballParam_t **effPCPAgiFireballParam_t__pCopy(effPCPAgiFireballParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  effPCPAgiFireballParam_t_o *v15;
+  u32 *v18;
+  u32 *v19;
+  s32 v20;
+  s32 v23;
+  s64 v25;
+  s32 v26;
+  s64 v28;
+  s32 v29;
+  s64 v31;
+  s32 v32;
+  s64 v34;
+  s32 v35;
+  s64 v37;
+  s32 v38;
+  s64 v40;
+  s32 v42;
+  s64 v44;
+  u32 v46;
+  s32 v48;
+  s64 v50;
+  u32 v52;
+  s32 v54;
+  s64 v56;
+  u32 v58;
+  s32 v60;
+  s64 v62;
+  f32 v64;
+  s32 v66;
+  s64 v68;
+  f32 v70;
+  s32 v72;
+  s64 v74;
+  f32 v76;
+  s32 v78;
+  s64 v80;
+  f32 v82;
+  s32 v84;
+  s64 v86;
+  f32 v88;
+  s32 v90;
+  s64 v92;
+  f32 v94;
+  u64 v96;
+  s64 v97;
+  s64 v99;
+  s64 v100;
+  s32 v101;
+  f32 v102;
+  s32 v104;
+  u64 v106[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPAgiFireballParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v106);
+      if ((v106[0] & 1) != 0)
+        v12 = v106[2];
+      else
+        v12 = v106 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      v15 = Allocate(effPCPAgiFireballParam_t);
+      effPCPAgiFireballParam_t___ctor(v15);
+      v18 = &v9[2 * v14];
+      *(v18 + 4) = v15;
+      v19 = v18 + 8;
+      v20 = *pos;
+      v15->pos.x = Byte2Float(Interface, v20);
+      v23 = *pos + 4;
+      *pos = v23;
+      v25 = *v19;
+      *(v25 + 20) = Byte2Float(Interface, v23);
+      v26 = *pos + 4;
+      *pos = v26;
+      v28 = *v19;
+      *(v28 + 24) = Byte2Float(Interface, v26);
+      v29 = *pos + 4;
+      *pos = v29;
+      v31 = *v19;
+      *(v31 + 28) = Byte2Float(Interface, v29);
+      v32 = *pos + 4;
+      *pos = v32;
+      v34 = *v19;
+      *(v34 + 32) = Byte2UInt32(Interface, v32);
+      v35 = *pos + 4;
+      *pos = v35;
+      v37 = *v19;
+      *(v37 + 36) = Byte2UInt32(Interface, v35);
+      v38 = *pos + 4;
+      *pos = v38;
+      v40 = *v19;
+      *(v40 + 40) = Byte2Float(Interface, v38);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *(*v19 + 48LL);
+      v46 = Byte2UInt32(Interface, v42);
+      *(v44 + 32) = v46;
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *(*v19 + 48LL);
+      v52 = Byte2UInt32(Interface, v48);
+      *(v50 + 36) = v52;
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *(*v19 + 48LL);
+      v58 = Byte2UInt32(Interface, v54);
+      *(v56 + 40) = v58;
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *(*v19 + 56LL);
+      v64 = Byte2Float(Interface, v60);
+      *(v62 + 32) = v64;
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *(*v19 + 56LL);
+      v70 = Byte2Float(Interface, v66);
+      *(v68 + 36) = v70;
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *(*v19 + 56LL);
+      v76 = Byte2Float(Interface, v72);
+      *(v74 + 40) = v76;
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *(*v19 + 64LL);
+      v82 = Byte2Float(Interface, v78);
+      *(v80 + 32) = v82;
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *(*v19 + 64LL);
+      v88 = Byte2Float(Interface, v84);
+      *(v86 + 36) = v88;
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *(*v19 + 64LL);
+      v94 = Byte2Float(Interface, v90);
+      *(v92 + 40) = v94;
+      v96 = 0;
+      *pos += 4;
+      if (v14 >= v9[6])
+      {
+LABEL_98:
+      }
+      while (1)
+      {
+        v99 = *v19;
+        if (v96 == 3)
+          break;
+        v100 = *(v99 + 72);
+        v101 = *pos;
+        v102 = Byte2Float(Interface, v101);
+        v97 = v100 + 4 * v96++;
+        *(v97 + 32) = v102;
+        *pos += 4;
+        if (v14 >= v9[6])
+          goto LABEL_98;
+      }
+      v104 = *pos;
+      *(v99 + 80) = Byte2UInt32(Interface, v104);
+      ++v14;
+      *pos += 4;
+    }
+    while (v14 != v8);
+  }
+  return v9;
 }
 
 // 0x19df640
@@ -4974,9 +6705,197 @@ void effPCPAgiFireballPartList_t__Clear(effPCPAgiFireballPartList_t *this) {
 
 // 0x19df650
 effPCPAgiraoFireParam_t **effPCPAgiraoFireParam_t__pCopy(effPCPAgiraoFireParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u64 *v14;
+  u32 *v16;
+  u32 *v17;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s64 v31;
+  s64 v32;
+  u64 v33;
+  s64 v35;
+  s64 v37;
+  s64 v38;
+  s32 v39;
+  f32 v40;
+  s32 v42;
+  s64 v44;
+  f32 v45;
+  u64 v47;
+  s64 v49;
+  s64 v51;
+  s64 v52;
+  s32 v53;
+  u32 v54;
+  s32 v58;
+  s64 v59;
+  u32 v61;
+  s32 v63;
+  s64 v65;
+  u32 v67;
+  s32 v69;
+  s64 v71;
+  u32 v73;
+  s32 v75;
+  s64 v77;
+  u32 v79;
+  s32 v81;
+  s64 v83;
+  u32 v85;
+  s32 v87;
+  s64 v89;
+  u32 v91;
+  s32 v93;
+  s64 v95;
+  u32 v96;
+  u64 v99[3];
+  s64 v100;
+
+  v100 = max;
+  v8 = NewSpecific(effPCPAgiraoFireParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v99);
+      if ((v99[0] & 1) != 0)
+        v11 = v99[2];
+      else
+        v11 = v99 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    do
+    {
+      v14 = Allocate(effPCPAgiraoFireParam_t);
+      _ctor(v14, 0);
+      v16 = &v8[2 * v13];
+      *(v16 + 4) = v14;
+      v17 = v16 + 8;
+      v18 = *pos;
+      *(v14 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *v17;
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v17;
+      *(v26 + 16) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v17;
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      *pos += 4;
+      v31 = *v17;
+      v32 = 0;
+      v33 = 0;
+      *(v31 + 32) = NewSpecific(UnityEngine_Vector2, 3u);
+      if (v13 >= v8[6])
+      {
+LABEL_31:
+      }
+      while (1)
+      {
+        v37 = *v17;
+        if (v33 == 3)
+          break;
+        v38 = *(v37 + 32);
+        v39 = *pos;
+        v40 = Byte2Float(Interface, v39);
+        *(v38 + v32 + 32) = v40;
+        v42 = *pos + 4;
+        *pos = v42;
+        v44 = *(*v17 + 32LL);
+        v45 = Byte2Float(Interface, v42);
+        v35 = v44 + v32;
+        v32 += 8;
+        *(v35 + 36) = v45;
+        ++v33;
+        *pos += 4;
+        if (v13 >= v8[6])
+          goto LABEL_31;
+      }
+      v47 = 0;
+      *(v37 + 40) = NewSpecific(s32, 3u);
+      if (v13 >= v8[6])
+      {
+LABEL_45:
+      }
+      while (1)
+      {
+        v51 = *v17;
+        if (v47 == 3)
+          break;
+        v52 = *(v51 + 40);
+        v53 = *pos;
+        v54 = Byte2UInt32(Interface, v53);
+        v49 = v52 + 4 * v47++;
+        *(v49 + 32) = v54;
+        *pos += 4;
+        if (v13 >= v8[6])
+          goto LABEL_45;
+      }
+      *(v51 + 48) = NewSpecific(s32, 7u);
+      v58 = *pos;
+      v59 = *(*v17 + 48LL);
+      v61 = Byte2UInt32(Interface, v58);
+      *(v59 + 32) = v61;
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *(*v17 + 48LL);
+      v67 = Byte2UInt32(Interface, v63);
+      *(v65 + 36) = v67;
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *(*v17 + 48LL);
+      v73 = Byte2UInt32(Interface, v69);
+      *(v71 + 40) = v73;
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *(*v17 + 48LL);
+      v79 = Byte2UInt32(Interface, v75);
+      *(v77 + 44) = v79;
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *(*v17 + 48LL);
+      v85 = Byte2UInt32(Interface, v81);
+      *(v83 + 48) = v85;
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *(*v17 + 48LL);
+      v91 = Byte2UInt32(Interface, v87);
+      *(v89 + 52) = v91;
+      v93 = *pos + 4;
+      *pos = v93;
+      v95 = *(*v17 + 48LL);
+      v96 = Byte2UInt32(Interface, v93);
+      *(v95 + 56) = v96;
+      *pos += 4;
+      ++v13;
+    }
+    while (v13 != v100);
+  }
+  return v8;
 }
 
 // 0x19e0650
@@ -4986,104 +6905,1471 @@ void effPCPBezierBillParam_t__pClone(effPCPBezierBillParam_t *this, effPCPBezier
 
 // 0x19dff60
 effPCPBezierBillParam_t **effPCPBezierBillParam_t__pCopy(effPCPBezierBillParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPBezierBillParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  u64 **v20;
+  s32 v21;
+  s32 v22;
+  u64 *v24;
+  s32 v25;
+  u64 *v27;
+  s32 v28;
+  u64 *v30;
+  s32 v31;
+  u64 *v33;
+  s32 v34;
+  u64 *v36;
+  s32 v37;
+  u64 *v39;
+  s32 v40;
+  u64 *v42;
+  s32 v43;
+  u64 *v45;
+  s32 v46;
+  u64 *v48;
+  s32 v49;
+  u64 *v51;
+  s32 v52;
+  u64 *v54;
+  s32 v55;
+  u64 *v57;
+  s32 v58;
+  u64 *v60;
+  s32 v61;
+  u64 *v63;
+  s32 v64;
+  u64 *v66;
+  s32 v67;
+  u64 *v69;
+  s32 v70;
+  u64 *v72;
+  s32 v73;
+  u64 *v75;
+  s32 v76;
+  u64 *v78;
+  u64 v80[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPBezierBillParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v80);
+      if ((v80[0] & 1) != 0)
+        v12 = v80[2];
+      else
+        v12 = v80 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPBezierBillParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 5) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 6) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 7) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 8) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *v20;
+      *(v36 + 9) = Byte2Float(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 10) = Byte2Float(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 11) = Byte2Float(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 12) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 13) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 14) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 15) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 16) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 17) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 18) = Byte2UInt32(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 19) = Byte2UInt32(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 20) = Byte2UInt32(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 21) = Byte2UInt32(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 22) = Byte2UInt32(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 23) = Byte2UInt32(Interface, v76);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x19e0760
 effPCPBlurExpParam_t **effPCPBlurExpParam_t__pCopy(effPCPBlurExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_Blur_t__Clear(0);
-    dds3Effect_Blur_t__SetData(0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s64 v28;
+  u64 *v29;
+  u64 v34[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPBlurExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v34);
+      if ((v34[0] & 1) != 0)
+        v12 = v34[2];
+      else
+        v12 = v34 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPBlurExpParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2UInt32(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2UInt32(Interface, v24);
+      *pos += 4;
+      v28 = *&v14[2 * v15];
+      v29 = Allocate(dds3Effect_Blur_t);
+      _ctor(v29, 0);
+      dds3Effect_Blur_t__Clear(v29);
+      *(v28 + 32) = v29;
+      dds3Effect_Blur_t__SetData(*(*&v14[2 * v15++] + 32LL), Interface, pos);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x19e0c80
 effPCPBossBaelParam_t **effPCPBossBaelParam_t__pCopy(effPCPBossBaelParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  Il2CppObject *v18;
+  s64 v21;
+  s32 v22;
+  s32 v23;
+  s64 v25;
+  s32 v26;
+  s64 v28;
+  s32 v29;
+  s64 v31;
+  u64 v33[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPBossBaelParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v33);
+      if ((v33[0] & 1) != 0)
+        v12 = v33[2];
+      else
+        v12 = v33 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v18 = Allocate(effPCPBossBaelParam_t);
+      _ctor(v18, 0);
+      *&v14[2 * v15] = v18;
+      v18[1].klass = 0;
+      v18[1].monitor = 0;
+      v21 = *&v14[2 * v15];
+      v22 = *pos;
+      *(v21 + 16) = Byte2Float(Interface, v22);
+      v23 = *pos + 4;
+      *pos = v23;
+      v25 = *&v14[2 * v15];
+      *(v25 + 20) = Byte2Float(Interface, v23);
+      v26 = *pos + 4;
+      *pos = v26;
+      v28 = *&v14[2 * v15];
+      *(v28 + 24) = Byte2Float(Interface, v26);
+      v29 = *pos + 4;
+      *pos = v29;
+      v31 = *&v14[2 * v15];
+      *(v31 + 28) = Byte2Float(Interface, v29);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x19e0fc0
 effPCPBossDengekiParam_t **effPCPBossDengekiParam_t__pCopy(effPCPBossDengekiParam_t *this, void *pData, s32 *pos, s32 max) {
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2Float(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  System_Byte_array *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u32 *v14;
+  u64 *v16;
+  u64 *v18;
+  s64 v20;
+  s64 v23;
+  s32 v24;
+  u64 v26[3];
+
+  v8 = NewSpecific(effPCPBossDengekiParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v26);
+      if ((v26[0] & 1) != 0)
+        v11 = v26[2];
+      else
+        v11 = v26 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    v14 = v8 + 8;
+    do
+    {
+      v16 = Allocate(effPCPBossDengekiParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v13] = v16;
+      v18 = Allocate(effPCP_ThunderPolyParam_t);
+      effPCP_ThunderPolyParam_t___ctor(v18);
+      v20 = *&v14[2 * v13];
+      *(v20 + 16) = effPCP_ThunderPolyParam_t__pCopy(v18, &Interface->obj, pos, max);
+      v23 = *&v14[2 * v13];
+      v24 = *pos;
+      *(v23 + 24) = Byte2Float(Interface, v24);
+      ++v13;
+      *pos += 4;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x19e1250
 effPCPBossKAGU2AttackParam_t **effPCPBossKAGU2AttackParam_t__pCopy(effPCPBossKAGU2AttackParam_t *this, void *pData, s32 *pos, s32 max) {
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  System_Byte_array *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u32 *v14;
+  u64 *v16;
+  u64 *v18;
+  s64 v20;
+  s64 v23;
+  s32 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s32 v37;
+  s64 v39;
+  u64 v41[3];
+
+  v8 = NewSpecific(effPCPBossKAGU2AttackParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v41);
+      if ((v41[0] & 1) != 0)
+        v11 = v41[2];
+      else
+        v11 = v41 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    v14 = v8 + 8;
+    do
+    {
+      v16 = Allocate(effPCPBossKAGU2AttackParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v13] = v16;
+      v18 = Allocate(effPCP_ThunderPolyParam_t);
+      effPCP_ThunderPolyParam_t___ctor(v18);
+      v20 = *&v14[2 * v13];
+      *(v20 + 16) = effPCP_ThunderPolyParam_t__pCopy(v18, &Interface->obj, pos, max);
+      v23 = *&v14[2 * v13];
+      v24 = *pos;
+      *(v23 + 24) = Byte2Float(Interface, v24);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v13];
+      *(v27 + 28) = Byte2UInt32(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v13];
+      *(v30 + 32) = Byte2UInt32(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *&v14[2 * v13];
+      *(v33 + 36) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *&v14[2 * v13];
+      *(v36 + 40) = Byte2UInt32(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *&v14[2 * v13];
+      *(v39 + 44) = Byte2Float(Interface, v37);
+      ++v13;
+      *pos += 4;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x19e1690
 effPCPBossKAGUAttackParam_t **effPCPBossKAGUAttackParam_t__pCopy(effPCPBossKAGUAttackParam_t *this, void *pData, s32 *pos, s32 max) {
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  System_Byte_array *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u32 *v14;
+  u64 *v16;
+  u64 *v18;
+  s64 v20;
+  s64 v23;
+  s32 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s32 v37;
+  s64 v39;
+  u64 v41[3];
+
+  v8 = NewSpecific(effPCPBossKAGUAttackParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v41);
+      if ((v41[0] & 1) != 0)
+        v11 = v41[2];
+      else
+        v11 = v41 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    v14 = v8 + 8;
+    do
+    {
+      v16 = Allocate(effPCPBossKAGUAttackParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v13] = v16;
+      v18 = Allocate(effPCP_ThunderPolyParam_t);
+      effPCP_ThunderPolyParam_t___ctor(v18);
+      v20 = *&v14[2 * v13];
+      *(v20 + 16) = effPCP_ThunderPolyParam_t__pCopy(v18, &Interface->obj, pos, max);
+      v23 = *&v14[2 * v13];
+      v24 = *pos;
+      *(v23 + 24) = Byte2Float(Interface, v24);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v13];
+      *(v27 + 28) = Byte2UInt32(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v13];
+      *(v30 + 32) = Byte2UInt32(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *&v14[2 * v13];
+      *(v33 + 36) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *&v14[2 * v13];
+      *(v36 + 40) = Byte2UInt32(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *&v14[2 * v13];
+      *(v39 + 44) = Byte2Float(Interface, v37);
+      ++v13;
+      *pos += 4;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x19e1ab0
 effPCPBossKAGUInvokeParam_t **effPCPBossKAGUInvokeParam_t__pCopy(effPCPBossKAGUInvokeParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  u32 *v7;
+  Il2CppClass *v8;
+  s64 *Interface;
+  char *v10;
+  s64 *v11;
+  u64 v12;
+  Il2CppObject *v14;
+  u32 *v16;
+  u32 *v17;
+  u64 v18;
+  u32 *v21;
+  s64 *v22;
+  s64 *v24;
+  s64 v26;
+  u64 v27;
+  s64 v29;
+  s64 v31;
+  s64 v33;
+  s64 v35;
+  s64 v37;
+  s32 v38;
+  s64 v39;
+  f32 v40;
+  s64 v43;
+  s64 v45;
+  f32 v46;
+  s64 v49;
+  s64 v51;
+  f32 v52;
+  s64 v55;
+  s64 v57;
+  f32 v58;
+  s64 v60;
+  u64 *v61;
+  s64 v63;
+  s64 v66;
+  s32 v67;
+  s32 v68;
+  s64 v70;
+  s32 v71;
+  s64 v73;
+  s32 v74;
+  s64 v76;
+  s64 v78;
+  u64 v79[3];
+  s32 maxa;
+
+  maxa = max;
+  v78 = maxa;
+  v7 = NewSpecific(effPCPBossKAGUInvokeParam_t, maxa);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v8, v79);
+      if ((v79[0] & 1) != 0)
+        v10 = v79[2];
+      else
+        v10 = v79 + 1;
+      v11 = sub_8C4940(v10);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (maxa >= 1)
+  {
+    v12 = 0;
+    do
+    {
+      v14 = Allocate(effPCPBossKAGUInvokeParam_t);
+      _ctor(v14, 0);
+      v16 = &v7[2 * v12];
+      *(v16 + 4) = v14;
+      v17 = v16 + 8;
+      v18 = 0;
+      v14[1].klass = NewSpecific(UnityEngine_Vector4__, 6u);
+      do
+      {
+        v21 = *(*v17 + 16LL);
+        v22 = NewSpecific(UnityEngine_Vector4, 9u);
+        v24 = v22;
+        v26 = 0;
+        v27 = 0;
+        *&v21[2 * v18 + 8] = v24;
+        do
+        {
+          v29 = *(*v17 + 16LL);
+          v31 = *(v29 + 8 * v18 + 32);
+          v33 = v31 + v26;
+          *(v33 + 32) = 0;
+          *(v33 + 40) = 0;
+          v35 = *(*v17 + 16LL);
+          v37 = v35 + 8 * v18;
+          v38 = *pos;
+          v39 = *(v37 + 32);
+          v40 = Byte2Float(Interface, v38);
+          *(v39 + v26 + 32) = v40;
+          *pos += 4;
+          v43 = *(*v17 + 16LL);
+          v45 = *(v43 + 8 * v18 + 32);
+          v46 = Byte2Float(Interface, *pos);
+          *(v45 + v26 + 36) = v46;
+          *pos += 4;
+          v49 = *(*v17 + 16LL);
+          v51 = *(v49 + 8 * v18 + 32);
+          v52 = Byte2Float(Interface, *pos);
+          *(v51 + v26 + 40) = v52;
+          *pos += 4;
+          v55 = *(*v17 + 16LL);
+          v57 = *(v55 + 8 * v18 + 32);
+          v58 = Byte2Float(Interface, *pos);
+          v60 = v57 + v26;
+          v26 += 16;
+          *(v60 + 44) = v58;
+          ++v27;
+          *pos += 4;
+        }
+        while (v27 != 9);
+        ++v18;
+      }
+      while (v18 != 6);
+      v61 = Allocate(effPCP_ThunderPolyParam_t);
+      effPCP_ThunderPolyParam_t___ctor(v61);
+      v63 = *v17;
+      *(v63 + 24) = effPCP_ThunderPolyParam_t__pCopy(v61, Interface, pos, maxa);
+      v66 = *v17;
+      v67 = *pos;
+      *(v66 + 32) = Byte2UInt32(Interface, v67);
+      v68 = *pos + 4;
+      *pos = v68;
+      v70 = *v17;
+      *(v70 + 36) = Byte2UInt32(Interface, v68);
+      v71 = *pos + 4;
+      *pos = v71;
+      v73 = *v17;
+      *(v73 + 40) = Byte2UInt32(Interface, v71);
+      v74 = *pos + 4;
+      *pos = v74;
+      v76 = *v17;
+      *(v76 + 44) = Byte2UInt32(Interface, v74);
+      *pos += 4;
+      ++v12;
+    }
+    while (v12 != v78);
+  }
+  return v7;
 }
 
 // 0x19e2240
 effPCPBossKAGUThunderboltParam_t **effPCPBossKAGUThunderboltParam_t__pCopy(effPCPBossKAGUThunderboltParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    effPCPCrackParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u32 *v14;
+  Il2CppObject *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  u64 *v31;
+  s64 v33;
+  u64 *v34;
+  s64 v36;
+  effPCPCrackParam_t_array *v37;
+  s64 v40;
+  s32 v41;
+  s64 v43;
+  s32 v44;
+  s64 v46;
+  s32 v47;
+  s64 v49;
+  u64 v51[3];
+
+  v8 = NewSpecific(effPCPBossKAGUThunderboltParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v51);
+      if ((v51[0] & 1) != 0)
+        v11 = v51[2];
+      else
+        v11 = v51 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    v14 = v8 + 8;
+    do
+    {
+      v17 = Allocate(effPCPBossKAGUThunderboltParam_t);
+      _ctor(v17, 0);
+      *&v14[2 * v13] = v17;
+      v17[1].klass = 0;
+      v17[1].monitor = 0;
+      v20 = *&v14[2 * v13];
+      v21 = *pos;
+      *(v20 + 16) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v13];
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v13];
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v13];
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      *pos += 4;
+      v31 = Allocate(effPCP_ThunderPolyParam_t);
+      effPCP_ThunderPolyParam_t___ctor(v31);
+      v33 = *&v14[2 * v13];
+      *(v33 + 32) = effPCP_ThunderPolyParam_t__pCopy(v31, Interface, pos, max);
+      v34 = Allocate(effPCPCrackParam_t);
+      effPCPCrackParam_t___ctor(v34);
+      v36 = *&v14[2 * v13];
+      v37 = effPCPCrackParam_t__pCopy(v34, Interface, pos, max);
+      *(v36 + 40) = v37->m_Items[0];
+      v40 = *&v14[2 * v13];
+      *(v40 + 48) = Byte2Float(Interface, *pos);
+      v41 = *pos + 4;
+      *pos = v41;
+      v43 = *&v14[2 * v13];
+      *(v43 + 52) = Byte2UInt32(Interface, v41);
+      v44 = *pos + 4;
+      *pos = v44;
+      v46 = *&v14[2 * v13];
+      *(v46 + 56) = Byte2UInt32(Interface, v44);
+      v47 = *pos + 4;
+      *pos = v47;
+      v49 = *&v14[2 * v13];
+      *(v49 + 60) = Byte2UInt32(Interface, v47);
+      ++v13;
+      *pos += 4;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x19e2750
 effPCPBossMETATOBeamParam_t **effPCPBossMETATOBeamParam_t__pCopy(effPCPBossMETATOBeamParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u32 *v14;
+  Il2CppObject *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  u64 *v31;
+  s64 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  u64 v43[3];
+
+  v8 = NewSpecific(effPCPBossMETATOBeamParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v43);
+      if ((v43[0] & 1) != 0)
+        v11 = v43[2];
+      else
+        v11 = v43 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    v14 = v8 + 8;
+    do
+    {
+      v17 = Allocate(effPCPBossMETATOBeamParam_t);
+      _ctor(v17, 0);
+      *&v14[2 * v13] = v17;
+      v17[1].klass = 0;
+      v17[1].monitor = 0;
+      v20 = *&v14[2 * v13];
+      v21 = *pos;
+      *(v20 + 16) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v13];
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v13];
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v13];
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      *pos += 4;
+      v31 = Allocate(effPCP_ThunderPolyParam_t);
+      effPCP_ThunderPolyParam_t___ctor(v31);
+      v33 = *&v14[2 * v13];
+      *(v33 + 32) = effPCP_ThunderPolyParam_t__pCopy(v31, Interface, pos, max);
+      v35 = *&v14[2 * v13];
+      *(v35 + 40) = Byte2UInt32(Interface, *pos);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v13];
+      *(v38 + 44) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v13];
+      *(v41 + 48) = Byte2UInt32(Interface, v39);
+      ++v13;
+      *pos += 4;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x1a37c90
 effPCPBossThunderboltParam_t **effPCPBossThunderboltParam_t__pCopy(effPCPBossThunderboltParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  Il2CppObject *v18;
+  s64 v21;
+  s32 v22;
+  s32 v23;
+  s64 v25;
+  s32 v26;
+  s64 v28;
+  s32 v29;
+  s64 v31;
+  u64 *v32;
+  effPCP_ThunderPolyParam_t_o *v33;
+  s32 v34;
+  s64 v37;
+  u64 v39[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPBossThunderboltParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v39);
+      if ((v39[0] & 1) != 0)
+        v12 = v39[2];
+      else
+        v12 = v39 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v18 = Allocate(effPCPBossThunderboltParam_t);
+      _ctor(v18, 0);
+      *&v14[2 * v15] = v18;
+      v18[1].klass = 0;
+      v18[1].monitor = 0;
+      v21 = *&v14[2 * v15];
+      v22 = *pos;
+      *(v21 + 16) = Byte2Float(Interface, v22);
+      v23 = *pos + 4;
+      *pos = v23;
+      v25 = *&v14[2 * v15];
+      *(v25 + 20) = Byte2Float(Interface, v23);
+      v26 = *pos + 4;
+      *pos = v26;
+      v28 = *&v14[2 * v15];
+      *(v28 + 24) = Byte2Float(Interface, v26);
+      v29 = *pos + 4;
+      *pos = v29;
+      v31 = *&v14[2 * v15];
+      *(v31 + 28) = Byte2Float(Interface, v29);
+      *pos += 4;
+      v32 = Allocate(effPCP_ThunderPolyParam_t);
+      _ctor(v32, 0);
+      v37 = *&v14[2 * v15++];
+      *(v37 + 32) = effPCP_ThunderPolyParam_t__pCopy(v33, Interface, pos, v34);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a38550
 effPCPBreathParam_t **effPCPBreathParam_t__pCopy(effPCPBreathParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  u64 v46[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPBreathParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v46);
+      if ((v46[0] & 1) != 0)
+        v12 = v46[2];
+      else
+        v12 = v46 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPBreathParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *&v14[2 * v15];
+      *(v35 + 36) = Byte2UInt32(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v15];
+      *(v41 + 44) = Byte2Float(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2Float(Interface, v42);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a38990
 effPCPCrack2Param_t **effPCPCrack2Param_t__pCopy(effPCPCrack2Param_t *this, void *pData, s32 *pos, s32 max) {
-    effPCPCrackParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    Byte2Float(0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  System_Byte_array *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  u32 *v14;
+  u64 *v16;
+  u64 *v18;
+  effPCPCrackParam_t_o *v19;
+  s64 v22;
+  effPCPCrackParam_t_array *v23;
+  s64 v27;
+  s32 v28;
+  s32 v29;
+  s64 v31;
+  u64 v33[3];
+
+  v8 = NewSpecific(effPCPCrack2Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v33);
+      if ((v33[0] & 1) != 0)
+        v11 = v33[2];
+      else
+        v11 = v33 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    v14 = v8 + 8;
+    do
+    {
+      v16 = Allocate(effPCPCrack2Param_t);
+      _ctor(v16, 0);
+      *&v14[2 * v13] = v16;
+      v18 = Allocate(effPCPCrackParam_t);
+      _ctor(v18, 0);
+      v22 = *&v14[2 * v13];
+      v23 = effPCPCrackParam_t__pCopy(v19, &Interface->obj, pos, max);
+      *(v22 + 16) = v23->m_Items[0];
+      v27 = *&v14[2 * v13];
+      v28 = *pos;
+      *(v27 + 24) = Byte2UInt32(Interface, v28);
+      v29 = *pos + 4;
+      *pos = v29;
+      v31 = *&v14[2 * v13];
+      *(v31 + 28) = Byte2Float(Interface, v29);
+      ++v13;
+      *pos += 4;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x1a39820
 void effPCPCrackParam_t__pClone(effPCPCrackParam_t *this, effPCPCrackParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPCrackParam_t_o *v5;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  s64 v12;
+  f32 v13;
+  f32 v14;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v5 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v12 = 0;
+  sub_854690(&v12, x, y, z, w);
+  v11 = v13;
+  v10 = v14;
+  *&v5->pos.x = v12;
+  v5->pos.z = v11;
+  v5->pos.w = v10;
+  (*param)->show = this->show;
+  (*param)->speed = this->speed;
+  (*param)->scale = this->scale;
+  (*param)->width = this->width;
+  (*param)->abgr_wait = this->abgr_wait;
+  (*param)->abgr_f = this->abgr_f;
+  (*param)->abgr_s_in = this->abgr_s_in;
+  (*param)->abgr_s_out = this->abgr_s_out;
+  (*param)->abgr_e_in = this->abgr_e_in;
+  (*param)->abgr_e_out = this->abgr_e_out;
+  (*param)->blend = this->blend;
+  (*param)->f_show = this->f_show;
+  (*param)->f_type = this->f_type;
+  (*param)->f_wait = this->f_wait;
+  (*param)->f_timing = this->f_timing;
+  (*param)->f_life = this->f_life;
+  (*param)->f_fade_in = this->f_fade_in;
+  (*param)->f_fade_out = this->f_fade_out;
+  (*param)->f_scale = this->f_scale;
+  (*param)->f_length = this->f_length;
+  (*param)->f_length_r = this->f_length_r;
+  (*param)->f_width_in = this->f_width_in;
+  (*param)->f_width_out = this->f_width_out;
+  (*param)->f_width_r = this->f_width_r;
+  (*param)->f_abgr_wait = this->f_abgr_wait;
+  (*param)->f_abgr_f = this->f_abgr_f;
+  (*param)->f_abgr_s_in = this->f_abgr_s_in;
+  (*param)->f_abgr_s_out = this->f_abgr_s_out;
+  (*param)->f_abgr_e_in = this->f_abgr_e_in;
+  (*param)->f_abgr_e_out = this->f_abgr_e_out;
+  (*param)->f_blend = this->f_blend;
+  (*param)->f_dir = this->f_dir;
 }
 
 // 0x1a38c80
 effPCPCrackParam_t **effPCPCrackParam_t__pCopy(effPCPCrackParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPCrackParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  Il2CppObject *v18;
+  s64 v20;
+  s64 v22;
+  s32 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s32 v69;
+  s32 v72;
+  s64 v74;
+  s32 v75;
+  s64 v77;
+  s32 v78;
+  s64 v80;
+  s32 v81;
+  s64 v83;
+  s32 v84;
+  s64 v86;
+  s32 v87;
+  s64 v89;
+  s32 v90;
+  s64 v92;
+  s32 v93;
+  s64 v95;
+  s32 v96;
+  s64 v98;
+  s32 v99;
+  s64 v101;
+  s32 v102;
+  s64 v104;
+  s32 v105;
+  s64 v107;
+  s32 v108;
+  s64 v110;
+  s32 v111;
+  s64 v113;
+  s32 v114;
+  s64 v116;
+  s32 v117;
+  s64 v119;
+  s32 v120;
+  s64 v122;
+  s32 v123;
+  s64 v125;
+  s32 v126;
+  u64 v130[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPCrackParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v130);
+      if ((v130[0] & 1) != 0)
+        v12 = v130[2];
+      else
+        v12 = v130 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v18 = Allocate(effPCPCrackParam_t);
+      _ctor(v18, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v18;
+      v18[1].klass = 0;
+      v18[1].monitor = 0;
+      v22 = *v20;
+      v23 = *pos;
+      *(v22 + 16) = Byte2Float(Interface, v23);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v20;
+      *(v26 + 20) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v20;
+      *(v29 + 24) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v20;
+      *(v32 + 28) = Byte2Float(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      *(*v20 + 32LL) = *(Interface + v33 + 32);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *v20;
+      *(v38 + 36) = Byte2Float(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *v20;
+      *(v41 + 40) = Byte2Float(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *v20;
+      *(v44 + 44) = Byte2Float(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *v20;
+      *(v47 + 48) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v20;
+      *(v50 + 52) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v20;
+      *(v53 + 56) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v20;
+      *(v56 + 60) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v20;
+      *(v59 + 64) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v20;
+      *(v62 + 68) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v20;
+      *(v65 + 72) = Byte2UInt32(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      *(*v20 + 76LL) = *(Interface + v66 + 32);
+      v69 = *pos + 1;
+      *pos = v69;
+      *(*v20 + 77LL) = *(Interface + v69 + 32);
+      v72 = *pos + 3;
+      *pos = v72;
+      v74 = *v20;
+      *(v74 + 80) = Byte2UInt32(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v20;
+      *(v77 + 84) = Byte2UInt32(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v20;
+      *(v80 + 88) = Byte2UInt32(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v20;
+      *(v83 + 92) = Byte2UInt32(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v20;
+      *(v86 + 96) = Byte2UInt32(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v20;
+      *(v89 + 100) = Byte2UInt32(Interface, v87);
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *v20;
+      *(v92 + 104) = Byte2Float(Interface, v90);
+      v93 = *pos + 4;
+      *pos = v93;
+      v95 = *v20;
+      *(v95 + 108) = Byte2Float(Interface, v93);
+      v96 = *pos + 4;
+      *pos = v96;
+      v98 = *v20;
+      *(v98 + 112) = Byte2Float(Interface, v96);
+      v99 = *pos + 4;
+      *pos = v99;
+      v101 = *v20;
+      *(v101 + 116) = Byte2Float(Interface, v99);
+      v102 = *pos + 4;
+      *pos = v102;
+      v104 = *v20;
+      *(v104 + 120) = Byte2Float(Interface, v102);
+      v105 = *pos + 4;
+      *pos = v105;
+      v107 = *v20;
+      *(v107 + 124) = Byte2UInt32(Interface, v105);
+      v108 = *pos + 4;
+      *pos = v108;
+      v110 = *v20;
+      *(v110 + 128) = Byte2UInt32(Interface, v108);
+      v111 = *pos + 4;
+      *pos = v111;
+      v113 = *v20;
+      *(v113 + 132) = Byte2UInt32(Interface, v111);
+      v114 = *pos + 4;
+      *pos = v114;
+      v116 = *v20;
+      *(v116 + 136) = Byte2UInt32(Interface, v114);
+      v117 = *pos + 4;
+      *pos = v117;
+      v119 = *v20;
+      *(v119 + 140) = Byte2UInt32(Interface, v117);
+      v120 = *pos + 4;
+      *pos = v120;
+      v122 = *v20;
+      *(v122 + 144) = Byte2UInt32(Interface, v120);
+      v123 = *pos + 4;
+      *pos = v123;
+      v125 = *v20;
+      *(v125 + 148) = Byte2UInt32(Interface, v123);
+      v126 = *pos + 4;
+      *pos = v126;
+      *(*v20 + 152LL) = *(Interface + v126 + 32);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a39d30
@@ -5101,14 +8387,122 @@ void effPCPDANTE_Damage_Param_t__pClone(effPCPDANTE_Damage_Param_t *this, effPCP
 
 // 0x1a39a30
 effPCPDANTE_Damage_Param_t **effPCPDANTE_Damage_Param_t__pCopy(effPCPDANTE_Damage_Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  u64 v31[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPDANTE_Damage_Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v31);
+      if ((v31[0] & 1) != 0)
+        v12 = v31[2];
+      else
+        v12 = v31 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPDANTE_Damage_Param_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2UInt32(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2UInt32(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2UInt32(Interface, v27);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a39dd0
 effPCPDANTE_ShowTime_Param_t **effPCPDANTE_ShowTime_Param_t__pCopy(effPCPDANTE_ShowTime_Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  u64 *v15;
+  s32 v17;
+  u64 v21[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPDANTE_ShowTime_Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v21);
+      if ((v21[0] & 1) != 0)
+        v12 = v21[2];
+      else
+        v12 = v21 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      v15 = Allocate(effPCPDANTE_ShowTime_Param_t);
+      _ctor(v15, 0);
+      *&v9[2 * v14 + 8] = v15;
+      v17 = *pos;
+      *(v15 + 4) = Byte2UInt32(Interface, v17);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a3a340
@@ -5129,201 +8523,3283 @@ void effPCPDANTE_Thunder_Param_t__pClone(effPCPDANTE_Thunder_Param_t *this, effP
 
 // 0x1a3a010
 effPCPDANTE_Thunder_Param_t **effPCPDANTE_Thunder_Param_t__pCopy(effPCPDANTE_Thunder_Param_t *this, void *pData, s32 *pos, s32 max) {
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  System_Byte_array *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v17;
+  u64 *v19;
+  effPCP_ThunderPolyParam_t_o *v20;
+  s32 v21;
+  s64 v24;
+  s64 v27;
+  s32 v28;
+  s32 v29;
+  s64 v31;
+  s32 v32;
+  s64 v34;
+  s32 v35;
+  s64 v37;
+  u64 v39[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPDANTE_Thunder_Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v39);
+      if ((v39[0] & 1) != 0)
+        v12 = v39[2];
+      else
+        v12 = v39 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v17 = Allocate(effPCPDANTE_Thunder_Param_t);
+      _ctor(v17, 0);
+      *&v14[2 * v15] = v17;
+      v19 = Allocate(effPCP_ThunderPolyParam_t);
+      _ctor(v19, 0);
+      v24 = *&v14[2 * v15];
+      *(v24 + 16) = effPCP_ThunderPolyParam_t__pCopy(v20, &Interface->obj, pos, v21);
+      v27 = *&v14[2 * v15];
+      v28 = *pos;
+      *(v27 + 24) = Byte2UInt32(Interface, v28);
+      v29 = *pos + 4;
+      *pos = v29;
+      v31 = *&v14[2 * v15];
+      *(v31 + 28) = Byte2UInt32(Interface, v29);
+      v32 = *pos + 4;
+      *pos = v32;
+      v34 = *&v14[2 * v15];
+      *(v34 + 32) = Byte2UInt32(Interface, v32);
+      v35 = *pos + 4;
+      *pos = v35;
+      v37 = *&v14[2 * v15];
+      *(v37 + 36) = Byte2UInt32(Interface, v35);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3a810
 effPCPDistortionBlurExpParam_t **effPCPDistortionBlurExpParam_t__pCopy(effPCPDistortionBlurExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_DistortionBlurParam_t__SetData(0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v18;
+  s64 v20;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s64 v38;
+  u64 *v39;
+  u64 v42[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPDistortionBlurExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v42);
+      if ((v42[0] & 1) != 0)
+        v12 = v42[2];
+      else
+        v12 = v42 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v18 = Allocate(effPCPDistortionBlurExpParam_t);
+      _ctor(v18, 0);
+      *&v14[2 * v15] = v18;
+      v20 = *pos;
+      *(v18 + 16) = *(Interface + v20 + 32);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v15];
+      *(v24 + 20) = Byte2UInt32(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v15];
+      *(v27 + 24) = Byte2UInt32(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v15];
+      *(v30 + 28) = Byte2UInt32(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *&v14[2 * v15];
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *&v14[2 * v15];
+      *(v36 + 36) = Byte2UInt32(Interface, v34);
+      *pos += 4;
+      v38 = *&v14[2 * v15];
+      v39 = Allocate(dds3Effect_DistortionBlurParam_t);
+      dds3Effect_DistortionBlurParam_t___ctor(v39);
+      *(v38 + 40) = v39;
+      dds3Effect_DistortionBlurParam_t__SetData(*(*&v14[2 * v15++] + 40LL), Interface, pos, 0);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3ac20
 effPCPFLEACHBlurParam_t **effPCPFLEACHBlurParam_t__pCopy(effPCPFLEACHBlurParam_t *this, void *pData, s32 *pos, s32 max) {
-    dds3Effect_PartialMultiBlurParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  System_Byte_array *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v17;
+  u64 *v19;
+  s64 v21;
+  dds3Effect_PartialMultiBlurParam_t_array *v22;
+  u64 *v24;
+  s64 v26;
+  dds3Effect_PartialMultiBlurParam_t_array *v27;
+  s64 v31;
+  s32 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  u64 v40[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFLEACHBlurParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v40);
+      if ((v40[0] & 1) != 0)
+        v12 = v40[2];
+      else
+        v12 = v40 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v17 = Allocate(effPCPFLEACHBlurParam_t);
+      _ctor(v17, 0);
+      *&v14[2 * v15] = v17;
+      v19 = Allocate(dds3Effect_PartialMultiBlurParam_t);
+      dds3Effect_PartialMultiBlurParam_t___ctor(v19);
+      v21 = *&v14[2 * v15];
+      v22 = dds3Effect_PartialMultiBlurParam_t__pCopy(v19, &Interface->obj, pos, 1);
+      *(v21 + 16) = v22->m_Items[0];
+      v24 = Allocate(dds3Effect_PartialMultiBlurParam_t);
+      dds3Effect_PartialMultiBlurParam_t___ctor(v24);
+      v26 = *&v14[2 * v15];
+      v27 = dds3Effect_PartialMultiBlurParam_t__pCopy(v24, &Interface->obj, pos, 1);
+      *(v26 + 24) = v27->m_Items[0];
+      v31 = *&v14[2 * v15];
+      v32 = *pos;
+      *(v31 + 32) = Byte2UInt32(Interface, v32);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *&v14[2 * v15];
+      *(v35 + 36) = Byte2UInt32(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3afb0
 effPCPFilterExpParam_t **effPCPFilterExpParam_t__pCopy(effPCPFilterExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_Filter_t__SetData(0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s64 v28;
+  u64 *v29;
+  u64 v32[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFilterExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v32);
+      if ((v32[0] & 1) != 0)
+        v12 = v32[2];
+      else
+        v12 = v32 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPFilterExpParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2UInt32(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2UInt32(Interface, v24);
+      *pos += 4;
+      v28 = *&v14[2 * v15];
+      v29 = Allocate(dds3Effect_Filter_t);
+      dds3Effect_Filter_t___ctor(v29);
+      *(v28 + 32) = v29;
+      dds3Effect_Filter_t__SetData(*(*&v14[2 * v15++] + 32LL), Interface, pos, 0);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3b960
 void effPCPFlashPolyCircleParam_t__pClone(effPCPFlashPolyCircleParam_t *this, effPCPFlashPolyCircleParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolyCircleParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolyCircleParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->radius = this->radius;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_a = this->radius_a;
+  (*param)->z = this->z;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3b2f0
 effPCPFlashPolyCircleParam_t **effPCPFlashPolyCircleParam_t__pCopy(effPCPFlashPolyCircleParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s64 v67;
+  u64 v69[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolyCircleParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v69);
+      if ((v69[0] & 1) != 0)
+        v12 = v69[2];
+      else
+        v12 = v69 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPFlashPolyCircleParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      *(*&v14[2 * v15] + 36LL) = *(Interface + v33 + 32);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v15];
+      *(v41 + 44) = Byte2UInt32(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *&v14[2 * v15];
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *&v14[2 * v15];
+      *(v50 + 56) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *&v14[2 * v15];
+      *(v53 + 60) = Byte2Float(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *&v14[2 * v15];
+      *(v56 + 64) = Byte2Float(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *&v14[2 * v15];
+      *(v59 + 68) = Byte2Float(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *&v14[2 * v15];
+      *(v62 + 72) = Byte2Float(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *&v14[2 * v15];
+      *(v65 + 76) = Byte2UInt32(Interface, v63);
+      *pos += 4;
+      v67 = *&v14[2 * v15++];
+      *(v67 + 80) = *(v67 + 32);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3c220
 void effPCPFlashPolyPipeParam_t__pClone(effPCPFlashPolyPipeParam_t *this, effPCPFlashPolyPipeParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolyPipeParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolyPipeParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->interval = this->interval;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width_in = this->width_in;
+  (*param)->width_out = this->width_out;
+  (*param)->radius = this->radius;
+  (*param)->length = this->length;
+  (*param)->spread = this->spread;
+  (*param)->rotate = this->rotate;
+  (*param)->up_s = this->up_s;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3bac0
 effPCPFlashPolyPipeParam_t **effPCPFlashPolyPipeParam_t__pCopy(effPCPFlashPolyPipeParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPFlashPolyPipeParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  u64 v81[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolyPipeParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v81);
+      if ((v81[0] & 1) != 0)
+        v12 = v81[2];
+      else
+        v12 = v81 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPFlashPolyPipeParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      *(*v20 + 36LL) = *(Interface + v34 + 32);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2Float(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2UInt32(Interface, v76);
+      *pos += 4;
+      ++v14;
+      *(*v20 + 96LL) = *(*v20 + 32LL);
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a3cb10
 void effPCPFlashPolyRingExp2Param_t__pClone(effPCPFlashPolyRingExp2Param_t *this, effPCPFlashPolyRingExp2Param_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolyRingExp2Param_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolyRingExp2Param_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->scale_f = this->scale_f;
+  (*param)->interval = this->interval;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width_in = this->width_in;
+  (*param)->width_out = this->width_out;
+  (*param)->radius = this->radius;
+  (*param)->length = this->length;
+  (*param)->spread = this->spread;
+  (*param)->rotate = this->rotate;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3c3b0
 effPCPFlashPolyRingExp2Param_t **effPCPFlashPolyRingExp2Param_t__pCopy(effPCPFlashPolyRingExp2Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPFlashPolyRingExp2Param_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  u64 v81[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolyRingExp2Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v81);
+      if ((v81[0] & 1) != 0)
+        v12 = v81[2];
+      else
+        v12 = v81 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPFlashPolyRingExp2Param_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      *(*v20 + 36LL) = *(Interface + v34 + 32);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2UInt32(Interface, v76);
+      *pos += 4;
+      ++v14;
+      *(*v20 + 96LL) = *(*v20 + 32LL);
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a3d480
 void effPCPFlashPolyRingExpParam_t__pClone(effPCPFlashPolyRingExpParam_t *this, effPCPFlashPolyRingExpParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolyRingExpParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolyRingExpParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->interval = this->interval;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width_in = this->width_in;
+  (*param)->width_out = this->width_out;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_e = this->radius_e;
+  (*param)->length_s = this->length_s;
+  (*param)->length_e = this->length_e;
+  (*param)->spread_s = this->spread_s;
+  (*param)->spread_e = this->spread_e;
+  (*param)->rotate = this->rotate;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3cca0
 effPCPFlashPolyRingExpParam_t **effPCPFlashPolyRingExpParam_t__pCopy(effPCPFlashPolyRingExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPFlashPolyRingExpParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  s32 v79;
+  s64 v81;
+  s32 v82;
+  s64 v84;
+  u64 v87[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolyRingExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v87);
+      if ((v87[0] & 1) != 0)
+        v12 = v87[2];
+      else
+        v12 = v87 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPFlashPolyRingExpParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      *(*v20 + 36LL) = *(Interface + v34 + 32);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2Float(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2Float(Interface, v76);
+      v79 = *pos + 4;
+      *pos = v79;
+      v81 = *v20;
+      *(v81 + 96) = Byte2Float(Interface, v79);
+      v82 = *pos + 4;
+      *pos = v82;
+      v84 = *v20;
+      *(v84 + 100) = Byte2UInt32(Interface, v82);
+      *pos += 4;
+      ++v14;
+      *(*v20 + 104LL) = *(*v20 + 32LL);
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a3dd00
 void effPCPFlashPolyRingParam_t__pClone(effPCPFlashPolyRingParam_t *this, effPCPFlashPolyRingParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolyRingParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolyRingParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->scale_f = this->scale_f;
+  (*param)->interval = this->interval;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width_in = this->width_in;
+  (*param)->width_out = this->width_out;
+  (*param)->radius = this->radius;
+  (*param)->length = this->length;
+  (*param)->spread = this->spread;
+  (*param)->rotate = this->rotate;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3d620
 effPCPFlashPolyRingParam_t **effPCPFlashPolyRingParam_t__pCopy(effPCPFlashPolyRingParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPFlashPolyRingParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  u64 v75[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolyRingParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v75);
+      if ((v75[0] & 1) != 0)
+        v12 = v75[2];
+      else
+        v12 = v75 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPFlashPolyRingParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      *(*v20 + 36LL) = *(Interface + v34 + 32);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2Float(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2Float(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2UInt32(Interface, v70);
+      *pos += 4;
+      ++v14;
+      *(*v20 + 88LL) = *(*v20 + 32LL);
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a3e4a0
 void effPCPFlashPolySphere2ExpParam_t__pClone(effPCPFlashPolySphere2ExpParam_t *this, effPCPFlashPolySphere2ExpParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolySphere2ExpParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolySphere2ExpParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->radius = this->radius;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_a = this->radius_a;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3de70
 effPCPFlashPolySphere2ExpParam_t **effPCPFlashPolySphere2ExpParam_t__pCopy(effPCPFlashPolySphere2ExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s64 v64;
+  u64 v66[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolySphere2ExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v66);
+      if ((v66[0] & 1) != 0)
+        v12 = v66[2];
+      else
+        v12 = v66 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPFlashPolySphere2ExpParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      *(*&v14[2 * v15] + 36LL) = *(Interface + v33 + 32);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v15];
+      *(v41 + 44) = Byte2UInt32(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *&v14[2 * v15];
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *&v14[2 * v15];
+      *(v50 + 56) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *&v14[2 * v15];
+      *(v53 + 60) = Byte2Float(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *&v14[2 * v15];
+      *(v56 + 64) = Byte2Float(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *&v14[2 * v15];
+      *(v59 + 68) = Byte2Float(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *&v14[2 * v15];
+      *(v62 + 72) = Byte2UInt32(Interface, v60);
+      *pos += 4;
+      v64 = *&v14[2 * v15++];
+      *(v64 + 76) = *(v64 + 32);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3eb60
 void effPCPFlashPolySphere2Param_t__pClone(effPCPFlashPolySphere2Param_t *this, effPCPFlashPolySphere2Param_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolySphere2Param_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolySphere2Param_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->scale_f = this->scale_f;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->radius = this->radius;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3e5f0
 effPCPFlashPolySphere2Param_t **effPCPFlashPolySphere2Param_t__pCopy(effPCPFlashPolySphere2Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s64 v55;
+  u64 v57[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolySphere2Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v57);
+      if ((v57[0] & 1) != 0)
+        v12 = v57[2];
+      else
+        v12 = v57 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPFlashPolySphere2Param_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      *(*&v14[2 * v15] + 36LL) = *(Interface + v33 + 32);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v15];
+      *(v41 + 44) = Byte2UInt32(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *&v14[2 * v15];
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *&v14[2 * v15];
+      *(v50 + 56) = Byte2Float(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *&v14[2 * v15];
+      *(v53 + 60) = Byte2UInt32(Interface, v51);
+      *pos += 4;
+      v55 = *&v14[2 * v15++];
+      *(v55 + 64) = *(v55 + 32);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a3f530
 void effPCPFlashPolySphere3Param_t__pClone(effPCPFlashPolySphere3Param_t *this, effPCPFlashPolySphere3Param_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolySphere3Param_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolySphere3Param_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  struct System_UInt32_array *reserve;
+  struct System_UInt32_array *v18;
+  s32 v19;
+  s64 v22;
+  s64 v23;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v22 = 0;
+  v23 = 0;
+  sub_854690(&v22, x, y, z, w);
+  v12 = *&v23;
+  v11 = *(&v23 + 1);
+  *&v7->pos.x = v22;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->interval = this->interval;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width = this->width;
+  (*param)->width_r = this->width_r;
+  (*param)->radius = this->radius;
+  (*param)->rotate = this->rotate;
+  (*param)->move = this->move;
+  (*param)->move_s = this->move_s;
+  (*param)->move_a = this->move_a;
+  v16 = 8;
+  (*param)->blend = this->blend;
+  do
+  {
+    reserve = this->reserve;
+    v18 = (*param)->reserve;
+    v19 = *(&reserve->obj.klass + v16);
+    *(&v18->obj.klass + v16++) = v19;
+  }
+  while (v16 != 40);
 }
 
 // 0x1a3ec90
 effPCPFlashPolySphere3Param_t **effPCPFlashPolySphere3Param_t__pCopy(effPCPFlashPolySphere3Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPFlashPolySphere3Param_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v15;
+  Il2CppClass **v17;
+  char *v18;
+  s32 v19;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  u64 v80;
+  s64 v81;
+  s64 v83;
+  s64 v84;
+  s32 v85;
+  u32 v86;
+  u64 v90[3];
+
+  v8 = NewSpecific(effPCPFlashPolySphere3Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v90);
+      if ((v90[0] & 1) != 0)
+        v11 = v90[2];
+      else
+        v11 = v90 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v15 = Allocate(effPCPFlashPolySphere3Param_t);
+      v15[13] = NewSpecific(uint, 0x20u);
+      _ctor(v15, 0);
+      v17 = &v8->obj.klass + v13;
+      v17[4] = v15;
+      v18 = (v17 + 4);
+      v19 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v19);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v18;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v18;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v18;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v18;
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      *(*v18 + 36LL) = *(Interface + v34 + 32);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v18;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v18;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v18;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v18;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v18;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v18;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v18;
+      *(v57 + 64) = Byte2Float(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v18;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v18;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v18;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v18;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v18;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v18;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v18;
+      *(v78 + 92) = Byte2UInt32(Interface, v76);
+      v80 = 0;
+      *pos += 4;
+      if (v13 >= *p_max_length)
+      {
+LABEL_65:
+      }
+      while (1)
+      {
+        v83 = *v18;
+        if (v80 == 32)
+          break;
+        v84 = *(v83 + 104);
+        v85 = *pos;
+        v86 = Byte2UInt32(Interface, v85);
+        v81 = v84 + 4 * v80++;
+        *(v81 + 32) = v86;
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_65;
+      }
+      *(v83 + 96) = *(v83 + 32);
+      ++v13;
+    }
+    while (v13 != max);
+  }
+  return v8;
 }
 
 // 0x1a3fe80
 void effPCPFlashPolySphereExpParam_t__pClone(effPCPFlashPolySphereExpParam_t *this, effPCPFlashPolySphereExpParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolySphereExpParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolySphereExpParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->scale_f = this->scale_f;
+  (*param)->interval = this->interval;
+  (*param)->fix = this->fix;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width_in = this->width_in;
+  (*param)->width_out = this->width_out;
+  (*param)->radius = this->radius;
+  (*param)->rotate = this->rotate;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a3f740
 effPCPFlashPolySphereExpParam_t **effPCPFlashPolySphereExpParam_t__pCopy(effPCPFlashPolySphereExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPFlashPolySphereExpParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  u64 v78[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolySphereExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v78);
+      if ((v78[0] & 1) != 0)
+        v12 = v78[2];
+      else
+        v12 = v78 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPFlashPolySphereExpParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      *(*v20 + 36LL) = *(Interface + v34 + 32);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      *(*v20 + 52LL) = *(Interface + v46 + 32);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2UInt32(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2UInt32(Interface, v73);
+      *pos += 4;
+      ++v14;
+      *(*v20 + 92LL) = *(*v20 + 32LL);
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a40670
 void effPCPFlashPolySphereParam_t__pClone(effPCPFlashPolySphereParam_t *this, effPCPFlashPolySphereParam_t **param) {
-    CutRaitoGet(0, 0);
+  f32 x;
+  f32 y;
+  effPCPFlashPolySphereParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v11;
+  f32 v12;
+  effPCPFlashPolySphereParam_t_o *v13;
+  u32 number;
+  u32 numberO;
+  s64 v16;
+  s64 v17;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v16 = 0;
+  v17 = 0;
+  sub_854690(&v16, x, y, z, w);
+  v12 = *&v17;
+  v11 = *(&v17 + 1);
+  *&v7->pos.x = v16;
+  v7->pos.z = v12;
+  v7->pos.w = v11;
+  (*param)->numberO = this->numberO;
+  v13 = *param;
+  number = this->number;
+  numberO = this->numberO;
+  v13->number = CutRaitoGet(number, numberO);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->scale_f = this->scale_f;
+  (*param)->interval = this->interval;
+  (*param)->abgr_in = this->abgr_in;
+  (*param)->abgr_out = this->abgr_out;
+  (*param)->width_in = this->width_in;
+  (*param)->width_out = this->width_out;
+  (*param)->radius = this->radius;
+  (*param)->rotate = this->rotate;
+  (*param)->blend = this->blend;
 }
 
 // 0x1a40000
 effPCPFlashPolySphereParam_t **effPCPFlashPolySphereParam_t__pCopy(effPCPFlashPolySphereParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s64 v67;
+  u64 v69[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPFlashPolySphereParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v69);
+      if ((v69[0] & 1) != 0)
+        v12 = v69[2];
+      else
+        v12 = v69 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPFlashPolySphereParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      *(*&v14[2 * v15] + 36LL) = *(Interface + v33 + 32);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v15];
+      *(v41 + 44) = Byte2UInt32(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *&v14[2 * v15];
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *&v14[2 * v15];
+      *(v50 + 56) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *&v14[2 * v15];
+      *(v53 + 60) = Byte2Float(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *&v14[2 * v15];
+      *(v56 + 64) = Byte2Float(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *&v14[2 * v15];
+      *(v59 + 68) = Byte2Float(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *&v14[2 * v15];
+      *(v62 + 72) = Byte2Float(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *&v14[2 * v15];
+      *(v65 + 76) = Byte2UInt32(Interface, v63);
+      *pos += 4;
+      v67 = *&v14[2 * v15++];
+      *(v67 + 80) = *(v67 + 32);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a40ed0
 void effPCPHamaCardScatterParam_t__pClone(effPCPHamaCardScatterParam_t *this, effPCPHamaCardScatterParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPHamaCardScatterParam_t_o *v5;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  s64 v12;
+  f32 v13;
+  f32 v14;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v5 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v12 = 0;
+  sub_854690(&v12, x, y, z, w);
+  v11 = v13;
+  v10 = v14;
+  *&v5->pos.x = v12;
+  v5->pos.z = v11;
+  v5->pos.w = v10;
+  (*param)->tex_w = this->tex_w;
+  (*param)->tex_h = this->tex_h;
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->number = this->number;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->life = this->life;
+  (*param)->wait = this->wait;
+  (*param)->drop_s = this->drop_s;
+  (*param)->drop_a = this->drop_a;
+  (*param)->attach = this->attach;
+  (*param)->attach_f = this->attach_f;
+  (*param)->attach_i = this->attach_i;
 }
 
 // 0x1a407d0
 effPCPHamaCardScatterParam_t **effPCPHamaCardScatterParam_t__pCopy(effPCPHamaCardScatterParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  u64 *v15;
+  s64 v17;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s32 v69;
+  s64 v71;
+  s32 v72;
+  s64 v74;
+  u64 v76[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPHamaCardScatterParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v76);
+      if ((v76[0] & 1) != 0)
+        v12 = v76[2];
+      else
+        v12 = v76 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      v15 = Allocate(effPCPHamaCardScatterParam_t);
+      _ctor(v15, 0);
+      v17 = &v9[2 * v14 + 8];
+      *v17 = v15;
+      v18 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *v17;
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v17;
+      *(v26 + 16) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v17;
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v17;
+      *(v32 + 32) = Byte2Float(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *v17;
+      *(v35 + 36) = Byte2Float(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *v17;
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      *(*v17 + 44LL) = *(Interface + v39 + 32);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *v17;
+      *(v44 + 48) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *v17;
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v17;
+      *(v50 + 56) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v17;
+      *(v53 + 60) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v17;
+      *(v56 + 64) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v17;
+      *(v59 + 68) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v17;
+      *(v62 + 72) = Byte2Float(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v17;
+      *(v65 + 76) = Byte2Float(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      *(*v17 + 80LL) = *(Interface + v66 + 32);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v17;
+      *(v71 + 84) = Byte2UInt32(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v17;
+      *(v74 + 88) = Byte2UInt32(Interface, v72);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a41870
 void effPCPHamaCardSphereParam_t__pClone(effPCPHamaCardSphereParam_t *this, effPCPHamaCardSphereParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPHamaCardSphereParam_t_o *v5;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  s64 v12;
+  f32 v13;
+  f32 v14;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v5 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v12 = 0;
+  sub_854690(&v12, x, y, z, w);
+  v11 = v13;
+  v10 = v14;
+  *&v5->pos.x = v12;
+  v5->pos.z = v11;
+  v5->pos.w = v10;
+  (*param)->tex_w = this->tex_w;
+  (*param)->tex_h = this->tex_h;
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->number = this->number;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->life = this->life;
+  (*param)->wait = this->wait;
+  (*param)->roll_s = this->roll_s;
+  (*param)->roll_a = this->roll_a;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_e = this->radius_e;
+  (*param)->radius_s_r = this->radius_s_r;
+  (*param)->radius_e_r = this->radius_e_r;
+  (*param)->vibrate = this->vibrate;
+  (*param)->vib_power = this->vib_power;
+  (*param)->attach = this->attach;
+  (*param)->attach_f = this->attach_f;
+  (*param)->attach_i = this->attach_i;
 }
 
 // 0x1a40fe0
 effPCPHamaCardSphereParam_t **effPCPHamaCardSphereParam_t__pCopy(effPCPHamaCardSphereParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPHamaCardSphereParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  s32 v79;
+  s32 v82;
+  s64 v84;
+  s32 v85;
+  s32 v88;
+  s64 v90;
+  s32 v91;
+  s64 v93;
+  u64 v95[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPHamaCardSphereParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v95);
+      if ((v95[0] & 1) != 0)
+        v12 = v95[2];
+      else
+        v12 = v95 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPHamaCardSphereParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2Float(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *v20;
+      *(v36 + 36) = Byte2Float(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      *(*v20 + 44LL) = *(Interface + v40 + 32);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2UInt32(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2Float(Interface, v76);
+      v79 = *pos + 4;
+      *pos = v79;
+      *(*v20 + 96LL) = *(Interface + v79 + 32);
+      v82 = *pos + 4;
+      *pos = v82;
+      v84 = *v20;
+      *(v84 + 100) = Byte2Float(Interface, v82);
+      v85 = *pos + 4;
+      *pos = v85;
+      *(*v20 + 104LL) = *(Interface + v85 + 32);
+      v88 = *pos + 4;
+      *pos = v88;
+      v90 = *v20;
+      *(v90 + 108) = Byte2UInt32(Interface, v88);
+      v91 = *pos + 4;
+      *pos = v91;
+      v93 = *v20;
+      *(v93 + 112) = Byte2UInt32(Interface, v91);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a42360
 void effPCPHamaCardSpiralParam_t__pClone(effPCPHamaCardSpiralParam_t *this, effPCPHamaCardSpiralParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPHamaCardSpiralParam_t_o *v5;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  s64 v12;
+  f32 v13;
+  f32 v14;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v5 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v12 = 0;
+  sub_854690(&v12, x, y, z, w);
+  v11 = v13;
+  v10 = v14;
+  *&v5->pos.x = v12;
+  v5->pos.z = v11;
+  v5->pos.w = v10;
+  (*param)->tex_w = this->tex_w;
+  (*param)->tex_h = this->tex_h;
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->number = this->number;
+  (*param)->simu_num = this->simu_num;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->life = this->life;
+  (*param)->wait = this->wait;
+  (*param)->up_s = this->up_s;
+  (*param)->up_a = this->up_a;
+  (*param)->roll_s = this->roll_s;
+  (*param)->roll_a = this->roll_a;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_e = this->radius_e;
+  (*param)->radius_s_r = this->radius_s_r;
+  (*param)->radius_e_r = this->radius_e_r;
+  (*param)->up_r = this->up_r;
+  (*param)->vibrate = this->vibrate;
+  (*param)->vib_power = this->vib_power;
+  (*param)->attach = this->attach;
+  (*param)->attach_f = this->attach_f;
+  (*param)->attach_i = this->attach_i;
 }
 
 // 0x1a419d0
 effPCPHamaCardSpiralParam_t **effPCPHamaCardSpiralParam_t__pCopy(effPCPHamaCardSpiralParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPHamaCardSpiralParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s32 v43;
+  s64 v45;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  s32 v79;
+  s64 v81;
+  s32 v82;
+  s64 v84;
+  s32 v85;
+  s64 v87;
+  s32 v88;
+  s64 v90;
+  s32 v91;
+  s32 v94;
+  s64 v96;
+  s32 v97;
+  s32 v100;
+  s64 v102;
+  s32 v103;
+  s64 v105;
+  u64 v107[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPHamaCardSpiralParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v107);
+      if ((v107[0] & 1) != 0)
+        v12 = v107[2];
+      else
+        v12 = v107 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPHamaCardSpiralParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2Float(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *v20;
+      *(v36 + 36) = Byte2Float(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      *(*v20 + 44LL) = *(Interface + v40 + 32);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 48) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2UInt32(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2UInt32(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2Float(Interface, v76);
+      v79 = *pos + 4;
+      *pos = v79;
+      v81 = *v20;
+      *(v81 + 96) = Byte2Float(Interface, v79);
+      v82 = *pos + 4;
+      *pos = v82;
+      v84 = *v20;
+      *(v84 + 100) = Byte2Float(Interface, v82);
+      v85 = *pos + 4;
+      *pos = v85;
+      v87 = *v20;
+      *(v87 + 104) = Byte2Float(Interface, v85);
+      v88 = *pos + 4;
+      *pos = v88;
+      v90 = *v20;
+      *(v90 + 108) = Byte2Float(Interface, v88);
+      v91 = *pos + 4;
+      *pos = v91;
+      *(*v20 + 112LL) = *(Interface + v91 + 32);
+      v94 = *pos + 4;
+      *pos = v94;
+      v96 = *v20;
+      *(v96 + 116) = Byte2Float(Interface, v94);
+      v97 = *pos + 4;
+      *pos = v97;
+      *(*v20 + 120LL) = *(Interface + v97 + 32);
+      v100 = *pos + 4;
+      *pos = v100;
+      v102 = *v20;
+      *(v102 + 124) = Byte2UInt32(Interface, v100);
+      v103 = *pos + 4;
+      *pos = v103;
+      v105 = *v20;
+      *(v105 + 128) = Byte2UInt32(Interface, v103);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a428b0
 void effPCPHelperBEDParam_t__pClone(effPCPHelperBEDParam_t *this, effPCPHelperBEDParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPHelperBEDParam_t_o *v5;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  s64 v12;
+  f32 v13;
+  f32 v14;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v5 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v12 = 0;
+  sub_854690(&v12, x, y, z, w);
+  v11 = v13;
+  v10 = v14;
+  *&v5->pos.x = v12;
+  v5->pos.z = v11;
+  v5->pos.w = v10;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->speed = this->speed;
 }
 
 // 0x1a424f0
 effPCPHelperBEDParam_t **effPCPHelperBEDParam_t__pCopy(effPCPHelperBEDParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  u64 v40[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPHelperBEDParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v40);
+      if ((v40[0] & 1) != 0)
+        v12 = v40[2];
+      else
+        v12 = v40 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPHelperBEDParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *&v14[2 * v15];
+      *(v35 + 36) = Byte2UInt32(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2Float(Interface, v36);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a42930
 effPCPMultiBlurExp2Param_t **effPCPMultiBlurExp2Param_t__pCopy(effPCPMultiBlurExp2Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_PartialMultiBlurParam_t__SetData(0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v18;
+  s64 v20;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s64 v38;
+  u64 *v39;
+  u64 v42[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPMultiBlurExp2Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v42);
+      if ((v42[0] & 1) != 0)
+        v12 = v42[2];
+      else
+        v12 = v42 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v18 = Allocate(effPCPMultiBlurExp2Param_t);
+      _ctor(v18, 0);
+      *&v14[2 * v15] = v18;
+      v20 = *pos;
+      *(v18 + 16) = *(Interface + v20 + 32);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v15];
+      *(v24 + 20) = Byte2UInt32(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v15];
+      *(v27 + 24) = Byte2UInt32(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v15];
+      *(v30 + 28) = Byte2UInt32(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *&v14[2 * v15];
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *&v14[2 * v15];
+      *(v36 + 36) = Byte2UInt32(Interface, v34);
+      *pos += 4;
+      v38 = *&v14[2 * v15];
+      v39 = Allocate(dds3Effect_PartialMultiBlurParam_t);
+      dds3Effect_PartialMultiBlurParam_t___ctor(v39);
+      *(v38 + 40) = v39;
+      dds3Effect_PartialMultiBlurParam_t__SetData(*(*&v14[2 * v15++] + 40LL), Interface, pos, 0);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a42d40
@@ -5367,101 +11843,1978 @@ void effPCPMultiBlurExpParam_t__pCopy(effPCPMultiBlurExpParam_t *this, u8 **byte
 
 // 0x1a42ef0
 effPCPMultiFilterExpParam_t **effPCPMultiFilterExpParam_t__pCopy(effPCPMultiFilterExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_PartialMultiFilterParam_t__SetData(0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v18;
+  s64 v20;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s64 v38;
+  u64 *v39;
+  u64 v42[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPMultiFilterExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v42);
+      if ((v42[0] & 1) != 0)
+        v12 = v42[2];
+      else
+        v12 = v42 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v18 = Allocate(effPCPMultiFilterExpParam_t);
+      _ctor(v18, 0);
+      *&v14[2 * v15] = v18;
+      v20 = *pos;
+      *(v18 + 16) = *(Interface + v20 + 32);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v15];
+      *(v24 + 20) = Byte2UInt32(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v15];
+      *(v27 + 24) = Byte2UInt32(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v15];
+      *(v30 + 28) = Byte2UInt32(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *&v14[2 * v15];
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *&v14[2 * v15];
+      *(v36 + 36) = Byte2UInt32(Interface, v34);
+      *pos += 4;
+      v38 = *&v14[2 * v15];
+      v39 = Allocate(dds3Effect_PartialMultiFilterParam_t);
+      dds3Effect_PartialMultiFilterParam_t___ctor(v39);
+      *(v38 + 40) = v39;
+      dds3Effect_PartialMultiFilterParam_t__SetData(*(*&v14[2 * v15++] + 40LL), Interface, pos, 0);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a43300
 effPCPMuzzleFlashParam_t **effPCPMuzzleFlashParam_t__pCopy(effPCPMuzzleFlashParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  u64 v25[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPMuzzleFlashParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v25);
+      if ((v25[0] & 1) != 0)
+        v12 = v25[2];
+      else
+        v12 = v25 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPMuzzleFlashParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a43e20
 void effPCPNeedleSpiralParam_t__pClone(effPCPNeedleSpiralParam_t *this, effPCPNeedleSpiralParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPNeedleSpiralParam_t_o *v5;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  struct System_UInt32_array *n_vc;
+  struct System_UInt32_array *v13;
+  u32 v14;
+  struct System_UInt32_array *v15;
+  struct System_UInt32_array *v16;
+  u32 v18;
+  s64 v22;
+  s64 v23;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v5 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v22 = 0;
+  v23 = 0;
+  sub_854690(&v22, x, y, z, w);
+  v11 = *&v23;
+  v10 = *(&v23 + 1);
+  *&v5->pos.x = v22;
+  v5->pos.z = v11;
+  v5->pos.w = v10;
+  (*param)->number = this->number;
+  (*param)->life = this->life;
+  (*param)->blend = this->blend;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->timing = this->timing;
+  (*param)->speed = this->speed;
+  (*param)->accele = this->accele;
+  (*param)->radius = this->radius;
+  (*param)->radius_r = this->radius_r;
+  (*param)->roll_s = this->roll_s;
+  (*param)->n_split = this->n_split;
+  (*param)->n_radius = this->n_radius;
+  (*param)->n_length = this->n_length;
+  n_vc = this->n_vc;
+  v13 = (*param)->n_vc;
+  v14 = n_vc->m_Items[0];
+  v13->m_Items[0] = v14;
+  v15 = this->n_vc;
+  v16 = (*param)->n_vc;
+  v18 = v15->m_Items[1];
+  v16->m_Items[1] = v18;
+  (*param)->t_width = this->t_width;
+  (*param)->t_length = this->t_length;
+  (*param)->t_abgr = this->t_abgr;
 }
 
 // 0x1a43580
 effPCPNeedleSpiralParam_t **effPCPNeedleSpiralParam_t__pCopy(effPCPNeedleSpiralParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  Il2CppClass *v8;
+  s64 *Interface;
+  char *v10;
+  s64 *v11;
+  u64 v12;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v15;
+  s64 v18;
+  s32 v19;
+  s32 v20;
+  s64 v22;
+  s32 v23;
+  s64 v25;
+  s32 v26;
+  s64 v28;
+  s32 v29;
+  s64 v31;
+  s32 v32;
+  s64 v34;
+  s32 v35;
+  s64 v37;
+  s32 v38;
+  s64 v40;
+  s32 v41;
+  s64 v43;
+  s32 v44;
+  s64 v46;
+  s32 v47;
+  s64 v49;
+  s32 v50;
+  s64 v52;
+  s32 v53;
+  s64 v55;
+  s32 v56;
+  s64 v58;
+  s32 v59;
+  s64 v61;
+  s32 v62;
+  s64 v64;
+  s32 v65;
+  s64 v67;
+  s32 v68;
+  s64 v70;
+  s32 v71;
+  s64 v73;
+  u32 v74;
+  s32 v76;
+  s64 v78;
+  u32 v79;
+  s32 v81;
+  s64 v83;
+  s32 v84;
+  s64 v86;
+  s32 v87;
+  s64 v89;
+  effPCPNeedleSpiralParam_t_array *v91;
+  u64 v92[3];
+
+  v91 = NewSpecific(effPCPNeedleSpiralParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v8, v92);
+      if ((v92[0] & 1) != 0)
+        v10 = v92[2];
+      else
+        v10 = v92 + 1;
+      v11 = sub_8C4940(v10);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v12 = 0;
+    p_max_length = &v91->max_length;
+    do
+    {
+      v15 = Allocate(effPCPNeedleSpiralParam_t);
+      v15[11] = NewSpecific(uint, 2u);
+      _ctor(v15, 0);
+      v18 = &v91->m_Items[v12];
+      *v18 = v15;
+      v19 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v19);
+      v20 = *pos + 4;
+      *pos = v20;
+      v22 = *v18;
+      *(v22 + 20) = Byte2Float(Interface, v20);
+      v23 = *pos + 4;
+      *pos = v23;
+      v25 = *v18;
+      *(v25 + 24) = Byte2Float(Interface, v23);
+      v26 = *pos + 4;
+      *pos = v26;
+      v28 = *v18;
+      *(v28 + 28) = Byte2Float(Interface, v26);
+      v29 = *pos + 4;
+      *pos = v29;
+      v31 = *v18;
+      *(v31 + 32) = Byte2UInt32(Interface, v29);
+      v32 = *pos + 4;
+      *pos = v32;
+      v34 = *v18;
+      *(v34 + 36) = Byte2UInt32(Interface, v32);
+      v35 = *pos + 4;
+      *pos = v35;
+      v37 = *v18;
+      *(v37 + 40) = Byte2UInt32(Interface, v35);
+      v38 = *pos + 4;
+      *pos = v38;
+      v40 = *v18;
+      *(v40 + 44) = Byte2UInt32(Interface, v38);
+      v41 = *pos + 4;
+      *pos = v41;
+      v43 = *v18;
+      *(v43 + 48) = Byte2UInt32(Interface, v41);
+      v44 = *pos + 4;
+      *pos = v44;
+      v46 = *v18;
+      *(v46 + 52) = Byte2UInt32(Interface, v44);
+      v47 = *pos + 4;
+      *pos = v47;
+      v49 = *v18;
+      *(v49 + 56) = Byte2Float(Interface, v47);
+      v50 = *pos + 4;
+      *pos = v50;
+      v52 = *v18;
+      *(v52 + 60) = Byte2Float(Interface, v50);
+      v53 = *pos + 4;
+      *pos = v53;
+      v55 = *v18;
+      *(v55 + 64) = Byte2Float(Interface, v53);
+      v56 = *pos + 4;
+      *pos = v56;
+      v58 = *v18;
+      *(v58 + 68) = Byte2Float(Interface, v56);
+      v59 = *pos + 4;
+      *pos = v59;
+      v61 = *v18;
+      *(v61 + 72) = Byte2Float(Interface, v59);
+      v62 = *pos + 4;
+      *pos = v62;
+      v64 = *v18;
+      *(v64 + 76) = Byte2UInt32(Interface, v62);
+      v65 = *pos + 4;
+      *pos = v65;
+      v67 = *v18;
+      *(v67 + 80) = Byte2Float(Interface, v65);
+      v68 = *pos + 4;
+      *pos = v68;
+      v70 = *v18;
+      *(v70 + 84) = Byte2Float(Interface, v68);
+      v71 = *pos + 4;
+      *pos = v71;
+      v73 = *(*v18 + 88LL);
+      v74 = Byte2UInt32(Interface, v71);
+      *(v73 + 32) = v74;
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *(*v18 + 88LL);
+      v79 = Byte2UInt32(Interface, v76);
+      *(v78 + 36) = v79;
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v18;
+      *(v83 + 96) = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v18;
+      *(v86 + 100) = Byte2UInt32(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v18;
+      *(v89 + 104) = Byte2UInt32(Interface, v87);
+      ++v12;
+      *pos += 4;
+    }
+    while (max != v12);
+  }
+  return v91;
 }
 
 // 0x1a43ff0
 effPCPRadiateBEDParam_t **effPCPRadiateBEDParam_t__pCopy(effPCPRadiateBEDParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPRadiateBEDParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v15;
+  Il2CppClass **v17;
+  char *v18;
+  s32 v19;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v32;
+  s64 v33;
+  s64 v35;
+  s32 v36;
+  s64 v37;
+  s32 v38;
+  s64 v40;
+  s32 v41;
+  s64 v43;
+  s32 v44;
+  s64 v46;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s64 v68;
+  s32 v69;
+  s64 v71;
+  s32 v72;
+  s64 v74;
+  s32 v75;
+  s64 v77;
+  s32 v78;
+  s64 v80;
+  s32 v81;
+  s64 v83;
+  s64 v85;
+  u64 v86;
+  s32 v89;
+  s64 v90;
+  u32 v91;
+  s64 v93;
+  u64 v95[3];
+
+  v8 = NewSpecific(effPCPRadiateBEDParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v95);
+      if ((v95[0] & 1) != 0)
+        v11 = v95[2];
+      else
+        v11 = v95 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v15 = Allocate(effPCPRadiateBEDParam_t);
+      v15[19] = NewSpecific(uint, 0x20u);
+      _ctor(v15, 0);
+      v17 = &v8->obj.klass + v13;
+      v17[4] = v15;
+      v18 = (v17 + 4);
+      v19 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v19);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v18;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v18;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v18;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v32 = 0;
+      *pos += 4;
+      if (v13 >= *p_max_length)
+      {
+LABEL_31:
+      }
+      while (1)
+      {
+        v35 = *v18;
+        if (v32 == 4)
+          break;
+        v36 = *pos;
+        v37 = v35 + 32;
+        Byte2Float(Interface, v36);
+        sub_19FFD30(v37, v32, 0);
+        v38 = *pos + 4;
+        *pos = v38;
+        v40 = *v18 + 32LL;
+        Byte2Float(Interface, v38);
+        sub_19FFD30(v40, v32, 1);
+        v41 = *pos + 4;
+        *pos = v41;
+        v43 = *v18 + 32LL;
+        Byte2Float(Interface, v41);
+        sub_19FFD30(v43, v32, 2);
+        v44 = *pos + 4;
+        *pos = v44;
+        v33 = *v18 + 32LL;
+        Byte2Float(Interface, v44);
+        sub_19FFD30(v33, v32++, 3);
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_31;
+      }
+      v46 = *pos;
+      *(v35 + 96) = *(Interface + v46 + 32);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v18;
+      *(v50 + 100) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v18;
+      *(v53 + 104) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v18;
+      *(v56 + 108) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v18;
+      *(v59 + 112) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v18;
+      *(v62 + 116) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v18;
+      *(v65 + 120) = Byte2Float(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v18;
+      *(v68 + 124) = Byte2Float(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v18;
+      *(v71 + 128) = Byte2Float(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v18;
+      *(v74 + 132) = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v18;
+      *(v77 + 136) = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v18;
+      *(v80 + 140) = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v18;
+      *(v83 + 144) = Byte2Float(Interface, v81);
+      *pos += 4;
+      v85 = *v18;
+      v86 = 0;
+      *(v85 + 152) = NewSpecific(uint, 0x20u);
+      do
+      {
+        v89 = *pos;
+        v90 = *(*v18 + 152LL);
+        v91 = Byte2UInt32(Interface, v89);
+        v93 = v90 + 4 * v86++;
+        *(v93 + 32) = v91;
+        *pos += 4;
+      }
+      while (v86 != 32);
+      ++v13;
+    }
+    while (v13 != max);
+  }
+  return v8;
 }
 
 // 0x1a44950
 effPCPRadiateTBParam_t **effPCPRadiateTBParam_t__pCopy(effPCPRadiateTBParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  u64 *v60;
+  effPCP_ThunderPolyParam_t_o *v61;
+  s32 v62;
+  s64 v65;
+  u64 v67[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPRadiateTBParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v67);
+      if ((v67[0] & 1) != 0)
+        v12 = v67[2];
+      else
+        v12 = v67 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPRadiateTBParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      *(*&v14[2 * v15] + 32LL) = *(Interface + v30 + 32);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *&v14[2 * v15];
+      *(v35 + 36) = Byte2UInt32(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *&v14[2 * v15];
+      *(v41 + 44) = Byte2UInt32(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *&v14[2 * v15];
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *&v14[2 * v15];
+      *(v50 + 56) = Byte2Float(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *&v14[2 * v15];
+      *(v53 + 60) = Byte2Float(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *&v14[2 * v15];
+      *(v56 + 64) = Byte2Float(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *&v14[2 * v15];
+      *(v59 + 68) = Byte2Float(Interface, v57);
+      *pos += 4;
+      v60 = Allocate(effPCP_ThunderPolyParam_t);
+      _ctor(v60, 0);
+      v65 = *&v14[2 * v15++];
+      *(v65 + 72) = effPCP_ThunderPolyParam_t__pCopy(v61, Interface, pos, v62);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a44f40
 effPCPRadiateThunderAttach_t **effPCPRadiateThunderAttach_t__pCopy(effPCPRadiateThunderAttach_t *this, void *pData, s32 *pos, s32 max) {
-    return 0;
+  s64 v8;
+  s64 *v9;
+  u32 *v10;
+  Il2CppClass *v11;
+  s64 *Interface;
+  char *v13;
+  s64 *v14;
+  u64 v15;
+  u32 *v16;
+  Il2CppObject *v18;
+  s64 *v20;
+  s64 v21;
+  Il2CppClass *klass;
+  char v24;
+  s32 v26;
+  s64 v28;
+  s32 v31;
+  s64 v33;
+  s32 v36;
+  s64 v38;
+  u64 v42[3];
+
+  v8 = max;
+  v9 = &byte;
+  v10 = NewSpecific(effPCPRadiateThunderAttach_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v11, v42);
+      if ((v42[0] & 1) != 0)
+        v13 = v42[2];
+      else
+        v13 = v42 + 1;
+      v14 = sub_8C4940(v13);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v15 = 0;
+    v16 = v10 + 8;
+    do
+    {
+      v18 = Allocate(effPCPRadiateThunderAttach_t);
+      v18[1].klass = NewSpecific(*v9, 4u);
+      _ctor(v18, 0);
+      v20 = v9;
+      *&v16[2 * v15] = v18;
+      v21 = *pos;
+      klass = v18[1].klass;
+      v24 = *(Interface + v21 + 32);
+      LOBYTE(klass->_1.byval_arg.data) = v24;
+      v26 = *pos + 1;
+      *pos = v26;
+      v28 = *(*&v16[2 * v15] + 16LL);
+      *(v28 + 33) = *(Interface + v26 + 32);
+      v31 = *pos + 1;
+      *pos = v31;
+      v33 = *(*&v16[2 * v15] + 16LL);
+      *(v33 + 34) = *(Interface + v31 + 32);
+      v36 = *pos + 1;
+      *pos = v36;
+      v38 = *(*&v16[2 * v15] + 16LL);
+      *(v38 + 35) = *(Interface + v36 + 32);
+      ++v15;
+      v9 = v20;
+      ++*pos;
+    }
+    while (v8 != v15);
+  }
+  return v10;
 }
 
 // 0x1a45e70
 void effPCPRadiateThunderParam_t__pClone(effPCPRadiateThunderParam_t *this, effPCPRadiateThunderParam_t **param) {
-    effPCP_ThunderPolyParam_t__pClone(0, 0);
+  f32 x;
+  f32 y;
+  effPCPRadiateThunderParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  struct UnityEngine_Matrix4x4_o *p_matrix;
+  struct UnityEngine_Matrix4x4_o *v13;
+  struct UnityEngine_Matrix4x4_o *v14;
+  struct UnityEngine_Matrix4x4_o *v15;
+  struct UnityEngine_Matrix4x4_o *v16;
+  struct UnityEngine_Matrix4x4_o *v17;
+  struct UnityEngine_Matrix4x4_o *v18;
+  struct UnityEngine_Matrix4x4_o *v19;
+  struct UnityEngine_Matrix4x4_o *v20;
+  struct UnityEngine_Matrix4x4_o *v21;
+  struct UnityEngine_Matrix4x4_o *v22;
+  struct UnityEngine_Matrix4x4_o *v23;
+  struct UnityEngine_Matrix4x4_o *v24;
+  struct UnityEngine_Matrix4x4_o *v25;
+  struct UnityEngine_Matrix4x4_o *v26;
+  struct UnityEngine_Matrix4x4_o *v27;
+  effPCPRadiateThunderParam_t_o *v28;
+  u64 *v29;
+  effPCPRadiateThunderParam_t_o *v31;
+  s64 i;
+  struct System_UInt32_array *reserve;
+  struct System_UInt32_array *v34;
+  s32 v35;
+  s64 v38;
+  s64 v39;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v38 = 0;
+  v39 = 0;
+  sub_854690(&v38, x, y, z, w);
+  v11 = *&v39;
+  v10 = *(&v39 + 1);
+  *&v7->pos.x = v38;
+  v7->pos.z = v11;
+  v7->pos.w = v10;
+  p_matrix = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 0);
+  sub_19FFD30(p_matrix, 0, 0);
+  v13 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 1);
+  sub_19FFD30(v13, 0, 1);
+  v14 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 2);
+  sub_19FFD30(v14, 0, 2);
+  v15 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 3);
+  sub_19FFD30(v15, 0, 3);
+  v16 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 0);
+  sub_19FFD30(v16, 1, 0);
+  v17 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 1);
+  sub_19FFD30(v17, 1, 1);
+  v18 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 2);
+  sub_19FFD30(v18, 1, 2);
+  v19 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 3);
+  sub_19FFD30(v19, 1, 3);
+  v20 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 0);
+  sub_19FFD30(v20, 2, 0);
+  v21 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 1);
+  sub_19FFD30(v21, 2, 1);
+  v22 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 2);
+  sub_19FFD30(v22, 2, 2);
+  v23 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 3);
+  sub_19FFD30(v23, 2, 3);
+  v24 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 0);
+  sub_19FFD30(v24, 3, 0);
+  v25 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 1);
+  sub_19FFD30(v25, 3, 1);
+  v26 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 2);
+  sub_19FFD30(v26, 3, 2);
+  v27 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 3);
+  sub_19FFD30(v27, 3, 3);
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->number = this->number;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_e = this->radius_e;
+  (*param)->radius_s_r = this->radius_s_r;
+  (*param)->radius_e_r = this->radius_e_r;
+  (*param)->radian_s = this->radian_s;
+  (*param)->radian_a = this->radian_a;
+  (*param)->radian_r = this->radian_r;
+  (*param)->spread_s = this->spread_s;
+  (*param)->spread_e = this->spread_e;
+  (*param)->attach = this->attach;
+  v28 = *param;
+  v29 = Allocate(effPCP_ThunderPolyParam_t);
+  _ctor(v29, 0);
+  v28->ThunderParam = v29;
+  effPCP_ThunderPolyParam_t__pClone(this->ThunderParam, &(*param)->ThunderParam);
+  v31 = *param;
+  v31->reserve = NewSpecific(uint, 0x20u);
+  for (i = 8; i != 40; ++i)
+  {
+    reserve = this->reserve;
+    v34 = (*param)->reserve;
+    v35 = *(&reserve->obj.klass + i);
+    *(&v34->obj.klass + i) = v35;
+  }
 }
 
 // 0x1a45390
 effPCPRadiateThunderParam_t **effPCPRadiateThunderParam_t__pCopy(effPCPRadiateThunderParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    effPCPRadiateThunderAttach_t__pCopy(0, 0, 0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    return 0;
+  effPCPRadiateThunderParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v15;
+  Il2CppClass **v17;
+  char *v18;
+  s32 v19;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v32;
+  s64 v33;
+  s64 v35;
+  s32 v36;
+  s64 v37;
+  s32 v38;
+  s64 v40;
+  s32 v41;
+  s64 v43;
+  s32 v44;
+  s64 v46;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s64 v68;
+  s32 v69;
+  s64 v71;
+  s32 v72;
+  s64 v74;
+  s32 v75;
+  s64 v77;
+  s32 v78;
+  s64 v80;
+  s32 v81;
+  s64 v83;
+  s32 v84;
+  s64 v86;
+  s32 v87;
+  s64 v89;
+  Il2CppObject *v90;
+  effPCPRadiateThunderAttach_t_o *v91;
+  s64 v94;
+  effPCPRadiateThunderAttach_t_array *v95;
+  u64 *v97;
+  effPCP_ThunderPolyParam_t_o *v98;
+  s32 v99;
+  s64 v102;
+  s64 v104;
+  u64 v105;
+  s32 v108;
+  s64 v109;
+  u32 v110;
+  s64 v112;
+  s64 v114;
+  u64 v115[3];
+
+  v114 = max;
+  v8 = NewSpecific(effPCPRadiateThunderParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v115);
+      if ((v115[0] & 1) != 0)
+        v11 = v115[2];
+      else
+        v11 = v115 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v15 = Allocate(effPCPRadiateThunderParam_t);
+      v15[22] = NewSpecific(uint, 0x20u);
+      _ctor(v15, 0);
+      v17 = &v8->obj.klass + v13;
+      v17[4] = v15;
+      v18 = (v17 + 4);
+      v19 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v19);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v18;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v18;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v18;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v32 = 0;
+      *pos += 4;
+      if (v13 >= *p_max_length)
+      {
+LABEL_31:
+      }
+      while (1)
+      {
+        v35 = *v18;
+        if (v32 == 4)
+          break;
+        v36 = *pos;
+        v37 = v35 + 32;
+        Byte2Float(Interface, v36);
+        sub_19FFD30(v37, v32, 0);
+        v38 = *pos + 4;
+        *pos = v38;
+        v40 = *v18 + 32LL;
+        Byte2Float(Interface, v38);
+        sub_19FFD30(v40, v32, 1);
+        v41 = *pos + 4;
+        *pos = v41;
+        v43 = *v18 + 32LL;
+        Byte2Float(Interface, v41);
+        sub_19FFD30(v43, v32, 2);
+        v44 = *pos + 4;
+        *pos = v44;
+        v33 = *v18 + 32LL;
+        Byte2Float(Interface, v44);
+        sub_19FFD30(v33, v32++, 3);
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_31;
+      }
+      v46 = *pos;
+      *(v35 + 96) = *(Interface + v46 + 32);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v18;
+      *(v50 + 100) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v18;
+      *(v53 + 104) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v18;
+      *(v56 + 108) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v18;
+      *(v59 + 112) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v18;
+      *(v62 + 116) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v18;
+      *(v65 + 120) = Byte2Float(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v18;
+      *(v68 + 124) = Byte2Float(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v18;
+      *(v71 + 128) = Byte2Float(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v18;
+      *(v74 + 132) = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v18;
+      *(v77 + 136) = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v18;
+      *(v80 + 140) = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v18;
+      *(v83 + 144) = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v18;
+      *(v86 + 148) = Byte2Float(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v18;
+      *(v89 + 152) = Byte2Float(Interface, v87);
+      *pos += 4;
+      v90 = Allocate(effPCPRadiateThunderAttach_t);
+      v90[1].klass = NewSpecific(byte, 4u);
+      _ctor(v90, 0);
+      v94 = *v18;
+      v95 = effPCPRadiateThunderAttach_t__pCopy(v91, Interface, pos, 1);
+      *(v94 + 160) = v95->m_Items[0];
+      v97 = Allocate(effPCP_ThunderPolyParam_t);
+      _ctor(v97, 0);
+      v102 = *v18;
+      *(v102 + 168) = effPCP_ThunderPolyParam_t__pCopy(v98, Interface, pos, v99);
+      v104 = *v18;
+      v105 = 0;
+      *(v104 + 176) = NewSpecific(uint, 0x20u);
+      do
+      {
+        v108 = *pos;
+        v109 = *(*v18 + 176LL);
+        v110 = Byte2UInt32(Interface, v108);
+        v112 = v109 + 4 * v105++;
+        *(v112 + 32) = v110;
+        *pos += 4;
+      }
+      while (v105 != 32);
+      ++v13;
+    }
+    while (v13 != v114);
+  }
+  return v8;
 }
 
 // 0x1a46390
 effPCPRingPolyExp2Param_t **effPCPRingPolyExp2Param_t__pCopy(effPCPRingPolyExp2Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPRingPolyExp2Param_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s32 v37;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  s32 v79;
+  s64 v81;
+  s32 v82;
+  s64 v84;
+  s32 v85;
+  s64 v87;
+  u64 v89[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPRingPolyExp2Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v89);
+      if ((v89[0] & 1) != 0)
+        v12 = v89[2];
+      else
+        v12 = v89 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPRingPolyExp2Param_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 32) = Byte2Float(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *v20;
+      *(v36 + 36) = Byte2Float(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 40) = Byte2Float(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2Float(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      *(*v20 + 48LL) = *(Interface + v43 + 32);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2Float(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2UInt32(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2UInt32(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2UInt32(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2Float(Interface, v76);
+      v79 = *pos + 4;
+      *pos = v79;
+      v81 = *v20;
+      *(v81 + 96) = Byte2UInt32(Interface, v79);
+      v82 = *pos + 4;
+      *pos = v82;
+      v84 = *v20;
+      *(v84 + 100) = Byte2Float(Interface, v82);
+      v85 = *pos + 4;
+      *pos = v85;
+      v87 = *v20;
+      *(v87 + 104) = Byte2UInt32(Interface, v85);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a46b60
 effPCPRingPolyExpParam_t **effPCPRingPolyExpParam_t__pCopy(effPCPRingPolyExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCPRingPolyExpParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  u64 **v20;
+  s32 v21;
+  s32 v22;
+  u64 *v24;
+  s32 v25;
+  u64 *v27;
+  s32 v28;
+  u64 *v30;
+  s32 v31;
+  u64 *v33;
+  s32 v34;
+  u64 *v36;
+  s32 v37;
+  u64 *v39;
+  s32 v40;
+  u64 *v42;
+  s32 v43;
+  u64 *v45;
+  s32 v46;
+  u64 *v48;
+  s32 v49;
+  u64 *v51;
+  s32 v52;
+  u64 *v54;
+  s32 v55;
+  u64 *v57;
+  s32 v58;
+  u64 *v60;
+  s32 v61;
+  u64 *v63;
+  s32 v64;
+  u64 *v66;
+  s32 v67;
+  u64 *v69;
+  s32 v70;
+  u64 *v72;
+  s32 v73;
+  u64 *v75;
+  s32 v76;
+  u64 *v78;
+  u64 v80[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPRingPolyExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v80);
+      if ((v80[0] & 1) != 0)
+        v12 = v80[2];
+      else
+        v12 = v80 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCPRingPolyExpParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 5) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 6) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 7) = Byte2Float(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *v20;
+      *(v33 + 8) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *v20;
+      *(v36 + 9) = Byte2UInt32(Interface, v34);
+      v37 = *pos + 4;
+      *pos = v37;
+      v39 = *v20;
+      *(v39 + 10) = Byte2UInt32(Interface, v37);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 11) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      v45 = *v20;
+      *(v45 + 12) = Byte2UInt32(Interface, v43);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 13) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 14) = Byte2Float(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 15) = Byte2Float(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 16) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 17) = Byte2UInt32(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 18) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 19) = Byte2UInt32(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 20) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 21) = Byte2UInt32(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 22) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 23) = Byte2UInt32(Interface, v76);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a47250
 effPCPRippleBlurExpParam_t **effPCPRippleBlurExpParam_t__pCopy(effPCPRippleBlurExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    dds3Effect_RippleBlurParam_t__SetData(0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v18;
+  s64 v20;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v31;
+  s64 v33;
+  s32 v34;
+  s64 v36;
+  s64 v38;
+  u64 *v39;
+  u64 v42[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPRippleBlurExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v42);
+      if ((v42[0] & 1) != 0)
+        v12 = v42[2];
+      else
+        v12 = v42 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v18 = Allocate(effPCPRippleBlurExpParam_t);
+      _ctor(v18, 0);
+      *&v14[2 * v15] = v18;
+      v20 = *pos;
+      *(v18 + 16) = *(Interface + v20 + 32);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *&v14[2 * v15];
+      *(v24 + 20) = Byte2UInt32(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *&v14[2 * v15];
+      *(v27 + 24) = Byte2UInt32(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *&v14[2 * v15];
+      *(v30 + 28) = Byte2UInt32(Interface, v28);
+      v31 = *pos + 4;
+      *pos = v31;
+      v33 = *&v14[2 * v15];
+      *(v33 + 32) = Byte2UInt32(Interface, v31);
+      v34 = *pos + 4;
+      *pos = v34;
+      v36 = *&v14[2 * v15];
+      *(v36 + 36) = Byte2UInt32(Interface, v34);
+      *pos += 4;
+      v38 = *&v14[2 * v15];
+      v39 = Allocate(dds3Effect_RippleBlurParam_t);
+      dds3Effect_RippleBlurParam_t___ctor(v39);
+      *(v38 + 40) = v39;
+      dds3Effect_RippleBlurParam_t__SetData(*(*&v14[2 * v15++] + 40LL), Interface, pos, 0);
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a47660
 effPCPScreenCrackModelParam_t **effPCPScreenCrackModelParam_t__pCopy(effPCPScreenCrackModelParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  u64 *v15;
+  s32 v17;
+  u64 v21[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPScreenCrackModelParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v21);
+      if ((v21[0] & 1) != 0)
+        v12 = v21[2];
+      else
+        v12 = v21 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      v15 = Allocate(effPCPScreenCrackModelParam_t);
+      _ctor(v15, 0);
+      *&v9[2 * v14 + 8] = v15;
+      v17 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v17);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a478c0
 effPCPSpiralBEDParam_t **effPCPSpiralBEDParam_t__pCopy(effPCPSpiralBEDParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPSpiralBEDParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v15;
+  Il2CppClass **v17;
+  s64 *v18;
+  s32 v19;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s32 v32;
+  s64 v33;
+  s64 v35;
+  s32 v36;
+  s64 v37;
+  s32 v38;
+  s64 v40;
+  s32 v41;
+  s64 v43;
+  s32 v44;
+  s64 v46;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s64 v68;
+  s32 v69;
+  s64 v71;
+  s32 v72;
+  s64 v74;
+  s32 v75;
+  s64 v77;
+  s32 v78;
+  s64 v80;
+  s32 v81;
+  s64 v83;
+  s32 v84;
+  s64 v86;
+  s32 v87;
+  s64 v89;
+  s32 v90;
+  s64 v92;
+  s64 v94;
+  u64 v95[3];
+
+  v94 = max;
+  v8 = NewSpecific(effPCPSpiralBEDParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v95);
+      if ((v95[0] & 1) != 0)
+        v11 = v95[2];
+      else
+        v11 = v95 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v15 = Allocate(effPCPSpiralBEDParam_t);
+      _ctor(v15, 0);
+      v17 = &v8->obj.klass + v13;
+      v17[4] = v15;
+      v18 = (v17 + 4);
+      v19 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v19);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v18;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v18;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v18;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      v32 = 0;
+      *pos += 4;
+      if (v13 >= *p_max_length)
+      {
+LABEL_29:
+      }
+      while (1)
+      {
+        v35 = *v18;
+        if (v32 == 4)
+          break;
+        v36 = *pos;
+        v37 = v35 + 32;
+        Byte2Float(Interface, v36);
+        sub_19FFD30(v37, v32, 0);
+        v38 = *pos + 4;
+        *pos = v38;
+        v40 = *v18 + 32;
+        Byte2Float(Interface, v38);
+        sub_19FFD30(v40, v32, 1);
+        v41 = *pos + 4;
+        *pos = v41;
+        v43 = *v18 + 32;
+        Byte2Float(Interface, v41);
+        sub_19FFD30(v43, v32, 2);
+        v44 = *pos + 4;
+        *pos = v44;
+        v33 = *v18 + 32;
+        Byte2Float(Interface, v44);
+        sub_19FFD30(v33, v32++, 3);
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_29;
+      }
+      v46 = *pos;
+      *(v35 + 96) = *(Interface + v46 + 32);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v18;
+      *(v50 + 100) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v18;
+      *(v53 + 104) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v18;
+      *(v56 + 108) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v18;
+      *(v59 + 112) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v18;
+      *(v62 + 116) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v18;
+      *(v65 + 120) = Byte2Float(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v18;
+      *(v68 + 124) = Byte2Float(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v18;
+      *(v71 + 128) = Byte2Float(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v18;
+      *(v74 + 132) = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v18;
+      *(v77 + 136) = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v18;
+      *(v80 + 140) = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v18;
+      *(v83 + 144) = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v18;
+      *(v86 + 148) = Byte2Float(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v18;
+      *(v89 + 152) = Byte2Float(Interface, v87);
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *v18;
+      *(v92 + 156) = Byte2Float(Interface, v90);
+      *pos += 4;
+      ++v13;
+    }
+    while (v13 != v94);
+  }
+  return v8;
 }
 
 // 0x1a48170
 effPCPThunderSphereExpParam_t **effPCPThunderSphereExpParam_t__pCopy(effPCPThunderSphereExpParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    effPCPThunderSpherePolyParam_t__pCopy(0, 0, 0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  u64 *v33;
+  effPCPThunderSpherePolyParam_t_o *v34;
+  s64 v37;
+  effPCPThunderSpherePolyParam_t_array *v38;
+  u64 v41[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPThunderSphereExpParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v41);
+      if ((v41[0] & 1) != 0)
+        v12 = v41[2];
+      else
+        v12 = v41 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCPThunderSphereExpParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2UInt32(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2UInt32(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2UInt32(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      *pos += 4;
+      v33 = Allocate(effPCPThunderSpherePolyParam_t);
+      _ctor(v33, 0);
+      v37 = *&v14[2 * v15];
+      v38 = effPCPThunderSpherePolyParam_t__pCopy(v34, Interface, pos, 1);
+      ++v15;
+      *(v37 + 40) = v38->m_Items[0];
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a48c20
@@ -5471,72 +13824,1898 @@ void effPCPThunderSpherePolyParam_t__pClone(effPCPThunderSpherePolyParam_t *this
 
 // 0x1a48530
 effPCPThunderSpherePolyParam_t **effPCPThunderSpherePolyParam_t__pCopy(effPCPThunderSpherePolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    Byte2UInt16(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  u64 *v15;
+  s64 v17;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s64 v68;
+  s32 v69;
+  s64 v71;
+  s32 v72;
+  s64 v74;
+  u64 v76[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCPThunderSpherePolyParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v76);
+      if ((v76[0] & 1) != 0)
+        v12 = v76[2];
+      else
+        v12 = v76 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      v15 = Allocate(effPCPThunderSpherePolyParam_t);
+      _ctor(v15, 0);
+      v17 = &v9[2 * v14 + 8];
+      *v17 = v15;
+      v18 = *pos;
+      *(v15 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *v17;
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v17;
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v17;
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v17;
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *v17;
+      *(v35 + 36) = Byte2UInt32(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      *(*v17 + 40LL) = *(Interface + v36 + 32);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *v17;
+      *(v41 + 44) = Byte2Float(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *v17;
+      *(v44 + 48) = Byte2Float(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *v17;
+      *(v47 + 52) = Byte2Float(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v17;
+      *(v50 + 56) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v17;
+      *(v53 + 60) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v17;
+      *(v56 + 64) = Byte2UInt16(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v17;
+      *(v59 + 68) = Byte2Float(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v17;
+      *(v62 + 72) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v17;
+      *(v65 + 76) = Byte2Float(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v17;
+      *(v68 + 80) = Byte2UInt32(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v17;
+      *(v71 + 84) = Byte2Float(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v17;
+      *(v74 + 88) = Byte2UInt32(Interface, v72);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a499d0
 void effPCPWhirlwind2PolyParam_t__pClone(effPCPWhirlwind2PolyParam_t *this, effPCPWhirlwind2PolyParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPWhirlwind2PolyParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  effPCPWhirlwind2PolyParam_t_o *v12;
+  s64 i;
+  struct System_UInt32_array *reserve;
+  struct System_UInt32_array *v15;
+  s32 v16;
+  s64 v19;
+  s64 v20;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v19 = 0;
+  v20 = 0;
+  sub_854690(&v19, x, y, z, w);
+  v11 = *&v20;
+  v10 = *(&v20 + 1);
+  *&v7->pos.x = v19;
+  v7->pos.z = v11;
+  v7->pos.w = v10;
+  memmove(&(*param)->matrix, &this->matrix, 0x40u);
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->number = this->number;
+  (*param)->split = this->split;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->radian_w = this->radian_w;
+  (*param)->radian_w_r = this->radian_w_r;
+  (*param)->radian_w_u = this->radian_w_u;
+  (*param)->incline = this->incline;
+  (*param)->width = this->width;
+  (*param)->width_r = this->width_r;
+  (*param)->up_s = this->up_s;
+  (*param)->up_a = this->up_a;
+  (*param)->up_r = this->up_r;
+  (*param)->roll_s = this->roll_s;
+  (*param)->roll_a = this->roll_a;
+  (*param)->radius = this->radius;
+  (*param)->radius_r = this->radius_r;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_s_r = this->radius_s_r;
+  (*param)->radius_a = this->radius_a;
+  (*param)->abgr = this->abgr;
+  (*param)->repeat_u = this->repeat_u;
+  (*param)->repeat_v = this->repeat_v;
+  v12 = *param;
+  v12->reserve = NewSpecific(uint, 0x20u);
+  for (i = 8; i != 40; ++i)
+  {
+    reserve = this->reserve;
+    v15 = (*param)->reserve;
+    v16 = *(&reserve->obj.klass + i);
+    *(&v15->obj.klass + i) = v16;
+  }
 }
 
 // 0x1a48d30
 effPCPWhirlwind2PolyParam_t **effPCPWhirlwind2PolyParam_t__pCopy(effPCPWhirlwind2PolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPWhirlwind2PolyParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  Il2CppObject *v17;
+  Il2CppClass **v19;
+  char *v20;
+  f32 *v22;
+  s32 v23;
+  s32 v24;
+  f32 *v26;
+  s32 v27;
+  f32 *v29;
+  s32 v30;
+  f32 *v32;
+  f32 *v35;
+  s32 v36;
+  s64 v37;
+  f32 *v39;
+  s32 v40;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s32 v50;
+  s32 v51;
+  s32 v54;
+  f32 *v56;
+  s32 v57;
+  f32 *v59;
+  s32 v60;
+  f32 *v62;
+  s32 v63;
+  f32 *v65;
+  s32 v66;
+  f32 *v68;
+  s32 v69;
+  f32 *v71;
+  s32 v72;
+  f32 *v74;
+  s32 v75;
+  f32 *v77;
+  s32 v78;
+  f32 *v80;
+  s32 v81;
+  f32 *v83;
+  s32 v84;
+  f32 *v86;
+  s32 v87;
+  f32 *v89;
+  s32 v90;
+  f32 *v92;
+  s32 v93;
+  f32 *v95;
+  s32 v96;
+  f32 *v98;
+  s32 v99;
+  f32 *v101;
+  s32 v102;
+  f32 *v104;
+  s32 v105;
+  f32 *v107;
+  s32 v108;
+  f32 *v110;
+  s32 v111;
+  f32 *v113;
+  s32 v114;
+  f32 *v116;
+  s32 v117;
+  f32 *v119;
+  s32 v120;
+  f32 *v122;
+  s32 v123;
+  f32 *v125;
+  s32 v126;
+  f32 *v128;
+  f32 *v130;
+  u64 v131;
+  s32 v134;
+  s64 v135;
+  u32 v136;
+  s64 v138;
+  s64 v140;
+  u64 v141[3];
+
+  v140 = max;
+  v8 = NewSpecific(effPCPWhirlwind2PolyParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v141);
+      if ((v141[0] & 1) != 0)
+        v11 = v141[2];
+      else
+        v11 = v141 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v17 = Allocate(effPCPWhirlwind2PolyParam_t);
+      _ctor(v17, 0);
+      v19 = &v8->obj.klass + v13;
+      v19[4] = v17;
+      v20 = (v19 + 4);
+      v17[1].klass = 0;
+      v17[1].monitor = 0;
+      v22 = *v20;
+      v23 = *pos;
+      v22[4] = Byte2Float(Interface, v23);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v20;
+      v26[5] = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v20;
+      v29[6] = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v20;
+      v32[7] = Byte2Float(Interface, v30);
+      *pos += 4;
+      v35 = *v20;
+      v36 = 0;
+      *(v35 + 10) = 0;
+      *(v35 + 11) = 0;
+      *(v35 + 8) = 0;
+      *(v35 + 9) = 0;
+      *(v35 + 6) = 0;
+      *(v35 + 7) = 0;
+      *(v35 + 4) = 0;
+      *(v35 + 5) = 0;
+      if (v13 >= *p_max_length)
+      {
+LABEL_33:
+      }
+      while (1)
+      {
+        v39 = *v20;
+        if (v36 == 4)
+          break;
+        v40 = *pos;
+        v41 = (v39 + 8);
+        Byte2Float(Interface, v40);
+        sub_19FFD30(v41, v36, 0);
+        v42 = *pos + 4;
+        *pos = v42;
+        v44 = *v20 + 32LL;
+        Byte2Float(Interface, v42);
+        sub_19FFD30(v44, v36, 1);
+        v45 = *pos + 4;
+        *pos = v45;
+        v47 = *v20 + 32LL;
+        Byte2Float(Interface, v45);
+        sub_19FFD30(v47, v36, 2);
+        v48 = *pos + 4;
+        *pos = v48;
+        v37 = *v20 + 32LL;
+        Byte2Float(Interface, v48);
+        sub_19FFD30(v37, v36++, 3);
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_33;
+      }
+      v50 = *pos;
+      *(v39 + 24) = Byte2UInt32(Interface, v50);
+      v51 = *pos + 4;
+      *pos = v51;
+      *(*v20 + 100LL) = *(Interface + v51 + 32);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v20;
+      *(v56 + 26) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v20;
+      *(v59 + 27) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v20;
+      *(v62 + 28) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v20;
+      *(v65 + 29) = Byte2UInt32(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v20;
+      *(v68 + 30) = Byte2UInt32(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v20;
+      *(v71 + 31) = Byte2UInt32(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v20;
+      v74[32] = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v20;
+      v77[33] = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v20;
+      v80[34] = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v20;
+      v83[35] = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v20;
+      v86[36] = Byte2Float(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v20;
+      v89[37] = Byte2Float(Interface, v87);
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *v20;
+      v92[38] = Byte2Float(Interface, v90);
+      v93 = *pos + 4;
+      *pos = v93;
+      v95 = *v20;
+      v95[39] = Byte2Float(Interface, v93);
+      v96 = *pos + 4;
+      *pos = v96;
+      v98 = *v20;
+      v98[40] = Byte2Float(Interface, v96);
+      v99 = *pos + 4;
+      *pos = v99;
+      v101 = *v20;
+      v101[41] = Byte2Float(Interface, v99);
+      v102 = *pos + 4;
+      *pos = v102;
+      v104 = *v20;
+      v104[42] = Byte2Float(Interface, v102);
+      v105 = *pos + 4;
+      *pos = v105;
+      v107 = *v20;
+      v107[43] = Byte2Float(Interface, v105);
+      v108 = *pos + 4;
+      *pos = v108;
+      v110 = *v20;
+      v110[44] = Byte2Float(Interface, v108);
+      v111 = *pos + 4;
+      *pos = v111;
+      v113 = *v20;
+      v113[45] = Byte2Float(Interface, v111);
+      v114 = *pos + 4;
+      *pos = v114;
+      v116 = *v20;
+      v116[46] = Byte2Float(Interface, v114);
+      v117 = *pos + 4;
+      *pos = v117;
+      v119 = *v20;
+      v119[47] = Byte2Float(Interface, v117);
+      v120 = *pos + 4;
+      *pos = v120;
+      v122 = *v20;
+      *(v122 + 48) = Byte2UInt32(Interface, v120);
+      v123 = *pos + 4;
+      *pos = v123;
+      v125 = *v20;
+      *(v125 + 49) = Byte2UInt32(Interface, v123);
+      v126 = *pos + 4;
+      *pos = v126;
+      v128 = *v20;
+      *(v128 + 50) = Byte2UInt32(Interface, v126);
+      *pos += 4;
+      v130 = *v20;
+      v131 = 0;
+      *(v130 + 26) = NewSpecific(uint, 0x20u);
+      do
+      {
+        v134 = *pos;
+        v135 = *(*v20 + 208LL);
+        v136 = Byte2UInt32(Interface, v134);
+        v138 = v135 + 4 * v131++;
+        *(v138 + 32) = v136;
+        *pos += 4;
+      }
+      while (v131 != 32);
+      ++v13;
+    }
+    while (v13 != v140);
+  }
+  return v8;
 }
 
 // 0x1a4a970
 void effPCPWhirlwind3PolyParam_t__pClone(effPCPWhirlwind3PolyParam_t *this, effPCPWhirlwind3PolyParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPWhirlwind3PolyParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  effPCPWhirlwind3PolyParam_t_o *v12;
+  struct UnityEngine_Matrix4x4_o *p_matrix;
+  struct UnityEngine_Matrix4x4_o *v14;
+  struct UnityEngine_Matrix4x4_o *v15;
+  struct UnityEngine_Matrix4x4_o *v16;
+  struct UnityEngine_Matrix4x4_o *v17;
+  struct UnityEngine_Matrix4x4_o *v18;
+  struct UnityEngine_Matrix4x4_o *v19;
+  struct UnityEngine_Matrix4x4_o *v20;
+  struct UnityEngine_Matrix4x4_o *v21;
+  struct UnityEngine_Matrix4x4_o *v22;
+  struct UnityEngine_Matrix4x4_o *v23;
+  struct UnityEngine_Matrix4x4_o *v24;
+  struct UnityEngine_Matrix4x4_o *v25;
+  struct UnityEngine_Matrix4x4_o *v26;
+  struct UnityEngine_Matrix4x4_o *v27;
+  struct UnityEngine_Matrix4x4_o *v28;
+  effPCPWhirlwind3PolyParam_t_o *v29;
+  s64 i;
+  struct System_UInt32_array *reserve;
+  struct System_UInt32_array *v32;
+  s32 v33;
+  s64 v36;
+  s64 v37;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v36 = 0;
+  v37 = 0;
+  sub_854690(&v36, x, y, z, w);
+  v11 = *&v37;
+  v10 = *(&v37 + 1);
+  *&v7->pos.x = v36;
+  v7->pos.z = v11;
+  v7->pos.w = v10;
+  v12 = *param;
+  *&v12->matrix.m02 = 0;
+  *&v12->matrix.m22 = 0;
+  *&v12->matrix.m01 = 0;
+  *&v12->matrix.m21 = 0;
+  *&v12->matrix.m00 = 0;
+  *&v12->matrix.m20 = 0;
+  *&v12->matrix.m03 = 0;
+  *&v12->matrix.m23 = 0;
+  p_matrix = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 0);
+  sub_19FFD30(p_matrix, 0, 0);
+  v14 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 1);
+  sub_19FFD30(v14, 0, 1);
+  v15 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 2);
+  sub_19FFD30(v15, 0, 2);
+  v16 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 3);
+  sub_19FFD30(v16, 0, 3);
+  v17 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 0);
+  sub_19FFD30(v17, 1, 0);
+  v18 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 1);
+  sub_19FFD30(v18, 1, 1);
+  v19 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 2);
+  sub_19FFD30(v19, 1, 2);
+  v20 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 3);
+  sub_19FFD30(v20, 1, 3);
+  v21 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 0);
+  sub_19FFD30(v21, 2, 0);
+  v22 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 1);
+  sub_19FFD30(v22, 2, 1);
+  v23 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 2);
+  sub_19FFD30(v23, 2, 2);
+  v24 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 3);
+  sub_19FFD30(v24, 2, 3);
+  v25 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 0);
+  sub_19FFD30(v25, 3, 0);
+  v26 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 1);
+  sub_19FFD30(v26, 3, 1);
+  v27 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 2);
+  sub_19FFD30(v27, 3, 2);
+  v28 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 3);
+  sub_19FFD30(v28, 3, 3);
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->number = this->number;
+  (*param)->split = this->split;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->radian_w = this->radian_w;
+  (*param)->radian_w_r = this->radian_w_r;
+  (*param)->incline = this->incline;
+  (*param)->height = this->height;
+  (*param)->slant = this->slant;
+  (*param)->width = this->width;
+  (*param)->width_r = this->width_r;
+  (*param)->up_s = this->up_s;
+  (*param)->up_a = this->up_a;
+  (*param)->up_r = this->up_r;
+  (*param)->roll_s = this->roll_s;
+  (*param)->roll_a = this->roll_a;
+  (*param)->radius = this->radius;
+  (*param)->radius_r = this->radius_r;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_s_r = this->radius_s_r;
+  (*param)->radius_a = this->radius_a;
+  (*param)->abgr_s = this->abgr_s;
+  (*param)->abgr_e = this->abgr_e;
+  (*param)->repeat_u = this->repeat_u;
+  (*param)->repeat_v = this->repeat_v;
+  v29 = *param;
+  v29->reserve = NewSpecific(uint, 0x20u);
+  for (i = 8; i != 40; ++i)
+  {
+    reserve = this->reserve;
+    v32 = (*param)->reserve;
+    v33 = *(&reserve->obj.klass + i);
+    *(&v32->obj.klass + i) = v33;
+  }
 }
 
 // 0x1a49c50
 effPCPWhirlwind3PolyParam_t **effPCPWhirlwind3PolyParam_t__pCopy(effPCPWhirlwind3PolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPWhirlwind3PolyParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  Il2CppObject *v17;
+  Il2CppClass **v19;
+  char *v20;
+  f32 *v22;
+  s32 v23;
+  s32 v24;
+  f32 *v26;
+  s32 v27;
+  f32 *v29;
+  s32 v30;
+  f32 *v32;
+  f32 *v35;
+  s32 v36;
+  s64 v37;
+  f32 *v39;
+  s32 v40;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s32 v50;
+  s32 v51;
+  s32 v54;
+  f32 *v56;
+  s32 v57;
+  f32 *v59;
+  s32 v60;
+  f32 *v62;
+  s32 v63;
+  f32 *v65;
+  s32 v66;
+  f32 *v68;
+  s32 v69;
+  f32 *v71;
+  s32 v72;
+  f32 *v74;
+  s32 v75;
+  f32 *v77;
+  s32 v78;
+  f32 *v80;
+  s32 v81;
+  f32 *v83;
+  s32 v84;
+  f32 *v86;
+  s32 v87;
+  f32 *v89;
+  s32 v90;
+  f32 *v92;
+  s32 v93;
+  f32 *v95;
+  s32 v96;
+  f32 *v98;
+  s32 v99;
+  f32 *v101;
+  s32 v102;
+  f32 *v104;
+  s32 v105;
+  f32 *v107;
+  s32 v108;
+  f32 *v110;
+  s32 v111;
+  f32 *v113;
+  s32 v114;
+  f32 *v116;
+  s32 v117;
+  f32 *v119;
+  s32 v120;
+  f32 *v122;
+  s32 v123;
+  f32 *v125;
+  s32 v126;
+  f32 *v128;
+  s32 v129;
+  f32 *v131;
+  s32 v132;
+  f32 *v134;
+  f32 *v136;
+  u64 v137;
+  s32 v140;
+  s64 v141;
+  u32 v142;
+  s64 v144;
+  s64 v146;
+  u64 v147[3];
+
+  v146 = max;
+  v8 = NewSpecific(effPCPWhirlwind3PolyParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v147);
+      if ((v147[0] & 1) != 0)
+        v11 = v147[2];
+      else
+        v11 = v147 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v17 = Allocate(effPCPWhirlwind3PolyParam_t);
+      _ctor(v17, 0);
+      v19 = &v8->obj.klass + v13;
+      v19[4] = v17;
+      v20 = (v19 + 4);
+      v17[1].klass = 0;
+      v17[1].monitor = 0;
+      v22 = *v20;
+      v23 = *pos;
+      v22[4] = Byte2Float(Interface, v23);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v20;
+      v26[5] = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v20;
+      v29[6] = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v20;
+      v32[7] = Byte2Float(Interface, v30);
+      *pos += 4;
+      v35 = *v20;
+      v36 = 0;
+      *(v35 + 10) = 0;
+      *(v35 + 11) = 0;
+      *(v35 + 8) = 0;
+      *(v35 + 9) = 0;
+      *(v35 + 6) = 0;
+      *(v35 + 7) = 0;
+      *(v35 + 4) = 0;
+      *(v35 + 5) = 0;
+      if (v13 >= *p_max_length)
+      {
+LABEL_33:
+      }
+      while (1)
+      {
+        v39 = *v20;
+        if (v36 == 4)
+          break;
+        v40 = *pos;
+        v41 = (v39 + 8);
+        Byte2Float(Interface, v40);
+        sub_19FFD30(v41, v36, 0);
+        v42 = *pos + 4;
+        *pos = v42;
+        v44 = *v20 + 32LL;
+        Byte2Float(Interface, v42);
+        sub_19FFD30(v44, v36, 1);
+        v45 = *pos + 4;
+        *pos = v45;
+        v47 = *v20 + 32LL;
+        Byte2Float(Interface, v45);
+        sub_19FFD30(v47, v36, 2);
+        v48 = *pos + 4;
+        *pos = v48;
+        v37 = *v20 + 32LL;
+        Byte2Float(Interface, v48);
+        sub_19FFD30(v37, v36++, 3);
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_33;
+      }
+      v50 = *pos;
+      *(v39 + 24) = Byte2UInt32(Interface, v50);
+      v51 = *pos + 4;
+      *pos = v51;
+      *(*v20 + 100LL) = *(Interface + v51 + 32);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v20;
+      *(v56 + 26) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v20;
+      *(v59 + 27) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v20;
+      *(v62 + 28) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v20;
+      *(v65 + 29) = Byte2UInt32(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v20;
+      *(v68 + 30) = Byte2UInt32(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v20;
+      *(v71 + 31) = Byte2UInt32(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v20;
+      v74[32] = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v20;
+      v77[33] = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v20;
+      v80[34] = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v20;
+      v83[35] = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v20;
+      v86[36] = Byte2Float(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v20;
+      v89[37] = Byte2Float(Interface, v87);
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *v20;
+      v92[38] = Byte2Float(Interface, v90);
+      v93 = *pos + 4;
+      *pos = v93;
+      v95 = *v20;
+      v95[39] = Byte2Float(Interface, v93);
+      v96 = *pos + 4;
+      *pos = v96;
+      v98 = *v20;
+      v98[40] = Byte2Float(Interface, v96);
+      v99 = *pos + 4;
+      *pos = v99;
+      v101 = *v20;
+      v101[41] = Byte2Float(Interface, v99);
+      v102 = *pos + 4;
+      *pos = v102;
+      v104 = *v20;
+      v104[42] = Byte2Float(Interface, v102);
+      v105 = *pos + 4;
+      *pos = v105;
+      v107 = *v20;
+      v107[43] = Byte2Float(Interface, v105);
+      v108 = *pos + 4;
+      *pos = v108;
+      v110 = *v20;
+      v110[44] = Byte2Float(Interface, v108);
+      v111 = *pos + 4;
+      *pos = v111;
+      v113 = *v20;
+      v113[45] = Byte2Float(Interface, v111);
+      v114 = *pos + 4;
+      *pos = v114;
+      v116 = *v20;
+      v116[46] = Byte2Float(Interface, v114);
+      v117 = *pos + 4;
+      *pos = v117;
+      v119 = *v20;
+      v119[47] = Byte2Float(Interface, v117);
+      v120 = *pos + 4;
+      *pos = v120;
+      v122 = *v20;
+      v122[48] = Byte2Float(Interface, v120);
+      v123 = *pos + 4;
+      *pos = v123;
+      v125 = *v20;
+      *(v125 + 49) = Byte2UInt32(Interface, v123);
+      v126 = *pos + 4;
+      *pos = v126;
+      v128 = *v20;
+      *(v128 + 50) = Byte2UInt32(Interface, v126);
+      v129 = *pos + 4;
+      *pos = v129;
+      v131 = *v20;
+      *(v131 + 51) = Byte2UInt32(Interface, v129);
+      v132 = *pos + 4;
+      *pos = v132;
+      v134 = *v20;
+      *(v134 + 52) = Byte2UInt32(Interface, v132);
+      *pos += 4;
+      v136 = *v20;
+      v137 = 0;
+      *(v136 + 27) = NewSpecific(uint, 0x20u);
+      do
+      {
+        v140 = *pos;
+        v141 = *(*v20 + 216LL);
+        v142 = Byte2UInt32(Interface, v140);
+        v144 = v141 + 4 * v137++;
+        *(v144 + 32) = v142;
+        *pos += 4;
+      }
+      while (v137 != 32);
+      ++v13;
+    }
+    while (v13 != v146);
+  }
+  return v8;
 }
 
 // 0x1a4bb70
 void effPCPWhirlwindPolyParam_t__pClone(effPCPWhirlwindPolyParam_t *this, effPCPWhirlwindPolyParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPWhirlwindPolyParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  effPCPWhirlwindPolyParam_t_o *v12;
+  struct UnityEngine_Matrix4x4_o *p_matrix;
+  struct UnityEngine_Matrix4x4_o *v14;
+  struct UnityEngine_Matrix4x4_o *v15;
+  struct UnityEngine_Matrix4x4_o *v16;
+  struct UnityEngine_Matrix4x4_o *v17;
+  struct UnityEngine_Matrix4x4_o *v18;
+  struct UnityEngine_Matrix4x4_o *v19;
+  struct UnityEngine_Matrix4x4_o *v20;
+  struct UnityEngine_Matrix4x4_o *v21;
+  struct UnityEngine_Matrix4x4_o *v22;
+  struct UnityEngine_Matrix4x4_o *v23;
+  struct UnityEngine_Matrix4x4_o *v24;
+  struct UnityEngine_Matrix4x4_o *v25;
+  struct UnityEngine_Matrix4x4_o *v26;
+  struct UnityEngine_Matrix4x4_o *v27;
+  struct UnityEngine_Matrix4x4_o *v28;
+  effPCPWhirlwindPolyParam_t_o *v29;
+  s64 i;
+  struct System_UInt32_array *reserve;
+  struct System_UInt32_array *v32;
+  s32 v33;
+  s64 v36;
+  s64 v37;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v36 = 0;
+  v37 = 0;
+  sub_854690(&v36, x, y, z, w);
+  v11 = *&v37;
+  v10 = *(&v37 + 1);
+  *&v7->pos.x = v36;
+  v7->pos.z = v11;
+  v7->pos.w = v10;
+  v12 = *param;
+  *&v12->matrix.m02 = 0;
+  *&v12->matrix.m22 = 0;
+  *&v12->matrix.m01 = 0;
+  *&v12->matrix.m21 = 0;
+  *&v12->matrix.m00 = 0;
+  *&v12->matrix.m20 = 0;
+  *&v12->matrix.m03 = 0;
+  *&v12->matrix.m23 = 0;
+  p_matrix = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 0);
+  sub_19FFD30(p_matrix, 0, 0);
+  v14 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 1);
+  sub_19FFD30(v14, 0, 1);
+  v15 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 2);
+  sub_19FFD30(v15, 0, 2);
+  v16 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 0, 3);
+  sub_19FFD30(v16, 0, 3);
+  v17 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 0);
+  sub_19FFD30(v17, 1, 0);
+  v18 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 1);
+  sub_19FFD30(v18, 1, 1);
+  v19 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 2);
+  sub_19FFD30(v19, 1, 2);
+  v20 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 1, 3);
+  sub_19FFD30(v20, 1, 3);
+  v21 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 0);
+  sub_19FFD30(v21, 2, 0);
+  v22 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 1);
+  sub_19FFD30(v22, 2, 1);
+  v23 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 2);
+  sub_19FFD30(v23, 2, 2);
+  v24 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 2, 3);
+  sub_19FFD30(v24, 2, 3);
+  v25 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 0);
+  sub_19FFD30(v25, 3, 0);
+  v26 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 1);
+  sub_19FFD30(v26, 3, 1);
+  v27 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 2);
+  sub_19FFD30(v27, 3, 2);
+  v28 = &(*param)->matrix;
+  sub_19FFB10(&this->matrix, 3, 3);
+  sub_19FFD30(v28, 3, 3);
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->number = this->number;
+  (*param)->split = this->split;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->radian_w = this->radian_w;
+  (*param)->radian_w_r = this->radian_w_r;
+  (*param)->radian_w_u = this->radian_w_u;
+  (*param)->incline = this->incline;
+  (*param)->width = this->width;
+  (*param)->width_r = this->width_r;
+  (*param)->up_s = this->up_s;
+  (*param)->up_a = this->up_a;
+  (*param)->up_r = this->up_r;
+  (*param)->roll_s = this->roll_s;
+  (*param)->roll_a = this->roll_a;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_s_r = this->radius_s_r;
+  (*param)->radius_e = this->radius_e;
+  (*param)->radius_e_r = this->radius_e_r;
+  (*param)->abgr = this->abgr;
+  (*param)->repeat_u = this->repeat_u;
+  (*param)->repeat_v = this->repeat_v;
+  v29 = *param;
+  v29->reserve = NewSpecific(uint, 0x20u);
+  for (i = 8; i != 40; ++i)
+  {
+    reserve = this->reserve;
+    v32 = (*param)->reserve;
+    v33 = *(&reserve->obj.klass + i);
+    *(&v32->obj.klass + i) = v33;
+  }
 }
 
 // 0x1a4af10
 effPCPWhirlwindPolyParam_t **effPCPWhirlwindPolyParam_t__pCopy(effPCPWhirlwindPolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPWhirlwindPolyParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  Il2CppObject *v17;
+  Il2CppClass **v19;
+  char *v20;
+  f32 *v22;
+  s32 v23;
+  s32 v24;
+  f32 *v26;
+  s32 v27;
+  f32 *v29;
+  s32 v30;
+  f32 *v32;
+  f32 *v35;
+  s32 v36;
+  s64 v37;
+  f32 *v39;
+  s32 v40;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s32 v50;
+  s32 v51;
+  s32 v54;
+  f32 *v56;
+  s32 v57;
+  f32 *v59;
+  s32 v60;
+  f32 *v62;
+  s32 v63;
+  f32 *v65;
+  s32 v66;
+  f32 *v68;
+  s32 v69;
+  f32 *v71;
+  s32 v72;
+  f32 *v74;
+  s32 v75;
+  f32 *v77;
+  s32 v78;
+  f32 *v80;
+  s32 v81;
+  f32 *v83;
+  s32 v84;
+  f32 *v86;
+  s32 v87;
+  f32 *v89;
+  s32 v90;
+  f32 *v92;
+  s32 v93;
+  f32 *v95;
+  s32 v96;
+  f32 *v98;
+  s32 v99;
+  f32 *v101;
+  s32 v102;
+  f32 *v104;
+  s32 v105;
+  f32 *v107;
+  s32 v108;
+  f32 *v110;
+  s32 v111;
+  f32 *v113;
+  s32 v114;
+  f32 *v116;
+  s32 v117;
+  f32 *v119;
+  s32 v120;
+  f32 *v122;
+  s32 v123;
+  f32 *v125;
+  f32 *v127;
+  u64 v128;
+  s32 v131;
+  s64 v132;
+  u32 v133;
+  s64 v135;
+  s64 v137;
+  u64 v138[3];
+
+  v137 = max;
+  v8 = NewSpecific(effPCPWhirlwindPolyParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v138);
+      if ((v138[0] & 1) != 0)
+        v11 = v138[2];
+      else
+        v11 = v138 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v17 = Allocate(effPCPWhirlwindPolyParam_t);
+      _ctor(v17, 0);
+      v19 = &v8->obj.klass + v13;
+      v19[4] = v17;
+      v20 = (v19 + 4);
+      v17[1].klass = 0;
+      v17[1].monitor = 0;
+      v22 = *v20;
+      v23 = *pos;
+      v22[4] = Byte2Float(Interface, v23);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v20;
+      v26[5] = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v20;
+      v29[6] = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v20;
+      v32[7] = Byte2Float(Interface, v30);
+      *pos += 4;
+      v35 = *v20;
+      v36 = 0;
+      *(v35 + 10) = 0;
+      *(v35 + 11) = 0;
+      *(v35 + 8) = 0;
+      *(v35 + 9) = 0;
+      *(v35 + 6) = 0;
+      *(v35 + 7) = 0;
+      *(v35 + 4) = 0;
+      *(v35 + 5) = 0;
+      if (v13 >= *p_max_length)
+      {
+LABEL_33:
+      }
+      while (1)
+      {
+        v39 = *v20;
+        if (v36 == 4)
+          break;
+        v40 = *pos;
+        v41 = (v39 + 8);
+        Byte2Float(Interface, v40);
+        sub_19FFD30(v41, v36, 0);
+        v42 = *pos + 4;
+        *pos = v42;
+        v44 = *v20 + 32LL;
+        Byte2Float(Interface, v42);
+        sub_19FFD30(v44, v36, 1);
+        v45 = *pos + 4;
+        *pos = v45;
+        v47 = *v20 + 32LL;
+        Byte2Float(Interface, v45);
+        sub_19FFD30(v47, v36, 2);
+        v48 = *pos + 4;
+        *pos = v48;
+        v37 = *v20 + 32LL;
+        Byte2Float(Interface, v48);
+        sub_19FFD30(v37, v36++, 3);
+        *pos += 4;
+        if (v13 >= *p_max_length)
+          goto LABEL_33;
+      }
+      v50 = *pos;
+      *(v39 + 24) = Byte2UInt32(Interface, v50);
+      v51 = *pos + 4;
+      *pos = v51;
+      *(*v20 + 100LL) = *(Interface + v51 + 32);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v20;
+      *(v56 + 26) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v20;
+      *(v59 + 27) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v20;
+      *(v62 + 28) = Byte2UInt32(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v20;
+      *(v65 + 29) = Byte2UInt32(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v20;
+      *(v68 + 30) = Byte2UInt32(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v20;
+      *(v71 + 31) = Byte2UInt32(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v20;
+      v74[32] = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v20;
+      v77[33] = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v20;
+      v80[34] = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v20;
+      v83[35] = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v20;
+      v86[36] = Byte2Float(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v20;
+      v89[37] = Byte2Float(Interface, v87);
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *v20;
+      v92[38] = Byte2Float(Interface, v90);
+      v93 = *pos + 4;
+      *pos = v93;
+      v95 = *v20;
+      v95[39] = Byte2Float(Interface, v93);
+      v96 = *pos + 4;
+      *pos = v96;
+      v98 = *v20;
+      v98[40] = Byte2Float(Interface, v96);
+      v99 = *pos + 4;
+      *pos = v99;
+      v101 = *v20;
+      v101[41] = Byte2Float(Interface, v99);
+      v102 = *pos + 4;
+      *pos = v102;
+      v104 = *v20;
+      v104[42] = Byte2Float(Interface, v102);
+      v105 = *pos + 4;
+      *pos = v105;
+      v107 = *v20;
+      v107[43] = Byte2Float(Interface, v105);
+      v108 = *pos + 4;
+      *pos = v108;
+      v110 = *v20;
+      v110[44] = Byte2Float(Interface, v108);
+      v111 = *pos + 4;
+      *pos = v111;
+      v113 = *v20;
+      v113[45] = Byte2Float(Interface, v111);
+      v114 = *pos + 4;
+      *pos = v114;
+      v116 = *v20;
+      v116[46] = Byte2Float(Interface, v114);
+      v117 = *pos + 4;
+      *pos = v117;
+      v119 = *v20;
+      *(v119 + 47) = Byte2UInt32(Interface, v117);
+      v120 = *pos + 4;
+      *pos = v120;
+      v122 = *v20;
+      *(v122 + 48) = Byte2UInt32(Interface, v120);
+      v123 = *pos + 4;
+      *pos = v123;
+      v125 = *v20;
+      *(v125 + 49) = Byte2UInt32(Interface, v123);
+      *pos += 4;
+      v127 = *v20;
+      v128 = 0;
+      *(v127 + 25) = NewSpecific(uint, 0x20u);
+      do
+      {
+        v131 = *pos;
+        v132 = *(*v20 + 200LL);
+        v133 = Byte2UInt32(Interface, v131);
+        v135 = v132 + 4 * v128++;
+        *(v135 + 32) = v133;
+        *pos += 4;
+      }
+      while (v128 != 32);
+      ++v13;
+    }
+    while (v13 != v137);
+  }
+  return v8;
 }
 
 // 0x1a4ca90
 void effPCPWwSpherePolyParam_t__pClone(effPCPWwSpherePolyParam_t *this, effPCPWwSpherePolyParam_t **param) {
+  f32 x;
+  f32 y;
+  effPCPWwSpherePolyParam_t_o *v7;
+  f32 z;
+  f32 w;
+  f32 v10;
+  f32 v11;
+  effPCPWwSpherePolyParam_t_o *v12;
+  s64 i;
+  struct System_UInt32_array *reserve;
+  struct System_UInt32_array *v15;
+  s32 v16;
+  s64 v19;
+  s64 v20;
+
+  x = this->pos.x;
+  y = this->pos.y;
+  v7 = *param;
+  z = this->pos.z;
+  w = this->pos.w;
+  v19 = 0;
+  v20 = 0;
+  sub_854690(&v19, x, y, z, w);
+  v11 = *&v20;
+  v10 = *(&v20 + 1);
+  *&v7->pos.x = v19;
+  v7->pos.z = v11;
+  v7->pos.w = v10;
+  (*param)->blend = this->blend;
+  (*param)->loop = this->loop;
+  (*param)->life = this->life;
+  (*param)->number = this->number;
+  (*param)->split = this->split;
+  (*param)->timing = this->timing;
+  (*param)->fade_in = this->fade_in;
+  (*param)->fade_out = this->fade_out;
+  (*param)->radian_w = this->radian_w;
+  (*param)->radian_w_r = this->radian_w_r;
+  (*param)->width = this->width;
+  (*param)->width_r = this->width_r;
+  (*param)->roll_s = this->roll_s;
+  (*param)->roll_a = this->roll_a;
+  (*param)->radius = this->radius;
+  (*param)->radius_r = this->radius_r;
+  (*param)->radius_s = this->radius_s;
+  (*param)->radius_a = this->radius_a;
+  (*param)->radius_aw = this->radius_aw;
+  (*param)->abgr = this->abgr;
+  (*param)->repeat_u = this->repeat_u;
+  (*param)->repeat_v = this->repeat_v;
+  v12 = *param;
+  v12->reserve = NewSpecific(uint, 0x20u);
+  for (i = 8; i != 40; ++i)
+  {
+    reserve = this->reserve;
+    v15 = (*param)->reserve;
+    v16 = *(&reserve->obj.klass + i);
+    *(&v15->obj.klass + i) = v16;
+  }
 }
 
 // 0x1a4c0f0
 effPCPWwSpherePolyParam_t **effPCPWwSpherePolyParam_t__pCopy(effPCPWwSpherePolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  effPCPWwSpherePolyParam_t_array *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  il2cpp_array_size_t *p_max_length;
+  Il2CppObject *v17;
+  Il2CppClass **v19;
+  char *v20;
+  s64 v22;
+  s32 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s32 v39;
+  s64 v41;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s64 v68;
+  s32 v69;
+  s64 v71;
+  s32 v72;
+  s64 v74;
+  s32 v75;
+  s64 v77;
+  s32 v78;
+  s64 v80;
+  s32 v81;
+  s64 v83;
+  s32 v84;
+  s64 v86;
+  s32 v87;
+  s64 v89;
+  s32 v90;
+  s64 v92;
+  s32 v93;
+  s64 v95;
+  s32 v96;
+  s64 v98;
+  s64 v100;
+  u64 v101;
+  s32 v104;
+  s64 v105;
+  u32 v106;
+  s64 v108;
+  s64 v110;
+  u64 v111[3];
+
+  v110 = max;
+  v8 = NewSpecific(effPCPWwSpherePolyParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v111);
+      if ((v111[0] & 1) != 0)
+        v11 = v111[2];
+      else
+        v11 = v111 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    p_max_length = &v8->max_length;
+    do
+    {
+      v17 = Allocate(effPCPWwSpherePolyParam_t);
+      _ctor(v17, 0);
+      v19 = &v8->obj.klass + v13;
+      v19[4] = v17;
+      v20 = (v19 + 4);
+      v17[1].klass = 0;
+      v17[1].monitor = 0;
+      v22 = *v20;
+      v23 = *pos;
+      *(v22 + 16) = Byte2Float(Interface, v23);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *v20;
+      *(v26 + 20) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *v20;
+      *(v29 + 24) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *v20;
+      *(v32 + 28) = Byte2Float(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *v20;
+      *(v35 + 32) = Byte2UInt32(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      *(*v20 + 36LL) = *(Interface + v36 + 32);
+      v39 = *pos + 4;
+      *pos = v39;
+      v41 = *v20;
+      *(v41 + 40) = Byte2UInt32(Interface, v39);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *v20;
+      *(v44 + 44) = Byte2UInt32(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *v20;
+      *(v47 + 48) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *v20;
+      *(v50 + 52) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *v20;
+      *(v53 + 56) = Byte2UInt32(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *v20;
+      *(v56 + 60) = Byte2UInt32(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *v20;
+      *(v59 + 64) = Byte2Float(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *v20;
+      *(v62 + 68) = Byte2Float(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *v20;
+      *(v65 + 72) = Byte2Float(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *v20;
+      *(v68 + 76) = Byte2Float(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *v20;
+      *(v71 + 80) = Byte2Float(Interface, v69);
+      v72 = *pos + 4;
+      *pos = v72;
+      v74 = *v20;
+      *(v74 + 84) = Byte2Float(Interface, v72);
+      v75 = *pos + 4;
+      *pos = v75;
+      v77 = *v20;
+      *(v77 + 88) = Byte2Float(Interface, v75);
+      v78 = *pos + 4;
+      *pos = v78;
+      v80 = *v20;
+      *(v80 + 92) = Byte2Float(Interface, v78);
+      v81 = *pos + 4;
+      *pos = v81;
+      v83 = *v20;
+      *(v83 + 96) = Byte2Float(Interface, v81);
+      v84 = *pos + 4;
+      *pos = v84;
+      v86 = *v20;
+      *(v86 + 100) = Byte2Float(Interface, v84);
+      v87 = *pos + 4;
+      *pos = v87;
+      v89 = *v20;
+      *(v89 + 104) = Byte2UInt32(Interface, v87);
+      v90 = *pos + 4;
+      *pos = v90;
+      v92 = *v20;
+      *(v92 + 108) = Byte2UInt32(Interface, v90);
+      v93 = *pos + 4;
+      *pos = v93;
+      v95 = *v20;
+      *(v95 + 112) = Byte2UInt32(Interface, v93);
+      v96 = *pos + 4;
+      *pos = v96;
+      v98 = *v20;
+      *(v98 + 116) = Byte2UInt32(Interface, v96);
+      *pos += 4;
+      v100 = *v20;
+      v101 = 0;
+      *(v100 + 120) = NewSpecific(uint, 0x20u);
+      do
+      {
+        v104 = *pos;
+        v105 = *(*v20 + 120LL);
+        v106 = Byte2UInt32(Interface, v104);
+        v108 = v105 + 4 * v101++;
+        *(v108 + 32) = v106;
+        *pos += 4;
+      }
+      while (v101 != 32);
+      ++v13;
+    }
+    while (v13 != v110);
+  }
+  return v8;
 }
 
 // 0x1a4ccc0
 effPCP_BED_Param_t **effPCP_BED_Param_t__pCopy(effPCP_BED_Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  u64 v28[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCP_BED_Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v28);
+      if ((v28[0] & 1) != 0)
+        v12 = v28[2];
+      else
+        v12 = v28 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCP_BED_Param_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2UInt32(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2UInt32(Interface, v24);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a4cf80
 effPCP_HBED2_Param_t **effPCP_HBED2_Param_t__pCopy(effPCP_HBED2_Param_t *this, void *pData, s32 *pos, s32 max) {
-    effPCPHelperBEDParam_t__pCopy(0, 0, 0, 0);
-    return 0;
+  u32 *v8;
+  Il2CppClass *v9;
+  s64 *Interface;
+  char *v11;
+  s64 *v12;
+  u64 v13;
+  Il2CppObject *v15;
+  u64 *v17;
+  effPCPHelperBEDParam_t_o *v18;
+  u64 v22[3];
+
+  v8 = NewSpecific(effPCP_HBED2_Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v9, v22);
+      if ((v22[0] & 1) != 0)
+        v11 = v22[2];
+      else
+        v11 = v22 + 1;
+      v12 = sub_8C4940(v11);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v13 = 0;
+    do
+    {
+      v15 = Allocate(effPCP_HBED2_Param_t);
+      _ctor(v15, 0);
+      *&v8[2 * v13 + 8] = v15;
+      v17 = Allocate(effPCPHelperBEDParam_t);
+      _ctor(v17, 0);
+      v15[1].klass = v17;
+      effPCPHelperBEDParam_t__pCopy(v18, Interface, pos, max);
+      ++v13;
+    }
+    while (max != v13);
+  }
+  return v8;
 }
 
 // 0x1a4d1b0
 effPCP_PBCamera_Param_t **effPCP_PBCamera_Param_t__pCopy(effPCP_PBCamera_Param_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  u64 *v15;
+  s32 v17;
+  u64 v21[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCP_PBCamera_Param_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v21);
+      if ((v21[0] & 1) != 0)
+        v12 = v21[2];
+      else
+        v12 = v21 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      v15 = Allocate(effPCP_PBCamera_Param_t);
+      _ctor(v15, 0);
+      *&v9[2 * v14 + 8] = v15;
+      v17 = *pos;
+      *(v15 + 4) = Byte2UInt32(Interface, v17);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a4db70
@@ -5573,14 +15752,215 @@ void effPCP_ThunderColumnPolyLowParam_t__pClone(effPCP_ThunderColumnPolyLowParam
 
 // 0x1a4d3f0
 effPCP_ThunderColumnPolyLowParam_t **effPCP_ThunderColumnPolyLowParam_t__pCopy(effPCP_ThunderColumnPolyLowParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    effPCP_ThunderPolyParam_t__pCopy(0, 0, 0, 0);
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  effPCP_ThunderColumnPolyLowParam_t_array *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 v14;
+  il2cpp_array_size_t *p_max_length;
+  u64 *v17;
+  s64 v20;
+  s32 v21;
+  s32 v22;
+  s64 v24;
+  s32 v25;
+  s64 v27;
+  s32 v28;
+  s64 v30;
+  s64 v32;
+  u64 *v33;
+  effPCP_ThunderPolyParam_t_o *v34;
+  s32 v35;
+  s64 v39;
+  s32 v40;
+  s64 v42;
+  s32 v43;
+  s32 v46;
+  s64 v48;
+  s32 v49;
+  s64 v51;
+  s32 v52;
+  s64 v54;
+  s32 v55;
+  s64 v57;
+  s32 v58;
+  s64 v60;
+  s32 v61;
+  s64 v63;
+  s32 v64;
+  s64 v66;
+  s32 v67;
+  s64 v69;
+  s32 v70;
+  s64 v72;
+  s32 v73;
+  s64 v75;
+  s32 v76;
+  s64 v78;
+  s32 v79;
+  s64 v81;
+  s32 v82;
+  s64 v84;
+  u64 v86[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCP_ThunderColumnPolyLowParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v86);
+      if ((v86[0] & 1) != 0)
+        v12 = v86[2];
+      else
+        v12 = v86 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = 0;
+    p_max_length = &v9->max_length;
+    do
+    {
+      v17 = Allocate(effPCP_ThunderColumnPolyLowParam_t);
+      _ctor(v17, 0);
+      v20 = &v9->m_Items[v14];
+      *v20 = v17;
+      v21 = *pos;
+      *(v17 + 4) = Byte2Float(Interface, v21);
+      v22 = *pos + 4;
+      *pos = v22;
+      v24 = *v20;
+      *(v24 + 20) = Byte2Float(Interface, v22);
+      v25 = *pos + 4;
+      *pos = v25;
+      v27 = *v20;
+      *(v27 + 24) = Byte2Float(Interface, v25);
+      v28 = *pos + 4;
+      *pos = v28;
+      v30 = *v20;
+      *(v30 + 28) = Byte2Float(Interface, v28);
+      *pos += 4;
+      v32 = *v20;
+      v33 = Allocate(effPCP_ThunderPolyParam_t);
+      _ctor(v33, 0);
+      *(v32 + 32) = v33;
+      effPCP_ThunderPolyParam_t__pCopy(v34, Interface, pos, v35);
+      *pos = 0;
+      v39 = *v20;
+      *(v39 + 40) = Byte2Float(Interface, 0);
+      v40 = *pos + 4;
+      *pos = v40;
+      v42 = *v20;
+      *(v42 + 44) = Byte2UInt32(Interface, v40);
+      v43 = *pos + 4;
+      *pos = v43;
+      *(*v20 + 48LL) = *(Interface + v43 + 32);
+      v46 = *pos + 4;
+      *pos = v46;
+      v48 = *v20;
+      *(v48 + 52) = Byte2UInt32(Interface, v46);
+      v49 = *pos + 4;
+      *pos = v49;
+      v51 = *v20;
+      *(v51 + 56) = Byte2UInt32(Interface, v49);
+      v52 = *pos + 4;
+      *pos = v52;
+      v54 = *v20;
+      *(v54 + 60) = Byte2UInt32(Interface, v52);
+      v55 = *pos + 4;
+      *pos = v55;
+      v57 = *v20;
+      *(v57 + 64) = Byte2UInt32(Interface, v55);
+      v58 = *pos + 4;
+      *pos = v58;
+      v60 = *v20;
+      *(v60 + 68) = Byte2Float(Interface, v58);
+      v61 = *pos + 4;
+      *pos = v61;
+      v63 = *v20;
+      *(v63 + 72) = Byte2Float(Interface, v61);
+      v64 = *pos + 4;
+      *pos = v64;
+      v66 = *v20;
+      *(v66 + 76) = Byte2Float(Interface, v64);
+      v67 = *pos + 4;
+      *pos = v67;
+      v69 = *v20;
+      *(v69 + 80) = Byte2Float(Interface, v67);
+      v70 = *pos + 4;
+      *pos = v70;
+      v72 = *v20;
+      *(v72 + 84) = Byte2Float(Interface, v70);
+      v73 = *pos + 4;
+      *pos = v73;
+      v75 = *v20;
+      *(v75 + 88) = Byte2Float(Interface, v73);
+      v76 = *pos + 4;
+      *pos = v76;
+      v78 = *v20;
+      *(v78 + 92) = Byte2Float(Interface, v76);
+      v79 = *pos + 4;
+      *pos = v79;
+      v81 = *v20;
+      *(v81 + 96) = Byte2Float(Interface, v79);
+      v82 = *pos + 4;
+      *pos = v82;
+      v84 = *v20;
+      *(v84 + 100) = Byte2Float(Interface, v82);
+      ++v14;
+      *pos += 4;
+    }
+    while (v8 != v14);
+  }
+  return v9;
 }
 
 // 0x1a4dd00
 void effPCP_ThunderPolyListParam_t__Clear(effPCP_ThunderPolyListParam_t *this) {
+  struct UnityEngine_Vector4_array *pos;
+  s64 v4;
+  u64 v5;
+  s32 v6;
+  s32 v7;
+  s32 v8;
+  u32 *v10;
+  s64 v11;
+  s64 v12;
+
+  pos = NewSpecific(UnityEngine_Vector4, 0xAu);
+  v4 = 0;
+  v5 = 0;
+  this->pos = pos;
+  while (1)
+  {
+    v11 = 0;
+    v12 = 0;
+    sub_854690(&v11, 0.0, 0.0, 0.0, 0.0);
+    v6 = HIDWORD(v11);
+    v8 = v12;
+    v7 = HIDWORD(v12);
+    v10 = (pos + v4);
+    v10[8] = v11;
+    v10[9] = v6;
+    v10[10] = v8;
+    v10[11] = v7;
+    if (v5 == 9)
+      break;
+    pos = this->pos;
+    ++v5;
+    v4 += 16;
+  }
+  this->point = 0;
+  this->TPParam = 0;
 }
 
 // 0x1a4de00
@@ -5719,16 +16099,222 @@ void effPCP_ThunderPolyParam_t__pClone(effPCP_ThunderPolyParam_t *this, effPCP_T
 
 // 0x1a38010
 effPCP_ThunderPolyParam_t *effPCP_ThunderPolyParam_t__pCopy(effPCP_ThunderPolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    Byte2UInt16(0, 0);
-    return 0;
+  u64 *v7;
+  Il2CppClass *v8;
+  s64 *Interface;
+  char *v10;
+  s64 *v11;
+  u64 *v12;
+  u64 v15;
+  s32 v16;
+  f32 v17;
+  s32 v19;
+  u64 v20;
+  f32 v21;
+  s32 v23;
+  u64 v24;
+  f32 v25;
+  s32 v27;
+  u64 v28;
+  f32 v30;
+  u64 v32;
+  u64 v34;
+  s32 v35;
+  f32 v36;
+  s32 v38;
+  u64 v39;
+  f32 v40;
+  s32 v42;
+  u64 v43;
+  f32 v44;
+  s32 v46;
+  u64 v47;
+  f32 v49;
+  s32 v51;
+  s32 v52;
+  s32 v53;
+  s32 v54;
+  s32 v55;
+  s32 v56;
+  s32 v57;
+  s32 v58;
+  s32 v59;
+  s32 v60;
+  s32 v61;
+  s32 v62;
+  s32 v63;
+  u64 v65[3];
+
+  v7 = Allocate(effPCP_ThunderPolyParam_t);
+  _ctor(v7, 0);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v8, v65);
+      if ((v65[0] & 1) != 0)
+        v10 = v65[2];
+      else
+        v10 = v65 + 1;
+      v11 = sub_8C4940(v10);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  v12 = NewSpecific(UnityEngine_Vector4, 2u);
+  v7[2] = v12;
+  v12[4] = 0;
+  v12[5] = 0;
+  v15 = v7[2];
+  v16 = *pos;
+  v17 = Byte2Float(Interface, v16);
+  *(v15 + 32) = v17;
+  v19 = *pos + 4;
+  *pos = v19;
+  v20 = v7[2];
+  v21 = Byte2Float(Interface, v19);
+  *(v20 + 36) = v21;
+  v23 = *pos + 4;
+  *pos = v23;
+  v24 = v7[2];
+  v25 = Byte2Float(Interface, v23);
+  *(v24 + 40) = v25;
+  v27 = *pos + 4;
+  *pos = v27;
+  v28 = v7[2];
+  v30 = Byte2Float(Interface, v27);
+  *(v28 + 44) = v30;
+  *pos += 4;
+  v32 = v7[2];
+  *(v32 + 48) = 0;
+  *(v32 + 56) = 0;
+  v34 = v7[2];
+  v35 = *pos;
+  v36 = Byte2Float(Interface, v35);
+  *(v34 + 48) = v36;
+  v38 = *pos + 4;
+  *pos = v38;
+  v39 = v7[2];
+  v40 = Byte2Float(Interface, v38);
+  *(v39 + 52) = v40;
+  v42 = *pos + 4;
+  *pos = v42;
+  v43 = v7[2];
+  v44 = Byte2Float(Interface, v42);
+  *(v43 + 56) = v44;
+  v46 = *pos + 4;
+  *pos = v46;
+  v47 = v7[2];
+  v49 = Byte2Float(Interface, v46);
+  *(v47 + 60) = v49;
+  v51 = *pos + 4;
+  *pos = v51;
+  *(v7 + 6) = Byte2UInt32(Interface, v51);
+  v52 = *pos + 4;
+  *pos = v52;
+  *(v7 + 7) = Byte2UInt32(Interface, v52);
+  v53 = *pos + 4;
+  *pos = v53;
+  *(v7 + 8) = Byte2UInt32(Interface, v53);
+  v54 = *pos + 4;
+  *pos = v54;
+  *(v7 + 9) = Byte2Float(Interface, v54);
+  v55 = *pos + 4;
+  *pos = v55;
+  *(v7 + 10) = Byte2UInt32(Interface, v55);
+  v56 = *pos + 4;
+  *pos = v56;
+  *(v7 + 11) = Byte2UInt32(Interface, v56);
+  v57 = *pos + 4;
+  *pos = v57;
+  *(v7 + 24) = Byte2UInt16(Interface, v57);
+  v58 = *pos + 4;
+  *pos = v58;
+  *(v7 + 13) = Byte2Float(Interface, v58);
+  v59 = *pos + 4;
+  *pos = v59;
+  *(v7 + 14) = Byte2UInt32(Interface, v59);
+  v60 = *pos + 4;
+  *pos = v60;
+  *(v7 + 15) = Byte2Float(Interface, v60);
+  v61 = *pos + 4;
+  *pos = v61;
+  *(v7 + 16) = Byte2UInt32(Interface, v61);
+  v62 = *pos + 4;
+  *pos = v62;
+  *(v7 + 17) = Byte2Float(Interface, v62);
+  v63 = *pos + 4;
+  *pos = v63;
+  *(v7 + 18) = Byte2UInt32(Interface, v63);
+  *pos += 4;
+  return v7;
 }
 
 // 0x1a4df60
 effPCP_ThunderPolyPart_t **effPCP_ThunderPolyPart_t__pCopy(effPCP_ThunderPolyPart_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2UInt32(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  u64 v28[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCP_ThunderPolyPart_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v28);
+      if ((v28[0] & 1) != 0)
+        v12 = v28[2];
+      else
+        v12 = v28 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCP_ThunderPolyPart_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2UInt32(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2UInt32(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2UInt32(Interface, v24);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1a4e8d0
@@ -5738,10 +16324,154 @@ void effPCP_ThunderRadiatePolyParam_t__pClone(effPCP_ThunderRadiatePolyParam_t *
 
 // 0x1a4e230
 effPCP_ThunderRadiatePolyParam_t **effPCP_ThunderRadiatePolyParam_t__pCopy(effPCP_ThunderRadiatePolyParam_t *this, void *pData, s32 *pos, s32 max) {
-    Byte2Float(0, 0);
-    Byte2UInt32(0, 0);
-    Byte2UInt16(0, 0);
-    return 0;
+  s64 v8;
+  u32 *v9;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u32 *v14;
+  u64 v15;
+  u64 *v16;
+  s32 v18;
+  s32 v21;
+  s64 v23;
+  s32 v24;
+  s64 v26;
+  s32 v27;
+  s64 v29;
+  s32 v30;
+  s64 v32;
+  s32 v33;
+  s64 v35;
+  s32 v36;
+  s64 v38;
+  s32 v39;
+  s32 v42;
+  s64 v44;
+  s32 v45;
+  s64 v47;
+  s32 v48;
+  s64 v50;
+  s32 v51;
+  s64 v53;
+  s32 v54;
+  s64 v56;
+  s32 v57;
+  s64 v59;
+  s32 v60;
+  s64 v62;
+  s32 v63;
+  s64 v65;
+  s32 v66;
+  s64 v68;
+  s32 v69;
+  s64 v71;
+  u64 v73[3];
+
+  v8 = max;
+  v9 = NewSpecific(effPCP_ThunderRadiatePolyParam_t, max);
+  if (pData)
+  {
+    Interface = QueryInterface(pData, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pData->klass->_1.element_class, v10, v73);
+      if ((v73[0] & 1) != 0)
+        v12 = v73[2];
+      else
+        v12 = v73 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  if (max >= 1)
+  {
+    v14 = v9 + 8;
+    v15 = 0;
+    do
+    {
+      v16 = Allocate(effPCP_ThunderRadiatePolyParam_t);
+      _ctor(v16, 0);
+      *&v14[2 * v15] = v16;
+      v18 = *pos;
+      *(v16 + 4) = Byte2Float(Interface, v18);
+      v21 = *pos + 4;
+      *pos = v21;
+      v23 = *&v14[2 * v15];
+      *(v23 + 20) = Byte2Float(Interface, v21);
+      v24 = *pos + 4;
+      *pos = v24;
+      v26 = *&v14[2 * v15];
+      *(v26 + 24) = Byte2Float(Interface, v24);
+      v27 = *pos + 4;
+      *pos = v27;
+      v29 = *&v14[2 * v15];
+      *(v29 + 28) = Byte2Float(Interface, v27);
+      v30 = *pos + 4;
+      *pos = v30;
+      v32 = *&v14[2 * v15];
+      *(v32 + 32) = Byte2UInt32(Interface, v30);
+      v33 = *pos + 4;
+      *pos = v33;
+      v35 = *&v14[2 * v15];
+      *(v35 + 36) = Byte2Float(Interface, v33);
+      v36 = *pos + 4;
+      *pos = v36;
+      v38 = *&v14[2 * v15];
+      *(v38 + 40) = Byte2UInt32(Interface, v36);
+      v39 = *pos + 4;
+      *pos = v39;
+      *(*&v14[2 * v15] + 44LL) = *(Interface + v39 + 32);
+      v42 = *pos + 4;
+      *pos = v42;
+      v44 = *&v14[2 * v15];
+      *(v44 + 48) = Byte2Float(Interface, v42);
+      v45 = *pos + 4;
+      *pos = v45;
+      v47 = *&v14[2 * v15];
+      *(v47 + 52) = Byte2UInt32(Interface, v45);
+      v48 = *pos + 4;
+      *pos = v48;
+      v50 = *&v14[2 * v15];
+      *(v50 + 56) = Byte2UInt32(Interface, v48);
+      v51 = *pos + 4;
+      *pos = v51;
+      v53 = *&v14[2 * v15];
+      *(v53 + 60) = Byte2UInt16(Interface, v51);
+      v54 = *pos + 4;
+      *pos = v54;
+      v56 = *&v14[2 * v15];
+      *(v56 + 64) = Byte2Float(Interface, v54);
+      v57 = *pos + 4;
+      *pos = v57;
+      v59 = *&v14[2 * v15];
+      *(v59 + 68) = Byte2UInt32(Interface, v57);
+      v60 = *pos + 4;
+      *pos = v60;
+      v62 = *&v14[2 * v15];
+      *(v62 + 72) = Byte2Float(Interface, v60);
+      v63 = *pos + 4;
+      *pos = v63;
+      v65 = *&v14[2 * v15];
+      *(v65 + 76) = Byte2UInt32(Interface, v63);
+      v66 = *pos + 4;
+      *pos = v66;
+      v68 = *&v14[2 * v15];
+      *(v68 + 80) = Byte2Float(Interface, v66);
+      v69 = *pos + 4;
+      *pos = v69;
+      v71 = *&v14[2 * v15];
+      *(v71 + 84) = Byte2UInt32(Interface, v69);
+      ++v15;
+      *pos += 4;
+    }
+    while (v8 != v15);
+  }
+  return v9;
 }
 
 // 0x1860180
@@ -5772,6 +16502,42 @@ void nbCameraState_Start_t__Clear(nbCameraState_Start_t *this) {
 
 // 0x18602b0
 void nbCamera_t__Clear(nbCamera_t *this) {
+  f32 v3;
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  Il2CppObject *v7;
+  s64 v8;
+  s64 v9;
+  s64 v10;
+  s64 v11;
+
+  v10 = 0;
+  v11 = 0;
+  sub_854690(&v10, 0.0, 0.0, 0.0, 0.0);
+  v4 = *&v11;
+  v3 = *(&v11 + 1);
+  *&this->target.x = v10;
+  this->target.z = v4;
+  this->target.w = v3;
+  v8 = 0;
+  v9 = 0;
+  sub_854690(&v8, 0.0, 0.0, 0.0, 0.0);
+  v6 = *&v9;
+  v5 = *(&v9 + 1);
+  *&this->direction.x = v8;
+  this->direction.z = v6;
+  this->direction.w = v5;
+  *&this->state_old = 0;
+  *&this->phase = 0;
+  *&this->type = 0;
+  *&this->distance = 0;
+  *&this->state_change = 0;
+  v7 = Allocate(nbCameraAnim_t);
+  _ctor(v7, 0);
+  this->anim = v7;
+  v7[1].klass = 0;
+  v7[1].monitor = 0;
 }
 
 // 0x18603a0

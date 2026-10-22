@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effPCPHelperBED_tag {
     effPCPHelperBEDParam_t *param;
-    effPCPHelperBEDPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPHelperBEDPart_tag *pPart;
     sdfMemHandle_t *hPartMem;
     effBTL_t *hBED;
     effPartHandle_t *hHelper;

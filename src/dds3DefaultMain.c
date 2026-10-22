@@ -13,7 +13,7 @@ struct dds3DefaultMain__InitLoad_d__112 {
     char *_langTbl_5__3[8];
     char *_load_tex1_5__4;
     char *_load_tex2_5__5;
-    char __7__wrap5[UNKNOWN_ARRAY_SIZE];
+    char *__7__wrap5;
     s32 __7__wrap6;
     char *_name_5__8;
 };
@@ -66,7 +66,7 @@ void AutoMapDispOn(dds3DefaultMain *this) {
 void Awake(dds3DefaultMain *this) {
   u64 *v5;
 
-  Log(StringLiteral_14716, 0);
+  Log("dds3DefaultMain : Awake()", 0);
   set_targetFrameRate(30);
   set_vSyncCount(2);
   kernelObject = this;
@@ -175,14 +175,177 @@ bool CampBaseOn(dds3DefaultMain *this) {
 
 // 0x152d100
 void CampDispOff(dds3DefaultMain *this, bool titlemode) {
+  UnityEngine_Object_o *campObjBG;
+  UnityEngine_Object_o *campObjUI;
+  UnityEngine_Object_o *campObjCamera;
+  UnityEngine_Transform_o *transform;
+  s64 *Enumerator;
+  s64 v12;
+  UnityEngine_Component_o *v14;
+  s64 v15;
+  s64 typeHierarchyDepth;
+  char *v17;
+  s64 *v18;
+  UnityEngine_GameObject_o *gameObject;
+  s64 *Interface;
+  u64 v21[3];
+
+  campObjBG = this->campObjBG;
+  if (op_Inequality(campObjBG, 0, 0))
+    SetActive(this->campObjBG, 0, 0);
+  campObjUI = this->campObjUI;
+  if (op_Inequality(campObjUI, 0, 0))
+    SetActive(this->campObjUI, 0, 0);
+  campObjCamera = this->campObjCamera;
+  if (op_Inequality(campObjCamera, 0, 0))
+  {
+    SetActive(this->campObjCamera, 0, 0);
+    SetActive(this->AdAdjustObj, 1, 0);
+  }
+  if (!titlemode)
+  {
+    transform = get_transform(this->fldSky, 0);
+    Enumerator = GetEnumerator(transform);
+    while ((sub_69BB0(0, System_Collections_IEnumerator, Enumerator) & 1) != 0)
+    {
+      v12 = sub_69A60(1u, System_Collections_IEnumerator, Enumerator);
+      v14 = v12;
+      if (v12)
+      {
+        v15 = *v12;
+        if (*(*v12 + 288LL) < typeHierarchyDepth
+          || *(*(v15 + 200) + 8 * typeHierarchyDepth - 8) != UnityEngine_Transform)
+        {
+          sub_8FC2C0(*(v15 + 64), UnityEngine_Transform, v21);
+          if ((v21[0] & 1) != 0)
+            v17 = v21[2];
+          else
+            v17 = v21 + 1;
+          v18 = sub_8C4940(v17);
+        }
+      }
+      if (op_Inequality(v14, 0, 0))
+      {
+        gameObject = get_gameObject(v14);
+        SetActive(gameObject, 1, 0);
+      }
+    }
+    Interface = QueryInterface(Enumerator, System_IDisposable);
+    if (Interface)
+      sub_22F10(0, System_IDisposable, Interface);
+  }
 }
 
 // 0x152c960
 void CampDispOn(dds3DefaultMain *this, bool titlemode) {
+  UnityEngine_Object_o *campObjBG;
+  UnityEngine_Object_o *campObjUI;
+  UnityEngine_Object_o *campObjCamera;
+  UnityEngine_Transform_o *transform;
+  s64 *Enumerator;
+  s64 v12;
+  UnityEngine_Component_o *v14;
+  s64 v15;
+  s64 typeHierarchyDepth;
+  char *v17;
+  s64 *v18;
+  UnityEngine_GameObject_o *gameObject;
+  s64 *Interface;
+  u64 v21[3];
+
+  campObjBG = this->campObjBG;
+  if (op_Inequality(campObjBG, 0, 0))
+    SetActive(this->campObjBG, 1, 0);
+  campObjUI = this->campObjUI;
+  if (op_Inequality(campObjUI, 0, 0))
+    SetActive(this->campObjUI, 1, 0);
+  campObjCamera = this->campObjCamera;
+  if (op_Inequality(campObjCamera, 0, 0))
+  {
+    SetActive(this->campObjCamera, 1, 0);
+    SetActive(this->AdAdjustObj, 0, 0);
+  }
+  if (!titlemode)
+  {
+    transform = get_transform(this->fldSky, 0);
+    Enumerator = GetEnumerator(transform);
+    while ((sub_69BB0(0, System_Collections_IEnumerator, Enumerator) & 1) != 0)
+    {
+      v12 = sub_69A60(1u, System_Collections_IEnumerator, Enumerator);
+      v14 = v12;
+      if (v12)
+      {
+        v15 = *v12;
+        if (*(*v12 + 288LL) < typeHierarchyDepth
+          || *(*(v15 + 200) + 8 * typeHierarchyDepth - 8) != UnityEngine_Transform)
+        {
+          sub_8FC2C0(*(v15 + 64), UnityEngine_Transform, v21);
+          if ((v21[0] & 1) != 0)
+            v17 = v21[2];
+          else
+            v17 = v21 + 1;
+          v18 = sub_8C4940(v17);
+        }
+      }
+      if (op_Inequality(v14, 0, 0))
+      {
+        gameObject = get_gameObject(v14);
+        SetActive(gameObject, 0, 0);
+      }
+    }
+    Interface = QueryInterface(Enumerator, System_IDisposable);
+    if (Interface)
+      sub_22F10(0, System_IDisposable, Interface);
+  }
 }
 
 // 0x1530360
 void FieldFilterAlf(dds3DefaultMain *this, f32 alpC) {
+  f32 v5;
+  f32 v6;
+  f32 v7;
+  f32 v8;
+  UnityEngine_Component_o *transform;
+  UnityEngine_Camera_o *Component_GUILayer;
+  UnityEngine_Component_o *v14;
+  UnityEngine_GUILayer_o *v15;
+  s64 v17;
+  s32 Postblur_DrawStop;
+  UnityEngine_Material_o *v22;
+  s32 id_BlendPower;
+  f32 v24;
+  UnityEngine_Color_o v28;
+
+  v5 = alpC / 255.0;
+  v6 = fminf((alpC / 255.0) + 1.0, 1.0);
+  v7 = 0.0;
+  v8 = fmaxf(v6, 0.0);
+  transform = get_transform(this->FieldFilterCamera, 0);
+  Component_GUILayer = GetComponent_GUILayer_(transform);
+  *&v28.r = 0;
+  *&v28.b = 0;
+  sub_19EC630(&v28.r, 0.0, 0.0, 0.0, v8);
+  set_backgroundColor(Component_GUILayer, v28);
+  if (!UnityEx_SkyFilterSkip)
+    goto LABEL_11;
+LABEL_6:
+  UnityEx_SkyFilterSkip = 0;
+LABEL_12:
+  v14 = get_transform(this->fldmapfilter_render, 0);
+  v15 = GetComponent_GUILayer_(v14);
+  v17 = (v15->klass[2]._1.parent)(v15, v15->klass[2]._1.generic_class);
+  if (Postblur_DrawStop < 1)
+  {
+    v22 = v17;
+    v24 = v7;
+  }
+  else
+  {
+    v22 = v17;
+    v24 = 0.0;
+  }
+  SetFloat_27246832(v22, id_BlendPower, v24);
+  Postblur_FilterAlp = v7;
 }
 
 // 0x1530300
@@ -327,7 +490,7 @@ void *GetShadowMapTex(dds3DefaultMain *this) {
     v4 = Allocate(UnityEngine_RenderTexture);
     _ctor_27407296(v4, 512, 512, 16, 0);
     this->ShadowMap = v4;
-    set_name(v4, StringLiteral_14713);
+    set_name(v4, "ShadowMapRT");
     set_filterMode(this->ShadowMap, 1);
     set_wrapMode(this->ShadowMap, 1);
   }
@@ -362,12 +525,12 @@ void InitShadow(dds3DefaultMain *this) {
   UnityEngine_Transform_o *v6;
   UnityEngine_Component_o *v7;
 
-  v3 = Find(StringLiteral_5604, 0);
+  v3 = Find("ShadowCameras", 0);
   transform = get_transform(v3, 0);
-  v5 = Find(transform, StringLiteral_14714, 0);
+  v5 = Find(transform, "ShadowCamera1", 0);
   this->ShadowCamera_1 = get_gameObject(v5);
   v6 = get_transform(v3, 0);
-  v7 = Find(v6, StringLiteral_14715, 0);
+  v7 = Find(v6, "ShadowCamera2", 0);
   this->ShadowCamera_2 = get_gameObject(v7);
   SetShadowMode(this, 0);
 }
@@ -416,7 +579,49 @@ void RenderCameraOn(dds3DefaultMain *this) {
 
 // 0x1530d60
 void SetAreaUI(dds3DefaultMain *this, bool disp, s32 x, s32 y, char *text, u32 rgba) {
-    RepColTag(0, 0);
+  UnityEngine_Object_o *areaUI;
+  bool activeSelf;
+  UnityEngine_Transform_o *transform;
+  TMPro_TMP_Text_o *monitor;
+  System_Object_array *v17;
+  s64 *v18;
+  s64 *v20;
+  System_String_o *v23;
+  UnityEngine_Vector3_o v24;
+  s32 v25;
+
+  v24.z = 0.0;
+  *&v24.x = 0;
+  areaUI = this->areaUI;
+  if (!op_Equality(areaUI, 0, 0))
+  {
+    activeSelf = get_activeSelf(this->areaUI);
+    if (disp)
+    {
+      if (!activeSelf)
+        SetActive(this->areaUI, 1, 0);
+      sub_8524C0(&v24.x, 1920.0, -46.0, 0.0);
+      v24.x = v24.x + x;
+      v24.y = v24.y + y;
+      transform = get_transform(this->areaUI, 0);
+      set_localPosition(transform, v24);
+      monitor = GetComponent_object_(this->areaUI)[1].monitor;
+      v17 = NewSpecific(object, 1u);
+      if (rgba == -253991808)
+        v25 = 9;
+      else
+        v25 = 0;
+      v18 = sub_8D3950(s32, &v25);
+      v20 = v18;
+      v17->m_Items[0] = v20;
+      v23 = RepColTag(text, v17);
+      set_text(monitor, v23);
+    }
+    else if (activeSelf)
+    {
+      SetActive(this->areaUI, 0, 0);
+    }
+  }
 }
 
 // 0x1531fb0
@@ -444,10 +649,91 @@ void SetCameraFar(dds3DefaultMain *this, f32 far) {
 
 // 0x1531110
 void SetEnemyUI(dds3DefaultMain *this, bool disp, s32 x, s32 y, s32 type, bool bad, bool direction, f32 cameraDir, f32 playerDir) {
+  _BOOL4 v12;
+  _BOOL4 v13;
+  UnityEngine_Object_o *enemyUI;
+  bool activeSelf;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *Component_object;
+  UnityEngine_Transform_o *v24;
+  UnityEngine_Transform_o *v25;
+  UnityEngine_Vector3_o v26;
+  UnityEngine_Quaternion_o v27;
+  UnityEngine_Quaternion_o v28;
+
+  v12 = direction;
+  v13 = bad;
+  v26.z = 0.0;
+  *&v26.x = 0;
+  enemyUI = this->enemyUI;
+  if (!op_Equality(enemyUI, 0, 0))
+  {
+    activeSelf = get_activeSelf(this->enemyUI);
+    if (disp)
+    {
+      if (!activeSelf)
+        SetActive(this->enemyUI, 1, 0);
+      sub_8524C0(&v26.x, 1728.0, -918.0, 0.0);
+      v26.x = v26.x + x;
+      v26.y = v26.y + y;
+      transform = get_transform(this->enemyUI, 0);
+      set_localPosition(transform, v26);
+      Component_object = GetComponent_object_(this->enemyUI);
+      SetInteger(Component_object[1].monitor, "compass", type);
+      if (((get_activeSelf(Component_object[2].klass) ^ v13) & 1) != 0)
+        SetActive(Component_object[2].klass, v13, 0);
+      if (((get_activeSelf(Component_object[2].monitor) ^ v12) & 1) != 0)
+        SetActive(Component_object[2].monitor, v12, 0);
+      if (v12)
+      {
+        v24 = get_transform(Component_object[3].klass, 0);
+        {
+        }
+        v27 = Euler(0.0, 0.0, cameraDir);
+        set_rotation(v24, v27);
+        v25 = get_transform(Component_object[3].monitor, 0);
+        v28 = Euler(0.0, 0.0, playerDir);
+        set_rotation(v25, v28);
+      }
+    }
+    else if (activeSelf)
+    {
+      SetActive(this->enemyUI, 0, 0);
+    }
+  }
 }
 
 // 0x1530fa0
 void SetMoonUI(dds3DefaultMain *this, bool disp, s32 x, s32 y, s32 type) {
+  UnityEngine_Object_o *moonUI;
+  bool activeSelf;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *Component_object;
+  UnityEngine_Vector3_o v15;
+
+  v15.z = 0.0;
+  *&v15.x = 0;
+  moonUI = this->moonUI;
+  if (!op_Equality(moonUI, 0, 0))
+  {
+    activeSelf = get_activeSelf(this->moonUI);
+    if (disp)
+    {
+      if (!activeSelf)
+        SetActive(this->moonUI, 1, 0);
+      sub_8524C0(&v15.x, 40.0, -36.0, 0.0);
+      v15.x = v15.x + x;
+      v15.y = v15.y + y;
+      transform = get_transform(this->moonUI, 0);
+      set_localPosition(transform, v15);
+      Component_object = GetComponent_object_(this->moonUI);
+      SetInteger(Component_object[1].monitor, "moon", type);
+    }
+    else if (activeSelf)
+    {
+      SetActive(this->moonUI, 0, 0);
+    }
+  }
 }
 
 // 0x1531f80
@@ -458,6 +744,35 @@ void SetNormalFrameRate(dds3DefaultMain *this) {
 
 // 0x1531380
 void SetRadarUI(dds3DefaultMain *this, bool disp, s32 x, s32 y, s32 type) {
+  UnityEngine_Object_o *radarUI;
+  bool activeSelf;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *Component_object;
+  UnityEngine_Vector3_o v15;
+
+  v15.z = 0.0;
+  *&v15.x = 0;
+  radarUI = this->radarUI;
+  if (!op_Equality(radarUI, 0, 0))
+  {
+    activeSelf = get_activeSelf(this->radarUI);
+    if (disp)
+    {
+      if (!activeSelf)
+        SetActive(this->radarUI, 1, 0);
+      sub_8524C0(&v15.x, 148.0, -950.0, 0.0);
+      v15.x = v15.x + x;
+      v15.y = v15.y + y;
+      transform = get_transform(this->radarUI, 0);
+      set_localPosition(transform, v15);
+      Component_object = GetComponent_object_(this->radarUI);
+      SetInteger(Component_object[1].monitor, "farea", type);
+    }
+    else if (activeSelf)
+    {
+      SetActive(this->radarUI, 0, 0);
+    }
+  }
 }
 
 // 0x1531c10
@@ -490,6 +805,7 @@ void SetShadowMode(dds3DefaultMain *this, s32 mode) {
       set_cullingMask(Component_object, v12 | 0x8000);
       ShadowCamera_2 = this->ShadowCamera_2;
       v10 = 0;
+      goto LABEL_6;
     case 1:
     case 2:
       SetActive(this->ShadowCamera_1, 1, 0);
@@ -499,16 +815,20 @@ void SetShadowMode(dds3DefaultMain *this, s32 mode) {
       set_cullingMask(Component_object, v8 & 0xFFFF7FFF);
       ShadowCamera_2 = this->ShadowCamera_2;
       v10 = 1;
+LABEL_6:
       SetActive(ShadowCamera_2, v10, 0);
       v13 = get_cullingMask(v6);
       set_cullingMask(v6, v13 & 0xFFFFDFFF);
       v14 = get_cullingMask(v6) | 0x8000;
+      goto LABEL_10;
     case 3:
       ShadowCamera_1 = this->ShadowCamera_1;
       v16 = 1;
+      goto LABEL_9;
     case 4:
       ShadowCamera_1 = this->ShadowCamera_1;
       v16 = 0;
+LABEL_9:
       SetActive(ShadowCamera_1, v16, 0);
       v17 = get_cullingMask(Component_object);
       set_cullingMask(Component_object, v17 | 0x2000);
@@ -518,6 +838,7 @@ void SetShadowMode(dds3DefaultMain *this, s32 mode) {
       v19 = get_cullingMask(v6);
       set_cullingMask(v6, v19 & 0xFFFFDFFF);
       v14 = get_cullingMask(v6) & 0xFFFF7FFF;
+LABEL_10:
       set_cullingMask(v6, v14);
       break;
     default:
@@ -540,7 +861,7 @@ void Start(dds3DefaultMain *this) {
   dds3DefaultMain__InitLoad_d__112_o *v7;
   UnityEngine_GameObject_o *gameObject;
 
-  Log(StringLiteral_14717, 0);
+  Log("dds3DefaultMain : Start()", 0);
   InitShadow(this);
   HighContrastTextureInit();
   Load(saveData, 0);

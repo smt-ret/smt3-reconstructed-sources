@@ -908,13 +908,13 @@ struct nbActionProcessData_t {
     s32 motse;
     s32 motionO;
     effBTL_t *hEffBTL;
-    u8 hBed[UNKNOWN_ARRAY_SIZE];
+    u8 *hBed;
     fileHandle_t *hSkillSe;
     sdfMemHandle_t *hSkillMem;
     u32 skillmidi;
     char *se0_name;
     char *se1_name;
-    void pTexture[UNKNOWN_ARRAY_SIZE];
+    void *pTexture;
     nbTimeList_t *timelist[32];
     u32 packettime;
     s32 hitstopframe;
@@ -925,20 +925,20 @@ struct nbActionProcessData_t {
 };
 
 struct nbMainProcessData_t {
-    nbFormation_t form[UNKNOWN_ARRAY_SIZE];
-    datUnitWork_t enemyunit[UNKNOWN_ARRAY_SIZE];
-    nbParty_t party[UNKNOWN_ARRAY_SIZE];
+    nbFormation_t *form;
+    datUnitWork_t *enemyunit;
+    nbParty_t *party;
     s16 playerpcnt;
     s16 enemypcnt;
     s16 activeunit;
-    nbSound_t sound[UNKNOWN_ARRAY_SIZE];
+    nbSound_t *sound;
     sdfMemHandle_t *sound_mem;
     s32 encpackno;
     s32 packno;
     s32 packindex;
     s32 encno;
     s32 formationtype;
-    nbActionStack_t actionstack[UNKNOWN_ARRAY_SIZE];
+    nbActionStack_t *actionstack;
     s32 actionstackp;
     u32 endtype;
     s8 order[12];

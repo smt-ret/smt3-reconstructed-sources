@@ -123,6 +123,8 @@ void fclDrawCaption(fclPanelPos_t *pPos, char *pStr, u32 OtNo) {
   if (!SmallFontFRQ2_20603280)
   {
     v16 = 32;
+      goto LABEL_16;
+    goto LABEL_13;
   }
   v12 = 0;
   prev = SmallFontFRQ2_20603280;
@@ -136,7 +138,9 @@ void fclDrawCaption(fclPanelPos_t *pPos, char *pStr, u32 OtNo) {
   while (prev);
   v16 = v12 + 32;
   {
+LABEL_13:
   }
+LABEL_16:
   v19 = CMP_XM(0);
   Y = pPos->Y;
   Z = pPos->Z;
@@ -161,25 +165,84 @@ void fclDrawCaption2(fclPanelPos_t *pPos, char *pStr, sdfTexHandle_t **pTexHandl
 
 // 0x1199b40
 void fclDrawItemNums(fclPanelPos_t *pPos, u16 ItemID, u32 OtNo) {
-    fclInitPanelPos(0, 0, 0, 0, 0, 0, 0);
-    frSetMessageStepY(0);
-    frSetMessageDefStepY();
-    CMP_XM(0);
-    CMP_YM(0);
-    frwGetNumFontFRQ_20604240(0, 0, 0, 0, 0, 0);
-    frDrawFontEx2(0, 0, 0);
-    frDestroyFontRequestAfter(0);
-    fclChkItemHearts(0);
+  u64 *v7;
+  s32 X;
+  s32 Y;
+  u32 Z;
+  s32 v14;
+  s32 v16;
+  u32 v17;
+  _FRQ_o *NumFontFRQ_20604240;
+  s32 v19;
+  _FRQ_o *v20;
+  s32 v22;
+  struct System_Byte_array *item;
+  u64 *v26;
+  System_String_o *v28;
+  s32 v29;
+  s32 v31;
+  s32 v32;
+  _FRQ_o *v34;
+  s32 v35;
+
+  v7 = Allocate(fclPanelPos_t);
+  fclPanelPos_t___ctor(v7);
+  X = pPos->X;
+  Y = pPos->Y;
+  Z = pPos->Z;
+  fclInitPanelPos(X, Y, Z, 0, 0, 0, v7);
+  frSetMessageStepY(47);
+  cmpDrawHelp(v7, ItemID, 1, 1, 256, 0x51u);
+  frSetMessageDefStepY();
+  v14 = CMP_XM(57);
+  v16 = CMP_YM(71);
+  v17 = pPos->Z;
+  NumFontFRQ_20604240 = frwGetNumFontFRQ_20604240(v14 + X, v16 + Y, 16 * v17, 0xA0F0EB80, "所持数", 0);
+  frDrawFontEx2(NumFontFRQ_20604240, 1, OtNo);
+  frDestroyFontRequestAfter(NumFontFRQ_20604240);
+  LODWORD(NumFontFRQ_20604240) = CMP_XM(150);
+  v19 = CMP_YM(71);
+  v20 = frwGetNumFontFRQ_20604240(NumFontFRQ_20604240 + X, v19 + Y, 16 * pPos->Z, 0xA0F0EB80, "個", 0);
+  frDrawFontEx2(v20, 1, OtNo);
+  frDestroyFontRequestAfter(v20);
+  if (fclChkItemHearts(ItemID))
+  {
+    v22 = 0;
+  }
+  else
+  {
+    item = DDS3_GBWK->item;
+    v22 = item->m_Items[ItemID];
+  }
+  v35 = v22;
+  v26 = sub_8D3950(s32, &v35);
+  v28 = Format("{0,2:D}", v26, 0);
+  v29 = CMP_XM(123);
+  v31 = CMP_YM(71);
+  v32 = pPos->Z;
+  v34 = frwGetNumFontFRQ_20604240(v29 + X, v31 + Y, v32, 0xA0F0EB80, v28, 0);
+  frDrawFontEx2(v34, 1, OtNo);
+  frDestroyFontRequestAfter(v34);
 }
 
 // 0x1199210
 void fclDrawNumsCenterTargetX(s32 X, s32 Y, u32 Z, u32 Col, s32 Val, u32 OtNo) {
-    frwGetSmallNumFontFRQ_20603536(0, 0, 0, 0, 0, 0);
-    FR_STR_WIDTH(0);
-    CMP_XM(0);
-    frSetDrawPosition(0, 0, 0);
-    frDrawFontEx2(0, 0, 0);
-    frDestroyFontRequestAfter(0);
+  u64 *v13;
+  System_String_o *v14;
+  _FRQ_o *SmallNumFontFRQ_20603536;
+  s32 v18;
+  s32 v19;
+  s32 v20;
+
+  v20 = Val;
+  v13 = sub_8D3950(s32, &v20);
+  v14 = Format("{0:D}", v13, 0);
+  SmallNumFontFRQ_20603536 = frwGetSmallNumFontFRQ_20603536(X, Y, Z, Col, v14, 0);
+  v18 = FR_STR_WIDTH(SmallNumFontFRQ_20603536);
+  v19 = CMP_XM(v18 >> 1);
+  frSetDrawPosition(SmallNumFontFRQ_20603536, X - v19, Y);
+  frDrawFontEx2(SmallNumFontFRQ_20603536, 1, OtNo);
+  frDestroyFontRequestAfter(SmallNumFontFRQ_20603536);
 }
 
 // 0x11997c0
@@ -529,12 +592,81 @@ void fclDrawStrCenterTarget(s32 X, s32 Y, u32 Z, u16 W, u16 H, u32 Col, s8 pStr,
 
 // 0x1199f10
 void fclDrawTotalMoney(fclPanelPos_t *pPos, u32 Color, u32 OtNo) {
-    CMP_XM(0);
-    CMP_YM(0);
-    fclDrawPartsEx3(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    frwGetNumFontFRQ_20604240(0, 0, 0, 0, 0, 0);
-    frDrawFontEx2(0, 0, 0);
-    frDestroyFontRequestAfter(0);
+  System_UInt32_array *v7;
+  u32 max_length;
+  System_UInt32_array *v10;
+  s32 v12;
+  s32 Y;
+  s32 v14;
+  s32 v16;
+  u32 Z;
+  sdfTexHandle_t_array *cmpTex;
+  fclSprTblArry_t_array *pSprTblArry;
+  s32 v22;
+  s32 v23;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  s32 v27;
+  s32 v28;
+  s32 v29;
+  s32 v30;
+  s32 v31;
+  u64 *v34;
+  System_String_o *v35;
+  s32 v36;
+  System_String_o *v37;
+  s32 v38;
+  s32 v39;
+  s32 v40;
+  s32 v41;
+  _FRQ_o *NumFontFRQ_20604240;
+  s32 X;
+  u8 v51;
+  u32 v52;
+  s32 maka;
+
+  v7 = NewSpecific(uint, 4u);
+  max_length = v7->max_length;
+  v10 = v7;
+  v7->m_Items[0] = Color;
+  v7->m_Items[1] = Color;
+  v7->m_Items[2] = Color;
+  v52 = OtNo;
+  v7->m_Items[3] = Color;
+  X = pPos->X;
+  v12 = CMP_XM(269);
+  Y = pPos->Y;
+  v14 = v12;
+  v16 = CMP_YM(15);
+  Z = pPos->Z;
+  v51 = Color;
+  pSprTblArry = cmpSprTblArry;
+  fclDrawPartsEx3(v14 + X, v16 + Y, 16 * Z, 1u, v10, 0xAu, 0, cmpTex, pSprTblArry, v52);
+  v22 = pPos->X;
+  v23 = CMP_XM(269);
+  v24 = pPos->Y;
+  v25 = v23;
+  v26 = CMP_YM(15);
+  fclDrawPartsEx3(v25 + v22, v26 + v24, 16 * pPos->Z, 1u, v10, 0xAu, 0xCu, cmpTex, cmpSprTblArry, v52);
+  v27 = pPos->X;
+  v28 = CMP_XM(484);
+  v29 = pPos->Y;
+  v30 = v28;
+  v31 = CMP_YM(22);
+  fclDrawPartsEx3(v30 + v27, v31 + v29, 16 * pPos->Z, 1u, v10, 0xAu, 1u, cmpTex, cmpSprTblArry, v52);
+  maka = DDS3_GBWK->maka;
+  v34 = sub_8D3950(s32, &maka);
+  v35 = Format("{0,7}", v34, 0);
+  v36 = pPos->X;
+  v37 = v35;
+  v38 = CMP_XM(388);
+  v39 = pPos->X;
+  v40 = v38;
+  v41 = CMP_YM(22);
+  NumFontFRQ_20604240 = frwGetNumFontFRQ_20604240(v40 + v36, v41 + v39, pPos->Z, v51 | 0xA09DC300, v37, 0);
+  frDrawFontEx2(NumFontFRQ_20604240, 1, v52);
+  frDestroyFontRequestAfter(NumFontFRQ_20604240);
 }
 
 // 0x1197f00

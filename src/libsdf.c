@@ -192,26 +192,144 @@ void SDF_VU0__ADDVECTOR_C_A(void) {
 
 // 0x15acd20
 void SDF_VU0__APPLYMATRIX(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_A.x;
+  y = vct_A.y;
+  z = vct_A.z;
+  w = vct_A.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  vct_A = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15acf30
 void SDF_VU0__APPLYMATRIX_B(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_B.x;
+  y = vct_B.y;
+  z = vct_B.z;
+  w = vct_B.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  vct_B = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15ad280
 void SDF_VU0__APPLYMATRIX_XYZ(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  vct_A.w = 0.0;
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_A.x;
+  y = vct_A.y;
+  z = vct_A.z;
+  w = vct_A.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  vct_A = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15ad040
 void SDF_VU0__APPLYMATRIX_XYZ1(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  vct_A.w = 1.0;
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_A.x;
+  y = vct_A.y;
+  z = vct_A.z;
+  w = vct_A.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  vct_A = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15ad160
 void SDF_VU0__APPLYMATRIX_XYZ1_B(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  vct_B.w = 1.0;
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_B.x;
+  y = vct_B.y;
+  z = vct_B.z;
+  w = vct_B.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  vct_B = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15ad390
 void SDF_VU0__APPLYMATRIX_XYZ_B(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  vct_B.w = 0.0;
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_B.x;
+  y = vct_B.y;
+  z = vct_B.z;
+  w = vct_B.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  vct_B = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15ae7f0
@@ -374,80 +492,62 @@ void SDF_VU0__COPYVECTOR(sdfVector4_t *dst, sdfVector4_t src) {
 
 // 0x15aba80
 void SDF_VU0__COPYVECTOR_A_TO_B(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_B.x = *&static_fields->vct_A.x;
-  w = static_fields->vct_A.w;
-  static_fields->vct_B.z = static_fields->vct_A.z;
-  static_fields->vct_B.w = w;
+  *&vct_B.x = *&vct_A.x;
+  w = vct_A.w;
+  vct_B.z = vct_A.z;
+  vct_B.w = w;
 }
 
 // 0x15abb00
 void SDF_VU0__COPYVECTOR_A_TO_C(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_C.x = *&static_fields->vct_A.x;
-  w = static_fields->vct_A.w;
-  static_fields->vct_C.z = static_fields->vct_A.z;
-  static_fields->vct_C.w = w;
+  *&vct_C.x = *&vct_A.x;
+  w = vct_A.w;
+  vct_C.z = vct_A.z;
+  vct_C.w = w;
 }
 
 // 0x15abb80
 void SDF_VU0__COPYVECTOR_B_TO_A(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_A.x = *&static_fields->vct_B.x;
-  w = static_fields->vct_B.w;
-  static_fields->vct_A.z = static_fields->vct_B.z;
-  static_fields->vct_A.w = w;
+  *&vct_A.x = *&vct_B.x;
+  w = vct_B.w;
+  vct_A.z = vct_B.z;
+  vct_A.w = w;
 }
 
 // 0x15abc00
 void SDF_VU0__COPYVECTOR_B_TO_C(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_C.x = *&static_fields->vct_B.x;
-  w = static_fields->vct_B.w;
-  static_fields->vct_C.z = static_fields->vct_B.z;
-  static_fields->vct_C.w = w;
+  *&vct_C.x = *&vct_B.x;
+  w = vct_B.w;
+  vct_C.z = vct_B.z;
+  vct_C.w = w;
 }
 
 // 0x15abc80
 void SDF_VU0__COPYVECTOR_C_TO_A(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_A.x = *&static_fields->vct_C.x;
-  w = static_fields->vct_C.w;
-  static_fields->vct_A.z = static_fields->vct_C.z;
-  static_fields->vct_A.w = w;
+  *&vct_A.x = *&vct_C.x;
+  w = vct_C.w;
+  vct_A.z = vct_C.z;
+  vct_A.w = w;
 }
 
 // 0x15abd00
 void SDF_VU0__COPYVECTOR_C_TO_B(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_B.x = *&static_fields->vct_C.x;
-  w = static_fields->vct_C.w;
-  static_fields->vct_B.z = static_fields->vct_C.z;
-  static_fields->vct_B.w = w;
+  *&vct_B.x = *&vct_C.x;
+  w = vct_C.w;
+  vct_B.z = vct_C.z;
+  vct_B.w = w;
 }
 
 // 0x15ae690
@@ -469,33 +569,49 @@ void SDF_VU0__ClipTest(sdfVector4_t reg) {
     v6 = -w;
     if (x >= -w)
     {
+LABEL_5:
       if (y <= w)
+        goto LABEL_6;
+      goto LABEL_13;
     }
   }
   else
   {
     v6 = -w;
     if (x >= -w)
+      goto LABEL_5;
   }
   clip |= 2u;
   if (y <= w)
   {
+LABEL_6:
     if (y >= v6)
+      goto LABEL_7;
+    goto LABEL_14;
   }
+LABEL_13:
   clip |= 4u;
   if (y >= v6)
   {
+LABEL_7:
     if (z <= w)
+      goto LABEL_8;
+    goto LABEL_15;
   }
+LABEL_14:
   clip |= 8u;
   if (z <= w)
   {
+LABEL_8:
     if (z >= v6)
       return;
+    goto LABEL_9;
   }
+LABEL_15:
   clip |= 0x10u;
   if (z >= v6)
     return;
+LABEL_9:
   clip |= 0x20u;
 }
 
@@ -546,7 +662,35 @@ void SDF_VU0__GETCLIPFLAG(s32 *r) {
 
 // 0x15ad9a0
 f32 SDF_VU0__GETLENGTH(void) {
-    return 0;
+  f32 *p_x;
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+  long f64 v8;
+  f64 v9;
+  long f64 v10;
+  UnityEngine_Vector3_o v12;
+  UnityEngine_Vector3_o v13;
+  UnityEngine_Vector4_o v14;
+
+  v12.z = 0.0;
+  *&v12.x = 0;
+  p_x = &vf00.x;
+  v4 = p_x[4];
+  v5 = p_x[5];
+  v7 = p_x[6];
+  v6 = p_x[7];
+  v14.x = v4;
+  v14.y = v5;
+  v14.z = v7;
+  v14.w = v6;
+  v13 = op_Implicit_8738992(v14);
+  *&v9 = v13.x;
+  *&v10 = v13.y;
+  v12 = v13;
+  v8 = sub_8535D0(&v12.x, 0, v9, v10);
+  return *&v8;
 }
 
 // 0x15ab310
@@ -571,18 +715,58 @@ f32 SDF_VU0__GETVECTOR_Z(void) {
 
 // 0x15add90
 void SDF_VU0__GET_ROW0(void) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 0);
+  vct_A.x = v4;
+  vct_A.y = v5;
+  vct_A.z = v6;
+  vct_A.w = v7;
 }
 
 // 0x15ade20
 void SDF_VU0__GET_ROW1(void) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 1u);
+  vct_A.x = v4;
+  vct_A.y = v5;
+  vct_A.z = v6;
+  vct_A.w = v7;
 }
 
 // 0x15adeb0
 void SDF_VU0__GET_ROW2(void) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 2u);
+  vct_A.x = v4;
+  vct_A.y = v5;
+  vct_A.z = v6;
+  vct_A.w = v7;
 }
 
 // 0x15adf40
 void SDF_VU0__GET_ROW3(void) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 3u);
+  vct_A.x = v4;
+  vct_A.y = v5;
+  vct_A.z = v6;
+  vct_A.w = v7;
 }
 
 // 0x15ad610
@@ -688,6 +872,25 @@ void SDF_VU0__ITOF4_B(void) {
 
 // 0x15ace30
 void SDF_VU0__LD_APPLYMATRIX(sdfVector4_t *vec) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vec->x;
+  y = vec->y;
+  z = vec->z;
+  w = vec->w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  *vec = op_Multiply_27264976(&v9, v11);
 }
 
 // 0x15aa1f0
@@ -721,41 +924,32 @@ void SDF_VU0__LOADIDENTITY(void) {
 
 // 0x15aaee0
 void SDF_VU0__LOADIDENTITYVECTOR(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_A.x = *&static_fields->vf00.x;
-  w = static_fields->vf00.w;
-  static_fields->vct_A.z = static_fields->vf00.z;
-  static_fields->vct_A.w = w;
+  *&vct_A.x = *&vf00.x;
+  w = vf00.w;
+  vct_A.z = vf00.z;
+  vct_A.w = w;
 }
 
 // 0x15aaf60
 void SDF_VU0__LOADIDENTITYVECTOR_B(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_A.x = *&static_fields->vf00.x;
-  w = static_fields->vf00.w;
-  static_fields->vct_A.z = static_fields->vf00.z;
-  static_fields->vct_A.w = w;
+  *&vct_A.x = *&vf00.x;
+  w = vf00.w;
+  vct_A.z = vf00.z;
+  vct_A.w = w;
 }
 
 // 0x15aafe0
 void SDF_VU0__LOADIDENTITYVECTOR_C(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 w;
 
-  static_fields = v2->static_fields;
-  *&static_fields->vct_A.x = *&static_fields->vf00.x;
-  w = static_fields->vf00.w;
-  static_fields->vct_A.z = static_fields->vf00.z;
-  static_fields->vct_A.w = w;
+  *&vct_A.x = *&vf00.x;
+  w = vf00.w;
+  vct_A.z = vf00.z;
+  vct_A.w = w;
 }
 
 // 0x15aa2b0
@@ -949,10 +1143,50 @@ void SDF_VU0__LOADVECTOR_C(sdfVector4_t p) {
 
 // 0x15ab820
 void SDF_VU0__LOADVECTOR_MTXCOL(sdfMatrix4_t *p) {
+  s32 v5;
+  s32 v6;
+  s32 v7;
+  s32 v8;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  s32 v12;
+  u32 *p_x;
+
+  sub_1A00070(p, 0);
+  v6 = v5;
+  v8 = v7;
+  v10 = v9;
+  v12 = v11;
+  p_x = &vf00.x;
+  p_x[4] = v6;
+  p_x[5] = v8;
+  p_x[6] = v10;
+  p_x[7] = v12;
 }
 
 // 0x15ab8c0
 void SDF_VU0__LOADVECTOR_MTXCOL_B(sdfMatrix4_t *p) {
+  s32 v5;
+  s32 v6;
+  s32 v7;
+  s32 v8;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  s32 v12;
+  u32 *p_x;
+
+  sub_1A00070(p, 0);
+  v6 = v5;
+  v8 = v7;
+  v10 = v9;
+  v12 = v11;
+  p_x = &vf00.x;
+  p_x[8] = v6;
+  p_x[9] = v8;
+  p_x[10] = v10;
+  p_x[11] = v12;
 }
 
 // 0x15ab6c0
@@ -1035,22 +1269,27 @@ void SDF_VU0__LOADVECTOR_XYZ_B(sdfVector4_t p) {
 
 // 0x15adfd0
 void SDF_VU0__LOAD_ROW0(sdfVector4_t p) {
+  sub_1A00AD0(&mtx_A, 0);
 }
 
 // 0x15ae070
 void SDF_VU0__LOAD_ROW1(sdfVector4_t p) {
+  sub_1A00AD0(&mtx_A, 1u);
 }
 
 // 0x15ae110
 void SDF_VU0__LOAD_ROW2(sdfVector4_t p) {
+  sub_1A00AD0(&mtx_A, 2u);
 }
 
 // 0x15ae1b0
 void SDF_VU0__LOAD_ROW3(sdfVector4_t p) {
+  sub_1A00AD0(&mtx_A, 3u);
 }
 
 // 0x15ae250
 void SDF_VU0__MATRIX_ROW3_W_SET_ONE(void) {
+  sub_19FFD30(&mtx_A, 3, 3);
 }
 
 // 0x15ac890
@@ -1115,7 +1354,6 @@ void SDF_VU0__NORMALIZE(void) {
   f32 v5;
   f32 v6;
   f32 v7;
-  struct sdf_vu0r_StaticFields *static_fields;
   UnityEngine_Vector3_o v10;
   UnityEngine_Vector4_o v11;
   UnityEngine_Vector3_o v12;
@@ -1133,10 +1371,9 @@ void SDF_VU0__NORMALIZE(void) {
   v10 = op_Implicit_8738992(v13);
   v12 = Normalize(v10, 0);
   v11 = op_Implicit(v12, 0);
-  static_fields = sdf_vu0r->static_fields;
-  static_fields->vct_A.x = v11.x;
-  static_fields->vct_A.y = v11.y;
-  static_fields->vct_A.z = v11.z;
+  vct_A.x = v11.x;
+  vct_A.y = v11.y;
+  vct_A.z = v11.z;
 }
 
 // 0x15ad740
@@ -1146,7 +1383,6 @@ void SDF_VU0__OUTERPRODUCT(void) {
   f32 v5;
   f32 v6;
   f32 v7;
-  struct sdf_vu0r_StaticFields *static_fields;
   UnityEngine_Vector3_o v10;
   UnityEngine_Vector3_o v11;
   UnityEngine_Vector4_o v12;
@@ -1166,18 +1402,47 @@ void SDF_VU0__OUTERPRODUCT(void) {
   v11 = op_Implicit_8738992(vct_B);
   v13 = Cross(v10, v11);
   v12 = op_Implicit(v13, 0);
-  static_fields = sdf_vu0r->static_fields;
-  static_fields->vct_A.x = v12.x;
-  static_fields->vct_A.y = v12.y;
-  static_fields->vct_A.z = v12.z;
+  vct_A.x = v12.x;
+  vct_A.y = v12.y;
+  vct_A.z = v12.z;
 }
 
 // 0x15ad4a0
 void SDF_VU0__PERSVECTOR(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  f32 v10;
+  UnityEngine_Matrix4x4_o v12;
+  UnityEngine_Matrix4x4_o v13;
+  UnityEngine_Vector4_o v14;
+  UnityEngine_Vector4_o v15;
+  UnityEngine_Vector4_o v16;
+
+  vct_A.w = 1.0;
+  sub_19FF440(&mtx_A, 0, &v13);
+  x = vct_A.x;
+  y = vct_A.y;
+  z = vct_A.z;
+  w = vct_A.w;
+  v16.x = x;
+  v12 = v13;
+  v16.y = y;
+  v16.z = z;
+  v16.w = w;
+  v14 = op_Multiply_27264976(&v12, v16);
+  v10 = 1.0 / v14.w;
+  v15 = op_Multiply(v14, v10, 0);
+  vct_A.x = v15.x;
+  vct_A.y = v15.y;
+  vct_A.z = v15.z;
+  vct_A.w = v10;
 }
 
 // 0x15ae500
 void SDF_VU0__RESET_ROW3(void) {
+  sub_1A00AD0(&mtx_A, 3u);
 }
 
 // 0x15aeb90
@@ -1213,12 +1478,56 @@ u32 SDF_VU0__Retdds3ColorFtoI(sdfVector4_t rgba, f32 ratio) {
 
 // 0x15aea30
 sdfVector4_t SDF_VU0__Retdds3ColorItoF(u32 rgba, f32 ratio) {
-    return (sdfVector4_t){0};
+  f32 v3;
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+  s64 v12;
+  s64 v13;
+  UnityEngine_Vector4_o result;
+
+  v3 = 1.0 / ratio;
+  v12 = 0;
+  v13 = 0;
+  v4 = BYTE1(rgba);
+  v5 = BYTE2(rgba);
+  v6 = HIBYTE(rgba);
+  v7 = rgba;
+  sub_854690(&v12, v3 * v7, v3 * v4, v3 * v5, v6 * 0.0078125);
+  result.y = *(&v12 + 1);
+  LODWORD(result.x) = v12;
+  result.w = *(&v13 + 1);
+  LODWORD(result.z) = v13;
+  return result;
 }
 
 // 0x15aa760
 void SDF_VU0__SCALE(void) {
-    SDF_VU0__SCALE_XYZ();
+  f32 w;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  UnityEngine_Vector4_o v13;
+
+  SDF_VU0__SCALE_XYZ();
+  sub_1A00880(&mtx_A, 3u);
+  w = vct_A.w;
+  v6 = v5;
+  v8 = v7;
+  v10 = v9;
+  v12 = v11;
+  v13.x = v6;
+  v13.y = v8;
+  v13.z = v10;
+  v13.w = v12;
+  op_Multiply(v13, w, 0);
+  sub_1A00AD0(&mtx_A, 3u);
 }
 
 // 0x15ac980
@@ -1271,14 +1580,110 @@ void SDF_VU0__SCALEVECTOR_B(f32 v) {
 
 // 0x15aa860
 void SDF_VU0__SCALE_XYZ(void) {
+  f32 x;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  UnityEngine_Vector4_o v13;
+  UnityEngine_Vector4_o v14;
+  UnityEngine_Vector4_o v15;
+
+  sub_1A00880(&mtx_A, 0);
+  x = vct_A.x;
+  v6 = v5;
+  v8 = v7;
+  v10 = v9;
+  v12 = v11;
+  v13.x = v6;
+  v13.y = v8;
+  v13.z = v10;
+  v13.w = v12;
+  op_Multiply(v13, x, 0);
+  sub_1A00AD0(&mtx_A, 0);
+  sub_1A00880(&mtx_A, 1u);
+  op_Multiply(v14, vct_A.y, 0);
+  sub_1A00AD0(&mtx_A, 1u);
+  sub_1A00880(&mtx_A, 2u);
+  op_Multiply(v15, vct_A.z, 0);
+  sub_1A00AD0(&mtx_A, 2u);
 }
 
 // 0x15aa9e0
 void SDF_VU0__SCALE_XYZ_REV(void) {
+  f32 *p_x;
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 v13;
+  f32 v14;
+  f32 v15;
+  UnityEngine_Vector4_o v16;
+  UnityEngine_Vector4_o v17;
+  UnityEngine_Vector4_o v18;
+  UnityEngine_Vector4_o v19;
+  UnityEngine_Vector4_o v20;
+  UnityEngine_Vector4_o v21;
+
+  p_x = &vf00.x;
+  v4 = p_x[4];
+  v5 = p_x[5];
+  v6 = p_x[6];
+  sub_1A00880((p_x + 16), 0);
+  v9 = v8;
+  v11 = v10;
+  v13 = v12;
+  v15 = v14;
+  v16.x = v9;
+  v16.y = v11;
+  v16.z = v13;
+  v16.w = v15;
+  v19.x = v4;
+  v19.y = v5;
+  v19.z = v6;
+  v19.w = 1.0;
+  Scale(v16, v19);
+  sub_1A00AD0(&mtx_A, 0);
+  sub_1A00880(&mtx_A, 1u);
+  v20.x = v4;
+  v20.y = v5;
+  v20.z = v6;
+  v20.w = 1.0;
+  Scale(v17, v20);
+  sub_1A00AD0(&mtx_A, 1u);
+  sub_1A00880(&mtx_A, 2u);
+  v21.x = v4;
+  v21.y = v5;
+  v21.z = v6;
+  v21.w = 1.0;
+  Scale(v18, v21);
+  sub_1A00AD0(&mtx_A, 2u);
 }
 
 // 0x15ae5f0
 void SDF_VU0__SETSCALE1VECTOR(void) {
+  f32 v4;
+  f32 v5;
+  s64 v6;
+  s64 v7;
+
+  v6 = 0;
+  v7 = 0;
+  sub_854690(&v6, 1.0, 1.0, 1.0, 0.0);
+  v5 = *&v7;
+  v4 = *(&v7 + 1);
+  *&vct_A.x = v6;
+  vct_A.z = v5;
+  vct_A.w = v4;
 }
 
 // 0x15ab500
@@ -1303,18 +1708,22 @@ void SDF_VU0__SETVECTOR_Z(f32 v) {
 
 // 0x15adb90
 void SDF_VU0__SET_ROW0(void) {
+  sub_1A00AD0(&mtx_A, 0);
 }
 
 // 0x15adc10
 void SDF_VU0__SET_ROW1(void) {
+  sub_1A00AD0(&mtx_A, 1u);
 }
 
 // 0x15adc90
 void SDF_VU0__SET_ROW2(void) {
+  sub_1A00AD0(&mtx_A, 2u);
 }
 
 // 0x15add10
 void SDF_VU0__SET_ROW3(void) {
+  sub_1A00AD0(&mtx_A, 3u);
 }
 
 // 0x15aa370
@@ -1346,15 +1755,13 @@ void SDF_VU0__STOREIDENTITY(sdfMatrix4_t *aMatrix) {
 
 // 0x15ab060
 void SDF_VU0__STOREIDENTITYVECTOR(sdfVector4_t *p) {
-  sdf_vu0r_c *v3;
   struct sdf_vu0r_StaticFields *static_fields;
   s64 v5;
   f32 z;
 
-  static_fields = v3->static_fields;
-  v5 = *&static_fields->vf00.x;
-  z = static_fields->vf00.z;
-  *&static_fields = static_fields->vf00.w;
+  v5 = *&vf00.x;
+  z = vf00.z;
+  *&static_fields = vf00.w;
   *&p->x = v5;
   p->z = z;
   LODWORD(p->w) = static_fields;
@@ -1377,15 +1784,13 @@ void SDF_VU0__STOREMATRIX_C(sdfMatrix4_t *aMatrix) {
 
 // 0x15aac20
 void SDF_VU0__STOREVECTOR(sdfVector4_t *p) {
-  sdf_vu0r_c *v3;
   struct sdf_vu0r_StaticFields *static_fields;
   s64 v5;
   f32 z;
 
-  static_fields = v3->static_fields;
-  v5 = *&static_fields->vct_A.x;
-  z = static_fields->vct_A.z;
-  *&static_fields = static_fields->vct_A.w;
+  v5 = *&vct_A.x;
+  z = vct_A.z;
+  *&static_fields = vct_A.w;
   *&p->x = v5;
   p->z = z;
   LODWORD(p->w) = static_fields;
@@ -1393,15 +1798,13 @@ void SDF_VU0__STOREVECTOR(sdfVector4_t *p) {
 
 // 0x15aad40
 void SDF_VU0__STOREVECTOR_B(sdfVector4_t *p) {
-  sdf_vu0r_c *v3;
   struct sdf_vu0r_StaticFields *static_fields;
   s64 v5;
   f32 z;
 
-  static_fields = v3->static_fields;
-  v5 = *&static_fields->vct_B.x;
-  z = static_fields->vct_B.z;
-  *&static_fields = static_fields->vct_B.w;
+  v5 = *&vct_B.x;
+  z = vct_B.z;
+  *&static_fields = vct_B.w;
   *&p->x = v5;
   p->z = z;
   LODWORD(p->w) = static_fields;
@@ -1409,15 +1812,13 @@ void SDF_VU0__STOREVECTOR_B(sdfVector4_t *p) {
 
 // 0x15aae60
 void SDF_VU0__STOREVECTOR_C(sdfVector4_t *p) {
-  sdf_vu0r_c *v3;
   struct sdf_vu0r_StaticFields *static_fields;
   s64 v5;
   f32 z;
 
-  static_fields = v3->static_fields;
-  v5 = *&static_fields->vct_C.x;
-  z = static_fields->vct_C.z;
-  *&static_fields = static_fields->vct_C.w;
+  v5 = *&vct_C.x;
+  z = vct_C.z;
+  *&static_fields = vct_C.w;
   *&p->x = v5;
   p->z = z;
   LODWORD(p->w) = static_fields;
@@ -1425,18 +1826,58 @@ void SDF_VU0__STOREVECTOR_C(sdfVector4_t *p) {
 
 // 0x15ae2d0
 void SDF_VU0__STORE_ROW0(sdfVector4_t *p) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 0);
+  p->x = v4;
+  p->y = v5;
+  p->z = v6;
+  p->w = v7;
 }
 
 // 0x15ae350
 void SDF_VU0__STORE_ROW1(sdfVector4_t *p) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 1u);
+  p->x = v4;
+  p->y = v5;
+  p->z = v6;
+  p->w = v7;
 }
 
 // 0x15ae3e0
 void SDF_VU0__STORE_ROW2(sdfVector4_t *p) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 2u);
+  p->x = v4;
+  p->y = v5;
+  p->z = v6;
+  p->w = v7;
 }
 
 // 0x15ae470
 void SDF_VU0__STORE_ROW3(sdfVector4_t *p) {
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  f32 v7;
+
+  sub_1A00880(&mtx_A, 3u);
+  p->x = v4;
+  p->y = v5;
+  p->z = v6;
+  p->w = v7;
 }
 
 // 0x15ac3e0
@@ -1611,101 +2052,137 @@ void SDF_VU0__SUBVECTOR_C_A(void) {
 
 // 0x15abd80
 void SDF_VU0__SWAPVECTOR_A_B(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 y;
   f32 z;
   f32 w;
   s64 v7;
   f32 v8;
   f32 v9;
-  struct sdf_vu0r_StaticFields *v10;
 
-  static_fields = v2->static_fields;
-  y = static_fields->vct_B.y;
-  z = static_fields->vct_B.z;
-  w = static_fields->vct_B.w;
-  v7 = *&static_fields->vct_A.x;
-  v8 = static_fields->vct_A.z;
-  v9 = static_fields->vct_A.w;
-  static_fields->vct_A.x = static_fields->vct_B.x;
-  static_fields->vct_A.y = y;
-  static_fields->vct_A.z = z;
-  static_fields->vct_A.w = w;
-  v10 = v2->static_fields;
-  *&v10->vct_B.x = v7;
-  v10->vct_B.z = v8;
-  v10->vct_B.w = v9;
+  y = vct_B.y;
+  z = vct_B.z;
+  w = vct_B.w;
+  v7 = *&vct_A.x;
+  v8 = vct_A.z;
+  v9 = vct_A.w;
+  vct_A.x = vct_B.x;
+  vct_A.y = y;
+  vct_A.z = z;
+  vct_A.w = w;
+  *&vct_B.x = v7;
+  vct_B.z = v8;
+  vct_B.w = v9;
 }
 
 // 0x15abe10
 void SDF_VU0__SWAPVECTOR_A_C(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 y;
   f32 z;
   f32 w;
   s64 v7;
   f32 v8;
   f32 v9;
-  struct sdf_vu0r_StaticFields *v10;
 
-  static_fields = v2->static_fields;
-  y = static_fields->vct_C.y;
-  z = static_fields->vct_C.z;
-  w = static_fields->vct_C.w;
-  v7 = *&static_fields->vct_A.x;
-  v8 = static_fields->vct_A.z;
-  v9 = static_fields->vct_A.w;
-  static_fields->vct_A.x = static_fields->vct_C.x;
-  static_fields->vct_A.y = y;
-  static_fields->vct_A.z = z;
-  static_fields->vct_A.w = w;
-  v10 = v2->static_fields;
-  *&v10->vct_C.x = v7;
-  v10->vct_C.z = v8;
-  v10->vct_C.w = v9;
+  y = vct_C.y;
+  z = vct_C.z;
+  w = vct_C.w;
+  v7 = *&vct_A.x;
+  v8 = vct_A.z;
+  v9 = vct_A.w;
+  vct_A.x = vct_C.x;
+  vct_A.y = y;
+  vct_A.z = z;
+  vct_A.w = w;
+  *&vct_C.x = v7;
+  vct_C.z = v8;
+  vct_C.w = v9;
 }
 
 // 0x15abea0
 void SDF_VU0__SWAPVECTOR_B_C(void) {
-  sdf_vu0r_c *v2;
-  struct sdf_vu0r_StaticFields *static_fields;
   f32 y;
   f32 z;
   f32 w;
   s64 v7;
   f32 v8;
   f32 v9;
-  struct sdf_vu0r_StaticFields *v10;
 
-  static_fields = v2->static_fields;
-  y = static_fields->vct_C.y;
-  z = static_fields->vct_C.z;
-  w = static_fields->vct_C.w;
-  v7 = *&static_fields->vct_B.x;
-  v8 = static_fields->vct_B.z;
-  v9 = static_fields->vct_B.w;
-  static_fields->vct_B.x = static_fields->vct_C.x;
-  static_fields->vct_B.y = y;
-  static_fields->vct_B.z = z;
-  static_fields->vct_B.w = w;
-  v10 = v2->static_fields;
-  *&v10->vct_C.x = v7;
-  v10->vct_C.z = v8;
-  v10->vct_C.w = v9;
+  y = vct_C.y;
+  z = vct_C.z;
+  w = vct_C.w;
+  v7 = *&vct_B.x;
+  v8 = vct_B.z;
+  v9 = vct_B.w;
+  vct_B.x = vct_C.x;
+  vct_B.y = y;
+  vct_B.z = z;
+  vct_B.w = w;
+  *&vct_C.x = v7;
+  vct_C.z = v8;
+  vct_C.w = v9;
 }
 
 // 0x15aa410
 void SDF_VU0__TRANSLATE(void) {
+  f32 x;
+  f32 y;
+  f32 w;
+  f32 z;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Matrix4x4_o v10;
+  UnityEngine_Vector4_o v11;
+
+  sub_19FF440(&mtx_A, 0, &v10);
+  x = vct_A.x;
+  y = vct_A.y;
+  z = vct_A.z;
+  w = vct_A.w;
+  v11.x = x;
+  v9 = v10;
+  v11.y = y;
+  v11.z = z;
+  v11.w = w;
+  op_Multiply_27264976(&v9, v11);
+  sub_1A00AD0(&mtx_A, 3u);
 }
 
 // 0x15aa520
 void SDF_VU0__TRANSLATE_XYZ(void) {
+  f32 x;
+  f32 y;
+  f32 z;
+  UnityEngine_Matrix4x4_o v8;
+  UnityEngine_Matrix4x4_o v9;
+  UnityEngine_Vector4_o v10;
+
+  x = vct_A.x;
+  y = vct_A.y;
+  z = vct_A.z;
+  sub_19FF440(&mtx_A, 0, &v9);
+  v10.w = 1.0;
+  v8 = v9;
+  v10.x = x;
+  v10.y = y;
+  v10.z = z;
+  op_Multiply_27264976(&v8, v10);
+  sub_1A00AD0(&mtx_A, 3u);
 }
 
 // 0x15aa630
 void SDF_VU0__TRANSMATRIX(void) {
+  s64 p_mtx_A;
+  struct UnityEngine_Matrix4x4_o *v4;
+  struct UnityEngine_Matrix4x4_o *v5;
+
+  p_mtx_A = &mtx_A;
+  sub_19FFB10(p_mtx_A, 3, 0);
+  sub_19FFD30(p_mtx_A, 3, 0);
+  v4 = &mtx_A;
+  sub_19FFB10(v4, 3, 1);
+  sub_19FFD30(v4, 3, 1);
+  v5 = &mtx_A;
+  sub_19FFB10(v5, 3, 2);
+  sub_19FFD30(v5, 3, 2);
 }
 
 // 0x15ab0e0
@@ -1769,6 +2246,34 @@ u32 SDF_VU0__dds3ColorFtoI(f32 ratio) {
 
 // 0x15ae940
 void SDF_VU0__dds3ColorItoF(u32 rgba) {
+  f32 v3;
+  f32 v4;
+  f32 v5;
+  f32 v6;
+  s32 v8;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  u32 *p_x;
+  s64 v14;
+  s64 v15;
+
+  v3 = BYTE1(rgba);
+  v14 = 0;
+  v15 = 0;
+  v4 = BYTE2(rgba);
+  v5 = HIBYTE(rgba);
+  v6 = rgba;
+  sub_854690(&v14, v6 * 0.0078125, v3 * 0.0078125, v4 * 0.0078125, v5 * 0.0078125);
+  v9 = v14;
+  v8 = HIDWORD(v14);
+  v11 = v15;
+  v10 = HIDWORD(v15);
+  p_x = &vf00.x;
+  p_x[4] = v9;
+  p_x[5] = v8;
+  p_x[6] = v11;
+  p_x[7] = v10;
 }
 
 // 0x15af880

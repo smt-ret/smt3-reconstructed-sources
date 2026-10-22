@@ -15,12 +15,67 @@ void nbSetAutoImage(bool flag);
 
 // 0xfab0a0
 void *nbAutoCommProcess1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbPanelAutoCheckShow();
-    nbSetAutoImage(0);
-    DDS3_PADCHECK_TRIG(0);
-    nbPlaySe_22541600(0);
-    return 0;
+  Il2CppObject *ProcessData;
+  Il2CppObject *v4;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  s32 monitor_high;
+  bool v15;
+  dds3ProcessID_t_o *v18;
+  u64 v19[3];
+
+  v18 = id;
+  ProcessData = dds3GetProcessData(&v18);
+  v4 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMainProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMainProcessData_t, v19);
+      if ((v19[0] & 1) != 0)
+        v7 = v19[2];
+      else
+        v7 = v19 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  if (nbPanelAutoCheckShow())
+  {
+    nbSetAutoImage((BYTE4(v4[7].monitor) & 0x40) != 0);
+    monitor_high = HIDWORD(v4[7].monitor);
+    if (dds3DebugSign != 1 || (monitor_high & 0x20000000) == 0)
+    {
+      if ((monitor_high & 0x40) != 0)
+      {
+        if (DDS3_PADCHECK_TRIG(3))
+          goto LABEL_39;
+        if (DDS3_PADCHECK_TRIG(2))
+        {
+LABEL_39:
+          HIDWORD(v4[7].monitor) &= ~0x40u;
+          nbPlaySe_22541600("COMSE_SE0B");
+          v15 = 0;
+          goto LABEL_43;
+        }
+      }
+      else
+      {
+        if (DDS3_PADCHECK_TRIG(2))
+        {
+          HIDWORD(v4[7].monitor) |= 0x40u;
+          nbPlaySe_22541600("COMSE_SE0E");
+          v15 = 1;
+LABEL_43:
+          nbSetAutoImage(v15);
+        }
+      }
+    }
+  }
+  return 0;
 }
 
 // 0xfab4a0
@@ -34,7 +89,7 @@ void nbInitAutoCommProcess(nbMainProcessData_t *data) {
     v3,
     0,
     Method_nbAutoCommProcess_nbAutoCommProcess1__);
-  target = dds3StartProcess(StringLiteral_21098, 0x2B0Eu, 1, 1, v3, 0, 0, 0, data, 0);
+  target = dds3StartProcess("nb_autocomm", 0x2B0Eu, 1, 1, v3, 0, 0, 0, data, 0);
   dds3LinkProcess(&data->MainProcessID, &target);
   data->AutoCommProcessID = target;
 }
@@ -55,10 +110,10 @@ void nbSetAutoImage(bool flag) {
   if (op_Inequality(BattleUI, 0, 0))
   {
     transform = get_transform(BattleUI, 0);
-    v6 = Find(transform, StringLiteral_21096, 0);
+    v6 = Find(transform, "bauto/auto_off", 0);
     gameObject = get_gameObject(v6);
     v8 = get_transform(BattleUI, 0);
-    v9 = Find(v8, StringLiteral_21097, 0);
+    v9 = Find(v8, "bauto/auto_on", 0);
     v10 = get_gameObject(v9);
     if (flag)
     {

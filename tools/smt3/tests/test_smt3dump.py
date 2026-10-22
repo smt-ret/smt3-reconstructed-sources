@@ -122,29 +122,27 @@ def test_rewrite_imported_object_pointer() -> None:
     assert refs == {"sdfModelNode_t"}
 
 
-def test_rewrite_array_unknown_size_uses_sentinel() -> None:
-    # System_SByte_array with no recovered size -> a grep-able sentinel dimension
-    assert _rw("struct System_SByte_array *s;") == "s8 s[UNKNOWN_ARRAY_SIZE];"
-    assert _rw("struct System_UInt32_array *pad1;") == "u32 pad1[UNKNOWN_ARRAY_SIZE];"
+def test_rewrite_array_unknown_size_is_a_pointer() -> None:
+    # No recovered count means the original was a pointer, not an inline array, so the
+    # field must occupy one word or every later offset in the struct shifts.
+    assert _rw("struct System_SByte_array *s;") == "s8 *s;"
+    assert _rw("struct System_UInt32_array *pad1;") == "u32 *pad1;"
 
 
 def test_rewrite_array_of_array_keeps_inner_pointer() -> None:
-    assert (
-        _rw("struct System_Byte_array_array *field_name;")
-        == "u8 *field_name[UNKNOWN_ARRAY_SIZE];"
-    )
+    assert _rw("struct System_Byte_array_array *field_name;") == "u8 **field_name;"
 
 
 def test_rewrite_imported_array() -> None:
     line, refs = smt3dump.rewrite_member("struct libsdf_H_sdfMemHandle_t_array *h;")
-    assert line == "sdfMemHandle_t h[UNKNOWN_ARRAY_SIZE];"
+    assert line == "sdfMemHandle_t *h;"
     assert refs == {"sdfMemHandle_t"}
 
 
 def test_rewrite_unity_math_value() -> None:
     line, refs = smt3dump.rewrite_member("struct UnityEngine_Vector4_o pos;")
     assert line == "sdfVector4_t pos;"  # inferred original name
-    assert refs == set()  # provided by il2cpp_common.h
+    assert refs == set()  # provided by types.h
 
 
 def test_rewrite_il2cpp_object_to_void() -> None:
@@ -170,7 +168,7 @@ def test_rewrite_runtime_external_to_void() -> None:
 
 def test_generate_produces_headers_and_modules() -> None:
     out = smt3dump.generate(FIXTURE.read_text())
-    assert "il2cpp_common.h" in out
+    assert "types.h" in out
     assert "libsdf.h" in out  # _H_ types -> header
     assert "fldGlobal.c" in out  # module globals -> .c
     assert "fldGlobal.h" not in out
@@ -181,7 +179,7 @@ def test_generate_produces_headers_and_modules() -> None:
 def test_generated_struct_body_and_forward_decls() -> None:
     out = smt3dump.generate(FIXTURE.read_text())
     libsdf = out["libsdf.h"]
-    assert '#include "il2cpp_common.h"' in libsdf
+    assert '#include "types.h"' in libsdf
     assert "typedef struct sdfModelNode_t sdfModelNode_t;" in libsdf
     assert "struct sdfModelNode_t {" in libsdf
     assert "sdfModelNode_t *next;" in libsdf
@@ -192,11 +190,11 @@ def test_generated_struct_body_and_forward_decls() -> None:
 def test_generated_module_symbols_are_static() -> None:
     out = smt3dump.generate(FIXTURE.read_text())
     g = out["fldGlobal.c"]
-    assert g.startswith('#include "il2cpp_common.h"')  # no banner, include leads
+    assert g.startswith('#include "types.h"')  # no banner, include leads
     assert "#pragma once" not in g  # a .c is not include-guarded
     assert "static s32 fldAllCnt;" in g
     assert "static FldNameData *fldNameData;" in g
-    assert "static char fldsave_nml_name[UNKNOWN_ARRAY_SIZE];" in g
+    assert "static char *fldsave_nml_name;" in g
     assert "typedef struct FldNameData FldNameData;" in g
 
 
@@ -215,7 +213,7 @@ def test_module_static_table() -> None:
     out = smt3dump.generate(FIXTURE.read_text())
     c = out["billManager.c"]
     assert "static f32 bill_alf_raito;" in c
-    assert "static BillTable_t BillboardTable[UNKNOWN_ARRAY_SIZE];" in c
+    assert "static BillTable_t *BillboardTable;" in c
 
 
 def test_empty_struct_holder_is_dropped() -> None:
@@ -300,12 +298,14 @@ def test_recovered_size_materializes_array() -> None:
     assert refs == {"dds3Basic_t"}
 
 
-def test_unrecovered_array_uses_sentinel() -> None:
+def test_unrecovered_array_is_a_pointer() -> None:
+    # A field the constructor does not allocate with a constant count was a pointer in the
+    # original C, so it stays a pointer even when other fields in the struct are recovered.
     sizes = smt3dump.array_sizes(_CTOR_C.splitlines())
     line, _ = smt3dump.rewrite_member(
         "struct System_Byte_array *unknown;", struct="whatever", sizes=sizes
     )
-    assert line == "u8 unknown[UNKNOWN_ARRAY_SIZE];"
+    assert line == "u8 *unknown;"
 
 
 _MULTILINE_C = """\
@@ -538,8 +538,8 @@ def test_clean_bodies_static_fields_and_reason() -> None:
         "  sub_8FC2C0(v3);\n}\n"  # sub_ helper -> complex
     )
     bodies, reasons = smt3dump.clean_bodies(fn.splitlines())
-    assert "dds3__Init" not in bodies  # complex -> not reconstructed
-    assert reasons["dds3__Init"] == "inlined sub_ helper(s)"
+    assert "DDS3_GBWK = 0;" in bodies["dds3__Init"]  # body kept even though tangled
+    assert reasons["dds3__Init"] == "inlined sub_ helper(s)"  # recorded as a caveat
 
 
 def test_clean_body_strips_typeinfo_and_metadata_variants() -> None:
@@ -559,8 +559,8 @@ def test_clean_body_strips_typeinfo_and_metadata_variants() -> None:
     assert "return GBWK->hp;" in body  # static_fields + ->fields. collapsed
 
 
-def test_entangled_metadata_is_stubbed_not_mangled() -> None:
-    # a cctor guard wrapping real code -> stripping breaks control flow -> keep as a stub
+def test_entangled_metadata_is_flagged_not_dropped() -> None:
+    # a cctor guard wrapping real code: the body is kept, the risk is noted
     fn = (
         "void __fastcall m__g(const MethodInfo *x)\n{\n"
         "  if ( v5 && !v3->_2.cctor_finished )\n  {\n"
@@ -569,7 +569,7 @@ def test_entangled_metadata_is_stubbed_not_mangled() -> None:
         "  else\n  {\n    GBWK->hp = v7;\n  }\n}\n"
     )
     bodies, reasons = smt3dump.clean_bodies(fn.splitlines())
-    assert "m__g" not in bodies  # not reconstructed
+    assert "m__g" in bodies  # body kept: it still carries the real assignments
     assert "woven" in reasons["m__g"] or "unbalanced" in reasons["m__g"]
 
 
@@ -579,15 +579,15 @@ def test_static_fields_global_collapses() -> None:
     assert bodies["m__f"] == "  return DDS3_GBWK;"
 
 
-def test_bodies_mode_emits_real_body_and_complex_note() -> None:
+def test_bodies_mode_emits_the_real_body() -> None:
     protos = smt3dump.function_prototypes(
         ["int32_t __fastcall datCalc__datGetParam(newdata_H_datUnitWork_t_o *work, "
          "const MethodInfo *m);"]
     )
-    bodies, reasons = smt3dump.clean_bodies(_SIMPLE_FN.splitlines())
+    bodies, _ = smt3dump.clean_bodies(_SIMPLE_FN.splitlines())
     out = smt3dump.generate(
         "struct datCalc_StaticFields\n{\n  int32_t x;\n};\n",
-        protos=protos, bodies=bodies, reasons=reasons,
+        protos=protos, bodies=bodies,
     )
     c = out["datCalc.c"]
     assert "s32 datGetParam(datUnitWork_t *work) {" in c
@@ -630,7 +630,7 @@ def test_prototypes_routed_and_name_stripped() -> None:
 
 def test_common_has_unity_math() -> None:
     out = smt3dump.generate(FIXTURE.read_text())
-    common = out["il2cpp_common.h"]
+    common = out["types.h"]
     assert "sdfVector4_t" in common
     assert "sdfMatrix4_t" in common
     assert "#include <stdint.h>" in common
@@ -645,7 +645,7 @@ def test_math_wrapper_type_skipped_no_recursion() -> None:
 
 
 def test_common_has_decomp_typedefs() -> None:
-    common = smt3dump.generate(FIXTURE.read_text())["il2cpp_common.h"]
+    common = smt3dump.generate(FIXTURE.read_text())["types.h"]
     assert "typedef int32_t s32;" in common
     assert "typedef uint32_t u32;" in common
     assert "typedef float f32;" in common
@@ -796,3 +796,99 @@ def test_symbol_map_includes_linker_name() -> None:
     )
     row = [ln for ln in text.splitlines() if not ln.startswith("#")][0]
     assert row.split() == ["0x00000100", "a", "fldMain.c", "fldMain$$a"]
+
+
+def test_collapse_hoisted_static_fields_local() -> None:
+    # Hex-Rays lifts the class pointer into a local; the global must collapse the same way
+    # it does for the inline `X->static_fields->G` form.
+    body = """{
+  struct ButtonGuide_StaticFields *v10;
+
+  v10 = ButtonGuide->static_fields;
+  startTime = v10->startTime;
+  return v10->waitTime;
+}"""
+    out = smt3dump._collapse_static_field_locals(body)
+    assert "static_fields" not in out
+    assert "startTime = startTime;" in out
+    assert "return waitTime;" in out
+
+
+
+
+
+def test_resolve_string_literals() -> None:
+    strings = {4529: "kan", 12: 'say "hi"\n'}
+    body = "  v5 = StringLiteral_4529;\n  f(StringLiteral_12);\n  g(StringLiteral_99);"
+    out = smt3dump._resolve_string_literals(body, strings)
+    assert 'v5 = "kan";' in out
+    assert 'f("say \\"hi\\"\\n");' in out       # quotes and newlines escaped
+    assert "g(StringLiteral_99);" in out          # unknown index is left alone
+
+
+def test_resolve_string_literals_without_metadata() -> None:
+    body = "  v5 = StringLiteral_4529;"
+    assert smt3dump._resolve_string_literals(body, None) == body
+
+
+def test_collapse_static_fields_address_of_form() -> None:
+    body = "{\n  p = &v2->static_fields;\n  return p->alpha;\n}"
+    out = smt3dump._collapse_static_field_locals(body)
+    assert "static_fields" not in out
+    assert "return alpha;" in out
+
+
+def test_guard_dropped_when_its_only_statement_was_scaffolding() -> None:
+    # `if (...)` with no braces whose single statement is IL2CPP scaffolding: deleting the
+    # statement would leave the guard covering the next line, so the guard goes too.
+    fn = (
+        "void __fastcall m__f(const MethodInfo *x)\n{\n"
+        "  if ( (byte_3F5A20B & 1) == 0 )\n"
+        "    il2cpp::InitializeMethodMetadata(0x4B58u);\n"
+        "  v5 = ready();\n}\n"
+    )
+    bodies, _ = smt3dump.clean_bodies(fn.splitlines())
+    body = bodies["m__f"]
+    assert "byte_3F5A20B" not in body  # guard gone with its scaffolding body
+    assert "v5 = ready();" in body     # the following statement is untouched
+
+
+def test_real_braceless_body_survives() -> None:
+    fn = (
+        "void __fastcall m__f(const MethodInfo *x)\n{\n"
+        "  if ( ready )\n"
+        "    v5 = 1;\n"
+        "  return v5;\n}\n"
+    )
+    body = smt3dump.clean_bodies(fn.splitlines())[0]["m__f"]
+    assert "if ( ready )" in body or "if (ready)" in body
+    assert "v5 = 1;" in body
+
+
+def test_local_named_static_fields_does_not_eat_the_inline_form() -> None:
+    # Hex-Rays often names the hoisted local `static_fields` itself. Substituting it away
+    # must not also strip the inline `X->static_fields->G`, which belongs to the other pass.
+    fn = (
+        "void __fastcall t__Init(const MethodInfo *x)\n{\n"
+        "  dds3TitleMain_TypeInfo->static_fields->MovieSkipflag = 1;\n"
+        "  static_fields = v8->static_fields;\n"
+        "  if ( static_fields->titleStartInitflag )\n    v = 1;\n}\n"
+    )
+    body = smt3dump.clean_bodies(fn.splitlines())[0]["t__Init"]
+    assert "MovieSkipflag = 1;" in body       # inline form -> bare global
+    assert "dds3TitleMain->" not in body      # not left as a member access
+    assert "titleStartInitflag" in body       # hoisted local -> bare global
+    assert "static_fields" not in body
+
+
+def test_unbalanced_body_falls_back_to_a_stub() -> None:
+    # A strip that leaves the braces unbalanced would not parse and would swallow the rest
+    # of the file, so that one case still degrades to the call-graph stub.
+    fn = (
+        "void __fastcall m__f(const MethodInfo *x)\n{\n"
+        "  if ( v1 )\n  {\n    il2cpp::TypeInitializer(v3, x);\n"
+        "  v9 = 1;\n}\n"
+    )
+    bodies, reasons = smt3dump.clean_bodies(fn.splitlines())
+    assert "m__f" not in bodies
+    assert "unbalanced" in reasons["m__f"]

@@ -19,5 +19,16 @@ static u8 gExitState;
 
 // 0x13f18c0
 sdfColor_t GetToRGBA(u32 val) {
-    return (sdfColor_t){0};
+  UnityEngine_Color32_o c;
+  UnityEngine_Color_o v7;
+  UnityEngine_Color_o result;
+
+  c.rgba = 0;
+  sub_19ED4B0(&c, SHIBYTE(val), SBYTE2(val), SBYTE1(val), val);
+  v7 = op_Implicit_27186704(c.rgba);
+  result.r = v7.r;
+  result.g = v7.g;
+  result.b = v7.b;
+  result.a = v7.a;
+  return result;
 }

@@ -73,6 +73,10 @@ void OnDestroy(Zanzou *this) {
   {
     v4 = 0;
     v5 = 0;
+    if (!LODWORD(mat_list_d->max_length))
+    {
+LABEL_8:
+    }
     while (1)
     {
       while (1)
@@ -87,6 +91,7 @@ void OnDestroy(Zanzou *this) {
         mat_list_d = this->mat_list_d;
         ++v5;
         if (v4 >= LODWORD(mat_list_d->max_length))
+          goto LABEL_8;
       }
       _Clear(v11);
       mat_list_d = this->mat_list_d;
@@ -94,6 +99,7 @@ void OnDestroy(Zanzou *this) {
         break;
       v5 = 0;
       if (v4 >= LODWORD(mat_list_d->max_length))
+        goto LABEL_8;
     }
   }
 }
@@ -129,26 +135,31 @@ void SetTransparent(Zanzou *this, f32 alf, s32 queue, s32 idx) {
 
   v9 = 0;
   mat_list_d = this->mat_list_d;
+  if (LODWORD(mat_list_d->max_length) <= idx)
+  {
+LABEL_6:
+  }
   while (v9 < _get_Count(mat_list_d->m_Items[idx]))
   {
     v12 = this->mat_list_d;
     Item = _get_Item(
              v12->m_Items[idx],
              v9);
-    SetOverrideTag(Item, StringLiteral_4782, StringLiteral_4783);
+    SetOverrideTag(Item, "RenderType", "Transparent");
     SetInt_27247136(Item, id_BlendOp, 0);
     SetInt_27247136(Item, id_SrcBlend, 5);
     SetInt_27247136(Item, id_DstBlend, 10);
     SetInt_27247136(Item, id_ZWrite, 1);
-    DisableKeyword(Item, StringLiteral_4784);
-    EnableKeyword(Item, StringLiteral_4785);
-    DisableKeyword(Item, StringLiteral_4786);
-    DisableKeyword(Item, StringLiteral_4787);
+    DisableKeyword(Item, "_ALPHATEST_ON");
+    EnableKeyword(Item, "_ALPHABLEND_ON");
+    DisableKeyword(Item, "_ALPHAPREMULTIPLY_ON");
+    DisableKeyword(Item, "_ALPHAMODULATE_ON");
     set_renderQueue(Item, queue);
     SetFloat_27246832(Item, id_AlfPower, alf);
     ++v9;
     mat_list_d = this->mat_list_d;
     if (LODWORD(mat_list_d->max_length) <= idx)
+      goto LABEL_6;
   }
 }
 
@@ -198,7 +209,43 @@ void Start(Zanzou *this) {
 
 // 0x13105e0
 void Update(Zanzou *this) {
-    ChkMotion(0, 0);
+  s32 dvlno;
+  Il2CppObject *Component_object;
+  u64 *v6;
+  u64 *v7;
+  s32 v8;
+  s32 v9;
+
+  if ((byte_3F5923C & 1) != 0)
+  {
+    dvlno = this->dvlno;
+    if (dvlno != 90)
+      goto LABEL_3;
+  }
+  else
+  {
+    dvlno = this->dvlno;
+    if (dvlno != 90)
+    {
+LABEL_3:
+      if (dvlno != 22)
+        return;
+LABEL_13:
+      v8 = 1034147594;
+      v7 = sub_8D3950(f32, &v8);
+      this->coroutine = StartCoroutine_27342960(this, "ZanzouMake", v7);
+      return;
+    }
+  }
+  Component_object = GetComponent_object_(this->dvl_obj);
+  if (op_Inequality(Component_object, 0, 0) && !ChkMotion(Component_object, 1))
+  {
+    v9 = 1028443341;
+    v6 = sub_8D3950(f32, &v9);
+    this->coroutine = StartCoroutine_27342960(this, "ZanzouMake", v6);
+  }
+  if (this->dvlno == 22)
+    goto LABEL_13;
 }
 
 // 0x1310c40

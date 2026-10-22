@@ -66,7 +66,7 @@ void FldChrObjSw(bool sw) {
   struct dds3MovieTable_t_o *v8;
   bool v9;
 
-  v3 = Find(StringLiteral_4672, 0);
+  v3 = Find("kernel", 0);
   Component_object = GetComponent_object_(v3);
   if (!sw)
   {
@@ -140,26 +140,94 @@ s32 movieCheckEnd(void) {
 
 // 0x19c9170
 dds3ProcessFunc_t *movieDrawProc(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    video_update(0);
-    release_movieobj(0);
-    SetDrawFlag(0, 0);
-    release_movieobj2(0);
-    return 0;
+  Il2CppObject *ProcessData;
+  dds3MovieTable_t_c *v3;
+  dds3MovieTable_t_o *v4;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  dds3MovieTable_t_o *v9;
+  struct mviManager_StaticFields **p_static_fields;
+  struct mviManager_StaticFields *v12;
+  s32 v13;
+  s16 v14;
+  s32 v15;
+  u64 v18[3];
+
+  ProcessData = dds3GetProcessData(&dds3MovieDrawProcId);
+  v4 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3MovieTable_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3MovieTable_t, v18);
+      if ((v18[0] & 1) != 0)
+        v7 = v18[2];
+      else
+        v7 = v18 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  switch (loadstat)
+  {
+    case 1:
+      moviestep2 = 0;
+      (*p_static_fields)->moviestep = 0;
+      (*p_static_fields)->bAfterRelease = 0;
+      v12 = *p_static_fields;
+      v13 = 2;
+      goto LABEL_54;
+    case 2:
+      create_movieobj(v4, v3);
+      v13 = 3;
+      goto LABEL_54;
+    case 3:
+      video_update(v9, v3);
+      return 0;
+    case 4:
+      if ((v14 & 0x200) != 0)
+      {
+        v15 = v14 & 0x200;
+        if (PlayingNo != 6)
+          goto LABEL_31;
+      }
+      else
+      {
+        v15 = 0;
+        if (PlayingNo != 6)
+        {
+LABEL_31:
+          release_movieobj(v9, v3);
+          return 0;
+        }
+      }
+      bAfterRelease = 30;
+      SetDrawFlag(0x2000000u, 1u);
+      v13 = 5;
+LABEL_54:
+      loadstat = v13;
+      return 0;
+    case 5:
+      release_movieobj2(v4, v3);
+      return 0;
+    default:
+      return 0;
+  }
 }
 
 // 0x19ca410
 s32 moviePlay(s32 aNum, s32 Layer) {
-  struct mviManager_StaticFields *static_fields;
   s32 loadstat;
 
-  static_fields = mviManager->static_fields;
-  loadstat = static_fields->loadstat;
   if (loadstat == 3)
     return 1;
+LABEL_6:
   if (!loadstat)
   {
-    static_fields->PlayingNo = aNum;
+    PlayingNo = aNum;
     moviePlayFile(aNum, Layer);
   }
   return 0;
@@ -190,7 +258,8 @@ void moviePlayFile(s32 index, s32 Layer) {
 
   else if (dds3MovieDrawProcId)
   {
-    Log(StringLiteral_19163, 0);
+LABEL_6:
+    Log("<<< duplicate movie request! >>>\n", 0);
     return;
   }
   v5 = Allocate(dds3MovieTable_t);
@@ -200,13 +269,13 @@ void moviePlayFile(s32 index, s32 Layer) {
   streamingAssetsPath = get_streamingAssetsPath();
   v11 = streamingAssetsPath;
   v9->m_Items[0] = v11;
-  v9->m_Items[1] = StringLiteral_19164;
+  v9->m_Items[1] = "/movie/";
   folder = dds3MovieTable->m_Items[index].folder;
   v9->m_Items[2] = folder;
   v20 = dds3MovieTable;
   name = v20->m_Items[index].name;
   v9->m_Items[3] = name;
-  v9->m_Items[4] = StringLiteral_5290;
+  v9->m_Items[4] = ".mp4";
   movie_param->filename = Concat_5271600(v9);
   movie_param->initParm = dds3MvTblPrm;
   movie_param->id = index;
@@ -228,7 +297,7 @@ void moviePlayFile(s32 index, s32 Layer) {
     Method_mviManager_movieDrawProc__);
   data = movie_param;
   dds3MovieDrawProcId = dds3StartProcess(
-                                                              StringLiteral_19165,
+                                                              "movieDraw",
                                                               0x2AFBu,
                                                               1,
                                                               1,
@@ -249,7 +318,6 @@ void moviePlayFile_27041744(char *filename, sdfMovieInitParm_t *prm, s32 Layer) 
   System_String_o *v12;
   struct mviManager_sMovTbl_array *dds3MovieTable;
   struct mviManager_StaticFields **p_static_fields;
-  struct mviManager_StaticFields *static_fields;
   struct mviManager_sMovTbl_array *v18;
   struct mviManager_sMovTbl_array *v20;
   u64 *v22;
@@ -258,12 +326,16 @@ void moviePlayFile_27041744(char *filename, sdfMovieInitParm_t *prm, s32 Layer) 
 
   else if (dds3MovieDrawProcId)
   {
-    Log(StringLiteral_19163, 0);
+LABEL_6:
+    Log("<<< duplicate movie request! >>>\n", 0);
     return;
   }
   v8 = 0;
   v9 = 0;
   if ((v7->_2.bitflags2 & 2) == 0)
+    goto LABEL_16;
+LABEL_14:
+LABEL_16:
   while (v9 < SLODWORD(dds3MovieTable->max_length))
   {
     FileNameWithoutExtension = GetFileNameWithoutExtension(filename);
@@ -274,12 +346,11 @@ void moviePlayFile_27041744(char *filename, sdfMovieInitParm_t *prm, s32 Layer) 
     }
     ++v9;
     ++v8;
+      goto LABEL_14;
   }
-  p_static_fields = &v7->static_fields;
-  static_fields = v7->static_fields;
-  if (LODWORD(static_fields->dds3MovieTable->max_length) != v9)
+  if (LODWORD(dds3MovieTable->max_length) != v9)
   {
-    static_fields->PlayingNo = v9;
+    PlayingNo = v9;
     v18 = (*p_static_fields)->dds3MovieTable;
     set_targetFrameRate(v18->m_Items[v8].fps);
     v20 = dds3MovieTable;
@@ -301,7 +372,7 @@ void moviePlayFile_27041744(char *filename, sdfMovieInitParm_t *prm, s32 Layer) 
     Method_mviManager_movieDrawProc__);
   data = movie_param;
   dds3MovieDrawProcId = dds3StartProcess(
-                                                              StringLiteral_19165,
+                                                              "movieDraw",
                                                               0x2AFBu,
                                                               1,
                                                               1,
@@ -315,11 +386,50 @@ void moviePlayFile_27041744(char *filename, sdfMovieInitParm_t *prm, s32 Layer) 
 
 // 0x19c8e80
 void movieStop(void) {
-    SetNormalFrameRate(0);
-    dds3GetProcessData(0);
-    SetDrawFlag(0, 0);
-    release_movieobj(0);
-    dds3KillProcess(0, 0);
+  Il2CppObject *ProcessData;
+  dds3MovieTable_t_c *v6;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v9;
+  s64 *v10;
+  dds3MovieTable_t_o *v11;
+  u64 v16[3];
+
+  SetNormalFrameRate(kernelObject);
+  else if (!dds3MovieDrawProcId)
+  {
+    return;
+  }
+  ProcessData = dds3GetProcessData(&dds3MovieDrawProcId);
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3MovieTable_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3MovieTable_t, v16);
+      if ((v16[0] & 1) != 0)
+        v9 = v16[2];
+      else
+        v9 = v16 + 1;
+      v10 = sub_8C4940(v9);
+    }
+  }
+  if (PlayingNo == 6)
+  {
+    bAfterRelease = 30;
+    SetDrawFlag(0x2000000u, 1u);
+    loadstat = 5;
+  }
+  else
+  {
+    release_movieobj(v11, v6);
+    dds3KillProcess(&dds3MovieDrawProcId, 0);
+    dds3MovieDrawProcId = 0;
+    loadstat = 0;
+    PlayingNo = -1;
+    Collect(0);
+  }
 }
 
 // 0x19c9810
@@ -351,7 +461,6 @@ void release_movieobj2(dds3MovieTable_t *data) {
   *(v4 + 48) = v5;
   if ((v5 < 0) ^ v6 | (v5 == 0))
   {
-    if ((*(v3 + 295) & 2) != 0 && !*(v3 + 216))
     release_movieobj_e658(v3);
     dds3KillProcess(&dds3MovieDrawProcId, 0);
     dds3MovieDrawProcId = 0;
@@ -383,15 +492,12 @@ void stop_movie_e658(void) {
 // 0x19c9670
 void video_update(dds3MovieTable_t *data) {
   UnityEngine_Object_o *video;
-  mviManager_c *v5;
-  struct mviManager_StaticFields *static_fields;
 
   if (!op_Equality(video, 0, 0))
   {
-    static_fields = v5->static_fields;
-    if (static_fields->video->Status == 5)
+    if (video->Status == 5)
     {
-      static_fields->loadstat = 4;
+      loadstat = 4;
     }
   }
 }

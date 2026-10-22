@@ -78,9 +78,11 @@ scrProcessWork_s *AddScript(scrHeader_t *header, scrTypeTable_t **typetable, scr
   v17 = Allocate(scrProcessWork_s);
   scrProcessWork_s___ctor(v17);
   if (startproc < 0)
+    goto LABEL_48;
   if (typetable->m_Items[0].ItemCount <= startproc)
   {
-    SDF_ABORT1(StringLiteral_8865);
+LABEL_48:
+    SDF_ABORT1("scrStartScript(..) invalid start procedure!!\n", 0);
     return 0;
   }
   else
@@ -177,9 +179,101 @@ scrProcessWork_s *AddScript(scrHeader_t *header, scrTypeTable_t **typetable, scr
 
 // 0x1c6540
 scrProcessWork_s *AddScript2(u8 **scrdata, s32 startproc) {
-    AddScript(0, 0, 0, 0, 0, 0, 0, 0);
-    SDF_ABORT1(0);
-    return 0;
+  u64 *v5;
+  struct System_Char_array *v7;
+  s64 v8;
+  s32 v9;
+  s64 v10;
+  u64 *v14;
+  scrTypeTable_t_array *v16;
+  u64 v17;
+  u64 *v18;
+  s64 v19;
+  u64 i;
+  s64 Type;
+  s32 v27;
+  s64 v28;
+  s64 v29;
+  scrHeader_t_o v30;
+  s64 v31;
+  s64 v32;
+  s64 v33;
+  s64 v34;
+  s64 v35;
+  s32 v36;
+  s64 v37;
+  s64 v38;
+
+  v37 = 0;
+  v38 = 0;
+  v5 = Allocate(scrHandle_t);
+  scrHandle_t___ctor(v5);
+  v36 = 0;
+  v31 = 0;
+  v34 = 0;
+  v35 = 0;
+  v32 = 0;
+  v33 = 0;
+  sub_17C8640(&v31, scrdata, &v36);
+  v8 = v31;
+  v7 = v32;
+  v9 = v33;
+  v10 = HIDWORD(v33);
+  v37 = v34;
+  v38 = v35;
+  if (*(v32 + 32) != 70)
+    goto LABEL_38;
+  if (*(v32 + 34) != 76)
+    goto LABEL_38;
+  if (*(v32 + 36) != 87)
+    goto LABEL_38;
+  if (*(v32 + 38) == 48)
+  {
+    v14 = NewSpecific(scrTypeTable_t, HIDWORD(v33));
+    v16 = v14;
+    v28 = v8;
+    v27 = v9;
+    if (v10 >= 1)
+    {
+      v17 = 0;
+      v18 = v14 + 5;
+      v29 = v10;
+      do
+      {
+        v31 = 0;
+        v32 = 0;
+        sub_17C9360(&v31, scrdata, &v36);
+        v19 = v32;
+        *(v18 - 1) = v31;
+        *v18 = v19;
+        LODWORD(v10) = v29;
+        ++v17;
+        v18 += 2;
+      }
+      while (v29 != v17);
+      for (i = 0; i != v29; ++i)
+      {
+        Type = v16->m_Items[i].Type;
+        if (Type <= 4)
+          __asm { BR              X9 }
+      }
+    }
+    v32 = v38;
+    v31 = v37;
+    v30.MagicCode = v7;
+    *&v30.FileType = v28;
+    v30.ExpandSize = v27;
+    v30.TypeTableCount = v10;
+    *&v30.LocalIntCount = v31;
+    *&v30.Resrve3 = v32;
+    return AddScript(&v30, v16, 0, 0, 0, 0, 0, startproc);
+  }
+  else
+  {
+LABEL_38:
+    SDF_ABORT1("invalid script data!!\n");
+  }
+  return v5;
 }
 
 // 0x1c6d10
@@ -196,8 +290,9 @@ scrProcessWork_s *AddScript3(char *filename, s32 startproc, char *akey) {
   scrProcessWork_s___ctor(v8);
   if (!GetEventFileNameToAssetName(filename))
     return v8;
+LABEL_6:
   asset_bc = get_asset_bc();
-  v12 = Concat_5224608(filename, StringLiteral_4739);
+  v12 = Concat_5224608(filename, ".bytes");
   FileByte = LoadFileByte(asset_bc, akey, v12);
   return AddScript2(FileByte, startproc);
 }
@@ -230,9 +325,9 @@ char *GetDLCTag(s32 eventno) {
   if ((eventno - 714) > 0x10 || (v3 = 1, ((1 << (eventno + 54)) & 0x1C203) == 0))
     v3 = eventno == 731;
   v4 = evtBitCheck(3712);
-  v5 = &StringLiteral_4735;
+  v5 = &"m";
   if (!v3 || !v4)
-    v5 = &StringLiteral_416;
+    v5 = &"";
   return *v5;
 }
 
@@ -243,7 +338,7 @@ char *GetEventFileNameToAssetName(char *filename) {
   System_String_o *v5;
   s32 v6;
 
-  Replace_5267216(filename, StringLiteral_14, StringLiteral_74);
+  Replace_5267216(filename, "\\", "/");
   Length = get_Length(filename);
   IndexOf = LastIndexOf(filename, 0x2Fu, 0);
   if (IndexOf == -1)
@@ -277,27 +372,35 @@ bool IsDLCField(s32 field) {
 void LinkScriptHandleList(scrProcessWork_s *h) {
   ScrScriptProcess_c *v3;
   s32 v4;
-  struct ScrScriptProcess_StaticFields *static_fields;
 
   {
     else
     {
-      static_fields = ScrScriptProcess->static_fields;
-      if (static_fields->scrHandleLast)
+      if (scrHandleLast)
+        goto LABEL_5;
     }
-    static_fields->scrHandleFirst = h;
+LABEL_13:
+    scrHandleFirst = h;
     scrHandleLast = h;
     h->prev = 0;
     h->next = 0;
     if ((v3->_2.bitflags2 & 2) != 0)
+      goto LABEL_9;
+    goto LABEL_17;
   }
   v4 = 0;
-  static_fields = ScrScriptProcess->static_fields;
-  if (!static_fields->scrHandleLast)
-  h->prev = static_fields->scrHandleLast;
+  if (!scrHandleLast)
+    goto LABEL_13;
+LABEL_5:
+  h->prev = scrHandleLast;
   scrHandleLast->next = h;
   h->next = 0;
   scrHandleLast = h;
+  if ((v3->_2.bitflags2 & 2) != 0)
+  {
+LABEL_9:
+  }
+LABEL_17:
   ++scrHandleCount;
 }
 
@@ -327,7 +430,7 @@ dds3ProcessID_t *StartScriptProcess(s32 priority, scrProcessWork_s *h) {
           ASCII,
           ProcTable->m_Items[StartProc].Name,
           *&ASCII->klass[1]._1.byval_arg.bits);
-  v11 = Replace_5267216(v10, StringLiteral_859, StringLiteral_416);
+  v11 = Replace_5267216(v10, " ", "");
   v12 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v12,
@@ -345,18 +448,71 @@ dds3ProcessID_t *StartScriptProcess(s32 priority, scrProcessWork_s *h) {
 
 // 0x1c5f20
 void UnlinkScriptHandleList(scrProcessWork_s *h) {
+  ScrScriptProcess_c *v3;
+  struct scrProcessWork_s_o *next;
+  struct scrProcessWork_s_o *prev;
+
+  if (scrHandleFirst == h)
+    goto LABEL_11;
+LABEL_6:
+  h->prev->next = h->next;
+  if ((v3->_2.bitflags2 & 2) == 0)
+    goto LABEL_15;
+LABEL_7:
+LABEL_15:
+  if (scrHandleLast != h)
+    goto LABEL_16;
+LABEL_19:
+  prev = h->prev;
+  scrHandleLast = prev;
+  h->prev = 0;
+  h->next = 0;
+  if ((v3->_2.bitflags2 & 2) != 0)
+  {
+LABEL_17:
+  }
+LABEL_23:
+  --scrHandleCount;
 }
 
 // 0x1c7c10
 void scrAllReleaseScript(void) {
-    scrReleaseScript(0);
-    dds3KillProcess(0, 0);
+  struct scrProcessWork_s_o *scrHandleFirst;
+
+  else
+  {
+    if (scrHandleFirst)
+      goto LABEL_6;
+  }
 }
 
 // 0x1c84a0
 void *scrGetUserData(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    return 0;
+  u64 *v2;
+  Il2CppObject **ProcessData;
+  Il2CppObject *v5;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  dds3ProcessID_t_o *v10[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  v2 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v2);
+  ProcessData = dds3GetProcessData(&ida);
+  v5 = *ProcessData;
+  if (LOBYTE((*ProcessData)[18].klass) < typeHierarchyDepth
+    || *(v5[12].monitor + typeHierarchyDepth - 1) != scrProcessWork_s)
+  {
+    sub_8FC2C0(v5[4].klass, scrProcessWork_s, v10);
+    if ((v10[0] & 1) != 0)
+      v8 = v10[2];
+    else
+      v8 = v10 + 1;
+    v9 = sub_8C4940(v8);
+  }
+  return ProcessData[26];
 }
 
 // 0x1c70e0
@@ -415,7 +571,7 @@ scrProcessWork_s *scrRegistScript3(char *filename) {
 
   v3 = Allocate(scrProcessWork_s);
   scrProcessWork_s___ctor(v3);
-  return AddScript3(filename, 0, StringLiteral_8867);
+  return AddScript3(filename, 0, "EventAB");
 }
 
 // 0x1c7a40
@@ -437,8 +593,8 @@ void scrReleaseScript(scrProcessWork_s *h) {
          ASCII,
          ProcTable->m_Items[StartProc].Name,
          *&ASCII->klass[1]._1.byval_arg.bits);
-  v8 = Replace_5267216(v7, StringLiteral_859, StringLiteral_416);
-  v9 = Format(StringLiteral_8868, v8, 0);
+  v8 = Replace_5267216(v7, " ", "");
+  v9 = Format("procedure end <{0}>\n", v8, 0);
   v11 = Empty_string_();
   Log(v9, v11, 0);
   if (h->LocalInt)
@@ -462,29 +618,226 @@ void scrReleaseScript(scrProcessWork_s *h) {
 
 // 0x1c8760
 s32 scrRunScript(scrProcessWork_s *h) {
-    scrTraceCode(0);
-    return 0;
+  scrProcessWork_s_o *v3;
+
+  else
+  {
+    v3 = h;
+  }
+  return scrTraceCode(v3);
 }
 
 // 0x1c8990
 dds3ProcessFunc_t *scrScriptProcess(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    scrTraceCode(0);
-    SDF_ABORT1(0);
+  scrProcessWork_s_c *v2;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  s32 v8;
+  dds3ProcessID_t_o *v11[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ProcessData = dds3GetProcessData(&ida);
+  else if (!ProcessData)
+  {
+    goto LABEL_15;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != scrProcessWork_s)
+  {
+    sub_8FC2C0(klass->_1.element_class, scrProcessWork_s, v11);
+    if ((v11[0] & 1) != 0)
+      v6 = v11[2];
+    else
+      v6 = v11 + 1;
+    v7 = sub_8C4940(v6);
+  }
+LABEL_15:
+  v8 = scrTraceCode(ProcessData, v2);
+  if (v8 == 2)
+  {
+LABEL_21:
+    ida->func_ans = -1;
     return 0;
+  }
+  if (!v8)
+  {
+    SDF_ABORT1("scrScriptProcess(..) error script!\n", 0);
+    goto LABEL_21;
+  }
+  return 0;
 }
 
 // 0x1c85c0
 void *scrScriptShutdown(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    scrReleaseScript(0);
-    dds3SetProcessData(0, 0);
-    return 0;
+  u64 *v2;
+  Il2CppObject *ProcessData;
+  scrProcessWork_s_c *v6;
+  Il2CppClass *klass;
+  scrProcessWork_s_o *v8;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  dds3ProcessID_t_o *v13[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  v2 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v2);
+  else
+  {
+    ProcessData = dds3GetProcessData(&ida);
+    if (!ProcessData)
+      goto LABEL_18;
+  }
+  klass = ProcessData->klass;
+  v8 = ProcessData;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != scrProcessWork_s)
+  {
+    sub_8FC2C0(klass->_1.element_class, scrProcessWork_s, v13);
+    if ((v13[0] & 1) != 0)
+      v10 = v13[2];
+    else
+      v10 = v13 + 1;
+    v11 = sub_8C4940(v10);
+  }
+  scrReleaseScript(v8, v6);
+LABEL_18:
+  ida->func_ans = -1;
+  dds3SetProcessData(&ida, 0);
+  return 0;
 }
 
 // 0x1c7fd0
 s32 scrSearchProcedureName(void *scrdata, char *procname) {
-    return 0;
+  Il2CppClass *v5;
+  s64 *Interface;
+  char *v7;
+  s64 *v8;
+  u64 *v9;
+  u64 *v10;
+  s64 v11;
+  u64 *v12;
+  u64 *v13;
+  u64 v14;
+  u64 *v15;
+  s64 v16;
+  u64 i;
+  u32 *v20;
+  s32 v22;
+  s32 v23;
+  u32 *v24;
+  s32 v26;
+  System_Text_Encoding_o *ASCII;
+  struct System_Byte_array *Name;
+  System_String_o *v29;
+  System_String_o *v30;
+  scrProcTable_t_o v32;
+  char *v33;
+  s64 v34;
+  s64 v35;
+  s32 v36;
+
+  v36 = 0;
+  if (!scrdata)
+    return -1;
+  Interface = QueryInterface(scrdata, byte);
+  if (!Interface)
+  {
+    sub_8FC2C0(scrdata->klass->_1.element_class, v5, &v32);
+    if ((v32.Name & 1) != 0)
+      v7 = v33;
+    else
+      v7 = &v32.Name + 1;
+    v8 = sub_8C4940(v7);
+  }
+  v36 = 0;
+  v9 = Allocate(scrHandle_t);
+  scrHandle_t___ctor(v9);
+  v10 = Allocate(System_Collections_Generic_List_scrProcTable_t_);
+  __ctor(
+    v10);
+  v34 = 0;
+  v35 = 0;
+  *&v32.CodeAddress = 0;
+  v33 = 0;
+  v32.Name = 0;
+  sub_17C8640(&v32, Interface, &v36);
+  v11 = HIDWORD(v33);
+  v12 = NewSpecific(scrTypeTable_t, HIDWORD(v33));
+  if (v11 <= 0)
+  {
+    _Clear(v10);
+  }
+  else
+  {
+    v13 = v12;
+    v14 = 0;
+    v15 = v12 + 5;
+    do
+    {
+      v32.Name = 0;
+      *&v32.CodeAddress = 0;
+      sub_17C9360(&v32, Interface, &v36);
+      v16 = *&v32.CodeAddress;
+      ++v14;
+      *(v15 - 1) = v32.Name;
+      *v15 = v16;
+      v15 += 2;
+    }
+    while (v11 != v14);
+    _Clear(v10);
+    for (i = 0; i != v11; ++i)
+    {
+      v20 = &v13[2 * i];
+      if (!v20[8])
+      {
+        v22 = v20[11];
+        v23 = 0;
+        v24 = v20 + 10;
+        v36 = v22;
+        if (i >= *(v13 + 6))
+        {
+LABEL_22:
+        }
+        while (v23 < *v24)
+        {
+          v32.Name = 0;
+          *&v32.CodeAddress = 0;
+          sub_17C91B0(&v32, Interface, &v36);
+          _Add(v10, v32);
+          ++v23;
+          if (i >= *(v13 + 6))
+            goto LABEL_22;
+        }
+      }
+    }
+  }
+  if (!_get_Count(v10)
+    || _get_Count(v10) < 1)
+  {
+    return -1;
+  }
+  v26 = 0;
+  while (1)
+  {
+    ASCII = get_ASCII();
+    Name = _get_Item(
+             v10,
+             v26).Name;
+    v29 = (ASCII->klass[1]._1.byval_arg.data)(ASCII, Name, *&ASCII->klass[1]._1.byval_arg.bits);
+    v30 = Replace_5267216(v29, " ", "");
+    if (!CompareTo_5257920(procname, v30))
+      break;
+    if (++v26 >= _get_Count(v10))
+      return -1;
+  }
+  return v26;
 }
 
 // 0x1c7ee0
@@ -503,7 +856,7 @@ scrProcessWork_s *scrSearchScriptName(char *scriptname) {
   {
     ASCII = get_ASCII();
     v5 = (ASCII->klass[1]._1.byval_arg.data)(ASCII, scrHandleFirst->Name, *&ASCII->klass[1]._1.byval_arg.bits);
-    v6 = Replace_5267216(v5, StringLiteral_859, StringLiteral_416);
+    v6 = Replace_5267216(v5, " ", "");
     if (!CompareTo_5257920(scriptname, v6))
       break;
     scrHandleFirst = scrHandleFirst->next;
@@ -563,7 +916,31 @@ s32 scrSetStartProc(scrProcessWork_s *h, s32 startproc) {
 
 // 0x1c8380
 void scrSetUserData(dds3ProcessID_t *id, void *p) {
-    dds3GetProcessData(0);
+  u64 *v4;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v9;
+  s64 *v10;
+  dds3ProcessID_t_o *v11;
+  u64 v12[3];
+
+  v11 = id;
+  v4 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v4);
+  ProcessData = dds3GetProcessData(&v11);
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != scrProcessWork_s)
+  {
+    sub_8FC2C0(klass->_1.element_class, scrProcessWork_s, v12);
+    if ((v12[0] & 1) != 0)
+      v9 = v12[2];
+    else
+      v9 = v12 + 1;
+    v10 = sub_8C4940(v9);
+  }
+  ProcessData[13].klass = p;
 }
 
 // 0x1c75a0
@@ -632,7 +1009,7 @@ dds3ProcessID_t *scrStartScript1a(s32 priority, scrHeader_t *header, scrTypeTabl
   v26 = v24->ProcTable;
   v27 = v24->StartProc;
   v29 = (ASCII->klass[1]._1.byval_arg.data)(ASCII, v26->m_Items[v27].Name, *&ASCII->klass[1]._1.byval_arg.bits);
-  v30 = Replace_5267216(v29, StringLiteral_859, StringLiteral_416);
+  v30 = Replace_5267216(v29, " ", "");
   v31 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v31,

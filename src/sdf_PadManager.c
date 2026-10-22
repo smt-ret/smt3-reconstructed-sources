@@ -29,14 +29,14 @@ void sdfPadChangeMode(s32 aPadNum, s32 mode) {
 // 0x15de940
 void sdfPadControl(void) {
   if (!LODWORD(sdfPadCb->max_length))
+    goto LABEL_10;
+LABEL_6:
 }
 
 // 0x15d2c50
 void sdfPadInitManager(void) {
   u64 v2;
-  sdf_PadManager_c *v3;
   s32 *v4;
-  struct sdf_PadManager_StaticFields *static_fields;
   s32 *sdfPadCb;
   u64 *v7;
   struct System_Byte_array_array *sdfPadPortSlot;
@@ -62,19 +62,21 @@ void sdfPadInitManager(void) {
 
   v2 = 0;
   {
+LABEL_6:
   }
   while (1)
   {
-    static_fields = v3->static_fields;
-    sdfPadCb = static_fields->sdfPadCb;
     if (v2 >= sdfPadCb[6])
       break;
     v7 = Allocate(sdfPadCb_t);
     _ctor(v7, 0);
     v4 = &sdfPadCb[2 * v2++];
     *(v4 + 4) = v7;
+      goto LABEL_6;
   }
   if (!LODWORD(sdfPadPortSlot->max_length))
+    goto LABEL_53;
+LABEL_20:
   v11 = sdfPadPortSlot->m_Items[0];
   v12 = sdfPadPortSlot;
   v13 = v11->m_Items[0];
@@ -113,6 +115,95 @@ void sdfPadInitManager(void) {
 
 // 0x15dea30
 void sdfPadManager(void) {
+  u32 sdfVSyncCount;
+  struct sdfPadCb_t_array *sdfPadCb;
+  sdfPadCb_t_o *v7;
+  struct System_UInt16_array *sdfPadData;
+  u32 v9;
+  s32 padData;
+  s32 lastPadData;
+  u32 v13;
+  s32 v14;
+  u64 i;
+  struct System_SByte_array_array *sdfPadMap;
+  System_SByte_array *v18;
+  char *v20;
+  struct sdfPadCb_t_array *v23;
+  struct System_UInt16_array *v25;
+  sdfPadCb_t_o *v26;
+  s32 v27;
+  s32 v29;
+  s32 v30;
+  u64 j;
+  struct System_SByte_array_array *v34;
+  System_SByte_array *v35;
+  s64 v37;
+
+  else
+  {
+    if (!LODWORD(sdfPadCb->max_length))
+      goto LABEL_9;
+  }
+  v7 = sdfPadCb->m_Items[0];
+  v9 = sdfVSyncCount + 15;
+  padData = v7->padData;
+  sdfPadData->m_Items[0] = padData;
+  lastPadData = v7->lastPadData;
+  v13 = sdfVSyncCount + 4;
+  v7->lastPadData = padData;
+  if (padData == lastPadData)
+  {
+    if (padData)
+    {
+      v14 = sdfVSyncCount - v7->repeatLapse;
+      if (v14 >= 0)
+        v7->repeatLapse = v13 + v14;
+    }
+  }
+  else
+  {
+    v7->repeatLapse = v9;
+  }
+  for (i = 0; i != 16; ++i)
+  {
+    else
+    {
+      if (!LODWORD(sdfPadMap->max_length))
+      {
+LABEL_19:
+      }
+    }
+    v18 = sdfPadMap->m_Items[0];
+    v20 = v18 + i;
+    v20[32] = 0;
+  }
+  v23 = sdfPadCb;
+  v25 = sdfPadData;
+  v26 = v23->m_Items[1];
+  v27 = v26->padData;
+  v25->m_Items[1] = v27;
+  v29 = v26->lastPadData;
+  v26->lastPadData = v27;
+  if (v27 == v29)
+  {
+    if (v27)
+    {
+      v30 = sdfVSyncCount - v26->repeatLapse;
+      if (v30 >= 0)
+        v26->repeatLapse = v13 + v30;
+    }
+  }
+  else
+  {
+    v26->repeatLapse = v9;
+  }
+  for (j = 0; j != 16; ++j)
+  {
+    v34 = sdfPadMap;
+    v35 = v34->m_Items[1];
+    v37 = v35 + j;
+    *(v37 + 32) = 0;
+  }
 }
 
 // 0x15defe0

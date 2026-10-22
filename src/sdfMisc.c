@@ -304,7 +304,7 @@ char *sdfStrDup(char *str) {
 
   if (!str)
     return 0;
-  v3 = StringLiteral_416;
+  v3 = "";
   get_Length(str);
   return v3;
 }

@@ -27,13 +27,9 @@ s32 sdfCdImageCheckExist(char *fname) {
 
 // 0x17e1070
 void sdfCdImageClose(void) {
-  sdfCd_c *v2;
-  struct sdfCd_StaticFields *static_fields;
-
-  static_fields = v2->static_fields;
-  if (static_fields->sdfCdImageCurrFile)
+  if (sdfCdImageCurrFile)
   {
-    static_fields->sdfCdImageCurrFile = 0;
+    sdfCdImageCurrFile = 0;
   }
 }
 
@@ -81,6 +77,7 @@ s32 sdfCdImageLoadStart(char *fname) {
   v5 = sdfCdImageSearchFile(fname, v10, v11);
   if (!v5)
     return -1;
+LABEL_6:
   v7 = v5;
   sdfCdImageCurrFile = v7;
   sdfCdImageCurrRemain = v7->size_;
@@ -95,7 +92,33 @@ s32 sdfCdImageRead(void *buff, s32 length) {
 
 // 0x17e0b40
 sdfCdImageDirEntry_t *sdfCdImageSearchFile(char *fname, u32 lsn, u8 modePtr) {
+  System_Char_array *v5;
+  sdfCdImageDirEntry_t_o *result;
+  u16 Chars;
+  u64 *v10;
+  s32 v11;
+
+  v5 = NewSpecific(char, 0x20u);
+  CreateString_5280336(0, v5);
+  if (op_Equality(fname, "cdrom", 0))
+  {
+    else if ((byte_3F5A8B7 & 1) != 0)
+    {
+LABEL_8:
+      return sdfCdImageSearchFileDirect_ent;
+    }
+    goto LABEL_8;
+  }
+  Chars = get_Chars(fname, 0);
+  result = 0;
+  if (Chars == 47)
+  {
+    v11 = 1;
+    v10 = sub_8D3950(s32, &v11);
+    Concat(fname, v10);
     return 0;
+  }
+  return result;
 }
 
 // 0x17e0ad0
@@ -112,8 +135,13 @@ void sdfCdInit(void) {
 void sdfCdStRead(s32 sectorCount, void *buff) {
   {
     if ((byte_3F5A8B5 & 1) == 0)
+      goto LABEL_6;
+LABEL_7:
   }
   if ((byte_3F5A8B5 & 1) != 0)
+    goto LABEL_7;
+LABEL_6:
+  goto LABEL_7;
 }
 
 // 0x17e09b0

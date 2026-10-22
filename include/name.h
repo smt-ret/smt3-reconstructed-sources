@@ -148,7 +148,7 @@ struct nmeData_t {
     s8 ListCapFlag;
     s8 InputNums[3];
     s8 InputPos;
-    u8 InputCode[UNKNOWN_ARRAY_SIZE];
+    u8 *InputCode;
     sdfTexHandle_t *Tex[4];
     s32 BaseRate;
 };

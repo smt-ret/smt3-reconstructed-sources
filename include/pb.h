@@ -161,7 +161,7 @@ struct pbGroupData_t {
     s16 num;
     pbBlockData_t *core;
     sdfMemHandle_tag *hblk;
-    pbBlockData_t blk[UNKNOWN_ARRAY_SIZE];
+    pbBlockData_t *blk;
     sdfVector4_t angle;
     sdfVector4_t trans;
     u32 outline_c[8];
@@ -206,15 +206,15 @@ struct pbWork_t {
     u32 debug;
     pbProcHandle_t *menu_proc;
     pbProcHandle_t *help_proc;
-    u8 pscript[UNKNOWN_ARRAY_SIZE];
+    u8 *pscript;
 };
 
 struct pbBackup_t {
     u32 pchar_num;
     u8 pchar_reg[4];
-    u16 pchar_pos[UNKNOWN_ARRAY_SIZE];
+    u16 *pchar_pos;
     u16 exit_pos[2];
-    u16 mapdata[UNKNOWN_ARRAY_SIZE];
+    u16 *mapdata;
 };
 
 struct pbMCardStat_t {

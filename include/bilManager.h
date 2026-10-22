@@ -21,7 +21,7 @@ struct bilInstance_s {
     sdfTexHandle_t *TexHandle;
     bilInstance_s *Prev;
     bilInstance_s *Next;
-    bilInstance_s Draw[UNKNOWN_ARRAY_SIZE];
+    bilInstance_s *Draw;
 };
 
 struct bilSetup_t {

@@ -4,7 +4,7 @@ typedef struct DLCDevilData DLCDevilData;
 typedef struct datDevilAI_s datDevilAI_t;
 typedef struct datDevilAI_t2 datDevilAI_t2;
 
-static datDevilAI_t tbl[UNKNOWN_ARRAY_SIZE];
+static datDevilAI_t *tbl;
 
 void DLCDevilAssetLoad(void);
 datDevilAI_t2 *GetDevilAIData(DLCDevilData *this, s32 id);
@@ -29,10 +29,13 @@ datDevilAI_t *Get(s32 id) {
     {
       DLCDevilAssetLoad();
       v4 = id - 384;
+      goto LABEL_21;
     }
+LABEL_22:
     result = data;
     if (data)
       return result;
+    goto LABEL_23;
   }
   if ((id & 0xFFFFFFF0) == 0x170)
   {
@@ -41,12 +44,16 @@ datDevilAI_t *Get(s32 id) {
       DLCDevilAssetLoad();
       DLCDevilDataMaka = DLCDevilDataExp;
       v4 = id - 368;
+LABEL_21:
       DevilAIData = GetDevilAIData(DLCDevilDataMaka, v4);
       v6 = Allocate(datDevilAI_t);
       datDevilAI_t___ctor(v6);
       data = v6;
       datDevilAI_t2__Copy(DevilAIData, &data);
+      goto LABEL_22;
     }
+    goto LABEL_22;
   }
+LABEL_23:
   return tbl->m_Items[id];
 }

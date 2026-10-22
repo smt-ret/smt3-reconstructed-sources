@@ -35,7 +35,7 @@ void nbInitMaeProcess(nbMainProcessData_t **data) {
     v4,
     0,
     Method_nbMaeProcess_nbMaeShutdown__);
-  target = dds3StartProcess(StringLiteral_21432, 0x3F9u, 1, 1, v3, 0, v4, 0, 0, 0);
+  target = dds3StartProcess("nb_mae", 0x3F9u, 1, 1, v3, 0, v4, 0, 0, 0);
   dds3LinkProcess(&(*data)->MainProcessID, &target, 0);
   (*data)->MaeProcessID = target;
 }

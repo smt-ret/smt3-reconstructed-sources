@@ -158,6 +158,7 @@ s32 Flow5_2(nbNegoProcessData_t **n) {
   id = (*n)->ework->id;
   else if ((datSearchDevilStock(id) & 0x80000000) == 0)
   {
+LABEL_12:
     v6 = *n;
     nextkouho = v6->nextkouho;
     v6->nextnegoid = nextkouho->m_Items[1];

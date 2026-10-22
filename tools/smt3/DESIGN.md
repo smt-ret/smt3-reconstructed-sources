@@ -12,8 +12,9 @@ mangling and runtime metadata. Recovering clean C declarations gives a **referen
 of those modules.
 
 We reverse the mangling for the game declarations and drop the .NET/Unity runtime noise.
-The recovered layout is the Unity-flavored one the port produced, not the PS2 original (the
-remaster replaced the game's own types, e.g. its math types, with UnityEngine equivalents).
+The goal is the original PS2 layout, so where the port differs we emit the native form. Two
+divergences remain: the remaster swapped the game's math types for UnityEngine ones, and a few
+structs keep a Unity-only mesh field with no PS2 counterpart.
 
 ## Headers vs modules
 
@@ -83,16 +84,16 @@ rewritten; pointers, the member name, and trailing tokens are preserved verbatim
 | `System_IntPtr` / `System_UIntPtr` | `intptr_t` / `uintptr_t` |
 | `System_String_o` | `char *` |
 | `System_Object_o` / `Il2CppObject` | `void *` |
-| `UnityEngine_Vector2/3/4_o`, `Matrix4x4_o`, `Quaternion_o`, `Color_o`, `Color32_o` | inferred `sdf*_t` typedef from `il2cpp_common.h` |
+| `UnityEngine_Vector2/3/4_o`, `Matrix4x4_o`, `Quaternion_o`, `Color_o`, `Color32_o` | inferred `sdf*_t` typedef from `types.h` |
 | any other unresolved runtime type | `void *` |
 | any other unresolved game type | opaque forward-decl, cleaned name kept |
 
 Types are emitted in the as (`s8`/`u8`/.../`s64`/`u64`, `f32`/`f64`),
-aliased in `il2cpp_common.h`.
+aliased in `types.h`.
 
 The port replaced the game's math types with UnityEngine ones; they map back to inferred
 original `sdf*` names (`UnityEngine_Vector4` -> `sdfVector4_t`, `Matrix4x4` -> `sdfMatrix4_t`,
-...), defined as concrete typedefs in `il2cpp_common.h`.
+...), defined as concrete typedefs in `types.h`.
 
 ## Recovery from the transpiled `.c`
 
@@ -101,7 +102,10 @@ The optional Hex-Rays `.c` export (`--source`) recovers what the type layout era
 - **Fixed-array dimensions.** IL2CPP arrays are dimensionless in the type; constructor
   bodies allocate them (`il2cpp::NewSpecific(elem___TypeInfo, N)`, directly or through a
   local variable. For a jagged array only the outer (allocated) dimension is known, so it becomes `elem *name[N]` with
-  the inner levels left as pointers. If the size cannot be determined by the script, `UNKNOWN_ARRAY_SIZE` is used.
+  the inner levels left as pointers. A field with no recoverable count becomes `elem *name`:
+  a native C array transpiles to an allocation with a constant count, so an unrecoverable
+  count means the original held a pointer to a runtime-sized buffer. Emitting a pointer keeps
+  the field one word wide, which every later offset in the struct depends on.
 - **Function prototypes**, cleaned to native C signatures (the IL2CPP `MethodInfo` context
   parameter is dropped, and the owning-class prefix is stripped:
   `dds3KernelCore__dds3StartProcess` -> `dds3StartProcess`).
@@ -114,6 +118,15 @@ The optional Hex-Rays `.c` export (`--source`) recovers what the type layout era
   Hex-Rays receiver/temp spills) are dropped, and each call sheds the trailing `MethodInfo`
   context arg the prototype already dropped (a `Method_*` literal, or a `0` when the call is
   one arg past the callee's known arity).
+
+  Three cases the line filter alone gets wrong:
+  - Hex-Rays hoists the class pointer into a local (`v = X->static_fields;`) instead of
+    writing `X->static_fields->G` inline, so the local is substituted away first.
+  - Deleting a *braceless* body leaves its `if`/`else`/`for` guard standing over the next
+    statement, which then reads as the branch body, so the guard is dropped too. A brace on
+    the following line is a real body: this style puts `{` at the guard's own indent.
+  - `StringLiteral_<n>` placeholders resolve to their text via `--metadata`, using the
+    metadata's own string-literal table.
 - **Function addresses.** An IDA `.map` (`--map`) is the authoritative source: its `.text`
   "Publics by Value" give each function's address, with the linker `Class$$method` name
   transformed to the Hex-Rays spelling to match. Without a `.map`, the `//----- (address) ----`

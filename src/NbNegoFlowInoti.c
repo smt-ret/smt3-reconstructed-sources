@@ -78,6 +78,7 @@ s32 Flow15_10(nbNegoProcessData_t **n) {
         v11 = *n;
         nextkouho = v11->nextkouho;
         v14 = nextkouho->m_Items[0];
+        goto LABEL_48;
       case 1:
         v15 = v6->flowmsg;
         v16 = v6->ekucyo;
@@ -86,6 +87,7 @@ s32 Flow15_10(nbNegoProcessData_t **n) {
         v11 = *n;
         v19 = v11->nextkouho;
         v14 = v19->m_Items[1];
+        goto LABEL_48;
       case 2:
         v21 = v6->flowmsg;
         v22 = v6->ekucyo;
@@ -94,6 +96,7 @@ s32 Flow15_10(nbNegoProcessData_t **n) {
         v11 = *n;
         v25 = v11->nextkouho;
         v14 = v25->m_Items[2];
+        goto LABEL_48;
       case 3:
         v27 = v6->flowmsg;
         v28 = v6->ekucyo;
@@ -102,6 +105,7 @@ s32 Flow15_10(nbNegoProcessData_t **n) {
         v11 = *n;
         v31 = v11->nextkouho;
         v14 = v31->m_Items[3];
+LABEL_48:
         v11->nextnegoid = v14;
         break;
       default:
@@ -144,7 +148,7 @@ s32 Flow15_14(nbNegoProcessData_t **n) {
   s32 getinfotype;
 
   nbAddNegoIdKouho(n, 0xF0013u);
-  (*n)->getinfotype = 2 * (dds3GetRandIntA(2u, StringLiteral_5315) != 0);
+  (*n)->getinfotype = 2 * (dds3GetRandIntA(2u, "15_14") != 0);
   v5 = *n;
   getinfotype = (*n)->getinfotype;
   v5->getinfomsg = nbGetInfoMsg(getinfotype);
@@ -221,16 +225,82 @@ s32 Flow15_23(nbNegoProcessData_t **n) {
 
 // 0x53b670
 s32 Flow15_5(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    dds3GetRandIntA(0, 0);
-    datGetRace(0);
-    datSearchDevilStock(0);
-    datCheckStockFull();
-    datGetPlayerLevel();
-    nbGetNegoYaruMakkaB(0, 0, 0);
-    nbGetNegoYaruItemB(0);
-    datCheckItemFull(0);
+  nbNegoProcessData_t_o *v4;
+  datUnitWork_t_o *ework;
+  datUnitWork_t_o *v8;
+  datUnitWork_t_o *v9;
+  s32 v10;
+  nbNegoProcessData_t_o *v11;
+  nbNegoProcessData_t_o *v12;
+  s32 requesttype;
+  s32 requestdata;
+  s32 id;
+  s32 PlayerLevel;
+
+  nbAddNegoIdKouho(n, 0xF0006u);
+  v4 = *n;
+  v4->requesttype = dds3GetRandIntA(4u, "15_5");
+  ework = (*n)->ework;
+  if (datGetRace(ework) != 21)
+  {
+    v8 = (*n)->ework;
+    if (datGetRace(v8) != 22)
+    {
+      v9 = (*n)->ework;
+      if (datGetRace(v9) != 23)
+        goto LABEL_27;
+    }
+  }
+  v10 = 0;
+LABEL_25:
+  v11 = *n;
+  while (1)
+  {
+    v11->requesttype = v10;
+LABEL_27:
+    v12 = *n;
+    requesttype = (*n)->requesttype;
+    if (requesttype)
+      break;
+    id = v12->ework->id;
+    else if ((datSearchDevilStock(id) & 0x80000000) == 0)
+    {
+      goto LABEL_50;
+    }
+    else if (datCheckStockFull())
+    {
+      goto LABEL_50;
+    }
+    PlayerLevel = datGetPlayerLevel();
+    v11 = *n;
+    if (PlayerLevel >= (*n)->ework->level)
+      return 0;
+    v10 = 1;
+  }
+  if (requesttype != 2)
+  {
+    if (requesttype == 1)
+    {
+      v12->requestdata = nbGetNegoYaruMakkaB(n, &v12->pwork, &v12->ework);
+    }
     return 0;
+  }
+  v12->requestdata = nbGetNegoYaruItemB(&v12->ework);
+  requestdata = (*n)->requestdata;
+  if (requestdata)
+  {
+      goto LABEL_49;
+  }
+  else
+  {
+    (*n)->requestdata = 1;
+    requestdata = (*n)->requestdata;
+      goto LABEL_49;
+  }
+LABEL_49:
+  if (datCheckItemFull(requestdata))
+    goto LABEL_50;
+  return 0;
 }
 
 // 0x53b9b0
@@ -350,7 +420,7 @@ s32 Flow15_8(nbNegoProcessData_t **n) {
     v6 = 40;
   else
     v6 = 85;
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5314);
+  RandIntA = dds3GetRandIntA(0x64u, "15_8");
   v8 = *n;
   nextkouho = v8->nextkouho;
   v10 = nextkouho[6];

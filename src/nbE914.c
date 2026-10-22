@@ -55,7 +55,7 @@ u32 DDS3EFFECT_RGBA(u32 r, u32 g, u32 b, u32 a) {
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 271)
     return 0;
-  Write(StringLiteral_21339, 0);
+  Write("メタトロン死亡\n", 0);
   nbDelAllKoukaPacketType(43);
   ed->data->endtype = 1;
   return 1;
@@ -89,27 +89,154 @@ void nbBgmStop(void) {
 
 // 0x1704110
 void *nbE914Process_1(dds3ProcessID_t *id) {
-    effBTL_SkillLight_t__Clear(0);
-    effBTL_SkillModel_t__Clear(0);
-    dds3GetActiveScene();
-    dds3GetProcessData(0);
-    nbEventPrefabDelete(0);
-    dds3DeleteSceneBasicData(0);
-    dds3GetUnitHandleObjectBasic(0);
-    nbCameraHelperModelSet(0);
-    nbCameraBoss_BSMETA_E914_1_Set();
-    nbGetEventForm();
-    effBTLPointLightSet(0, 0);
-    effBTLModelColorSet(0, 0);
-    nbSingleFormExceptedDispOff(0);
-    nbCameraSetState(0);
-    evtRegistBEUnit(0, 0);
-    dds3SearchSceneBasic(0, 0, 0);
-    nbEventPrefabRead(0, 0, 0);
-    evtSetUnitMotion(0, 0, 0, 0, 0);
-    nbSetEnemyFormation(0);
-    nbSetPlayerFormation(0, 0);
-    effBTLSkillStart(0, 0);
-    nbUpdateEventProcessData(0);
+  u64 *v2;
+  u64 *v3;
+  u64 *v4;
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v10;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v13;
+  s64 *v14;
+  struct nbE914_funcDelegate_array *func;
+  s64 seq;
+  s32 time;
+  dds3ModelHandle_t_o *Model;
+  s32 eventrid;
+  s32 v31;
+  dds3Basic_t_o *v34;
+  s32 v38;
+  nbFormation_t_o *EventForm;
+  effBTL_SkillLight_t_o *v43;
+  effBTL_SkillLight_t_o *v44;
+  effBTL_SkillModel_t_o *v45;
+  dds3Basic_t_o *pBasic;
+  effBTL_SkillModel_t_o *pModel;
+  effBTL_SkillLight_t_o *pLight;
+  nbFormation_t_o *form;
+  evtUnitHandle_t_o *h;
+  dds3ProcessID_t_o *ida;
+  u64 v53[3];
+
+  ida = id;
+  form = 0;
+  pBasic = 0;
+  v2 = Allocate(evtUnitHandle_t);
+  evtUnitHandle_t___ctor(v2);
+  h = v2;
+  v3 = Allocate(effBTL_SkillLight_t);
+  effBTL_SkillLight_t___ctor(v3);
+  pLight = v3;
+  effBTL_SkillLight_t__Clear(v3);
+  v4 = Allocate(effBTL_SkillModel_t);
+  effBTL_SkillModel_t___ctor(v4);
+  pModel = v4;
+  effBTL_SkillModel_t__Clear(v4);
+  pBasic = dds3GetActiveScene();
+  ProcessData = dds3GetProcessData(&ida);
+  v10 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v53);
+      if ((v53[0] & 1) != 0)
+        v13 = v53[2];
+      else
+        v13 = v53 + 1;
+      v14 = sub_8C4940(v13);
+    }
+  }
+  seq = v10->seq;
+  if (Invoke(func->m_Items[seq], v10))
+  {
+    pPBCameraBasicCurrent = 0;
+    if (pPBCameraBasic00)
+    {
+      nbEventPrefabDelete(&pPBCameraBasic00);
+      dds3DeleteSceneBasicData(&pPBCameraBasic00);
+      pPBCameraBasic00 = 0;
+    }
+    ida->func_ans = -1;
     return 0;
+  }
+  time = v10->time;
+  if (time >= 1)
+  {
+    if (pPBCameraBasicCurrent)
+    {
+      h = dds3GetUnitHandleObjectBasic(&pPBCameraBasicCurrent);
+      Model = h->Model;
+      if (Model)
+      {
+        nbCameraHelperModelSet(Model);
+      }
+    }
+    time = v10->time;
+  }
+  if (time == 110)
+  {
+    nbCameraBoss_BSMETA_E914_1_Set();
+    pPBCameraBasicCurrent = 0;
+    v38 = v10->time;
+    if (v38 != 1)
+      goto LABEL_82;
+LABEL_94:
+    EventForm = nbGetEventForm();
+    v43 = pLight;
+    form = EventForm;
+    pLight->pos_ptr->target = 2;
+    v43->pos_ptr->height = 1;
+    v43->pos_ptr->direction = 0;
+    v43->pos_ptr->radius = 0;
+    v44 = v43;
+    {
+      v44 = v43;
+    }
+    v43->diffuse = -2132344833;
+    v44->ambient = -2144199128;
+    v44->color_anim->fade_in_frame = 0;
+    v44->color_anim->fade_in_pattern = 0;
+    v44->color_anim->fade_out_frame = 10000;
+    v44->color_anim->fade_out_pattern = 0;
+    v45 = pModel;
+    pModel->color = -2138925418;
+    v45->color_anim->fade_in_frame = 0;
+    v45->color_anim->fade_in_pattern = 0;
+    v45->color_anim->fade_out_frame = 10000;
+    v45->color_anim->fade_out_pattern = 0;
+    effBTLPointLightSet(&pLight, &form);
+    effBTLModelColorSet(&pModel, &form);
+    goto LABEL_104;
+  }
+  if (!time)
+  {
+    form = nbGetEventForm();
+    nbSingleFormExceptedDispOff(&form);
+    nbCameraSetState(0x17u);
+    eventrid = v10->eventrid;
+    v31 = evtRegistBEUnit(eventrid, 2);
+    v34 = dds3SearchSceneBasic(&pBasic, v31, 5u);
+    pPBCameraBasic00 = v34;
+    pPBCameraBasicIndex = 2;
+    nbEventPrefabRead(&pPBCameraBasic00, v10->eventrid, pPBCameraBasicIndex);
+    h = dds3GetUnitHandleObjectBasic(&pPBCameraBasic00);
+    evtSetUnitMotion(&h, 0, 0, 0, 2);
+    pPBCameraBasicCurrent = pPBCameraBasic00;
+    nbSetEnemyFormation(&v10->data);
+    nbSetPlayerFormation(&v10->data, 0);
+  }
+  v38 = v10->time;
+  if (v38 == 1)
+    goto LABEL_94;
+LABEL_82:
+  if (!v38)
+  {
+    effBTLSkillStart(0x202u, 0);
+  }
+LABEL_104:
+  nbUpdateEventProcessData(&ida);
+  return 0;
 }

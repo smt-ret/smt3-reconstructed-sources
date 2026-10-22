@@ -5,7 +5,22 @@ static s32 activePosition;
 
 // 0x133f720
 char *ChangeCharacter(char *sourceString, s32 charIndex, u16 newChar) {
-    return 0;
+  System_String_o *v6;
+  System_String_o *v7;
+  System_String_o *v8;
+  u16 v10;
+
+  v10 = newChar;
+  if (charIndex <= 0)
+    v6 = "";
+  else
+    v6 = Substring_5248048(sourceString, 0, charIndex);
+  v7 = sub_3C3A80(&v10, 0);
+  if (get_Length(sourceString) - 1 <= charIndex)
+    v8 = "";
+  else
+    v8 = Substring(sourceString, charIndex + 1);
+  return Concat_5221536(v6, v7, v8);
 }
 
 // 0x133f810
@@ -14,7 +29,7 @@ bool IsXDigit(u16 character) {
   {
     return 1;
   }
-  return IndexOf(StringLiteral_12188, character, 0) >= 0;
+  return IndexOf("ABCDEFabcdef", character, 0) >= 0;
 }
 
 // 0x133f8c0
@@ -52,20 +67,12 @@ char *StrStr(char *stringToSearch, char *stringToFind) {
 
 // 0x133f9b0
 char *StrTok(char *stringToTokenize, char *delimiters) {
-  StringFunctions_c *v5;
-  struct StringFunctions_StaticFields *static_fields;
   s32 activePosition;
-  StringFunctions_c *v8;
-  struct StringFunctions_StaticFields *v9;
   s32 v10;
   u16 Chars;
-  struct StringFunctions_StaticFields *v12;
   s32 v13;
-  StringFunctions_c *v15;
-  struct StringFunctions_StaticFields *v16;
   s32 v17;
   s32 i;
-  struct StringFunctions_StaticFields *v19;
   s32 v20;
   u16 v21;
 
@@ -74,39 +81,32 @@ char *StrTok(char *stringToTokenize, char *delimiters) {
     activeString = stringToTokenize;
     activePosition = -1;
   }
-  static_fields = v5->static_fields;
-  if (!static_fields->activeString)
+  if (!activeString)
     return 0;
-  activePosition = static_fields->activePosition;
-  if (activePosition == get_Length(static_fields->activeString))
+  if (activePosition == get_Length(activeString))
     return 0;
   do
   {
     ++activePosition;
-    v9 = v8->static_fields;
-    v10 = v9->activePosition;
-    if (v10 >= get_Length(v9->activeString))
+    v10 = activePosition;
+    if (v10 >= get_Length(activeString))
       break;
     Chars = get_Chars(activeString, activePosition);
   }
   while ((IndexOf(delimiters, Chars, 0) & 0x80000000) == 0);
-  v12 = StringFunctions->static_fields;
-  v13 = v12->activePosition;
-  if (v13 == get_Length(v12->activeString))
+  v13 = activePosition;
+  if (v13 == get_Length(activeString))
     return 0;
-  v16 = StringFunctions->static_fields;
-  v17 = v16->activePosition;
-  for (i = v17 + 1; ; i = v16->activePosition + 1)
+  v17 = activePosition;
+  for (i = v17 + 1; ; i = activePosition + 1)
   {
-    v16->activePosition = i;
-    v19 = v15->static_fields;
-    v20 = v19->activePosition;
-    if (v20 >= get_Length(v19->activeString))
+    activePosition = i;
+    v20 = activePosition;
+    if (v20 >= get_Length(activeString))
       break;
     v21 = get_Chars(activeString, activePosition);
     if (IndexOf(delimiters, v21, 0) != -1)
       break;
-    v16 = StringFunctions->static_fields;
   }
   return Substring_5248048(activeString, v17, activePosition - v17);
 }

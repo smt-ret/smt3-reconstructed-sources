@@ -14,7 +14,7 @@ void Start(SoftReset *this) {
   fldNpcClear(1);
   dds3TheWorld = 0;
   UnloadUnusedAssets();
-  LoadScene(StringLiteral_12140);
+  LoadScene("xrd773");
 }
 
 // 0x1335290

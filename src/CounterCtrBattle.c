@@ -12,7 +12,7 @@ void Awake(CounterCtrBattle *this) {
   AssetBundleCtrl_o *asset_bc;
 
   asset_bc = get_asset_bc();
-  this->numberSpr = LoadSprite(asset_bc, StringLiteral_4611, StringLiteral_4658, StringLiteral_4659);
+  this->numberSpr = LoadSprite(asset_bc, "common", "dds3data/UI/tex", "commonUI_num01");
 }
 
 // 0xfe3cd0

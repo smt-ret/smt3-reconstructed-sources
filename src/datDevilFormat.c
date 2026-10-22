@@ -3,7 +3,7 @@
 typedef struct DLCDevilData DLCDevilData;
 typedef struct datDevilFormat_s datDevilFormat_t;
 
-static datDevilFormat_t tbl[UNKNOWN_ARRAY_SIZE];
+static datDevilFormat_t *tbl;
 
 void DLCDevilAssetLoad(void);
 datDevilFormat_t *GetDevilFormatData(DLCDevilData *this, s32 id);
@@ -28,6 +28,7 @@ datDevilFormat_t *Get(s32 id, bool dlc) {
   struct datDevilFormat_t_array *tbl;
 
   if (!dlc)
+    goto LABEL_14;
   if ((id & 0xFFFFFFF0) != 0x180)
   {
     if ((id & 0xFFFFFFF0) == 0x170)
@@ -37,10 +38,15 @@ datDevilFormat_t *Get(s32 id, bool dlc) {
       {
         DLCDevilAssetLoad();
         v7 = id - 368;
+LABEL_36:
         DevilFormatData = GetDevilFormatData(DLCDevilDataExp, v7);
+        goto LABEL_15;
       }
+      goto LABEL_15;
     }
+LABEL_14:
     DevilFormatData = 0;
+    goto LABEL_15;
   }
   DevilFormatData = 0;
   if (dds3CheckDLC7())
@@ -48,7 +54,9 @@ datDevilFormat_t *Get(s32 id, bool dlc) {
     DLCDevilAssetLoad();
     DLCDevilDataExp = DLCDevilDataMaka;
     v7 = id - 384;
+    goto LABEL_36;
   }
+LABEL_15:
   if (((id == 191) & IsZensyoMode()) != 0)
     id = 192;
   if (!DevilFormatData)

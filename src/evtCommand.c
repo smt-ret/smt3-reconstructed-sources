@@ -206,20 +206,44 @@ f32 sdfFabs(f32 c);
 
 // 0x135a8e0
 void CallBattleSub(s32 encno, s32 eventno) {
-    fldBgmStop();
-    p2sdPlaySE(0);
-    encStart(0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    scrAllReleaseScript();
+  s64 v4;
+  u64 *v9;
+  s64 v11;
+
+  v4 = encno;
+  fldBgmStop();
+  p2sdPlaySE(15);
+  encStart(0);
+  evtNextEventNo = eventno;
+  v11 = v4 << 32;
+  v9 = sub_8D3950(nbNewBattleSeqData_t, &v11);
+  dds3AdminiCallSequence(20, v9, 2, eventno > 0);
+  scrAllReleaseScript();
 }
 
 // 0x135aae0
 void CallBattleSub2(s32 encno) {
-    fldBgmPause();
-    p2sdPlaySE(0);
-    encStart(0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    scrAllReleaseScript();
+  s64 v2;
+  u64 *v8;
+  System_RuntimeTypeHandle_o v9;
+  System_Type_o *TypeFromHandle;
+  s32 v12;
+  s64 v14;
+
+  v2 = encno;
+  fldBgmPause();
+  p2sdPlaySE(15);
+  encStart(0);
+  evtNextEventNo = 0;
+  v14 = v2 << 32;
+  v8 = sub_8D3950(nbNewBattleSeqData_t, &v14);
+  v9.value = nbNewBattleSeqData_t_var;
+  TypeFromHandle = GetTypeFromHandle(v9);
+  {
+  }
+  v12 = SizeOf_1552656(TypeFromHandle);
+  dds3AdminiCallSequence(20, v8, v12, 1);
+  scrAllReleaseScript();
 }
 
 // 0x13547d0
@@ -334,50 +358,121 @@ s32 evtCommand_CALL_ENDSAVE(void) {
 
 // 0x135a5c0
 s32 evtCommand_CALL_EVENT(void) {
-    scrGetIntPara(0);
-    Log(0, 0);
-    RemoveKeys(0, 0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    scrAllReleaseScript();
-    return 0;
+  s32 IntPara;
+  System_Object_array *v3;
+  s64 *v4;
+  s64 *v6;
+  u64 *v9;
+  s32 v14;
+  s32 v15;
+
+  IntPara = scrGetIntPara(0);
+  v15 = IntPara;
+  v3 = NewSpecific(object, 1u);
+  v4 = sub_8D3950(s32, &v15);
+  v6 = v4;
+  v3->m_Items[0] = v6;
+  Log("call_event:{0:D}\n", v3, 0);
+  RemoveKeys(5, 0);
+  SndAssetBundleManager_SndData___Clear(VoiceBundleTable);
+  v14 = IntPara;
+  v9 = sub_8D3950(s32, &v14);
+  dds3AdminiCallSequence(8, v9, 4, 0);
+  scrAllReleaseScript();
+  UnloadUnusedAssets();
+  Collect(0);
+  return 1;
 }
 
 // 0x135adf0
 s32 evtCommand_CALL_FIELD(void) {
-    fldBgmFadeOut();
-    scrGetIntPara(0);
-    scrGetStrPara(0);
-    fldSetSceneParam2(0, 0, 0, 0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    scrAllReleaseScript();
-    return 0;
+  s32 IntPara;
+  s32 v4;
+  System_String_o *StrPara;
+  u64 *v7;
+  char v10[136];
+  fldSceneParam_t_o pParam;
+
+  memset(&pParam, 0, sizeof(pParam));
+  sub_F87580(&pParam);
+  fldBgmFadeOut();
+  IntPara = scrGetIntPara(0);
+  v4 = scrGetIntPara(1);
+  StrPara = scrGetStrPara(2);
+  fldSetSceneParam2(&pParam, IntPara, v4, StrPara);
+  memcpy(v10, &pParam, sizeof(v10));
+  v7 = sub_8D3950(fldSceneParam_t, v10);
+  dds3AdminiCallSequence(7, v7, 2, 0);
+  scrAllReleaseScript();
+  return 1;
 }
 
 // 0x135af90
 s32 evtCommand_CALL_FIELD2(void) {
-    scrGetIntPara(0);
-    scrGetStrPara(0);
-    fldSetSceneParam2(0, 0, 0, 0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    scrAllReleaseScript();
-    return 0;
+  s32 fieldID;
+  s32 IntPara;
+  System_String_o *StrPara;
+  u64 *v7;
+  char v10[136];
+  fldSceneParam_t_o pParam;
+
+  memset(&pParam, 0, sizeof(pParam));
+  sub_F87580(&pParam);
+  fieldID = fldGb->fieldID;
+  IntPara = scrGetIntPara(0);
+  StrPara = scrGetStrPara(1);
+  fldSetSceneParam2(&pParam, fieldID, IntPara, StrPara);
+  memcpy(v10, &pParam, sizeof(v10));
+  v7 = sub_8D3950(fldSceneParam_t, v10);
+  dds3AdminiCallSequence(7, v7, 2, 0);
+  scrAllReleaseScript();
+  return 1;
 }
 
 // 0x135b120
 s32 evtCommand_CALL_FIELD3(void) {
-    scrGetIntPara(0);
-    scrGetStrPara(0);
-    fldSetSceneParam3(0, 0, 0, 0);
-    dds3AdminiCallSequence(0, 0, 0, 0);
-    scrAllReleaseScript();
-    return 0;
+  s32 fieldID;
+  s32 IntPara;
+  System_String_o *StrPara;
+  u64 *v7;
+  char v10[136];
+  fldSceneParam_t_o pParam;
+
+  memset(&pParam, 0, sizeof(pParam));
+  sub_F87580(&pParam);
+  fieldID = fldGb->fieldID;
+  IntPara = scrGetIntPara(0);
+  StrPara = scrGetStrPara(1);
+  fldSetSceneParam3(&pParam, fieldID, IntPara, StrPara);
+  memcpy(v10, &pParam, sizeof(v10));
+  v7 = sub_8D3950(fldSceneParam_t, v10);
+  dds3AdminiCallSequence(7, v7, 2, 0);
+  scrAllReleaseScript();
+  return 1;
 }
 
 // 0x135a450
 s32 evtCommand_CALL_NEXT(void) {
-    scrGetIntPara(0);
-    fldProcNext(0, 0);
-    return 0;
+  u64 *v2;
+  u64 *v3;
+  u64 *v5;
+  s32 v6;
+  s32 v8;
+  s32 v10;
+  s32 v11;
+  s32 IntPara;
+
+  IntPara = scrGetIntPara(0);
+  v2 = sub_8D3950(s32, &IntPara);
+  v11 = scrGetIntPara(1);
+  v3 = sub_8D3950(s32, &v11);
+  v10 = scrGetIntPara(2);
+  v5 = sub_8D3950(s32, &v10);
+  Write_2930912("CALL_NEXT({0:D},{1:D},{2:D})\n", v2, v3, v5, 0);
+  v6 = scrGetIntPara(1);
+  v8 = scrGetIntPara(2);
+  fldProcNext(v6, v8);
+  return 1;
 }
 
 // 0x135a2c0
@@ -499,11 +594,23 @@ s32 evtCommand_CAM_CLS(void) {
 
 // 0x135c440
 s32 evtCommand_CAM_CREATE(void) {
-    dds3SerializeID();
-    dds3AddCameraObjectBasicTypeFree(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    dds3SetRadiusPoseSet(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  u32 v2;
+  dds3Basic_t_o *pBasic;
+  UnityEngine_Vector4_o v6;
+  UnityEngine_Vector4_o v7;
+
+  *&v7.x = 0;
+  *&v7.z = 0;
+  *&v6.x = 0;
+  *&v6.z = 0;
+  pBasic = 0;
+  sub_854690(&v7.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v6.x, 0.0, 0.0, 0.0, 1.0);
+  v2 = dds3SerializeID();
+  pBasic = dds3AddCameraObjectBasicTypeFree(v2, v7, v6);
+  dds3SetRadiusPoseSet(&pBasic, 1.0);
+  scrSetIntReturnValue(v2);
+  return 1;
 }
 
 // 0x135c0c0
@@ -516,70 +623,176 @@ s32 evtCommand_CAM_PATH_MOVE(void) {
 
   else if ((scrGetIntPara(0) & 0x80000000) == 0)
   {
+LABEL_6:
     IntPara = scrGetIntPara(0);
     UnitFollowCamera = evtSearchBasic(4, IntPara);
     if (!UnitFollowCamera)
+      goto LABEL_32;
+    goto LABEL_13;
   }
   else
   {
     UnitFollowCamera = fldGetUnitFollowCamera();
     if (!UnitFollowCamera)
+      goto LABEL_32;
   }
+LABEL_13:
   v10 = scrGetIntPara(1);
   else
   {
     v11 = evtSearchBasic(16, v10);
     if (!v11)
+      goto LABEL_32;
   }
   v12 = v11;
   if (evtPathLinkAndMake(v12, UnitFollowCamera))
     return 1;
-  Write(StringLiteral_15611, 0);
+LABEL_32:
+  Write("CAM_PATH_MOVE error!\n", 0);
   return 1;
 }
 
 // 0x135c2d0
 s32 evtCommand_CAM_PATH_WAIT(void) {
-    scrGetIntPara(0);
-    fldGetUnitFollowCamera();
-    evtSearchBasic(0, 0);
-    evtCheckPathStat(0);
-    return 0;
+  s32 IntPara;
+  dds3Basic_t_o *UnitFollowCamera;
+
+  if (scrGetIntPara(0) < 0)
+    goto LABEL_15;
+LABEL_6:
+  IntPara = scrGetIntPara(0);
+  UnitFollowCamera = evtSearchBasic(4, IntPara);
+  if (!UnitFollowCamera)
+    return 1;
+LABEL_18:
+  return (evtCheckPathStat(UnitFollowCamera) + 1) <= 1;
 }
 
 // 0x135c640
 s32 evtCommand_CAM_POS_XYZ(void) {
-    scrGetIntPara(0);
-    fldGetUnitFollowCamera();
-    evtSearchBasic(0, 0);
-    scrGetFloatPara(0);
-    dds3SetPosPoseSet(0, (sdfVector4_t){0});
-    return 0;
+  s32 IntPara;
+  s64 v8;
+  s64 v9;
+  dds3Basic_t_o *pBasic;
+  s64 v12;
+  s64 v13;
+  UnityEngine_Vector4_o v14;
+
+  v12 = 0;
+  v13 = 0;
+  pBasic = 0;
+  sub_854690(&v12, 0.0, 0.0, 0.0, 0.0);
+  if (scrGetIntPara(0) < 0)
+    goto LABEL_22;
+LABEL_6:
+  IntPara = scrGetIntPara(0);
+  pBasic = evtSearchBasic(4, IntPara);
+  if (pBasic)
+  {
+LABEL_13:
+    scrGetFloatPara(1);
+    sub_854930(&v12, 0);
+    scrGetFloatPara(2);
+    sub_854930(&v12, 1u);
+    scrGetFloatPara(3);
+    sub_854930(&v12, 2u);
+    v8 = v12;
+    v9 = v13;
+    *&v14.x = v8;
+    *&v14.z = v9;
+    dds3SetPosPoseSet(&pBasic, v14);
+  }
+  return 1;
 }
 
 // 0x135caa0
 s32 evtCommand_CAM_ROT_Q(void) {
-    scrGetIntPara(0);
-    fldGetUnitFollowCamera();
-    evtSearchBasic(0, 0);
-    scrGetFloatPara(0);
-    dds3SetRotPoseSet(0, (sdfVector4_t){0});
-    return 0;
+  s32 IntPara;
+  s64 v8;
+  s64 v9;
+  dds3Basic_t_o *pBasic;
+  s64 v12;
+  s64 v13;
+  UnityEngine_Vector4_o v14;
+
+  pBasic = 0;
+  v12 = 0;
+  v13 = 0;
+  if (scrGetIntPara(0) < 0)
+    goto LABEL_22;
+LABEL_6:
+  IntPara = scrGetIntPara(0);
+  pBasic = evtSearchBasic(4, IntPara);
+  if (pBasic)
+  {
+LABEL_13:
+    scrGetFloatPara(1);
+    sub_854930(&v12, 0);
+    scrGetFloatPara(2);
+    sub_854930(&v12, 1u);
+    scrGetFloatPara(3);
+    sub_854930(&v12, 2u);
+    scrGetFloatPara(4);
+    sub_854930(&v12, 3u);
+    v8 = v12;
+    v9 = v13;
+    *&v14.x = v8;
+    *&v14.z = v9;
+    dds3SetRotPoseSet(&pBasic, v14);
+  }
+  return 1;
 }
 
 // 0x135c850
 s32 evtCommand_CAM_ROT_XYZ(void) {
-    scrGetIntPara(0);
-    fldGetUnitFollowCamera();
-    evtSearchBasic(0, 0);
-    scrGetFloatPara(0);
-    SDF_DEGtoRAD(0);
-    FromEuler(0, 0, 0);
+  s32 IntPara;
+  f32 FloatPara;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 v13;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  dds3Basic_t_o *pBasic;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector4_o v22;
+
+  pBasic = 0;
+  *&p.x = 0;
+  *&p.z = 0;
+  if (scrGetIntPara(0) < 0)
+    goto LABEL_25;
+LABEL_6:
+  IntPara = scrGetIntPara(0);
+  pBasic = evtSearchBasic(4, IntPara);
+  if (pBasic)
+  {
+LABEL_13:
+    FloatPara = scrGetFloatPara(1);
+    v9 = SDF_DEGtoRAD(FloatPara);
+    v10 = scrGetFloatPara(2);
+    v11 = SDF_DEGtoRAD(v10);
+    FromEuler(v9, v11, 0.0);
     SDF_VU0__COPYVECTOR_A_TO_B();
+    v12 = scrGetFloatPara(3);
+    v13 = SDF_DEGtoRAD(v12);
+    FromEuler(0.0, 0.0, v13);
     Mult();
-    SDF_VU0__STOREVECTOR(0);
-    dds3SetRotPoseSet(0, (sdfVector4_t){0});
-    return 0;
+    SDF_VU0__STOREVECTOR(&p);
+    x = p.x;
+    y = p.y;
+    z = p.z;
+    w = p.w;
+    v22.x = x;
+    v22.y = y;
+    v22.z = z;
+    v22.w = w;
+    dds3SetRotPoseSet(&pBasic, v22);
+  }
+  return 1;
 }
 
 // 0x135bcf0
@@ -592,28 +805,64 @@ s32 evtCommand_CAM_SEL(void) {
   pSceneBasic = 0;
   else if ((scrGetIntPara(0) & 0x80000000) == 0)
   {
+LABEL_6:
     fldCamSyukanSuriawase();
     IntPara = scrGetIntPara(0);
     pCameraBasic = evtSearchBasic(4, IntPara);
     if (!pCameraBasic)
       return 1;
+LABEL_22:
     pSceneBasic = dds3GetActiveScene();
     dds3SetActiveCameraSceneBasic(&pSceneBasic, &pCameraBasic);
     return 1;
   }
   pCameraBasic = fldGetUnitFollowCamera();
   if (pCameraBasic)
+    goto LABEL_22;
   return 1;
 }
 
 // 0x135bea0
 s32 evtCommand_CAM_SEL_FOVY(void) {
-    scrGetIntPara(0);
-    fldGetUnitFollowCamera();
-    evtSearchBasic(0, 0);
-    dds3GetActiveScene();
-    dds3SetActiveCameraSceneBasic(0, 0);
-    return 0;
+  s32 IntPara;
+  dds3Basic_t_o *v6;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v13;
+  s64 *v14;
+  dds3Basic_t_o *ActiveScene;
+  dds3Basic_t_o *v16[3];
+  dds3Basic_t_o *pCameraBasic;
+
+  ActiveScene = 0;
+  pCameraBasic = 0;
+  if (scrGetIntPara(0) < 0)
+    goto LABEL_17;
+LABEL_6:
+  IntPara = scrGetIntPara(0);
+  v6 = evtSearchBasic(4, IntPara);
+  pCameraBasic = v6;
+  if (v6)
+  {
+    workdata = v6->workdata;
+    klass = workdata->klass;
+    if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3CameraObjectBasicWorkData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3CameraObjectBasicWorkData_t, v16);
+      if ((v16[0] & 1) != 0)
+        v13 = v16[2];
+      else
+        v13 = v16 + 1;
+      v14 = sub_8C4940(v13);
+    }
+    HIDWORD(workdata[6].klass) |= 1u;
+LABEL_21:
+    ActiveScene = dds3GetActiveScene();
+    dds3SetActiveCameraSceneBasic(&ActiveScene, &pCameraBasic);
+  }
+  return 1;
 }
 
 // 0x135d600
@@ -627,23 +876,73 @@ s32 evtCommand_CHG_MOON(void) {
 
 // 0x135dae0
 s32 evtCommand_CHK_BE(void) {
-    scrGetIntPara(0);
-    scrGetScriptHandle();
-    evtSearchEventPack(0);
-    evtGetEventPackStat(0);
-    dds3Printf(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  s32 IntPara;
+  System_Object_array *v6;
+  s64 *v7;
+  s64 *v8;
+  s32 v12;
+  s32 v14;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  IntPara = scrGetIntPara(0);
+  if (!scrGetScriptHandle())
+    goto LABEL_24;
+  else if (!evtSearchEventPack(IntPara))
+  {
+    goto LABEL_24;
+  }
+  if (evtGetEventPackStat(IntPara) == 2)
+  {
+    v14 = IntPara;
+    v6 = NewSpecific(object, 1u);
+    v7 = sub_8D3950(s32, &v14);
+    v8 = v7;
+    v6->m_Items[0] = v8;
+    dds3Printf("BE ok! (%d)\n", v6, 0);
+    v12 = 1;
+    goto LABEL_28;
+  }
+LABEL_24:
+  v12 = 0;
+LABEL_28:
+  scrSetIntReturnValue(v12);
+  return 1;
 }
 
 // 0x135dce0
 s32 evtCommand_DEL_BE(void) {
-    scrGetIntPara(0);
-    scrGetScriptHandle();
-    evtSearchEventPack(0);
-    dds3Printf(0, 0);
-    evtKillEventPack(0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  s32 IntPara;
+  System_Object_array *v6;
+  s64 *v7;
+  s64 *v8;
+  s32 v13;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  IntPara = scrGetIntPara(0);
+  if (scrGetScriptHandle())
+  {
+    if (evtSearchEventPack(IntPara))
+    {
+      v13 = IntPara;
+      v6 = NewSpecific(object, 1u);
+      v7 = sub_8D3950(s32, &v13);
+      v8 = v7;
+      v6->m_Items[0] = v8;
+      dds3Printf("del BE (%d)..\n", v6, 0);
+      evtKillEventPack(IntPara);
+    }
+  }
+  return 1;
 }
 
 // 0x1360fb0
@@ -683,18 +982,80 @@ s32 evtCommand_DRAWSTOP(void) {
 
 // 0x1357170
 s32 evtCommand_EFFBED_BE(void) {
-    scrGetIntPara(0);
-    evtGetResorceData(0, 0);
-    dds3Printf(0, 0);
-    GetPibIndex(0, 0);
-    Log(0, 0);
-    BillSetPB(0);
-    billAlfRaitoSet2(0);
-    billCutRaitoSet2(0);
-    dds3AddBEDEffectObjectBasic2(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    dds3EffectObjectBasicStatOn(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  s32 IntPara;
+  s32 v4;
+  System_Byte_array *ResorceData;
+  System_Byte_array *v7;
+  s32 v8;
+  u64 *v9;
+  System_String_o *v10;
+  System_Object_array *v12;
+  dds3Basic_t_o *v18;
+  u32 serialID;
+  s32 v22;
+  System_Object_array *v24;
+  s64 *v25;
+  s64 *v26;
+  s32 PibIndex;
+  dds3Basic_t_o *basic;
+  UnityEngine_Vector4_o v32;
+  UnityEngine_Vector4_o v33;
+
+  *&v33.x = 0;
+  *&v33.z = 0;
+  *&v32.x = 0;
+  *&v32.z = 0;
+  basic = 0;
+  sub_854690(&v33.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v32.x, 0.0, 0.0, 0.0, 0.0);
+  IntPara = scrGetIntPara(0);
+  v4 = scrGetIntPara(1);
+  ResorceData = evtGetResorceData(IntPara, v4);
+  if (!ResorceData)
+  {
+    v24 = NewSpecific(object, 1u);
+    PibIndex = scrGetIntPara(1);
+    v25 = sub_8D3950(s32, &PibIndex);
+    v26 = v25;
+    v24->m_Items[0] = v26;
+    dds3Printf("EFFBED_BE not fount RID = %d\n", v24);
+    goto LABEL_54;
+  }
+  v7 = ResorceData;
+  PibIndex = GetPibIndex(v7, 0);
+  v8 = PibIndex;
+  v9 = sub_8D3950(s32, &PibIndex);
+  v10 = Concat_5269984("!!!!! EFFBED_BE : index = ", v9, " !!!!!");
+  v12 = Empty_string_();
+  Log(v10, v12, 0);
+  BillSetPB(v8);
+  if (scrGetIntPara(0) == 723)
+  {
+    if (scrGetIntPara(1) == 6)
+      goto LABEL_59;
+    if (scrGetIntPara(1) == 7)
+    {
+LABEL_59:
+      billAlfRaitoSet2(3.0);
+      billCutRaitoSet2(20.0);
+    }
+  }
+  v18 = dds3AddBEDEffectObjectBasic2(&v7->obj, v33, v32);
+  basic = v18;
+  billAlfRaitoSet2(0.0);
+  billCutRaitoSet2(0.0);
+  if (!v18)
+  {
+LABEL_54:
+    v22 = 0;
+    goto LABEL_55;
+  }
+  dds3EffectObjectBasicStatOn(&basic, 1u);
+  serialID = basic->serialID;
+  v22 = serialID;
+LABEL_55:
+  scrSetIntReturnValue(v22);
+  return 1;
 }
 
 // 0x13575c0
@@ -704,42 +1065,217 @@ s32 evtCommand_EFFBED_BE_EVO(void) {
 
 // 0x1356fd0
 s32 evtCommand_EFFBED_LOAD(void) {
-    scrGetStrPara(0);
-    dds3AddBEDEffectObjectBasic(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    dds3EffectObjectBasicStatOn(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  System_String_o *StrPara;
+  u32 serialID;
+  s32 v6;
+  Il2CppObject *v8;
+  UnityEngine_Vector4_o v10;
+  UnityEngine_Vector4_o v11;
+  dds3Basic_t_o *basic;
+
+  *&v11.x = 0;
+  *&v11.z = 0;
+  *&v10.x = 0;
+  *&v10.z = 0;
+  basic = 0;
+  sub_854690(&v11.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v10.x, 0.0, 0.0, 0.0, 1.0);
+  StrPara = scrGetStrPara(0);
+  basic = dds3AddBEDEffectObjectBasic(StrPara, v11, v10);
+  if (basic)
+  {
+    dds3EffectObjectBasicStatOn(&basic, 1u);
+    serialID = basic->serialID;
+    v6 = serialID;
+  }
+  else
+  {
+    Write("スクリプトコマンドEFFECT_LOAD()で対象ファイル\n", 0);
+    v8 = scrGetStrPara(0);
+    Write_2930400("{0}が見つかりません!!\n", v8);
+    v6 = 0;
+  }
+  scrSetIntReturnValue(v6);
+  return 1;
 }
 
 // 0x13575d0
 s32 evtCommand_EFFBED_START(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    dds3StartBEDEffectObjectBasic(0, 0);
-    dds3Printf(0, 0);
-    return 0;
+  s32 IntPara;
+  u32 v6;
+  System_Object_array *v7;
+  s64 *v8;
+  s64 *v9;
+  u32 v13;
+  dds3Basic_t_o *basic;
+
+  basic = 0;
+  IntPara = scrGetIntPara(0);
+  basic = evtSearchBasic(7, IntPara);
+  if (basic)
+  {
+    v6 = scrGetIntPara(1);
+    if (v6 < 3)
+    {
+      dds3StartBEDEffectObjectBasic(&basic, v6);
+    }
+    else
+    {
+      v13 = v6;
+      v7 = NewSpecific(object, 1u);
+      v8 = sub_8D3950(uint, &v13);
+      v9 = v8;
+      v7->m_Items[0] = v9;
+      dds3Printf("error EFFBED_START cut no over = %d\n", v7);
+    }
+  }
+  return 1;
 }
 
 // 0x1357850
 s32 evtCommand_EFFBED_START_EVO(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    dds3StartBEDEffectObjectBasic(0, 0);
-    evtCalcEffBedScale(0);
-    effEveBEDCutSetScale(0, 0);
-    dds3Printf(0, 0);
-    return 0;
+  u64 *v1;
+  s32 IntPara;
+  u32 v7;
+  System_Object_array *v8;
+  s64 *v9;
+  s64 *v10;
+  s32 v13;
+  s32 v15;
+  f32 v16;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  effEveBEDCutHandle_t_o *v20;
+  effEveBEDCutHandle_t_c *v21;
+  s64 v22;
+  char *v23;
+  s64 *v24;
+  f32 v27;
+  char *v28;
+  s64 *v29;
+  effEveBEDCutHandle_t_o *hEveBEDCut;
+  dds3Basic_t_o *basic;
+  char v32[16];
+  char *v33;
+
+  basic = 0;
+  v1 = Allocate(effEveBEDCutHandle_t);
+  effEveBEDCutHandle_t___ctor(v1);
+  hEveBEDCut = v1;
+  IntPara = scrGetIntPara(0);
+  basic = evtSearchBasic(7, IntPara);
+  if (basic)
+  {
+    v7 = scrGetIntPara(1);
+    if (v7 < 3)
+    {
+      dds3StartBEDEffectObjectBasic(&basic, v7);
+      else
+      {
+        v13 = scrGetIntPara(2);
+        if (v13 < 0)
+          return 1;
+      }
+      v15 = v13;
+      v16 = evtCalcEffBedScale(v15);
+      workdata = basic->workdata;
+      klass = workdata->klass;
+      if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3EffectObjectBasicWorkData_t)
+      {
+        sub_8FC2C0(klass->_1.element_class, dds3EffectObjectBasicWorkData_t, v32);
+        if ((v32[0] & 1) != 0)
+          v28 = v33;
+        else
+          v28 = &v32[1];
+        v29 = sub_8C4940(v28);
+      }
+      v20 = workdata[5].klass;
+      if (v20)
+      {
+        v21 = v20->klass;
+        if (v20->klass->_2.typeHierarchyDepth < v22
+          || v21->_2.typeHierarchy[v22 - 1] != effEveBEDCutHandle_t)
+        {
+          sub_8FC2C0(v21->_1.element_class, effEveBEDCutHandle_t, v32);
+          if ((v32[0] & 1) != 0)
+            v23 = v33;
+          else
+            v23 = &v32[1];
+          v24 = sub_8C4940(v23);
+        }
+        hEveBEDCut = v20;
+        v27 = v16;
+        effEveBEDCutSetScale(&hEveBEDCut, v27);
+      }
+      else
+      {
+        hEveBEDCut = 0;
+      }
+    }
+    else
+    {
+      *v32 = v7;
+      v8 = NewSpecific(object, 1u);
+      v9 = sub_8D3950(uint, v32);
+      v10 = v9;
+      v8->m_Items[0] = v10;
+      dds3Printf("error EFFBED_START cut no over = %d\n", v8);
+    }
+  }
+  return 1;
 }
 
 // 0x1356ba0
 s32 evtCommand_EFFECT_BE(void) {
-    scrGetIntPara(0);
-    evtGetResorceData(0, 0);
-    dds3Printf(0, 0);
-    dds3AddD3PEffectObjectBasic2(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    dds3EffectObjectBasicStatOn(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  s32 IntPara;
+  s32 v4;
+  System_Byte_array *ResorceData;
+  u32 serialID;
+  s32 v9;
+  System_Object_array *v11;
+  s64 *v12;
+  s64 *v13;
+  s32 v18;
+  dds3Basic_t_o *basic;
+  UnityEngine_Vector4_o v20;
+  UnityEngine_Vector4_o v21;
+
+  *&v21.x = 0;
+  *&v21.z = 0;
+  *&v20.x = 0;
+  *&v20.z = 0;
+  basic = 0;
+  sub_854690(&v21.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v20.x, 0.0, 0.0, 0.0, 0.0);
+  IntPara = scrGetIntPara(0);
+  v4 = scrGetIntPara(1);
+  ResorceData = evtGetResorceData(IntPara, v4);
+  if (!ResorceData)
+  {
+    v11 = NewSpecific(object, 1u);
+    v18 = scrGetIntPara(1);
+    v12 = sub_8D3950(s32, &v18);
+    v13 = v12;
+    v11->m_Items[0] = v13;
+    dds3Printf("EFFECT_BE not fount RID = %d\n", v11);
+    goto LABEL_29;
+  }
+  basic = dds3AddD3PEffectObjectBasic2(&ResorceData->obj, v21, v20);
+  if (!basic)
+  {
+    Write("EFFECT_BE()登録失敗\n", 0);
+LABEL_29:
+    v9 = 0;
+    goto LABEL_30;
+  }
+  dds3EffectObjectBasicStatOn(&basic, 1u);
+  serialID = basic->serialID;
+  v9 = serialID;
+LABEL_30:
+  scrSetIntReturnValue(v9);
+  return 1;
 }
 
 // 0x1358400
@@ -823,11 +1359,38 @@ s32 evtCommand_EFFECT_LINK2(void) {
 
 // 0x1356e30
 s32 evtCommand_EFFECT_LOAD(void) {
-    scrGetStrPara(0);
-    dds3AddD3PEffectObjectBasic(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    dds3EffectObjectBasicStatOn(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  System_String_o *StrPara;
+  u32 serialID;
+  s32 v6;
+  Il2CppObject *v8;
+  UnityEngine_Vector4_o v10;
+  UnityEngine_Vector4_o v11;
+  dds3Basic_t_o *basic;
+
+  *&v11.x = 0;
+  *&v11.z = 0;
+  *&v10.x = 0;
+  *&v10.z = 0;
+  basic = 0;
+  sub_854690(&v11.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v10.x, 0.0, 0.0, 0.0, 0.0);
+  StrPara = scrGetStrPara(0);
+  basic = dds3AddD3PEffectObjectBasic(StrPara, v11, v10);
+  if (basic)
+  {
+    dds3EffectObjectBasicStatOn(&basic, 1u);
+    serialID = basic->serialID;
+    v6 = serialID;
+  }
+  else
+  {
+    Write("スクリプトコマンドEFFECT_LOAD()で対象ファイル\n", 0);
+    v8 = scrGetStrPara(0);
+    Write_2930400("{0}が見つかりません!!\n", v8);
+    v6 = 0;
+  }
+  scrSetIntReturnValue(v6);
+  return 1;
 }
 
 // 0x1359610
@@ -880,14 +1443,19 @@ s32 evtCommand_EFFECT_PATH_MOVE(void) {
   IntPara = scrGetIntPara(0);
   v5 = evtSearchBasic(7, IntPara);
   if (!v5)
+    goto LABEL_20;
+LABEL_9:
   v7 = v5;
   v10 = scrGetIntPara(1);
   v11 = evtSearchBasic(16, v10);
   if (!v11)
   {
+LABEL_22:
     v15 = Empty_string_();
-    v16 = &StringLiteral_15593;
+    v16 = &"EFFECT_PATH_MOVE not found path!\n";
+    goto LABEL_23;
   }
+LABEL_15:
   v13 = v11;
   evtPathLinkAndMake(v13, v7);
   return 1;
@@ -902,23 +1470,195 @@ s32 evtCommand_EFFECT_PATH_WAIT(void) {
   IntPara = scrGetIntPara(0);
   v5 = evtSearchBasic(7, IntPara);
   if (!v5)
+    goto LABEL_15;
+LABEL_9:
   v7 = v5;
   return (evtCheckPathStat(v7) + 1) <= 1;
 }
 
 // 0x13589f0
 s32 evtCommand_EFFECT_POS(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    return 0;
+  s32 IntPara;
+  dds3Basic_t_o *v5;
+  dds3Basic_t_o *v7;
+  s32 v10;
+  dds3Basic_t_o *v11;
+  s64 workdata;
+  Il2CppClass *v13;
+  char *v14;
+  s64 *v15;
+  s64 *v17;
+  s64 v18;
+  s64 v19;
+  s64 v20;
+  s64 v21;
+  Il2CppObject *v22;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s64 p_pos;
+  s64 v26;
+  s64 v27;
+  s64 p_rot;
+  s64 v29;
+  s64 v30;
+  s64 v31;
+  char *v34;
+  s64 *v35;
+  s64 v36;
+  s64 v37;
+  s64 v38;
+  s64 v39;
+  s64 v40;
+  s64 v41;
+  u64 v42[2];
+  char *v43;
+
+  v40 = 0;
+  v41 = 0;
+  v38 = 0;
+  v39 = 0;
+  v36 = 0;
+  v37 = 0;
+  IntPara = scrGetIntPara(0);
+  else
+  {
+    v5 = evtSearchBasic(7, IntPara);
+    if (!v5)
+      return 1;
+  }
+  v7 = v5;
+  v10 = scrGetIntPara(1);
+  else
+  {
+    v11 = evtSearchBasic(17, v10);
+    if (!v11)
+      return 1;
+  }
+  workdata = v11->workdata;
+  if (!workdata)
+    sub_8C38A0();
+  v13 = *(*workdata + 64LL);
+  {
+    sub_8FC2C0(v13, fldResourcePoint_t, v42);
+    if ((v42[0] & 1) != 0)
+      v14 = v43;
+    else
+      v14 = v42 + 1;
+    v15 = sub_8C4940(v14);
+  }
+  v17 = sub_8D3F90(workdata);
+  v18 = v17[1];
+  v36 = *v17;
+  v37 = v18;
+  v19 = v17[2];
+  v20 = v17[3];
+  v21 = v17[5];
+  v40 = v17[4];
+  v41 = v21;
+  v38 = v19;
+  v39 = v20;
+  v22 = v7->workdata;
+  klass = v22->klass;
+  if (v22->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3EffectObjectBasicWorkData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, dds3EffectObjectBasicWorkData_t, v42);
+    if ((v42[0] & 1) != 0)
+      v34 = v43;
+    else
+      v34 = v42 + 1;
+    v35 = sub_8C4940(v34);
+  }
+  if ((v22[1].monitor & 4) == 0)
+  {
+    p_pos = &v7->poseset->pos;
+    sub_854710(&v36, 0);
+    sub_854930(p_pos, 0);
+    v26 = &v7->poseset->pos;
+    sub_854710(&v36, 1u);
+    sub_854930(v26, 1u);
+    v27 = &v7->poseset->pos;
+    sub_854710(&v36, 2u);
+    sub_854930(v27, 2u);
+    p_rot = &v7->poseset->rot;
+    sub_854710(&v38, 0);
+    sub_854930(p_rot, 0);
+    v29 = &v7->poseset->rot;
+    sub_854710(&v38, 1u);
+    sub_854930(v29, 1u);
+    v30 = &v7->poseset->rot;
+    sub_854710(&v38, 2u);
+    sub_854930(v30, 2u);
+    v31 = &v7->poseset->rot;
+    sub_854710(&v38, 3u);
+    sub_854930(v31, 3u);
+  }
+  v7->poseset->flag |= 1u;
+  v7->poseset->flag &= ~2u;
+  return 1;
 }
 
 // 0x13584e0
 s32 evtCommand_EFFECT_POS_XYZ(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    scrGetFloatPara(0);
-    return 0;
+  s32 IntPara;
+  dds3Basic_t_o *v5;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  dds3Basic_t_o *v9;
+  s64 p_pos;
+  s64 v11;
+  s64 v12;
+  s64 p_monitor;
+  char *v16;
+  s64 *v17;
+  u64 v18[3];
+
+  IntPara = scrGetIntPara(0);
+  else
+  {
+    v5 = evtSearchBasic(7, IntPara);
+    if (!v5)
+      return 1;
+  }
+  workdata = v5->workdata;
+  klass = workdata->klass;
+  v9 = v5;
+  if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3EffectObjectBasicWorkData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, dds3EffectObjectBasicWorkData_t, v18);
+    if ((v18[0] & 1) != 0)
+      v16 = v18[2];
+    else
+      v16 = v18 + 1;
+    v17 = sub_8C4940(v16);
+  }
+  if ((workdata[1].monitor & 4) != 0)
+  {
+    p_monitor = &workdata[2].monitor;
+    scrGetFloatPara(1);
+    sub_854930(p_monitor, 0);
+    scrGetFloatPara(2);
+    sub_854930(p_monitor, 1u);
+    scrGetFloatPara(3);
+    sub_854930(p_monitor, 2u);
+  }
+  else
+  {
+    p_pos = &v5->poseset->pos;
+    scrGetFloatPara(1);
+    sub_854930(p_pos, 0);
+    v11 = &v9->poseset->pos;
+    scrGetFloatPara(2);
+    sub_854930(v11, 1u);
+    v12 = &v9->poseset->pos;
+    scrGetFloatPara(3);
+    sub_854930(v12, 2u);
+    v9->poseset->flag |= 1u;
+    v9->poseset->flag &= ~2u;
+  }
+  return 1;
 }
 
 // 0x1358340
@@ -936,16 +1676,69 @@ s32 evtCommand_EFFECT_PRESET(void) {
 
 // 0x1358760
 s32 evtCommand_EFFECT_ROT_XYZ(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    scrGetFloatPara(0);
-    SDF_DEGtoRAD(0);
-    FromEuler(0, 0, 0);
+  s32 IntPara;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  f32 FloatPara;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 v13;
+  f32 v14;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  char *v21;
+  s64 *v22;
+  dds3Basic_t_o *v23;
+  UnityEngine_Vector4_o p;
+  u64 v25[3];
+  UnityEngine_Vector4_o v26;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  v23 = 0;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 1.0);
+  IntPara = scrGetIntPara(0);
+  v23 = evtSearchBasic(7, IntPara);
+  workdata = v23->workdata;
+  klass = workdata->klass;
+  if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3EffectObjectBasicWorkData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, dds3EffectObjectBasicWorkData_t, v25);
+    if ((v25[0] & 1) != 0)
+      v21 = v25[2];
+    else
+      v21 = v25 + 1;
+    v22 = sub_8C4940(v21);
+  }
+  if ((workdata[1].monitor & 4) == 0)
+  {
+    FloatPara = scrGetFloatPara(1);
+    v10 = SDF_DEGtoRAD(FloatPara);
+    v11 = scrGetFloatPara(2);
+    v12 = SDF_DEGtoRAD(v11);
+    FromEuler(v10, v12, 0.0);
     SDF_VU0__COPYVECTOR_A_TO_B();
+    v13 = scrGetFloatPara(3);
+    v14 = SDF_DEGtoRAD(v13);
+    FromEuler(0.0, 0.0, v14);
     Mult();
-    SDF_VU0__STOREVECTOR(0);
-    dds3SetRotPoseSet(0, (sdfVector4_t){0});
-    return 0;
+    SDF_VU0__STOREVECTOR(&p);
+    x = p.x;
+    y = p.y;
+    z = p.z;
+    w = p.w;
+    v26.x = x;
+    v26.y = y;
+    v26.z = z;
+    v26.w = w;
+    dds3SetRotPoseSet(&v23, v26);
+  }
+  return 1;
 }
 
 // 0x1359550
@@ -963,13 +1756,44 @@ s32 evtCommand_EFFECT_UNLINK(void) {
 
 // 0x1357d30
 s32 evtCommand_EFFMG1_BE(void) {
-    scrGetIntPara(0);
-    evtGetResorceData(0, 0);
-    dds3Printf(0, 0);
-    dds3AddMG12EffectObjectBasic2(0, 0);
-    dds3EffectObjectBasicStatOn(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  s32 IntPara;
+  s32 v4;
+  System_Byte_array *ResorceData;
+  u32 serialID;
+  s32 v9;
+  System_Object_array *v11;
+  s64 *v12;
+  s64 *v13;
+  s32 v17;
+  dds3Basic_t_o *basic;
+
+  basic = 0;
+  IntPara = scrGetIntPara(0);
+  v4 = scrGetIntPara(1);
+  ResorceData = evtGetResorceData(IntPara, v4);
+  if (!ResorceData)
+  {
+    v11 = NewSpecific(object, 1u);
+    v17 = scrGetIntPara(1);
+    v12 = sub_8D3950(s32, &v17);
+    v13 = v12;
+    v11->m_Items[0] = v13;
+    dds3Printf("EFFMG1_BE not fount RID = %d\n", v11);
+    goto LABEL_26;
+  }
+  basic = dds3AddMG12EffectObjectBasic2(1, &ResorceData->obj);
+  if (!basic)
+  {
+LABEL_26:
+    v9 = 0;
+    goto LABEL_27;
+  }
+  dds3EffectObjectBasicStatOn(&basic, 1u);
+  serialID = basic->serialID;
+  v9 = serialID;
+LABEL_27:
+  scrSetIntReturnValue(v9);
+  return 1;
 }
 
 // 0x1357be0
@@ -991,9 +1815,9 @@ s32 evtCommand_EFFMG1_LOAD(void) {
   }
   else
   {
-    Write(StringLiteral_15582, 0);
+    Write("スクリプトコマンドEFFMG1_LOAD()で対象ファイル\n", 0);
     v8 = scrGetStrPara(0);
-    Write_2930400(StringLiteral_15577, v8);
+    Write_2930400("{0}が見つかりません!!\n", v8);
     v6 = 0;
   }
   scrSetIntReturnValue(v6);
@@ -1030,7 +1854,8 @@ s32 evtCommand_EFFMG1_POS(void) {
   if (!eff)
   {
     v14 = Empty_string_();
-    v15 = &StringLiteral_15586;
+    v15 = &"EFFMG1_POS mg1 ID error!\n";
+    goto LABEL_22;
   }
   v10 = scrGetIntPara(1);
   v11 = evtSearchBasic(7, v10);
@@ -1040,12 +1865,14 @@ s32 evtCommand_EFFMG1_POS(void) {
   if (!p2 || !v11)
   {
     v14 = Empty_string_();
-    v15 = &StringLiteral_15587;
+    v15 = &"EFFMG1_POS point ID not found!\n";
+    goto LABEL_22;
   }
   if (!dds3EffectObjectSetMG12Pos(&eff, &p1, &p2, &p3, &v17))
   {
     v14 = Empty_string_();
-    v15 = &StringLiteral_15588;
+    v15 = &"EFFMG1_POS set error!\n";
+LABEL_22:
     dds3Printf(*v15, v14);
   }
   return 1;
@@ -1053,13 +1880,44 @@ s32 evtCommand_EFFMG1_POS(void) {
 
 // 0x1358080
 s32 evtCommand_EFFMG2_BE(void) {
-    scrGetIntPara(0);
-    evtGetResorceData(0, 0);
-    dds3Printf(0, 0);
-    dds3AddMG12EffectObjectBasic2(0, 0);
-    dds3EffectObjectBasicStatOn(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  s32 IntPara;
+  s32 v4;
+  System_Byte_array *ResorceData;
+  u32 serialID;
+  s32 v9;
+  System_Object_array *v11;
+  s64 *v12;
+  s64 *v13;
+  s32 v17;
+  dds3Basic_t_o *basic;
+
+  basic = 0;
+  IntPara = scrGetIntPara(0);
+  v4 = scrGetIntPara(1);
+  ResorceData = evtGetResorceData(IntPara, v4);
+  if (!ResorceData)
+  {
+    v11 = NewSpecific(object, 1u);
+    v17 = scrGetIntPara(1);
+    v12 = sub_8D3950(s32, &v17);
+    v13 = v12;
+    v11->m_Items[0] = v13;
+    dds3Printf("EFFMG2_BE not fount RID = %d\n", v11);
+    goto LABEL_26;
+  }
+  basic = dds3AddMG12EffectObjectBasic2(2, &ResorceData->obj);
+  if (!basic)
+  {
+LABEL_26:
+    v9 = 0;
+    goto LABEL_27;
+  }
+  dds3EffectObjectBasicStatOn(&basic, 1u);
+  serialID = basic->serialID;
+  v9 = serialID;
+LABEL_27:
+  scrSetIntReturnValue(v9);
+  return 1;
 }
 
 // 0x1357f30
@@ -1081,9 +1939,9 @@ s32 evtCommand_EFFMG2_LOAD(void) {
   }
   else
   {
-    Write(StringLiteral_15584, 0);
+    Write("スクリプトコマンドEFFMG2_LOAD()で対象ファイル\n", 0);
     v8 = scrGetStrPara(0);
-    Write_2930400(StringLiteral_15577, v8);
+    Write_2930400("{0}が見つかりません!!\n", v8);
     v6 = 0;
   }
   scrSetIntReturnValue(v6);
@@ -1118,7 +1976,8 @@ s32 evtCommand_EFFMG2_POS(void) {
   if (!eff)
   {
     v18 = Empty_string_();
-    v19 = &StringLiteral_15589;
+    v19 = &"EFFMG2_POS mg2 ID error!\n";
+    goto LABEL_24;
   }
   v8 = scrGetIntPara(1);
   v9 = evtSearchBasic(7, v8);
@@ -1134,12 +1993,14 @@ s32 evtCommand_EFFMG2_POS(void) {
   if (!v21 || !v9 || !v12 || !v15)
   {
     v18 = Empty_string_();
-    v19 = &StringLiteral_15590;
+    v19 = &"EFFMG2_POS point ID not found!\n";
+    goto LABEL_24;
   }
   if (!dds3EffectObjectSetMG12Pos(&eff, &p1, &p2, &p3, &v21))
   {
     v18 = Empty_string_();
-    v19 = &StringLiteral_15591;
+    v19 = &"EFFMG2_POS set error!\n";
+LABEL_24:
     dds3Printf(*v19, v18);
   }
   return 1;
@@ -1164,11 +2025,11 @@ s32 evtCommand_EXIT_EVENT(void) {
   System_Object_array *v5;
 
   v2 = Empty_string_();
-  Log(StringLiteral_15599, v2, 0);
+  Log("EXIT_EVENT START", v2, 0);
   fldSetCharClr();
   UnloadALL(0);
   v5 = Empty_string_();
-  Log(StringLiteral_15600, v5, 0);
+  Log("EXIT_EVENT END", v5, 0);
   dds3AdminiExitSequence();
   return 1;
 }
@@ -1218,8 +2079,8 @@ s32 evtCommand_FIELD_BE(void) {
   System_Object_array *v12;
 
   v2 = Empty_string_();
-  Log(StringLiteral_15601, v2, 0);
-  v3 = Find(StringLiteral_4672, 0);
+  Log("FIELD_BE start\n", v2, 0);
+  v3 = Find("kernel", 0);
   klass = GetComponent_object_(v3)[14].klass;
   if (op_Inequality(klass, 0, 0) && !get_activeInHierarchy(klass))
     SetActive(klass, 1, 0);
@@ -1229,7 +2090,7 @@ s32 evtCommand_FIELD_BE(void) {
   if (result)
   {
     v12 = Empty_string_();
-    Log(StringLiteral_15602, v12, 0);
+    Log("FIELD_BE end\n", v12, 0);
     return 1;
   }
   return result;
@@ -1245,22 +2106,31 @@ s32 evtCommand_FIELD_CLS(void) {
   {
     {
       if (sdfDelayedResrcCheck() != 1)
+        goto LABEL_12;
     }
   }
   while (sdfDelayedResrcCheck() == 1);
+LABEL_12:
   evtFreeStage();
   do
   {
     {
       if (sdfDelayedResrcCheck() != 1)
+        goto LABEL_21;
     }
   }
   while (sdfDelayedResrcCheck() == 1);
-  else  SetDrawFlag(0x2000000u, 1u);
+LABEL_21:
+  else if (PlayEventNo == 800)
+  {
+    goto LABEL_28;
+  }
+  SetDrawFlag(0x2000000u, 1u);
+LABEL_28:
   v5 = Empty_string_();
-  Log(StringLiteral_15603, v5, 0);
+  Log("event stage shutdown !!\n", v5, 0);
   v6 = Empty_string_();
-  dds3Printf(StringLiteral_15604, v6);
+  dds3Printf("field shutdown.\n", v6);
   return 1;
 }
 
@@ -1274,21 +2144,30 @@ s32 evtCommand_FIELD_CLS_STOP(void) {
   {
     {
       if (sdfDelayedResrcCheck() != 1)
+        goto LABEL_15;
     }
   }
   while (sdfDelayedResrcCheck() == 1);
+LABEL_15:
   evtFreeStage();
   do
   {
     {
       if (sdfDelayedResrcCheck() != 1)
+        goto LABEL_24;
     }
   }
   while (sdfDelayedResrcCheck() == 1);
-  else  SetDrawFlag(0x2000000u, 1u);
-  Write(StringLiteral_15605, 0);
+LABEL_24:
+  else if (PlayEventNo != 672)
+  {
+    goto LABEL_31;
+  }
+  SetDrawFlag(0x2000000u, 1u);
+LABEL_31:
+  Write("event stage shutdown2 !!\n", 0);
   v5 = Empty_string_();
-  dds3Printf(StringLiteral_15606, v5);
+  dds3Printf("field shutdown2.\n", v5);
   return 1;
 }
 
@@ -1326,6 +2205,7 @@ s32 evtCommand_FRAMEMODE_OFF(void) {
   IntPara = scrGetIntPara(0);
   UnitHandle = evtGetUnitHandle(IntPara);
   if (UnitHandle)
+LABEL_9:
     UnitHandle->modeflg &= ~1u;
   return 1;
 }
@@ -1341,6 +2221,7 @@ s32 evtCommand_FRAMEMODE_ON(void) {
   IntPara = scrGetIntPara(0);
   UnitHandle = evtGetUnitHandle(IntPara);
   if (UnitHandle)
+LABEL_9:
     UnitHandle->modeflg |= 1u;
   return 1;
 }
@@ -1375,14 +2256,25 @@ s32 evtCommand_GET_MSGTRG(void) {
   System_Object_array *v6;
 
   MSGTRG = 0;
+  if (scrGetIntPara(0) != 723)
+  {
+LABEL_24:
+      goto LABEL_27;
+    goto LABEL_25;
+  }
   if (!IsDLC())
+    goto LABEL_23;
+LABEL_10:
   if (MSGTRG != 1)
+    goto LABEL_24;
   v6 = Empty_string_();
-  Log(StringLiteral_15636, v6, 0);
+  Log("START MSG", v6, 0);
   MSGTRG = 1;
   MSGTRG = 0;
   {
+LABEL_25:
   }
+LABEL_27:
   scrSetIntReturnValue(MSGTRG);
   return 1;
 }
@@ -1395,12 +2287,17 @@ s32 evtCommand_GET_RESUME(void) {
   IntPara = scrGetIntPara(0);
   if (IntPara == 1)
   {
+      goto LABEL_18;
+LABEL_12:
+LABEL_18:
     scrSetIntReturnValue(KagPuzNow);
     return 1;
   }
   if (!IntPara)
   {
     KagPuzNow = KagPuzPos;
+      goto LABEL_18;
+    goto LABEL_12;
   }
   return 1;
 }
@@ -1492,9 +2389,9 @@ s32 evtCommand_LIGHT_PATH_MOVE(void) {
   v9 = evtSearchBasic(16, v6);
   if (evtPathLinkAndMake(v9, v5))
     return 1;
-  Write(StringLiteral_15628, 0);
+  Write("LIGHT_PATH_MOVE error!\n", 0);
   v12 = Empty_string_();
-  dds3Printf(StringLiteral_15629, v12);
+  dds3Printf("error: LIGHT_PATH_MOVE.\n", v12);
   return 1;
 }
 
@@ -1510,14 +2407,54 @@ s32 evtCommand_LIGHT_PATH_WAIT(void) {
 
 // 0x135d6a0
 s32 evtCommand_LOAD_BE(void) {
-    scrGetIntPara(0);
-    scrGetScriptHandle();
-    evtSearchEventPack(0);
-    evtGetEventPackStat(0);
-    Log(0, 0);
-    evtLoadEventPack(0);
-    dds3LinkProcess(0, 0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  s32 IntPara;
+  scrProcessWork_s_o *ScriptHandle;
+  scrProcessWork_s_o *v7;
+  u64 *v9;
+  System_String_o *v10;
+  System_Object_array *v12;
+  u64 *v14;
+  System_String_o *v15;
+  System_Object_array *v17;
+  s32 v20;
+  dds3ProcessID_t_o *target;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  target = v2;
+  IntPara = scrGetIntPara(0);
+  ScriptHandle = scrGetScriptHandle();
+  if (!ScriptHandle)
+    return 1;
+  v7 = ScriptHandle;
+  target = evtSearchEventPack(IntPara);
+  if (target)
+  {
+    if (evtGetEventPackStat(IntPara) == 2)
+    {
+      v20 = IntPara;
+      v9 = sub_8D3950(s32, &v20);
+      v10 = Format("BE ok! ({0})\n", v9, 0);
+      v12 = Empty_string_();
+      Log(v10, v12, 0);
+      return 1;
+    }
+  }
+  else
+  {
+    v20 = IntPara;
+    v14 = sub_8D3950(s32, &v20);
+    v15 = Format("load BE ({0})..\n", v14, 0);
+    v17 = Empty_string_();
+    Log(v15, v17, 0);
+    target = evtLoadEventPack(IntPara);
+    dds3LinkProcess(&v7->ProcessID, &target);
+  }
+  return 0;
 }
 
 // 0x1360720
@@ -1564,16 +2501,73 @@ s32 evtCommand_MODEL_A(void) {
 
 // 0x13534d0
 s32 evtCommand_MODEL_BE(void) {
-    scrGetScriptHandle();
-    scrGetIntPara(0);
-    evtRegistBEUnit(0, 0);
-    dds3Printf(0, 0);
-    evtInitMotionSeProcess(0, 0, 0);
-    evtSearchEventPack(0);
-    dds3LinkProcess(0, 0);
-    scrSetIntReturnValue(0);
-    Log(0, 0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  u64 *v3;
+  s32 IntPara;
+  s32 v8;
+  s32 v9;
+  s32 v11;
+  System_Object_array *v13;
+  s64 *v14;
+  s64 *v15;
+  u64 *v18;
+  System_String_o *v19;
+  System_Object_array *v21;
+  s32 v23;
+  s32 v25;
+  s32 v28;
+  s32 v30;
+  dds3ProcessID_t_o *parent;
+  dds3ProcessID_t_o *target;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  target = v2;
+  v3 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v3);
+  parent = v3;
+  if (!scrGetScriptHandle())
+    return 1;
+LABEL_6:
+  IntPara = scrGetIntPara(0);
+  v8 = scrGetIntPara(1);
+  v9 = evtRegistBEUnit(IntPara, v8);
+  if (v9 != -2)
+  {
+    v11 = v9;
+    if (v9 == -1)
+    {
+      v13 = NewSpecific(object, 1u);
+      v30 = scrGetIntPara(1);
+      v14 = sub_8D3950(s32, &v30);
+      v15 = v14;
+      v13->m_Items[0] = v15;
+      dds3Printf("MODEL_BE not fount RID = %d!\n", v13);
+    }
+    else
+    {
+      v23 = scrGetIntPara(0);
+      v25 = scrGetIntPara(1);
+      target = evtInitMotionSeProcess(v11, v23, v25);
+      if (target)
+      {
+        v28 = scrGetIntPara(0);
+        parent = evtSearchEventPack(v28);
+        dds3LinkProcess(&parent, &target);
+      }
+      scrSetIntReturnValue(v11);
+    }
+    return 1;
+  }
+  v30 = -2;
+  v18 = sub_8D3950(s32, &v30);
+  v19 = Concat("LoadWait : ", v18);
+  v21 = Empty_string_();
+  Log(v19, v21, 0);
+  return 0;
 }
 
 // 0x1354f30
@@ -1679,6 +2673,7 @@ s32 evtCommand_MODEL_EXWAIT(void) {
   UnitHandle = evtGetUnitHandle(IntPara);
   if (!UnitHandle)
     return 1;
+LABEL_9:
   v7 = UnitHandle;
   ExFlags = UnitHandle->ExFlags;
   v9 = scrGetIntPara(1);
@@ -1689,20 +2684,62 @@ s32 evtCommand_MODEL_EXWAIT(void) {
   if (mdlChkMotionEndEx(p_Model, v15))
     return 1;
   v17 = Empty_string_();
-  Log(StringLiteral_15570, v17, 0);
+  Log("MODEL_EXWAIT : ", v17, 0);
   return 0;
 }
 
 // 0x13561b0
 s32 evtCommand_MODEL_LIGHT_DIR(void) {
-    scrGetIntPara(0);
-    evtGetUnitHandle(0);
-    scrGetFloatPara(0);
-    sdfFabs(0);
-    dds3Printf(0, 0);
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    evtSetUnitLightDir(0, 0);
-    return 0;
+  u64 *v1;
+  s32 IntPara;
+  f32 v6;
+  f32 v7;
+  f32 v9;
+  f32 v10;
+  f32 v12;
+  f32 v13;
+  s32 v16;
+  System_Object_array *v18;
+  UnityEngine_Vector4_o v19;
+  evtUnitHandle_t_o *h;
+
+  *&v19.x = 0;
+  *&v19.z = 0;
+  sub_854690(&v19.x, 0.0, 0.0, 0.0, 0.0);
+  v1 = Allocate(evtUnitHandle_t);
+  _ctor(v1, 0);
+  h = v1;
+  IntPara = scrGetIntPara(0);
+  h = evtGetUnitHandle(IntPara);
+  scrGetFloatPara(2);
+  sub_854930(&v19, 0);
+  scrGetFloatPara(3);
+  sub_854930(&v19, 1u);
+  scrGetFloatPara(4);
+  sub_854930(&v19, 2u);
+  sub_854710(&v19, 0);
+  v7 = v6;
+  if (sdfFabs(v7) > 0.01)
+    goto LABEL_21;
+  sub_854710(&v19, 1u);
+  v10 = v9;
+  if (sdfFabs(v10) > 0.01)
+    goto LABEL_21;
+  sub_854710(&v19, 2u);
+  v13 = v12;
+  if (sdfFabs(v13) <= 0.01)
+  {
+    v18 = Empty_string_();
+    dds3Printf("WARNING: MODEL_LIGHT_DIR length zero\n", v18);
+  }
+  else
+  {
+LABEL_21:
+    SDF_VU0__LOADVECTOR(v19);
+    v16 = scrGetIntPara(1);
+    evtSetUnitLightDir(&h, v16);
+  }
+  return 1;
 }
 
 // 0x13566b0
@@ -1737,13 +2774,13 @@ s32 evtCommand_MODEL_LIGHT_LINK(void) {
   {
     v10 = v9;
     v11 = NewSpecific(string, 5u);
-    v11->m_Items[0] = StringLiteral_15573;
+    v11->m_Items[0] = "モデルに配置ライトをリンクさせる : ";
     name = v10->name;
     v11->m_Items[1] = name;
-    v11->m_Items[2] = StringLiteral_5654;
+    v11->m_Items[2] = "を";
     v16 = UnitHandle->Owner->name;
     v11->m_Items[3] = v16;
-    v11->m_Items[4] = StringLiteral_5449;
+    v11->m_Items[4] = "に";
     v19 = Concat_5271600(v11);
     v21 = Empty_string_();
     Log(v19, v21, 0);
@@ -1879,7 +2916,7 @@ s32 evtCommand_MODEL_MOTION(void) {
     v7 = scrGetIntPara(2);
     v9 = scrGetIntPara(3);
     evtSetUnitMotion(&h, v6, v7, v9, 0);
-    Write(StringLiteral_15569, 0);
+    Write("※注意:MODEL_MOTION()このコマンドは今後使用禁止になります。\n", 0);
   }
   return 1;
 }
@@ -1988,7 +3025,7 @@ s32 evtCommand_MODEL_MOVE_MOT(void) {
   {
     v7 = scrGetIntPara(1);
     evtSetUnitMotion(&h, v7, 5, 7, 1);
-    Write(StringLiteral_15571, 0);
+    Write("※注意:MODEL_MOVE_MOT()このコマンドは今後使用禁止になります。\n", 0);
   }
   return 1;
 }
@@ -2011,7 +3048,7 @@ s32 evtCommand_MODEL_OFF(void) {
   if (UnitHandle)
   {
     v6 = UnitHandle;
-    if (op_Equality(UnitHandle->Owner->name, StringLiteral_15022, 0))
+    if (op_Equality(UnitHandle->Owner->name, "PLAYER_UNIT", 0))
     {
       PlayerUnitDisp(&h, 0);
     }
@@ -2042,7 +3079,7 @@ s32 evtCommand_MODEL_ON(void) {
   if (UnitHandle)
   {
     v6 = UnitHandle;
-    if (op_Equality(UnitHandle->Owner->name, StringLiteral_15022, 0))
+    if (op_Equality(UnitHandle->Owner->name, "PLAYER_UNIT", 0))
     {
       PlayerUnitDisp(&h, 1);
     }
@@ -2090,12 +3127,71 @@ s32 evtCommand_MODEL_POS(void) {
 
 // 0x1353c60
 s32 evtCommand_MODEL_POS_XYZ(void) {
-    dds3GetActiveScene();
-    scrGetIntPara(0);
-    dds3SearchSceneBasic(0, 0, 0);
-    scrGetFloatPara(0);
-    dds3SetPosPoseSet(0, (sdfVector4_t){0});
-    return 0;
+  s32 IntPara;
+  f32 FloatPara;
+  f32 v7;
+  f32 v8;
+  char v10;
+  s64 v11;
+  s64 v12;
+  dds3Basic_t_o *ActiveScene;
+  dds3Basic_t_o *pBasic;
+  s64 v16;
+  s64 v17;
+  UnityEngine_Vector4_o v18;
+
+  v16 = 0;
+  v17 = 0;
+  ActiveScene = 0;
+  pBasic = 0;
+  sub_854690(&v16, 0.0, 0.0, 0.0, 0.0);
+  ActiveScene = dds3GetActiveScene();
+  IntPara = scrGetIntPara(0);
+  pBasic = dds3SearchSceneBasic(&ActiveScene, IntPara, 5u);
+  if (pBasic)
+  {
+    FloatPara = scrGetFloatPara(1);
+    v7 = scrGetFloatPara(2);
+    v8 = scrGetFloatPara(3);
+    sub_854930(&v16, 0);
+    sub_854930(&v16, 1u);
+    sub_854930(&v16, 2u);
+    v10 = 0;
+    if (v7 == 65536.0 && v8 == 65536.0)
+    {
+      sub_854710(&v16, 0);
+      sub_854930(&v16, 0);
+      v10 = 1;
+    }
+    if (FloatPara == 65536.0 && v8 == 65536.0)
+    {
+      v10 = 1;
+      sub_854710(&v16, 1u);
+      sub_854930(&v16, 1u);
+    }
+    if (FloatPara == 65536.0 && v7 == 65536.0)
+    {
+      sub_854710(&v16, 2u);
+    }
+    else
+    {
+      if ((v10 & 1) != 0)
+        goto LABEL_31;
+      scrGetFloatPara(1);
+      sub_854930(&v16, 0);
+      scrGetFloatPara(2);
+      sub_854930(&v16, 1u);
+      scrGetFloatPara(3);
+    }
+    sub_854930(&v16, 2u);
+LABEL_31:
+    v11 = v16;
+    v12 = v17;
+    *&v18.x = v11;
+    *&v18.z = v12;
+    dds3SetPosPoseSet(&pBasic, v18);
+  }
+  return 1;
 }
 
 // 0x1356460
@@ -2154,27 +3250,90 @@ s32 evtCommand_MODEL_ROT(void) {
 
 // 0x1353f70
 s32 evtCommand_MODEL_ROT_XYZ(void) {
-    dds3GetActiveScene();
-    scrGetIntPara(0);
-    dds3SearchSceneBasic(0, 0, 0);
-    scrGetFloatPara(0);
-    SDF_DEGtoRAD(0);
-    FromEuler(0, 0, 0);
+  s32 IntPara;
+  f32 FloatPara;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  dds3Basic_t_o *ActiveScene;
+  dds3Basic_t_o *pBasic;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector4_o v22;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  ActiveScene = 0;
+  pBasic = 0;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 1.0);
+  ActiveScene = dds3GetActiveScene();
+  IntPara = scrGetIntPara(0);
+  pBasic = dds3SearchSceneBasic(&ActiveScene, IntPara, 5u);
+  if (pBasic)
+  {
+    FloatPara = scrGetFloatPara(1);
+    v8 = SDF_DEGtoRAD(FloatPara);
+    v9 = scrGetFloatPara(2);
+    v10 = SDF_DEGtoRAD(v9);
+    FromEuler(v8, v10, 0.0);
     SDF_VU0__COPYVECTOR_A_TO_B();
+    v11 = scrGetFloatPara(3);
+    v12 = SDF_DEGtoRAD(v11);
+    FromEuler(0.0, 0.0, v12);
     Mult();
-    SDF_VU0__STOREVECTOR(0);
-    dds3SetRotPoseSet(0, (sdfVector4_t){0});
-    return 0;
+    SDF_VU0__STOREVECTOR(&p);
+    x = p.x;
+    y = p.y;
+    z = p.z;
+    w = p.w;
+    v22.x = x;
+    v22.y = y;
+    v22.z = z;
+    v22.w = w;
+    dds3SetRotPoseSet(&pBasic, v22);
+  }
+  return 1;
 }
 
 // 0x1354190
 s32 evtCommand_MODEL_SCL_XYZ(void) {
-    dds3GetActiveScene();
-    scrGetIntPara(0);
-    dds3SearchSceneBasic(0, 0, 0);
-    scrGetFloatPara(0);
-    dds3SetSclPoseSet(0, (sdfVector4_t){0});
-    return 0;
+  s32 IntPara;
+  s64 v7;
+  s64 v8;
+  dds3Basic_t_o *ActiveScene;
+  dds3Basic_t_o *pBasic;
+  s64 v12;
+  s64 v13;
+  UnityEngine_Vector4_o v14;
+
+  v12 = 0;
+  v13 = 0;
+  ActiveScene = 0;
+  pBasic = 0;
+  sub_854690(&v12, 0.0, 0.0, 0.0, 1.0);
+  ActiveScene = dds3GetActiveScene();
+  IntPara = scrGetIntPara(0);
+  pBasic = dds3SearchSceneBasic(&ActiveScene, IntPara, 5u);
+  if (pBasic)
+  {
+    scrGetFloatPara(1);
+    sub_854930(&v12, 0);
+    scrGetFloatPara(2);
+    sub_854930(&v12, 1u);
+    scrGetFloatPara(3);
+    sub_854930(&v12, 2u);
+    v7 = v12;
+    v8 = v13;
+    *&v14.x = v7;
+    *&v14.z = v8;
+    dds3SetSclPoseSet(&pBasic, v14);
+  }
+  return 1;
 }
 
 // 0x1353b50
@@ -2326,27 +3485,179 @@ s32 evtCommand_MOON_STOP(void) {
 
 // 0x135ccb0
 s32 evtCommand_OBJ_PATH_MOVE(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    fldGetMatter_From_ModelRangeID(0);
-    dds3MatterObjectBasicGetControlWorkData(0);
-    dds3ObjectBaseCreateMover(0);
-    dds3MoverBasicSetPath(0, 0);
-    dds3MoverBasicMakePath(0);
-    dds3MoverBasicGetPathControl(0);
-    dds3PathBasicControlAlterMode(0, 0);
-    fldCommand_GetHojiID(0);
-    fldGbSetGimic(0, 0, 0, 0);
-    return 0;
+  s32 IntPara;
+  s32 v7;
+  s32 v10;
+  dds3ObjectBaseControlWorkData_t_o *ControlWorkData;
+  struct dds3Basic_t_array *v12;
+  dds3ObjectBaseControlWorkData_t_o *v13;
+  dds3Basic_t_o *v15;
+  struct dds3Basic_t_array *v16;
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 v23;
+  System_String_o **v25;
+  s32 v26;
+  s32 v28;
+  struct fldGlobalWork_t_o *v30;
+  s32 v31;
+  s32 fieldID;
+  s32 v33;
+  s32 v34;
+  u64 *v36;
+  u64 *v37;
+  System_String_o **p_name;
+  s32 HojiID;
+  s32 v42;
+  struct fldGlobalWork_t_o *fldGb;
+  char *v46;
+  s64 *v47;
+  s32 v48;
+  dds3Basic_t_o *pMoverBasic;
+  dds3Basic_t_o *pPathBasic;
+  dds3Basic_t_o *pBasic;
+  dds3PathBasicControl_t_o *v52[3];
+  dds3PathBasicControl_t_o *pControl;
+
+  pControl = 0;
+  pPathBasic = 0;
+  pBasic = 0;
+  pMoverBasic = 0;
+  IntPara = scrGetIntPara(0);
+  pBasic = evtSearchBasic(6, IntPara);
+  if (pBasic)
+    goto LABEL_79;
+  v7 = scrGetIntPara(0);
+  pBasic = fldGetMatter_From_ModelRangeID(v7);
+  if (pBasic)
+  {
+LABEL_79:
+    v10 = scrGetIntPara(1);
+    pPathBasic = evtSearchBasic(16, v10);
+    if (pPathBasic)
+    {
+      ControlWorkData = dds3MatterObjectBasicGetControlWorkData(&pBasic);
+      v12 = ControlWorkData->pBasic;
+      v13 = ControlWorkData;
+      v15 = v12->m_Items[1];
+      pMoverBasic = v15;
+      if (!v15)
+      {
+        dds3ObjectBaseCreateMover(&pBasic);
+        v16 = v13->pBasic;
+        v15 = v16->m_Items[1];
+        pMoverBasic = v15;
+      }
+      workdata = v15->workdata;
+      klass = workdata->klass;
+      if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3MoverBasicWorkData_t)
+      {
+        sub_8FC2C0(klass->_1.element_class, dds3MoverBasicWorkData_t, v52);
+        if ((v52[0] & 1) != 0)
+          v46 = v52[2];
+        else
+          v46 = v52 + 1;
+        v47 = sub_8C4940(v46);
+      }
+      if (!workdata[2].monitor)
+      {
+        dds3MoverBasicSetPath(&pMoverBasic, &pPathBasic);
+        dds3MoverBasicMakePath(&pMoverBasic);
+      }
+      pControl = dds3MoverBasicGetPathControl(&pMoverBasic);
+      if (pControl)
+      {
+        v23 = scrGetIntPara(2);
+        if (v23 == 1)
+        {
+          dds3PathBasicControlAlterMode(&pControl, 1u);
+          p_name = &pPathBasic->name;
+          if (pPathBasic->name)
+          {
+            HojiID = fldCommand_GetHojiID(p_name);
+            if (HojiID >= 1)
+            {
+              v42 = HojiID;
+              v31 = v42;
+              fieldID = fldGb->fieldID;
+              v33 = fldGb->areaID + 1;
+              v34 = 0;
+              goto LABEL_71;
+            }
+          }
+        }
+        else if (!v23)
+        {
+          dds3PathBasicControlAlterMode(&pControl, 0);
+          v25 = &pPathBasic->name;
+          if (pPathBasic->name)
+          {
+            v26 = fldCommand_GetHojiID(v25);
+            if (v26 >= 1)
+            {
+              v28 = v26;
+              v30 = fldGb;
+              v31 = v28;
+              fieldID = v30->fieldID;
+              v33 = v30->areaID + 1;
+              v34 = 1;
+LABEL_71:
+              fldGbSetGimic(fieldID, v33, v31, v34);
+            }
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    LODWORD(v52[0]) = scrGetIntPara(0);
+    v36 = sub_8D3950(s32, v52);
+    Write_2930400("PARA0:{0:x8}\n", v36);
+    v48 = scrGetIntPara(1);
+    v37 = sub_8D3950(s32, &v48);
+    Write_2930400("PARA1:{0:x8}\n", v37);
+    Write("e OBJ_PATH_MOVE : obj==NULL\n", 0);
+  }
+  return 1;
 }
 
 // 0x135d1c0
 s32 evtCommand_OBJ_PATH_WAIT(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    fldGetMatter_From_ModelRangeID(0);
-    evtCheckPathStat(0);
-    return 0;
+  s32 IntPara;
+  dds3Basic_t_o *Matter_From_ModelRangeID;
+  s32 v8;
+  s32 v9;
+  u64 *v11;
+  u64 *v12;
+  s32 v14;
+  s32 v15;
+
+  IntPara = scrGetIntPara(0);
+  Matter_From_ModelRangeID = evtSearchBasic(6, IntPara);
+  if (Matter_From_ModelRangeID)
+    goto LABEL_31;
+  v8 = scrGetIntPara(0);
+  Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v8);
+  if (Matter_From_ModelRangeID)
+  {
+LABEL_31:
+    return (evtCheckPathStat(Matter_From_ModelRangeID) + 1) <= 1;
+  }
+  else
+  {
+    v15 = scrGetIntPara(0);
+    v11 = sub_8D3950(s32, &v15);
+    Write_2930400("PARA0:{0:x8}\n", v11);
+    v9 = 1;
+    v14 = scrGetIntPara(1);
+    v12 = sub_8D3950(s32, &v14);
+    Write_2930400("PARA1:{0:x8}\n", v12);
+    Write("e OBJ_PATH_WAIT : obj==NULL\n", 0);
+  }
+  return v9;
 }
 
 // 0x135ec50
@@ -2378,10 +3689,12 @@ s32 evtCommand_PATH_DIR(void) {
   }
   while (v2 <= 9 && !v6);
   if (v6)
+    goto LABEL_47;
   v9 = scrGetIntPara(0);
   Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v9);
   if (Matter_From_ModelRangeID)
   {
+LABEL_47:
     v11 = scrGetIntPara(1);
     evtPathDir(Matter_From_ModelRangeID, v11);
     name = Matter_From_ModelRangeID->name;
@@ -2432,10 +3745,12 @@ s32 evtCommand_PATH_LOOP_OFF(void) {
   }
   while (v2 <= 9 && !v6);
   if (v6)
+    goto LABEL_27;
   v9 = scrGetIntPara(0);
   Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v9);
   if (Matter_From_ModelRangeID)
   {
+LABEL_27:
     evtPathLoop(Matter_From_ModelRangeID, 0);
   }
   return 1;
@@ -2458,10 +3773,12 @@ s32 evtCommand_PATH_LOOP_ON(void) {
   }
   while (v2 <= 9 && !v6);
   if (v6)
+    goto LABEL_27;
   v9 = scrGetIntPara(0);
   Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v9);
   if (Matter_From_ModelRangeID)
   {
+LABEL_27:
     evtPathLoop(Matter_From_ModelRangeID, 1);
   }
   return 1;
@@ -2496,10 +3813,12 @@ s32 evtCommand_PATH_RATE(void) {
   }
   while (v2 <= 9 && !v6);
   if (v6)
+    goto LABEL_47;
   v9 = scrGetIntPara(0);
   Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v9);
   if (Matter_From_ModelRangeID)
   {
+LABEL_47:
     FloatPara = scrGetFloatPara(1);
     evtPathRate(Matter_From_ModelRangeID, FloatPara);
     name = Matter_From_ModelRangeID->name;
@@ -2550,10 +3869,12 @@ s32 evtCommand_PATH_START(void) {
   }
   while (v2 <= 9 && !v6);
   if (v6)
+    goto LABEL_27;
   v9 = scrGetIntPara(0);
   Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v9);
   if (Matter_From_ModelRangeID)
   {
+LABEL_27:
     evtPathStart(Matter_From_ModelRangeID);
   }
   return 1;
@@ -2561,23 +3882,108 @@ s32 evtCommand_PATH_START(void) {
 
 // 0x135e6a0
 s32 evtCommand_PATH_STOP(void) {
-    scrGetIntPara(0);
-    evtSearchBasic(0, 0);
-    fldGetMatter_From_ModelRangeID(0);
-    evtPathStop(0);
-    return 0;
+  s32 v4;
+  dds3Basic_t_o *Matter_From_ModelRangeID;
+  s32 v12;
+
+  if (PlayEventNo != 618)
+    goto LABEL_15;
+LABEL_6:
+  v4 = scrGetIntPara(0);
+  Matter_From_ModelRangeID = evtSearchBasic(9, v4);
+  if (Matter_From_ModelRangeID)
+    goto LABEL_32;
+LABEL_25:
+  v12 = scrGetIntPara(0);
+  Matter_From_ModelRangeID = fldGetMatter_From_ModelRangeID(v12);
+  if (Matter_From_ModelRangeID)
+  {
+LABEL_32:
+    evtPathStop(Matter_From_ModelRangeID);
+  }
+  return 1;
 }
 
 // 0x135de90
 s32 evtCommand_PMV_LOAD(void) {
-    scrGetIntPara(0);
-    Log(0, 0);
-    scrGetScriptHandle();
-    evtStartPolygonMovie2(0, 0, 0);
-    dds3LinkProcess(0, 0);
-    evtSetPolygonMovieFlag(0, 0);
-    scrSetIntReturnValue(0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  s32 IntPara;
+  s32 v5;
+  System_Object_array *v6;
+  s64 *v7;
+  s64 *v8;
+  s64 *v10;
+  s64 *v12;
+  scrProcessWork_s_o *ScriptHandle;
+  struct dds3ProcessID_t_o *ProcessID;
+  dds3ProcessID_t_o **p_ProcessID;
+  s32 priority;
+  System_Object_array *v19;
+  s64 *v20;
+  s64 *v21;
+  s64 *v23;
+  s64 *v25;
+  s32 id;
+  System_Object_array *v31;
+  System_String_o *v32;
+  System_String_array *v36;
+  s32 v39;
+  s32 v40;
+  dds3ProcessID_t_o *target;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  target = v2;
+  IntPara = scrGetIntPara(0);
+  v5 = scrGetIntPara(1);
+  v40 = IntPara;
+  v6 = NewSpecific(object, 2u);
+  v7 = sub_8D3950(s32, &v40);
+  v8 = v7;
+  v6->m_Items[0] = v8;
+  v39 = v5;
+  v10 = sub_8D3950(s32, &v39);
+  v12 = v10;
+  v6->m_Items[1] = v12;
+  Log("PMV_LOAD({0:D},{1:D})\n", v6, 0);
+  ScriptHandle = scrGetScriptHandle();
+  if (ScriptHandle)
+  {
+    p_ProcessID = &ScriptHandle->ProcessID;
+    ProcessID = ScriptHandle->ProcessID;
+    if (ProcessID)
+    {
+      priority = ProcessID->priority;
+      target = evtStartPolygonMovie2(priority, IntPara, v5);
+      v19 = NewSpecific(object, 2u);
+      v40 = IntPara;
+      v20 = sub_8D3950(s32, &v40);
+      v21 = v20;
+      v19->m_Items[0] = v21;
+      v39 = v5;
+      v23 = sub_8D3950(s32, &v39);
+      v25 = v23;
+      v19->m_Items[1] = v25;
+      Log("load PMV (%03d_%03d)..\n", v19, 0);
+      dds3LinkProcess(p_ProcessID, &target);
+      evtSetPolygonMovieFlag(target, 1u);
+      id = target->id;
+      scrSetIntReturnValue(id);
+      v31 = Empty_string_();
+      v32 = "PMV_LOAD() end\n";
+    }
+    else
+    {
+      v36 = Empty_string_();
+      v32 = "※警告:PMV_LOAD()このコマンドはプロセス型スクリプトでのみ有効です。\n";
+      v31 = v36;
+    }
+    Log(v32, v31, 0);
+  }
+  return 1;
 }
 
 // 0x135e400
@@ -2626,7 +4032,7 @@ s32 evtCommand_PMV_RUN(void) {
     }
     else
     {
-      Write(StringLiteral_15627, 0);
+      Write("※警告:PMV_RUN()このコマンドはプロセス型スクリプトでのみ有効です。\n", 0);
     }
   }
   return 1;
@@ -2640,12 +4046,12 @@ s32 evtCommand_PMV_RUN2(void) {
 
   v1 = Allocate(dds3ProcessID_t);
   dds3ProcessID_t___ctor(v1);
-  Write(StringLiteral_15625, 0);
+  Write("PMV_RUN2()\n", 0);
   IntPara = scrGetIntPara(0);
   v7 = dds3SearchProcessID(IntPara);
   evtResetPolygonMovieFlag(v7, 1u);
   scrSetIntReturnValue(v7->id);
-  Write(StringLiteral_15626, 0);
+  Write("PMV_RUN2() end\n", 0);
   return 1;
 }
 
@@ -2700,13 +4106,42 @@ s32 evtCommand_POINT_GET(void) {
 
 // 0x135d930
 s32 evtCommand_READ_BE(void) {
-    scrGetIntPara(0);
-    scrGetScriptHandle();
-    evtSearchEventPack(0);
-    dds3Printf(0, 0);
-    evtLoadEventPack(0);
-    dds3LinkProcess(0, 0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  s32 IntPara;
+  scrProcessWork_s_o *ScriptHandle;
+  scrProcessWork_s_o *v7;
+  u64 *v8;
+  System_String_o *v9;
+  System_Object_array *v10;
+  dds3ProcessID_t_o **p_ProcessID;
+  s32 v15;
+  dds3ProcessID_t_o *target;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  target = v2;
+  IntPara = scrGetIntPara(0);
+  ScriptHandle = scrGetScriptHandle();
+  if (ScriptHandle)
+  {
+    v7 = ScriptHandle;
+    target = evtSearchEventPack(IntPara);
+    if (!target)
+    {
+      v15 = IntPara;
+      v8 = sub_8D3950(s32, &v15);
+      v9 = Format("read BE {0}..", v8, 0);
+      v10 = Empty_string_();
+      dds3Printf(v9, v10);
+      target = evtLoadEventPack(IntPara);
+      p_ProcessID = &v7->ProcessID;
+      dds3LinkProcess(p_ProcessID, &target);
+    }
+  }
+  return 1;
 }
 
 // 0x135ad40
@@ -2752,12 +4187,12 @@ s32 evtCommand_SEARCH_ID(void) {
   else
   {
     v10 = scrGetStrPara(0);
-    Write_2930400(StringLiteral_15595, v10);
+    Write_2930400("ID : id not found!! <{0}>\n", v10);
     v11 = NewSpecific(object, 1u);
     v12 = scrGetStrPara(0);
     v13 = v12;
     v11->m_Items[0] = v13;
-    dds3Printf(StringLiteral_15596, v11);
+    dds3Printf("WARNING: ID not found! <{0}>\n", v11);
     v8 = 0;
   }
   scrSetIntReturnValue(v8);
@@ -2791,14 +4226,21 @@ s32 evtCommand_SET_SKY_A(void) {
   if (IntPara <= -256)
   {
     v7 = Empty_string_();
-    dds3Printf(StringLiteral_15633, v7);
+    dds3Printf("warning : SET_SKY_A alpha < -255\n", v7);
     v4 = -255;
+LABEL_11:
+      goto LABEL_14;
+    goto LABEL_12;
   }
   v4 = IntPara;
   if (IntPara < 256)
+    goto LABEL_11;
   v5 = Empty_string_();
-  dds3Printf(StringLiteral_15634, v5);
+  dds3Printf("warning : SET_SKY_A alpha > 255\n", v5);
   v4 = 255;
+    goto LABEL_14;
+LABEL_12:
+LABEL_14:
   v9 = scrGetIntPara(0);
   evtSetSkyAlpha(v9, v4);
   return 1;
@@ -2872,13 +4314,54 @@ s32 evtCommand_TEX_ALP(void) {
 
 // 0x135f3a0
 s32 evtCommand_TEX_BE(void) {
-    scrGetScriptHandle();
-    scrGetIntPara(0);
-    evtGetResorceData(0, 0);
-    dds3LinkProcess(0, 0);
-    scrSetIntReturnValue(0);
-    dds3Printf(0, 0);
-    return 0;
+  u64 *v1;
+  u64 *v2;
+  scrProcessWork_s_o *ScriptHandle;
+  dds3ProcessID_t_o **p_ProcessID;
+  s32 IntPara;
+  s32 v9;
+  s32 id;
+  System_Object_array *v14;
+  s64 *v15;
+  s64 *v16;
+  s32 v20;
+  dds3ProcessID_t_o *target;
+
+  v1 = Allocate(scrProcessWork_s);
+  scrProcessWork_s___ctor(v1);
+  v2 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v2);
+  target = v2;
+  ScriptHandle = scrGetScriptHandle();
+  if (ScriptHandle)
+  {
+    p_ProcessID = &ScriptHandle->ProcessID;
+    if (ScriptHandle->ProcessID)
+    {
+      IntPara = scrGetIntPara(0);
+      v9 = scrGetIntPara(1);
+      if (evtGetResorceData(IntPara, v9))
+      {
+        dds3LinkProcess(p_ProcessID, &target);
+        id = target->id;
+        scrSetIntReturnValue(id);
+      }
+      else
+      {
+        v14 = NewSpecific(object, 1u);
+        v20 = scrGetIntPara(1);
+        v15 = sub_8D3950(s32, &v20);
+        v16 = v15;
+        v14->m_Items[0] = v16;
+        dds3Printf("TEX_BE not fount RID = %d\n", v14);
+      }
+    }
+    else
+    {
+      Write("※警告:TEX_BE()このコマンドはプロセス型スクリプトでのみ有効です。\n", 0);
+    }
+  }
+  return 1;
 }
 
 // 0x135f9d0
@@ -2928,7 +4411,7 @@ s32 evtCommand_TEX_LOAD(void) {
     }
     else
     {
-      Write(StringLiteral_15632, 0);
+      Write("※警告:TEX_LOAD()このコマンドはプロセス型スクリプトでのみ有効です。\n", 0);
     }
   }
   return 1;
@@ -3136,9 +4619,9 @@ s32 evtCommand_UNIT_CLS(void) {
   System_Object_array *v3;
 
   evtFreeAllUnit();
-  Write(StringLiteral_15607, 0);
+  Write("unit all clear !!\n", 0);
   v3 = Empty_string_();
-  dds3Printf(StringLiteral_15608, v3);
+  dds3Printf("unit all clear.\n", v3);
   return 1;
 }
 
@@ -3151,21 +4634,33 @@ s32 evtCommand_UNIT_CLS_STOP(void) {
   {
     {
       if (sdfDelayedResrcCheck() != 1)
+        goto LABEL_12;
     }
   }
   while (sdfDelayedResrcCheck() == 1);
-  Write(StringLiteral_15609, 0);
+LABEL_12:
+  Write("unit all clear2 !!\n", 0);
   v3 = Empty_string_();
-  dds3Printf(StringLiteral_15610, v3);
+  dds3Printf("unit all clear2.\n", v3);
   return 1;
 }
 
 // 0x13613b0
 s32 evtCommand_UNLOCK_TRP(void) {
-    scrGetIntPara(0);
-    Log(0, 0);
-    EndingEventUnlock(0);
-    return 0;
+  s32 v2;
+  u64 *v3;
+  System_String_o *v4;
+  System_Object_array *v6;
+  s32 IntPara;
+
+  IntPara = scrGetIntPara(0);
+  v2 = IntPara;
+  v3 = sub_8D3950(s32, &IntPara);
+  v4 = Concat("UNLOCK = ", v3);
+  v6 = Empty_string_();
+  Log(v4, v6, 0);
+  EndingEventUnlock(v2);
+  return 1;
 }
 
 // 0x1353270

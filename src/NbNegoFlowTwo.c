@@ -86,7 +86,7 @@ s32 ChkAisyo(datUnitWork_t **a, datUnitWork_t **b, u32 jo, s32 sw) {
   {
     if ((*b)->level - 10 < (*a)->level)
       return 0;
-    return dds3GetRandIntA(0x64u, StringLiteral_5342) < 70;
+    return dds3GetRandIntA(0x64u, "ChkAisyo") < 70;
   }
   if (v9)
   {
@@ -148,14 +148,18 @@ s32 ChkAisyo(datUnitWork_t **a, datUnitWork_t **b, u32 jo, s32 sw) {
                 {
                   case 1:
                   case 3:
+                    goto LABEL_63;
                   case 2:
                     if ((tokucyo & 2) == 0)
                       return 0;
+                    goto LABEL_63;
                   case 4:
                     if ((tokucyo & 4) == 0)
                       return 0;
+                    goto LABEL_63;
                   default:
                     if ((tokucyo & 8) != 0 || v16 != 2)
+                      goto LABEL_63;
                     return 0;
                 }
               }
@@ -163,6 +167,7 @@ s32 ChkAisyo(datUnitWork_t **a, datUnitWork_t **b, u32 jo, s32 sw) {
                 return 0;
             }
           }
+LABEL_63:
           v16 = v17;
           if (v17 >= 0x1E)
             return 1;
@@ -217,14 +222,18 @@ s32 ChkAisyo(datUnitWork_t **a, datUnitWork_t **b, u32 jo, s32 sw) {
             {
               case 1:
               case 3:
+                goto LABEL_103;
               case 2:
                 if ((tokucyo & 2) == 0)
                   return 0;
+                goto LABEL_103;
               case 4:
                 if ((tokucyo & 4) == 0)
                   return 0;
+                goto LABEL_103;
               default:
                 if ((tokucyo & 8) != 0 || v21 != 2)
+                  goto LABEL_103;
                 return 0;
             }
           }
@@ -232,6 +241,7 @@ s32 ChkAisyo(datUnitWork_t **a, datUnitWork_t **b, u32 jo, s32 sw) {
             return 0;
         }
       }
+LABEL_103:
       v21 = v22;
       if (v22 > 0x1D)
         return 1;
@@ -248,10 +258,157 @@ s32 ChkAisyo(datUnitWork_t **a, datUnitWork_t **b, u32 jo, s32 sw) {
 
 // 0xef4710
 s32 Flow6_1(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    datCheckStockFull();
-    ChkAisyo(0, 0, 0, 0);
-    return 0;
+  s32 v4;
+  nbNegoProcessData_t_o *v7;
+  s64 v8;
+  s64 v9;
+  struct datNegoSkill_t_array *tbl;
+  u64 v12;
+  struct datNegoAisyo_s_array *killeraisyo;
+  u32 v16;
+  struct datNegoSkill_t_array *v17;
+  struct datNegoAisyo_s_array *v19;
+  u32 v21;
+  datUnitWork_t_o **p_pwork;
+  datUnitWork_t_o **p_ework;
+  s32 v24;
+  s32 v26;
+  nbNegoProcessData_t_o *v29;
+  struct datNegoSkill_t_array *v30;
+  struct datNegoAisyo_s_array *v32;
+  s64 v34;
+  struct datNegoSkill_t_array *v36;
+  u64 v37;
+  struct datNegoAisyo_s_array *ngaisyo;
+  u32 v41;
+  struct datNegoSkill_t_array *v42;
+  struct datNegoAisyo_s_array *v44;
+  u32 v46;
+  datUnitWork_t_o **v47;
+  datUnitWork_t_o **v48;
+  s32 v49;
+  s32 v51;
+  s32 aisyo;
+  s32 v54;
+  s32 v57;
+  nbNegoProcessData_t_o *v60;
+  struct datNegoSkill_t_array *v61;
+  struct datNegoAisyo_s_array *v63;
+
+  nbAddNegoIdKouho(n, 0x60003u);
+  nbAddNegoIdKouho(n, 0x60050u);
+  nbAddNegoIdKouho(n, 0x60006u);
+  nbAddNegoIdKouho(n, 0x90006u);
+  nbAddNegoIdKouho(n, 0x60002u);
+  else
+  {
+    v4 = datCheckStockFull();
+    v7 = *n;
+    if (v4)
+      goto LABEL_12;
+  }
+  v7->aisyo = 0;
+  v8 = (*n)->negoskillid - 384LL;
+  v9 = 4;
+  while (1)
+  {
+    v12 = v9 - 4;
+    killeraisyo = tbl->m_Items[v8]->killeraisyo;
+    v16 = *(*(&killeraisyo->obj.klass + v9) + 16LL);
+    v17 = tbl;
+    v19 = v17->m_Items[v8]->killeraisyo;
+    v21 = *(*(&v19->obj.klass + v9) + 20LL);
+    if (!(v21 | v16))
+      goto LABEL_40;
+    if ((byte_3F5845A & 1) == 0)
+      goto LABEL_31;
+LABEL_32:
+    p_pwork = &(*n)->pwork;
+    p_ework = &(*n)->ework;
+    v24 = ChkAisyo(p_pwork, p_ework, v16, 1);
+    v26 = ChkAisyo(&(*n)->ework, &(*n)->pwork, v21, 1);
+    if (v24 && v26 != 0)
+      break;
+LABEL_40:
+    ++v9;
+    if (v12 >= 3)
+    {
+      if (!(*n)->aisyo)
+        goto LABEL_51;
+LABEL_79:
+      v7 = *n;
+      aisyo = (*n)->aisyo;
+      if (aisyo == 2)
+        goto LABEL_101;
+      goto LABEL_80;
+    }
+  }
+  (*n)->aisyo = 1;
+  v29 = *n;
+  v30 = tbl;
+  v32 = v30->m_Items[v8]->killeraisyo;
+  v29->aisyomes = *(*(&v32->obj.klass + v9) + 24LL);
+  if ((*n)->aisyo)
+    goto LABEL_79;
+LABEL_51:
+  v34 = 4;
+  while (1)
+  {
+    v36 = tbl;
+    v37 = v34 - 4;
+    ngaisyo = v36->m_Items[v8]->ngaisyo;
+    v41 = *(*(&ngaisyo->obj.klass + v34) + 16LL);
+    v42 = tbl;
+    v44 = v42->m_Items[v8]->ngaisyo;
+    v46 = *(*(&v44->obj.klass + v34) + 20LL);
+    if (!(v46 | v41))
+      goto LABEL_78;
+    if ((byte_3F5845A & 1) == 0)
+      goto LABEL_69;
+LABEL_70:
+    v47 = &(*n)->pwork;
+    v48 = &(*n)->ework;
+    v49 = ChkAisyo(v47, v48, v41, 0);
+    v51 = ChkAisyo(&(*n)->ework, &(*n)->pwork, v46, 0);
+    if (v49 && v51 != 0)
+      break;
+LABEL_78:
+    ++v34;
+    if (v37 >= 3)
+      goto LABEL_79;
+  }
+  (*n)->aisyo = 2;
+  v60 = *n;
+  v61 = tbl;
+  v63 = v61->m_Items[v8]->ngaisyo;
+  v60->aisyomes = *(*(&v63->obj.klass + v34) + 24LL);
+  v7 = *n;
+  aisyo = (*n)->aisyo;
+  if (aisyo == 2)
+  {
+LABEL_101:
+    v57 = 393222;
+      goto LABEL_103;
+    v54 = 393222;
+    goto LABEL_104;
+  }
+LABEL_80:
+  v54 = 393218;
+  if (aisyo == 1)
+  {
+    v57 = 393219;
+    else
+    {
+      v54 = 393219;
+    }
+LABEL_104:
+    v7->nextnegoid = v54;
+  }
+  else if (!aisyo)
+  {
+    goto LABEL_104;
+  }
+  return 0;
 }
 
 // 0xef5c90
@@ -345,7 +502,7 @@ s32 Flow6_12(nbNegoProcessData_t **n) {
   {
     v7 = 20;
   }
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5348);
+  RandIntA = dds3GetRandIntA(0x64u, "6_12");
   v9 = *n;
   nextkouho = v9->nextkouho;
   v11 = nextkouho[6];
@@ -375,7 +532,7 @@ s32 Flow6_13(nbNegoProcessData_t **n) {
   ework = (*n)->ework;
   if (datCheckDying(ework))
   {
-    if (dds3GetRandIntA(0x64u, StringLiteral_5349) <= 69)
+    if (dds3GetRandIntA(0x64u, "6_13") <= 69)
     {
       v8 = *n;
       v9 = v8->nextkouho;
@@ -465,6 +622,7 @@ s32 Flow6_17(nbNegoProcessData_t **n) {
     v3 = *n;
     requesttype = (*n)->requesttype;
     if (requesttype < 2)
+      goto LABEL_3;
   }
   else
   {
@@ -472,25 +630,34 @@ s32 Flow6_17(nbNegoProcessData_t **n) {
     requesttype = (*n)->requesttype;
     if (requesttype < 2)
     {
+LABEL_3:
       if (requesttype != 1)
+        goto LABEL_4;
+      goto LABEL_11;
     }
   }
-  (*n)->requesttype = dds3GetRandIntA(2u, StringLiteral_5350) == 0;
+  (*n)->requesttype = dds3GetRandIntA(2u, "6_17") == 0;
   (*n)->prevreqtype = (*n)->requesttype;
   v3 = *n;
   requesttype = (*n)->requesttype;
   if (requesttype != 1)
   {
+LABEL_4:
     if (requesttype)
+      goto LABEL_20;
+    goto LABEL_15;
   }
+LABEL_11:
   v3->requestdata = nbGetNegoKureMakkaA(n, &v3->pwork, &v3->ework);
   v3 = *n;
   if (!(*n)->requesttype)
   {
+LABEL_15:
     v3->requestdata = nbGetKureItemA(n, &v3->pwork, &v3->ework);
     if (!(*n)->requestdata)
       (*n)->requestdata = 8;
   }
+LABEL_20:
   nbAddNegoIdKouho(n, 0x60014u);
   nbAddNegoIdKouho(n, 0x60012u);
   nbAddNegoIdKouho(n, 0x60013u);
@@ -501,12 +668,15 @@ s32 Flow6_17(nbNegoProcessData_t **n) {
     case 2:
       nextkouho = v5->nextkouho;
       m_Items = &nextkouho->m_Items[2];
+      goto LABEL_38;
     case 1:
       v12 = v5->nextkouho;
       m_Items = &v12->m_Items[1];
+      goto LABEL_38;
     case 0:
       v7 = v5->nextkouho;
       m_Items = v7->m_Items;
+LABEL_38:
       v5->nextnegoid = *m_Items;
       break;
   }
@@ -575,7 +745,7 @@ s32 Flow6_2(nbNegoProcessData_t **n) {
   {
     do
     {
-      RandIntA = dds3GetRandIntA(4u, StringLiteral_5343);
+      RandIntA = dds3GetRandIntA(4u, "6_2");
       v11 = *n;
       v12 = RandIntA + 28;
     }
@@ -731,10 +901,12 @@ s32 Flow6_22(nbNegoProcessData_t **n) {
   else
   {
     if (requesttype != 5)
+      goto LABEL_20;
     nbAddNegoIdKouho(n, 0x80001u);
     v4 = n;
   }
   nbAddNegoIdKouho(v4, 0x60017u);
+LABEL_20:
   v5 = *n;
   v6 = (*n)->requesttype;
   if (v6)
@@ -819,13 +991,282 @@ s32 Flow6_23(nbNegoProcessData_t **n) {
 
 // 0xef7840
 s32 Flow6_24(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    datGetRace(0);
-    datGetParam(0, 0);
-    evtBitCheck(0);
-    dds3GetRandIntA(0, 0);
-    nbDispNegoMessage(0, 0, 0, 0);
+  u32 *v4;
+  struct datNegoSkill_t_array *tbl;
+  s64 v8;
+  struct System_Byte_array *rate;
+  u32 *v11;
+  s32 v12;
+  struct datNegoSkill_t_array *v16;
+  s64 v17;
+  struct System_Byte_array *v19;
+  s32 v20;
+  struct datNegoSkill_t_array *v24;
+  s64 v25;
+  struct System_Byte_array *v27;
+  s32 v28;
+  struct datNegoSkill_t_array *v32;
+  s64 v33;
+  struct System_Byte_array *v35;
+  s32 v36;
+  u32 *v37;
+  datUnitWork_t_o *ework;
+  s32 Race;
+  s32 aisyo;
+  s64 v42;
+  s64 v44;
+  s64 v46;
+  s32 v51;
+  datUnitWork_t_o *v54;
+  datUnitWork_t_o *pwork;
+  s32 Param;
+  s32 v58;
+  s64 v59;
+  s64 v61;
+  s32 v64;
+  nbNegoProcessData_t_o *v66;
+  u32 v67;
+  s32 cnt6_36;
+  bool v75;
+  struct System_UInt32_array *nextkouho;
+  u32 v78;
+  struct datUnitWork_t_o *v79;
+  s32 level;
+  s32 v81;
+  bool v82;
+  s32 v83;
+  struct System_UInt32_array *v84;
+  u32 v87;
+  signed s32 RandIntA;
+  signed s32 v96;
+  signed s32 v97;
+  u64 v98;
+  signed s32 v99;
+  s64 v101;
+  u64 v106;
+  struct System_UInt32_array *v110;
+  struct System_Int32_array *flowmsg;
+  s64 ekucyo;
+  s32 v116;
+  nbNegoProcessData_t_o *v117;
+  struct System_UInt32_array *v118;
+
+  v4 = NewSpecific(s32, 4u);
+  nbAddNegoIdKouho(n, 0x90001u);
+  nbAddNegoIdKouho(n, 0x60019u);
+  nbAddNegoIdKouho(n, 0x60025u);
+  nbAddNegoIdKouho(n, 0x6002Bu);
+  nbAddNegoIdKouho(n, 0xA000Du);
+  nbAddNegoIdKouho(n, 0x6004Au);
+  ++(*n)->cnt6_36;
+  v8 = (*n)->negoskillid - 384LL;
+  rate = tbl->m_Items[v8]->rate;
+  v11 = v4 + 6;
+  v12 = rate->m_Items[0];
+  v4[8] = v12;
+  v16 = tbl;
+  v17 = (*n)->negoskillid - 384LL;
+  v19 = v16->m_Items[v17]->rate;
+  v20 = v19->m_Items[1];
+  v4[9] = v20;
+  v24 = tbl;
+  v25 = (*n)->negoskillid - 384LL;
+  v27 = v24->m_Items[v25]->rate;
+  v28 = v27->m_Items[2];
+  v4[10] = v28;
+  v32 = tbl;
+  v33 = (*n)->negoskillid - 384LL;
+  v35 = v32->m_Items[v33]->rate;
+  v36 = v35->m_Items[3];
+  v4[11] = v36;
+  v37 = v4 + 11;
+  ework = (*n)->ework;
+  Race = datGetRace(ework);
+  aisyo = (*n)->aisyo;
+  if (Race == 19)
+  {
+    if (aisyo == 1)
+    {
+      v42 = *v11;
+      *v37 -= 5;
+      v4[10] -= 5;
+      v51 = v4[8] + 10;
+LABEL_67:
+      v4[8] = v51;
+      goto LABEL_68;
+    }
+  }
+  else if (aisyo == 1)
+  {
+    v44 = *v11;
+    *v37 -= 10;
+    v4[10] -= 10;
+    v51 = v4[8] + 20;
+    goto LABEL_67;
+  }
+  if (aisyo == 2)
+  {
+    v46 = *v11;
+    *v37 += 10;
+    v4[10] += 10;
+    v51 = v4[8] - 20;
+    goto LABEL_67;
+  }
+LABEL_68:
+  v54 = (*n)->ework;
+  if (datGetRace(v54) != 19)
+  {
+    pwork = (*n)->pwork;
+    Param = datGetParam(pwork, 1);
+    v58 = datGetParam((*n)->ework, 1, 0);
+    if (v58 + 5 >= Param)
+    {
+      if (Param >= v58 - 5)
+        goto LABEL_88;
+      v61 = *v11;
+      *v37 += 5;
+      v4[10] += 5;
+      v64 = v4[8] - 10;
+    }
+    else
+    {
+      v59 = *v11;
+      *v37 -= 5;
+      v4[10] -= 5;
+      v64 = v4[8] + 10;
+    }
+    v4[8] = v64;
+  }
+LABEL_88:
+  v66 = *n;
+  if ((*n)->negotype == 3)
+  {
+    v67 = *v11;
+    v4[8] = 70;
+    v4[9] = 20;
+    v4[10] = 5;
+    *v37 = 5;
+    v66 = *n;
+  }
+  if (v66->cnt6_37 == 1)
+    goto LABEL_122;
+  if (v66->requesttype == 2)
+  {
+    v4[10] += v4[11];
+    *v37 = 0;
+    v66 = *n;
+  }
+  cnt6_36 = v66->cnt6_36;
+  if (cnt6_36 >= 2)
+    goto LABEL_111;
+  v75 = evtBitCheck(8);
+  v66 = *n;
+  if (v75)
+  {
+LABEL_107:
+    nextkouho = v66->nextkouho;
+    v78 = nextkouho->m_Items[2];
+LABEL_125:
+    v66->nextnegoid = v78;
     return 0;
+  }
+  cnt6_36 = v66->cnt6_36;
+  if (cnt6_36 <= 1)
+  {
+    if (!v66->negoreqtype)
+      goto LABEL_107;
+  }
+  else
+  {
+LABEL_111:
+    if (cnt6_36 >= 3)
+      goto LABEL_119;
+  }
+  v79 = v66->pwork;
+  level = v66->ework->level;
+  v81 = v79->level;
+  v82 = evtBitCheck(8);
+  if (v81 - 10 <= level && v82)
+  {
+    v4[10] += v4[8];
+    v4[8] = 0;
+  }
+LABEL_119:
+  v66 = *n;
+  v83 = (*n)->cnt6_36;
+  if (v83 > 3 || v83 >= 2 && v66->negoreqtype)
+  {
+LABEL_122:
+    v84 = v66->nextkouho;
+    v78 = v84->m_Items[0];
+    goto LABEL_125;
+  }
+  v87 = v66->ework->id - 61;
+  if (v87 <= 0x24
+    && ((1LL << v87) & 0x10C0000001LL) != 0
+    && !evtBitCheck(8)
+    && !(*n)->negoreqtype
+    && (*n)->cnt6_36 >= 2)
+  {
+    v4[8] += v4[11];
+    *v37 = 0;
+    v4[8] += v4[10];
+    v4[10] = 0;
+  }
+  if ((*n)->pwork->level - 17 >= (*n)->ework->level)
+  {
+    if (dds3GetRandIntA(0x64u, "6_24") <= 3)
+    {
+      v4[10] += v4[11];
+      *v37 = 0;
+    }
+  }
+  RandIntA = dds3GetRandIntA(0x64u, "6_24");
+  v96 = v4[8];
+  if (v96 >= RandIntA)
+  {
+    v101 = 0;
+  }
+  else
+  {
+    v97 = v4[9] + v96;
+    if (v97 >= RandIntA)
+    {
+      v101 = 1;
+    }
+    else
+    {
+      v98 = *v11;
+      v99 = v4[10] + v97;
+      if (v99 < RandIntA)
+      {
+        v106 = *v11;
+        if (*v37 + v99 >= RandIntA)
+        {
+          v101 = 3;
+          goto LABEL_177;
+        }
+      }
+      v101 = 2;
+    }
+  }
+LABEL_177:
+  v110 = (*n)->nextkouho;
+  (*n)->nextnegoid = v110->m_Items[v101];
+  if (v101 == 3 && (*n)->cnt6_36 >= 2 && !(*n)->negoreqtype)
+  {
+    if (dds3GetRandIntA(0xAu, "6_24") <= 5)
+    {
+      flowmsg = (*n)->flowmsg;
+      ekucyo = (*n)->ekucyo;
+      v116 = flowmsg->m_Items[ekucyo];
+      nbDispNegoMessage(n, v116, 99, 0);
+      v117 = *n;
+      v118 = v117->nextkouho;
+      v117->nextnegoid = v118->m_Items[4];
+    }
+  }
+  return 0;
 }
 
 // 0xef8810
@@ -840,7 +1281,7 @@ s32 Flow6_25(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0x6001Au);
   do
   {
-    RandIntA = dds3GetRandIntA(4u, StringLiteral_5353);
+    RandIntA = dds3GetRandIntA(4u, "6_25");
     v5 = *n;
     v6 = RandIntA + 37;
   }
@@ -944,6 +1385,8 @@ s32 Flow6_28(nbNegoProcessData_t **n) {
     {
       nextkouho = v4->nextkouho;
       if (LODWORD(nextkouho->max_length) <= 1)
+        goto LABEL_12;
+      goto LABEL_13;
     }
     cnt6_36 = v4->cnt6_36;
   }
@@ -957,7 +1400,13 @@ s32 Flow6_28(nbNegoProcessData_t **n) {
     if (v13 >= level && v12)
     {
       nextkouho = v4->nextkouho;
+      if (!LODWORD(nextkouho->max_length))
+      {
+LABEL_33:
+      }
+LABEL_34:
       m_Items = nextkouho->m_Items;
+      goto LABEL_35;
     }
     cnt6_36 = v4->cnt6_36;
   }
@@ -972,19 +1421,28 @@ s32 Flow6_28(nbNegoProcessData_t **n) {
     v4 = *n;
     nextkouho = (*n)->nextkouho;
     if (LODWORD(nextkouho->max_length) <= 1)
+      goto LABEL_12;
   }
   else
   {
-    RandIntA = dds3GetRandIntA(0xAu, StringLiteral_5354);
+    RandIntA = dds3GetRandIntA(0xAu, "6_28");
     v4 = *n;
     nextkouho = (*n)->nextkouho;
     max_length = nextkouho->max_length;
     if (RandIntA < 2)
     {
       if (!max_length)
+        goto LABEL_33;
+      goto LABEL_34;
+    }
+    if (max_length <= 1)
+    {
+LABEL_12:
     }
   }
+LABEL_13:
   m_Items = &nextkouho->m_Items[1];
+LABEL_35:
   v4->nextnegoid = *m_Items;
   return 0;
 }
@@ -1058,7 +1516,7 @@ s32 Flow6_31(nbNegoProcessData_t **n) {
 
   nbAddNegoIdKouho(n, 0x90001u);
   nbAddNegoIdKouho(n, 0x60023u);
-  RandIntA = dds3GetRandIntA(0xAu, StringLiteral_5355);
+  RandIntA = dds3GetRandIntA(0xAu, "6_31");
   v5 = *n;
   nextkouho = v5->nextkouho;
   v7 = nextkouho[6];
@@ -1101,7 +1559,7 @@ s32 Flow6_32(nbNegoProcessData_t **n) {
 
   nbAddNegoIdKouho(n, 0x90001u);
   nbAddNegoIdKouho(n, 0x60022u);
-  RandIntA = dds3GetRandIntA(0xAu, StringLiteral_5356);
+  RandIntA = dds3GetRandIntA(0xAu, "6_32");
   v6 = *n;
   if (RandIntA < 2)
   {
@@ -1119,39 +1577,53 @@ s32 Flow6_32(nbNegoProcessData_t **n) {
         v11 = n;
         v12 = v10;
         v13 = 112;
+        goto LABEL_56;
       case 0x19E:
         v17 = v6->flowmsg;
         v18 = v6->ekucyo;
         v20 = v17->m_Items[v18];
         v13 = 113;
+        goto LABEL_55;
       case 0x19F:
         v21 = v6->flowmsg;
         v22 = v6->ekucyo;
         v20 = v21->m_Items[v22];
         v13 = 114;
+        goto LABEL_55;
       case 0x1A2:
         v25 = v6->flowmsg;
         v26 = v6->ekucyo;
         v20 = v25->m_Items[v26];
         v13 = 110;
+        goto LABEL_55;
       case 0x1A3:
         v28 = v6->flowmsg;
         v29 = v6->ekucyo;
         v20 = v28->m_Items[v29];
         v13 = 115;
+        goto LABEL_55;
       case 0x1A4:
         v31 = v6->flowmsg;
         v32 = v6->ekucyo;
         v20 = v31->m_Items[v32];
         v13 = 111;
+LABEL_55:
         v11 = n;
         v12 = v20;
+LABEL_56:
         nbDispNegoMessage(v11, v12, v13, 0);
         v6 = *n;
         v24 = (*n)->nextkouho;
         if (!LODWORD(v24->max_length))
+          goto LABEL_57;
+        goto LABEL_58;
       default:
         v24 = v6->nextkouho;
+        if (!LODWORD(v24->max_length))
+        {
+LABEL_57:
+        }
+LABEL_58:
         m_Items = v24->m_Items;
         break;
     }
@@ -1185,7 +1657,7 @@ s32 Flow6_33(nbNegoProcessData_t **n) {
       : (v8 = 1),
         v8))
   {
-    dds3GetRandIntA(0xAu, StringLiteral_5357);
+    dds3GetRandIntA(0xAu, "6_33");
     v13 = *n;
     nextkouho = v13->nextkouho;
     v16 = &nextkouho->m_Items[1];
@@ -1291,6 +1763,7 @@ s32 Flow6_37(nbNegoProcessData_t **n) {
     v8 = evtBitCheck(8);
     v3 = *n;
     if (!v8 && !v3->negoreqtype && v3->cnt6_36 >= 3)
+      goto LABEL_21;
   }
   nextkouho = v3->nextkouho;
   v3->nextnegoid = nextkouho->m_Items[0];
@@ -1309,6 +1782,7 @@ s32 Flow6_37(nbNegoProcessData_t **n) {
   }
   else
   {
+LABEL_21:
     v15 = v3->nextkouho;
     m_Items = &v15->m_Items[1];
   }
@@ -1347,18 +1821,22 @@ s32 Flow6_38(nbNegoProcessData_t **n) {
       ekucyo = v6->ekucyo;
       v11 = flowmsg->m_Items[ekucyo];
       v12 = 95;
+      goto LABEL_32;
     case 2:
       v16 = v6->flowmsg;
       v17 = v6->ekucyo;
       v11 = v16->m_Items[v17];
       v12 = 94;
+      goto LABEL_32;
     case 1:
       v8 = v6->flowmsg;
       v9 = v6->ekucyo;
       v11 = v8->m_Items[v9];
       v12 = 93;
+LABEL_32:
       v19 = n;
       v20 = v11;
+      goto LABEL_33;
   }
   if (cnt6_36 < 4)
     return 0;
@@ -1368,6 +1846,7 @@ s32 Flow6_38(nbNegoProcessData_t **n) {
   v19 = n;
   v20 = v25;
   v12 = 96;
+LABEL_33:
   nbDispNegoMessage(v19, v20, v12, 0);
   return 0;
 }
@@ -1399,16 +1878,24 @@ s32 Flow6_39(nbNegoProcessData_t **n) {
       if (NegoTuikaRequestType == 1)
       {
         (*n)->requesttype = 0;
+        goto LABEL_29;
       }
       if (NegoTuikaRequestType)
+        goto LABEL_29;
       v11 = *n;
       v12 = 1;
+      goto LABEL_28;
     }
+LABEL_27:
     v11 = *n;
     v12 = 3;
+LABEL_28:
     v11->requesttype = v12;
+    goto LABEL_29;
   }
-  if (!dds3GetRandIntA(1u, StringLiteral_5358))
+  if (!dds3GetRandIntA(1u, "6_39"))
+    goto LABEL_27;
+LABEL_29:
   (*n)->requestdata = 0;
   v13 = *n;
   if ((*n)->negoreqtype == 4)
@@ -1418,29 +1905,37 @@ s32 Flow6_39(nbNegoProcessData_t **n) {
   }
   if (v13->prevreqtype == 3 || v13->requesttype != 3)
   {
+LABEL_38:
     v16 = *n;
     requesttype = (*n)->requesttype;
     if (requesttype != 1)
+      goto LABEL_39;
+    goto LABEL_46;
   }
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_5358);
+  RandIntA = dds3GetRandIntA(2u, "6_39");
   v15 = *n;
   if (RandIntA)
   {
     v15->requesttype = 0;
+    goto LABEL_38;
   }
   v15->requesttype = 1;
   v16 = *n;
   requesttype = (*n)->requesttype;
   if (requesttype != 1)
   {
+LABEL_39:
     if (!requesttype)
     {
       v16->requestdata = nbGetKureItemB(n, &v16->pwork, &v16->ework);
       if (!(*n)->requestdata)
         (*n)->requestdata = 16;
     }
+    goto LABEL_50;
   }
+LABEL_46:
   v16->requestdata = nbGetNegoKureMakkaB(n, &v16->pwork, &v16->ework);
+LABEL_50:
   (*n)->prevreqtype = (*n)->requesttype;
   return 0;
 }
@@ -1455,7 +1950,7 @@ s32 Flow6_4(nbNegoProcessData_t **n) {
 
   nbAddNegoIdKouho(n, 0x60005u);
   nbAddNegoIdKouho(n, 0x90001u);
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5345);
+  RandIntA = dds3GetRandIntA(0x64u, "6_4");
   v5 = *n;
   nextkouho = v5->nextkouho;
   v7 = nextkouho[6];
@@ -1619,7 +2114,7 @@ s32 Flow6_43(nbNegoProcessData_t **n) {
     v10 = *n;
     if ((*n)->data->enemypcnt == 1 && v10->cnt6_36 >= 4)
     {
-      RandIntA = dds3GetRandIntA(0xAu, StringLiteral_5359);
+      RandIntA = dds3GetRandIntA(0xAu, "6_43");
       flowmsg = (*n)->flowmsg;
       ekucyo = (*n)->ekucyo;
       v19 = RandIntA;
@@ -1630,12 +2125,15 @@ s32 Flow6_43(nbNegoProcessData_t **n) {
         v21 = *n;
         nextkouho = v21->nextkouho;
         v24 = nextkouho->m_Items[1];
+        goto LABEL_40;
       }
       {
+LABEL_37:
         nbDispNegoMessage(n, v15, 98, 0);
         v21 = *n;
         v25 = v21->nextkouho;
         v24 = v25->m_Items[0];
+LABEL_40:
         v21->nextnegoid = v24;
         return 0;
       }
@@ -1645,7 +2143,9 @@ s32 Flow6_43(nbNegoProcessData_t **n) {
       v11 = v10->flowmsg;
       v12 = v10->ekucyo;
       v15 = v11->m_Items[v12];
+        goto LABEL_37;
     }
+    goto LABEL_37;
   }
   if (!nownegophase)
   {
@@ -1884,19 +2384,98 @@ s32 Flow6_52(nbNegoProcessData_t **n) {
 
 // 0xefb340
 s32 Flow6_53(nbNegoProcessData_t **n) {
-    nbCameraSetHojo(0, 0, 0);
-    nbDispNegoMessage(0, 0, 0, 0);
-    nbClsNegoMessage(0);
-    nbCameraSetTaizi(0, 0);
-    nbMakeNegoBackPacket(0, 0, 0, 0);
-    nbFormDispOff2(0);
-    nbMakeNegoWorkPosPacket(0, 0, 0, 0);
-    nbMakeUnitFadeInPacket(0, 0, 0, 0, 0, 0, 0);
-    nbMakeNegoForwardPacket(0, 0, 0, 0);
-    nbFormDispOn2(0);
-    nbDispSkillName(0);
-    nbAddNegoIdKouho(0, 0);
-    return 0;
+  nbActionProcessData_t_o *v3;
+  struct nbMainProcessData_t_o *data;
+  struct nbParty_t_array *party;
+  s64 hojopartyindex;
+  struct nbFormation_t_array *form;
+  s64 formindex;
+  nbNegoProcessData_t_o *v12;
+  s32 hojoskillid;
+  s32 v14;
+  u32 nownegophase;
+  nbFormation_t_o **p_pform;
+  nbFormation_t_o **p_eform;
+  s32 helpmsg;
+  nbFormation_t_o **v21;
+  nbFormation_t_o **v22;
+  nbFormation_t_o **v24;
+  nbFormation_t_o **v26;
+  u64 *v27;
+  u64 *v29;
+  s32 v31;
+  s32 v32;
+  nbFormation_t_o *pHojo;
+
+  pHojo = 0;
+  v3 = Allocate(nbActionProcessData_t);
+  nbActionProcessData_t___ctor(v3);
+  data = (*n)->data;
+  party = data->party;
+  hojopartyindex = (*n)->hojopartyindex;
+  form = data->form;
+  formindex = party->m_Items[hojopartyindex]->formindex;
+  pHojo = form->m_Items[formindex];
+  v12 = *n;
+  hojoskillid = (*n)->hojoskillid;
+  if ((hojoskillid - 409) > 0xB)
+  {
+    v14 = 0;
+    nownegophase = v12->nownegophase;
+    if (nownegophase > 4)
+      return 0;
+  }
+  else
+  {
+    v14 = dword_33CB490[hojoskillid - 409];
+    nownegophase = v12->nownegophase;
+  }
+  switch (nownegophase)
+  {
+    case 0u:
+      p_pform = &v12->pform;
+      p_eform = &v12->eform;
+      nbCameraSetHojo(&pHojo, p_pform, p_eform);
+      helpmsg = (*n)->helpmsg;
+      nbDispNegoMessage(n, helpmsg, v14, 0);
+      break;
+    case 1u:
+      nbClsNegoMessage(n);
+      v21 = &(*n)->pform;
+      v22 = &(*n)->eform;
+      nbCameraSetTaizi(v21, v22);
+      nbMakeNegoBackPacket(0, v3->uniqueid, &(*n)->pform, &(*n)->eform, 0);
+      nbFormDispOff2(&pHojo);
+      nbMakeNegoWorkPosPacket(0, v3->uniqueid, &pHojo, &(*n)->eform, 0);
+      (*n)->waitframe = 10;
+      break;
+    case 2u:
+      v24 = &v12->pform;
+      nbFormDispOff2(v24);
+      nbMakeUnitFadeInPacket(1, v3->uniqueid, &(*n)->pform, 0, 1, 1, 1, 0);
+      nbMakeNegoForwardPacket(0, v3->uniqueid, &pHojo, &(*n)->eform, 0);
+      (*n)->stat |= 8u;
+      nbFormDispOn2(&pHojo);
+      v26 = &(*n)->eform;
+      nbCameraSetTaizi(&pHojo, v26);
+      (*n)->waitframe = 5;
+      break;
+    case 3u:
+      nbDispSkillName(hojoskillid);
+      v32 = (*n)->hojopartyindex;
+      v27 = sub_8D3950(s32, &v32);
+      v31 = (*n)->hojoskillid;
+      v29 = sub_8D3950(s32, &v31);
+      Write_2930752("補助スキル発動! p[{0:D}] id[{1:X4}]\n", v27, v29);
+      (*n)->waitframe = 60;
+      break;
+    case 4u:
+      nbAddNegoIdKouho(n, 0x60036u);
+      break;
+    default:
+      return 0;
+  }
+  return 0;
 }
 
 // 0xefbad0
@@ -2020,13 +2599,17 @@ s32 Flow6_56(nbNegoProcessData_t **n) {
     v25 = v23->m_Items[v13]->killeraisyo;
     v27 = *(*(&v25->obj.klass + i) + 20LL);
     if (!(v27 | v22))
+      goto LABEL_43;
     v28 = *n;
     p_ework = &v28->ework;
     if ((byte_3F5845B & 1) == 0)
+      goto LABEL_34;
+LABEL_35:
     v29 = ChkAisyo(&a, p_ework, v22, 1);
     v31 = ChkAisyo(p_ework, &a, v27, 1);
     if (v29 && v31 != 0)
       break;
+LABEL_43:
     if (v18 > 2)
       return 0;
   }
@@ -2077,17 +2660,20 @@ s32 Flow6_57(nbNegoProcessData_t **n) {
       v14 = v9 - 10;
     v15 = *n;
     if ((*n)->hojoskillid != 413)
+      goto LABEL_26;
   }
   else
   {
     v14 = v9 + 10;
     v15 = *n;
     if ((*n)->hojoskillid != 413)
+      goto LABEL_26;
   }
   v16 = v15->ework->id - 58;
   if (v16 <= 0x22 && ((1LL << v16) & 0x70000000DLL) != 0)
     v14 = 0;
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5361);
+LABEL_26:
+  RandIntA = dds3GetRandIntA(0x64u, "6_57");
   v18 = *n;
   if (RandIntA >= v14)
   {
@@ -2302,49 +2888,78 @@ s32 Flow6_65(nbNegoProcessData_t **n) {
     {
       v9 = 30;
       v11 = v7->ework;
+        goto LABEL_24;
+      goto LABEL_15;
     }
+LABEL_20:
     if (aisyo == 2)
       v9 = 70;
     else
       v9 = 50;
     v11 = v7->ework;
+      goto LABEL_24;
+    goto LABEL_15;
   }
   if (aisyo != 1)
+    goto LABEL_20;
   v9 = 40;
   v11 = v7->ework;
+    goto LABEL_24;
+LABEL_15:
+LABEL_24:
   if (datGetRace(v11) == 19)
+    goto LABEL_30;
   pwork = (*n)->pwork;
   Param = datGetParam(pwork, 1);
   v15 = datGetParam((*n)->ework, 1, 0);
   if (v15 + 5 < Param)
   {
     v9 -= 5;
+LABEL_30:
     v16 = *n;
     if ((*n)->cnt6_37)
+      goto LABEL_31;
+    goto LABEL_37;
   }
   if (Param < v15 - 5)
     v9 += 5;
   v16 = *n;
   if ((*n)->cnt6_37)
   {
+LABEL_31:
     nextkouho = v16->nextkouho;
     if (!LODWORD(nextkouho->max_length))
+      goto LABEL_32;
+LABEL_33:
     m_Items = nextkouho->m_Items;
+    goto LABEL_60;
   }
+LABEL_37:
   if (v16->cnt6_36 < 4)
   {
-    RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5362);
+    RandIntA = dds3GetRandIntA(0x64u, "6_65");
     v16 = *n;
     nextkouho = (*n)->nextkouho;
     max_length = nextkouho->max_length;
+    if (RandIntA < v9)
+    {
+      if (!max_length)
+      {
+LABEL_32:
+      }
+      goto LABEL_33;
+    }
+    goto LABEL_57;
   }
-  v22 = dds3GetRandIntA(0xAu, StringLiteral_5362);
+  v22 = dds3GetRandIntA(0xAu, "6_65");
   v16 = *n;
   if (v22 < 3)
   {
     nextkouho = v16->nextkouho;
     max_length = nextkouho->max_length;
+LABEL_57:
     m_Items = &nextkouho->m_Items[1];
+    goto LABEL_60;
   }
   flowmsg = v16->flowmsg;
   ekucyo = v16->ekucyo;
@@ -2353,6 +2968,7 @@ s32 Flow6_65(nbNegoProcessData_t **n) {
   v16 = *n;
   v28 = (*n)->nextkouho;
   m_Items = &v28->m_Items[2];
+LABEL_60:
   v16->nextnegoid = *m_Items;
   return 0;
 }
@@ -2398,7 +3014,7 @@ s32 Flow6_67(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, v5);
   do
   {
-    RandIntA = dds3GetRandIntA(4u, StringLiteral_5363);
+    RandIntA = dds3GetRandIntA(4u, "6_67");
     v8 = *n;
     v9 = RandIntA + 33;
   }
@@ -2427,7 +3043,7 @@ s32 Flow6_7(nbNegoProcessData_t **n) {
 
   nbAddNegoIdKouho(n, 0x60008u);
   nbAddNegoIdKouho(n, 0xA0001u);
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5346);
+  RandIntA = dds3GetRandIntA(0x64u, "6_7");
   v5 = *n;
   nextkouho = v5->nextkouho;
   v7 = nextkouho[6];
@@ -2445,11 +3061,128 @@ s32 Flow6_7(nbNegoProcessData_t **n) {
 
 // 0xef6f30
 s32 Flow6_70(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    nbMakaDispOff();
-    nbGetPrevNegoId(0);
-    nbDispNegoMessage(0, 0, 0, 0);
-    return 0;
+  nbNegoProcessData_t_o *v3;
+  s32 nownegophase;
+  struct System_Int32_array *flowmsg;
+  s64 ekucyo;
+  s32 v8;
+  s32 v9;
+  u64 *v11;
+  nbNegoProcessData_t_o **v14;
+  u32 v15;
+  u32 PrevNegoId;
+  struct System_Int32_array *v18;
+  s64 v19;
+  struct System_Int32_array *v21;
+  s64 v22;
+  struct System_Int32_array *v24;
+  s64 v25;
+  s32 v27;
+  nbNegoProcessData_t_o **v28;
+  s32 v29;
+  struct System_Int32_array *v30;
+  s64 v31;
+  nbNegoProcessData_t_o *v33;
+  struct System_UInt32_array *nextkouho;
+  u32 max_length;
+  s32 nowselect;
+
+  v3 = *n;
+  nownegophase = (*n)->nownegophase;
+  if (nownegophase == 1)
+  {
+    nowselect = v3->nowselect;
+    v11 = sub_8D3950(s32, &nowselect);
+    Write_2930400("select = {0:D}\n", v11);
+    nbAddNegoIdKouho(n, 0x60030u);
+    switch ((*n)->requesttype)
+    {
+      case 0:
+      case 1:
+      case 5:
+        v14 = n;
+        v15 = 393238;
+        goto LABEL_75;
+      case 3:
+        v15 = 720897;
+        goto LABEL_74;
+      case 4:
+        v15 = 524289;
+LABEL_74:
+        v14 = n;
+LABEL_75:
+        nbAddNegoIdKouho(v14, v15);
+        break;
+      default:
+        break;
+    }
+    v33 = *n;
+    nextkouho = v33->nextkouho;
+    max_length = nextkouho->max_length;
+    if (v33->nowselect)
+    {
+      v33->nextnegoid = nextkouho->m_Items[0];
+      nbMakaDispOff();
+    }
+    else
+    {
+      v33->nextnegoid = nextkouho->m_Items[1];
+    }
+  }
+  else if (!nownegophase)
+  {
+    switch (v3->requesttype)
+    {
+      case 0:
+        flowmsg = v3->flowmsg;
+        ekucyo = v3->ekucyo;
+        v8 = flowmsg->m_Items[ekucyo];
+        v9 = 58;
+        goto LABEL_58;
+      case 1:
+        PrevNegoId = nbGetPrevNegoId(n);
+        v18 = (*n)->flowmsg;
+        v19 = (*n)->ekucyo;
+        v8 = v18->m_Items[v19];
+        if (PrevNegoId - 393276 > 4 || PrevNegoId == 393279)
+        {
+          v9 = 57;
+        }
+        else
+        {
+          v9 = 82;
+        }
+        goto LABEL_58;
+      case 3:
+        v21 = v3->flowmsg;
+        v22 = v3->ekucyo;
+        v8 = v21->m_Items[v22];
+        v9 = 59;
+        goto LABEL_58;
+      case 4:
+        v24 = v3->flowmsg;
+        v25 = v3->ekucyo;
+        v27 = v24->m_Items[v25];
+        v28 = n;
+        v29 = v27;
+        v9 = 60;
+        goto LABEL_59;
+      case 5:
+        v30 = v3->flowmsg;
+        v31 = v3->ekucyo;
+        v8 = v30->m_Items[v31];
+        v9 = 61;
+LABEL_58:
+        v28 = n;
+        v29 = v8;
+LABEL_59:
+        nbDispNegoMessage(v28, v29, v9, 1);
+        break;
+      default:
+        return 0;
+    }
+  }
+  return 0;
 }
 
 // 0xefc650
@@ -2597,11 +3330,11 @@ s32 Flow6_80(nbNegoProcessData_t **n) {
 
   nbAddNegoIdKouho(n, 0x60051u);
   nbAddNegoIdKouho(n, 0x60009u);
-  if (dds3GetRandIntA(0xAu, StringLiteral_5344) >= 4)
+  if (dds3GetRandIntA(0xAu, "6_80") >= 4)
   {
     do
     {
-      RandIntA = dds3GetRandIntA(4u, StringLiteral_5344);
+      RandIntA = dds3GetRandIntA(4u, "6_80");
       v10 = *n;
       v11 = RandIntA + 28;
     }
@@ -2639,10 +3372,90 @@ s32 Flow6_81(nbNegoProcessData_t **n) {
 
 // 0xef59b0
 s32 Flow6_9(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    Get(0);
-    nbGetNegoRequestType(0);
-    return 0;
+  nbNegoProcessData_t_o *v4;
+  s32 id;
+  s32 reqtype;
+  s32 NegoRequestType;
+  u32 prevreqtype;
+  s32 negoreqtype;
+  s32 v12;
+  s32 v13;
+  u64 *v15;
+  nbNegoProcessData_t_o *v16;
+  struct System_UInt32_array *nextkouho;
+  u32 v19;
+  struct System_UInt32_array *v20;
+  struct System_UInt32_array *v22;
+  struct System_UInt32_array *v24;
+  struct System_UInt32_array *v26;
+  s32 v29;
+
+  nbAddNegoIdKouho(n, 0x60011u);
+  nbAddNegoIdKouho(n, 0x60015u);
+  nbAddNegoIdKouho(n, 0x6000Bu);
+  nbAddNegoIdKouho(n, 0x6000Au);
+  nbAddNegoIdKouho(n, 0x6000Cu);
+  v4 = *n;
+  do
+  {
+    id = v4->ework->id;
+    reqtype = Get(id, 0)->reqtype;
+    NegoRequestType = nbGetNegoRequestType(reqtype);
+    v4 = *n;
+    prevreqtype = (*n)->prevreqtype;
+    if (prevreqtype < 2)
+      break;
+  }
+  while (NegoRequestType == 4 || NegoRequestType == prevreqtype);
+  negoreqtype = v4->negoreqtype;
+  if (negoreqtype == 4)
+    v12 = 0;
+  else
+    v12 = NegoRequestType;
+  if (negoreqtype == 5)
+    v13 = 5;
+  else
+    v13 = v12;
+  v4->requesttype = v13;
+  (*n)->requestdata = 0;
+  v29 = v13;
+  v15 = sub_8D3950(s32, &v29);
+  Write_2930400("request = {0:D}\n", v15);
+  switch (v13)
+  {
+    case 0:
+    case 1:
+      v16 = *n;
+      nextkouho = (*n)->nextkouho;
+      v19 = nextkouho->m_Items[0];
+      goto LABEL_46;
+    case 2:
+      v16 = *n;
+      v20 = (*n)->nextkouho;
+      v19 = v20->m_Items[1];
+      goto LABEL_46;
+    case 3:
+      v16 = *n;
+      v22 = (*n)->nextkouho;
+      v19 = v22->m_Items[2];
+      goto LABEL_46;
+    case 4:
+      v16 = *n;
+      v24 = (*n)->nextkouho;
+      v19 = v24->m_Items[3];
+      goto LABEL_46;
+    case 5:
+      v16 = *n;
+      v26 = (*n)->nextkouho;
+      v19 = v26->m_Items[4];
+LABEL_46:
+      v16->nextnegoid = v19;
+      break;
+    default:
+      break;
+  }
+  (*n)->prevreqtype = v13;
+  return 0;
 }
 
 // 0xef4030

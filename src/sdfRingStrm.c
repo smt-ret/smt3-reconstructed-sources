@@ -18,7 +18,33 @@ void sdfRingStrmClose(void) {
 
 // 0x17aa2c0
 void *sdfRingStrmDemand(s32 aLeng) {
-    return 0;
+  struct sdfRingStrmCB_t_o *sdfRingStrmCB;
+  void *v5;
+  char *v6;
+  s64 blockSize;
+  s64 v8;
+  s32 blockHead;
+  s32 v11;
+  s32 v12;
+
+  else if (aLeng >= 1)
+  {
+LABEL_11:
+    v12 = 0;
+    v6 = &v12;
+    return sub_8D3950(v5, v6);
+  }
+  blockSize = sdfRingStrmCB->blockSize;
+  v8 = aLeng / blockSize;
+  sdfRingStrmCB->lockLeng = aLeng;
+  v6 = &v11;
+  blockHead = sdfRingStrmCB->blockHead;
+  if (v8 * aLeng != aLeng)
+    LOWORD(v8) = v8 + 1;
+  sdfRingStrmCB->blockLock = v8;
+  sdfRingStrmCB->stat = 2;
+  v11 = sdfRingStrmCB->buffTop + blockSize * blockHead;
+  return sub_8D3950(v5, v6);
 }
 
 // 0x17aa400

@@ -32,12 +32,17 @@ u32 sdfGetRand(sdfRandCB_t **aCB) {
     v4 = 0;
     v = sdfDefaultRandCB->v;
     if (!LODWORD(v->max_length))
+      goto LABEL_5;
   }
   else
   {
     v4 = 1;
     *aCB = sdfDefaultRandCB;
     v = sdfDefaultRandCB->v;
+    if (!LODWORD(v->max_length))
+    {
+LABEL_5:
+    }
   }
   v7 = v->m_Items[0];
   v8 = sdfDefaultRandCB->v;
@@ -132,5 +137,30 @@ void sdfRandomize(sdfRandCB_t **aCB, u32 aSeed) {
 
 // 0x17a9de0
 void sdfRandomizeByTime(sdfRandCB_t **aCB) {
-    sdfRandomize(0, 0);
+  System_Array_o *v3;
+  s32 v5;
+  u32 v6;
+  s32 v7;
+  s32 v9;
+  s32 v10;
+  s32 v11;
+  s32 v12;
+  u32 v15;
+  u64 dateData;
+
+  dateData = 0;
+  v3 = NewSpecific(ushort, 0xDu);
+  InitializeArray_1543888(v3, Field__PrivateImplementationDetails__4CB70A8C9D931318D045B1B277D0A5672811F20B);
+  dateData = get_Now().dateData;
+  v5 = sub_2DC9F0(&dateData);
+  v6 = v5 - 1;
+  if (v5 < 1 || v5 > SLODWORD(v3[1].monitor))
+    v6 = 0;
+  v7 = sub_2DCDC0(&dateData);
+  v9 = *(&v3[2].klass + v6);
+  v10 = v9 + 366 * v7 + sub_2DC7B0(&dateData);
+  v11 = sub_2DC890(&dateData) + 24 * v10;
+  v12 = sub_2DC970(&dateData) + 60 * v11;
+  v15 = sub_2DCC70(&dateData) + 60 * v12 + 2128295040;
+  sdfRandomize(aCB, v15);
 }

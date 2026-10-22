@@ -27,7 +27,7 @@ struct sdfModel_sdfModelClass {
     f32 blendRate[2];
     u32 itop;
     u32 mscal;
-    u32 pad[UNKNOWN_ARRAY_SIZE];
+    u32 *pad;
 };
 
 struct sdfModel_sdfModelClass2 {
@@ -83,7 +83,34 @@ void sdfModelAllocNodeList(sdfModelRootNode_t **aRoot, s32 aLeng) {
 
 // 0x179b9b0
 sdf3DTmPacketData_t *sdfModelAllocTmPacket(sdfModelNode_t **aNode) {
+  sdf3DTmPacketData_t_o *result;
+  sdf3DTmPacketData_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  result = (*aNode)->tmPacket;
+  if (result)
+  {
+    klass = result->klass;
+    if (result->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdf3DTmPacketData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, sdf3DTmPacketData_t, v8);
+      if ((v8[0] & 1) != 0)
+        v6 = v8[2];
+      else
+        v6 = v8 + 1;
+      v7 = sub_8C4940(v6);
+    }
+  }
+  else
+  {
+    (*aNode)->tmPacket = 0;
     return 0;
+  }
+  return result;
 }
 
 // 0x179cc30
@@ -103,16 +130,95 @@ void sdfModelDrawEnvLinkOt(sdfModelOt_t **aOt, sdfModelDrawEnv_t **aEnv) {
 
 // 0x179c7d0
 void sdfModelEvalNode(sdfModelNode_t **aNode, sdfMatrix4_t *aParentTm, s32 aFrameId) {
-    SDF_VU0__LOAD_ROW0((sdfVector4_t){0});
-    SDF_VU0__LOAD_ROW1((sdfVector4_t){0});
-    SDF_VU0__LOAD_ROW2((sdfVector4_t){0});
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    SDF_VU0__SCALE_XYZ();
-    SDF_VU0__LOAD_ROW3((sdfVector4_t){0});
-    SDF_VU0__LOADMATRIX_B(0);
-    MultMatrixRevNoArg();
-    SDF_VU0__STOREMATRIX(0);
-    sdf3DPrimSetTmPacket(0);
+  u64 *v7;
+  s64 v8;
+  s64 v9;
+  s64 v10;
+  s64 v11;
+  s64 v12;
+  s64 v13;
+  Il2CppObject *tmPacket;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v20;
+  s64 *v21;
+  sdfModelNode_t_o *v22;
+  struct sdfModelNode_t_o *children;
+  UnityEngine_Matrix4x4_o *p_tm;
+  UnityEngine_Matrix4x4_o v25;
+  sdfModelNode_t_o *v26[3];
+  sdfModelNode_t_o *aNodea;
+  UnityEngine_Vector4_o v28;
+  UnityEngine_Vector4_o v29;
+  UnityEngine_Vector4_o v30;
+
+  aNodea = 0;
+  v7 = Allocate(sdf3DTmPacketData_t);
+  sdf3DTmPacketData_t___ctor(v7);
+  sub_1A00880(&(*aNode)->localNoScaledTm, 0);
+  SDF_VU0__LOAD_ROW0(v28);
+  sub_1A00880(&(*aNode)->localNoScaledTm, 1u);
+  SDF_VU0__LOAD_ROW1(v29);
+  sub_1A00880(&(*aNode)->localNoScaledTm, 2u);
+  SDF_VU0__LOAD_ROW2(v30);
+  SDF_VU0__LOADVECTOR((*aNode)->scale, 0);
+  SDF_VU0__SCALE_XYZ();
+  SDF_VU0__LOAD_ROW3((*aNode)->pos, 0);
+  v8 = *&aParentTm->m00;
+  v9 = *&aParentTm->m20;
+  v10 = *&aParentTm->m21;
+  *&v25.m01 = *&aParentTm->m01;
+  *&v25.m21 = v10;
+  *&v25.m00 = v8;
+  *&v25.m20 = v9;
+  v11 = *&aParentTm->m02;
+  v12 = *&aParentTm->m22;
+  v13 = *&aParentTm->m23;
+  *&v25.m03 = *&aParentTm->m03;
+  *&v25.m23 = v13;
+  *&v25.m02 = v11;
+  *&v25.m22 = v12;
+  SDF_VU0__LOADMATRIX_B(&v25);
+  MultMatrixRevNoArg();
+  SDF_VU0__STOREMATRIX(&(*aNode)->tm, 0);
+  tmPacket = (*aNode)->tmPacket;
+  if (!tmPacket)
+  {
+    v22 = *aNode;
+    children = (*aNode)->children;
+    aNodea = children;
+    if (!children)
+      return;
+    goto LABEL_14;
+  }
+  klass = tmPacket->klass;
+  if (tmPacket->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdf3DTmPacketData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, sdf3DTmPacketData_t, v26);
+    if ((v26[0] & 1) != 0)
+      v20 = v26[2];
+    else
+      v20 = v26 + 1;
+    v21 = sub_8C4940(v20);
+  }
+  sdf3DPrimSetTmPacket(tmPacket);
+  v22 = *aNode;
+  children = (*aNode)->children;
+  aNodea = children;
+  if (children)
+  {
+    do
+    {
+LABEL_14:
+      p_tm = &v22->tm;
+      sdfModelEvalNode(&aNodea, p_tm, aFrameId);
+      children = children->next;
+      aNodea = children;
+      v22 = *aNode;
+    }
+    while (children != (*aNode)->children);
+  }
 }
 
 // 0x179cb80
@@ -281,6 +387,10 @@ sdfModelRootNode_t *sdfModelMakeEarly(sdfModelTexList_t *aTexList, sdfModelDef_t
     nodeDef = v10->nodeDef;
     for (i = 0; i != modelDef; ++i)
     {
+ if (i >= LODWORD(nodeDef->max_length))
+      {
+LABEL_15:
+      }
     }
   }
   return v12;
@@ -396,6 +506,8 @@ sdfModelRootNode_t *sdfModelMakeRoot(sdfModelTexList_t *aTexList, sdfModelDef_t 
       if ((parentIndex & 0x80000000) == 0)
         break;
       v32 = 0;
+        goto LABEL_20;
+LABEL_23:
       sdfModelNodeAdd(&aRoot, &v32, &aNode);
       v30 = m_Items[v18++];
       v23->id = v30->id;
@@ -404,6 +516,9 @@ sdfModelRootNode_t *sdfModelMakeRoot(sdfModelTexList_t *aTexList, sdfModelDef_t 
     }
     items = v11->nodeList->items;
     v32 = items->m_Items[parentIndex];
+      goto LABEL_23;
+LABEL_20:
+    goto LABEL_23;
   }
   return v11;
 }
@@ -451,6 +566,12 @@ void sdfModelNodeBaseSet(sdfModelNode_t **aNode, sdfModelNodeDef_t **aDef) {
 
 // 0x179bac0
 void sdfModelNodeFree(sdfModelNode_t **aNode) {
+  sdfModelNode_t_o *v3;
+  s32 v4;
+
+  v3 = *aNode;
+  v4 = 0;
+  v3->tmPacket = sub_8D3950(s32, &v4);
 }
 
 // 0x179b900
@@ -478,6 +599,54 @@ void sdfModelNodeSet(sdfModelNode_t **aNode, sdfModelNodeDef_t **aDef) {
 
 // 0x179bdc0
 void sdfModelNodeSetParent(sdfModelNode_t **aNode, sdfModelNode_t **aParent) {
+  sdfModelNode_t_o *v5;
+  struct sdfModelNode_t_o *parent;
+  sdfModelNode_t_o *v10;
+  struct sdfModelNode_t_o *children;
+  sdfModelNode_t_o *v12;
+  struct sdfModelRootNode_t_o *v13;
+  struct sdfModelNode_t_o *headNode;
+  struct sdfModelRootNode_t_o *root;
+
+  v5 = *aNode;
+  if (*aParent)
+  {
+    parent = v5->parent;
+    if (parent != *aParent)
+    {
+      else if (parent)
+      {
+        goto LABEL_8;
+      }
+      root = v5->root;
+      if (root->headNode == v5)
+      {
+        root->headNode = 0;
+        v10 = *aParent;
+        children = (*aParent)->children;
+        v12 = *aNode;
+        if (children)
+          goto LABEL_24;
+        goto LABEL_26;
+      }
+      goto LABEL_23;
+    }
+  }
+  else
+  {
+    v13 = v5->root;
+    headNode = v13->headNode;
+    if (headNode != v5)
+    {
+      v13->headNode = v5;
+      if (headNode)
+      {
+        (*aNode)->children = headNode;
+        headNode->parent = *aNode;
+      }
+      (*aNode)->parent = 0;
+    }
+  }
 }
 
 // 0x179c380
@@ -623,12 +792,34 @@ void *sdfModelSetOneSkinDrawPacket(sdfModelNode_t **aNode, void *aDataPtr, void 
 
 // 0x179c090
 void *sdfModelSetTermPacket(void **aBuffer) {
-    return 0;
+  Il2CppObject *v3;
+  u64 *v4;
+  char *v5;
+  s64 *v6;
+  s32 v8;
+  u64 v9[3];
+
+  v3 = *aBuffer;
+  v8 = 16;
+  v4 = sub_8D3950(s32, &v8);
+  if (v3 && v3->klass != string)
+  {
+    sub_8FC2C0(v3->klass->_1.element_class, string, v9);
+    if ((v9[0] & 1) != 0)
+      v5 = v9[2];
+    else
+      v5 = v9 + 1;
+    v6 = sub_8C4940(v5);
+  }
+  return Concat(v3, v4);
 }
 
 // 0x179c010
 void *sdfModelSetTmRefPacket(sdfModelNode_t **aNode, void **aBuffer, s32 aId) {
-    return 0;
+  s32 v6;
+
+  v6 = *il2cp::SizeOf(*aBuffer, s32) + 16;
+  return sub_8D3950(s32, &v6);
 }
 
 // 0x179cc40

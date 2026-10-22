@@ -162,6 +162,7 @@ sdfMatList_t *sdfMatListMake(sdfModelTexList_t *aTexList, s32 setCount, sdfMatDe
     v5 = 32;
   else
     v5 = v4;
+LABEL_10:
   v6 = Allocate(sdfMatList_t);
   sdfMatList_t___ctor(v6);
   *(v6 + 12) = 0;
@@ -173,6 +174,8 @@ sdfMatList_t *sdfMatListMake(sdfModelTexList_t *aTexList, s32 setCount, sdfMatDe
     {
       v9 = sdfMatNew(sdfMat);
       if ((byte_3F5A72F & 1) == 0)
+        goto LABEL_17;
+LABEL_18:
       v10 = Allocate(sdfMatDef_t);
       sdfMatDef_t___ctor(v10);
       sdfMatListAdd(v6, v9);
@@ -181,6 +184,9 @@ sdfMatList_t *sdfMatListMake(sdfModelTexList_t *aTexList, s32 setCount, sdfMatDe
     }
     v9 = sdfMatNew();
     if ((byte_3F5A72F & 1) != 0)
+      goto LABEL_18;
+LABEL_17:
+    goto LABEL_18;
   }
   return v6;
 }
@@ -228,7 +234,10 @@ void sdfMatListUpdatePacket(sdfMatList_t *aMatList, s32 aId) {
 
 // 0x1795880
 void *sdfMatMakePacket(sdfMat_t *aMat, void *aBuffer, s32 aId) {
-    return 0;
+  s32 v6;
+
+  v6 = *il2cp::SizeOf(aBuffer, s32) + 16;
+  return sub_8D3950(s32, &v6);
 }
 
 // 0x17954c0
@@ -345,10 +354,84 @@ void sdfMatSetMultiTex(sdfMat_t *aMat, sdfTexHandle_t *aTex) {
 
 // 0x1795090
 void sdfMatSetMultiTexUvw(sdfMat_t *aMat, f32 aOffsetX, f32 aOffsetY, f32 aTileX, f32 aTileY, f32 aAngle) {
+  struct sdfMatUvwParm_t_o *multiTexUvwParm;
+  struct System_Single_array *offset;
+  struct System_Single_array *v15;
+  struct System_Single_array *tile;
+  struct System_Single_array *v19;
+
+  else if ((byte_3F5A72C & 1) != 0)
+  {
+    goto LABEL_6;
+  }
+  multiTexUvwParm = aMat->multiTexUvwParm;
+  if (multiTexUvwParm)
+  {
+LABEL_7:
+    offset = multiTexUvwParm->offset;
+    if (LODWORD(offset->max_length))
+      goto LABEL_8;
+LABEL_20:
+  }
+LABEL_17:
+  else
+  {
+    aMat->multiTexUvwParm = 0;
+    offset = multiTexUvwParm->offset;
+    if (!LODWORD(offset->max_length))
+      goto LABEL_20;
+  }
+LABEL_8:
+  offset->m_Items[0] = aOffsetX;
+  v15 = multiTexUvwParm->offset;
+  v15->m_Items[1] = aOffsetY;
+  tile = multiTexUvwParm->tile;
+  tile->m_Items[0] = aTileX;
+  v19 = multiTexUvwParm->tile;
+  v19->m_Items[1] = aTileY;
+  multiTexUvwParm->angle = aAngle;
+  aMat->duty |= 0x30u;
 }
 
 // 0x1795240
 void sdfMatSetMultiTexUvwByPtr(sdfMat_t *aMat, f32 **aParm) {
+  struct sdfMatUvwParm_t_o *multiTexUvwParm;
+  struct System_Single_array *offset;
+  struct System_Single_array *v7;
+  struct System_Single_array *tile;
+  struct System_Single_array *v13;
+
+  else if ((byte_3F5A72C & 1) != 0)
+  {
+    goto LABEL_6;
+  }
+  multiTexUvwParm = aMat->multiTexUvwParm;
+  if (multiTexUvwParm)
+  {
+LABEL_7:
+    offset = multiTexUvwParm->offset;
+    if (LODWORD(aParm->max_length))
+      goto LABEL_8;
+LABEL_29:
+  }
+LABEL_26:
+  else
+  {
+    aMat->multiTexUvwParm = 0;
+    offset = multiTexUvwParm->offset;
+    if (!LODWORD(aParm->max_length))
+      goto LABEL_29;
+  }
+LABEL_8:
+  offset->m_Items[0] = aParm->m_Items[0];
+  v7 = multiTexUvwParm->offset;
+  v7->m_Items[1] = aParm->m_Items[1];
+  tile = multiTexUvwParm->tile;
+  tile->m_Items[0] = aParm->m_Items[2];
+  v13 = multiTexUvwParm->tile;
+  v13->m_Items[1] = aParm->m_Items[3];
+  multiTexUvwParm->angle = aParm->m_Items[4];
+  aMat->duty |= 0x30u;
 }
 
 // 0x1794a90
@@ -380,10 +463,84 @@ void sdfMatSetTex(sdfMat_t *aMat, sdfTexHandle_t *aTex) {
 
 // 0x1794b90
 void sdfMatSetTexUvw(sdfMat_t *aMat, f32 aOffsetX, f32 aOffsetY, f32 aTileX, f32 aTileY, f32 aAngle) {
+  struct sdfMatUvwParm_t_o *uvwParm;
+  struct System_Single_array *offset;
+  struct System_Single_array *v15;
+  struct System_Single_array *tile;
+  struct System_Single_array *v19;
+
+  else if ((byte_3F5A729 & 1) != 0)
+  {
+    goto LABEL_6;
+  }
+  uvwParm = aMat->uvwParm;
+  if (uvwParm)
+  {
+LABEL_7:
+    offset = uvwParm->offset;
+    if (LODWORD(offset->max_length))
+      goto LABEL_8;
+LABEL_20:
+  }
+LABEL_17:
+  else
+  {
+    aMat->uvwParm = 0;
+    offset = uvwParm->offset;
+    if (!LODWORD(offset->max_length))
+      goto LABEL_20;
+  }
+LABEL_8:
+  offset->m_Items[0] = aOffsetX;
+  v15 = uvwParm->offset;
+  v15->m_Items[1] = aOffsetY;
+  tile = uvwParm->tile;
+  tile->m_Items[0] = aTileX;
+  v19 = uvwParm->tile;
+  v19->m_Items[1] = aTileY;
+  uvwParm->angle = aAngle;
+  aMat->duty |= 0xCu;
 }
 
 // 0x1794d40
 void sdfMatSetTexUvwByPtr(sdfMat_t *aMat, f32 **aParm) {
+  struct sdfMatUvwParm_t_o *uvwParm;
+  struct System_Single_array *offset;
+  struct System_Single_array *v7;
+  struct System_Single_array *tile;
+  struct System_Single_array *v13;
+
+  else if ((byte_3F5A729 & 1) != 0)
+  {
+    goto LABEL_6;
+  }
+  uvwParm = aMat->uvwParm;
+  if (uvwParm)
+  {
+LABEL_7:
+    offset = uvwParm->offset;
+    if (LODWORD(aParm->max_length))
+      goto LABEL_8;
+LABEL_29:
+  }
+LABEL_26:
+  else
+  {
+    aMat->uvwParm = 0;
+    offset = uvwParm->offset;
+    if (!LODWORD(aParm->max_length))
+      goto LABEL_29;
+  }
+LABEL_8:
+  offset->m_Items[0] = aParm->m_Items[0];
+  v7 = uvwParm->offset;
+  v7->m_Items[1] = aParm->m_Items[1];
+  tile = uvwParm->tile;
+  tile->m_Items[0] = aParm->m_Items[2];
+  v13 = uvwParm->tile;
+  v13->m_Items[1] = aParm->m_Items[3];
+  uvwParm->angle = aParm->m_Items[4];
+  aMat->duty |= 0xCu;
 }
 
 // 0x1795990

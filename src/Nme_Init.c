@@ -9,15 +9,15 @@ typedef struct sdfTexHandle_t sdfTexHandle_t;
 
 static s32 name_count;
 static s32 char_sel;
-static char nmeCharTexFile[UNKNOWN_ARRAY_SIZE];
+static char *nmeCharTexFile;
 static nmeData_t *GBWK;
 static s8 gProcessStat;
-static char tblDefName[UNKNOWN_ARRAY_SIZE];
-static s8 nmeTblList[UNKNOWN_ARRAY_SIZE];
-static char *nmeTblList22[UNKNOWN_ARRAY_SIZE];
-static char *nmeTblList24[UNKNOWN_ARRAY_SIZE];
+static char *tblDefName;
+static s8 *nmeTblList;
+static char **nmeTblList22;
+static char **nmeTblList24;
 static s32 dds3KernelDebugSignOrg;
-static u8 gFadeCol[UNKNOWN_ARRAY_SIZE];
+static u8 *gFadeCol;
 static void *cursor_UI;
 static void *oName_UI;
 
@@ -85,16 +85,12 @@ s8 nmeChkNameProcess(void) {
 
 // 0x18a5180
 dds3ProcessFunc_t *nmeDestroyName(dds3ProcessID_t *PID) {
-  Nme_Init_c *v3;
-  struct Nme_Init_StaticFields *static_fields;
   struct nmeData_t_o *GBWK;
   s32 dds3KernelDebugSignOrg;
 
-  static_fields = v3->static_fields;
-  GBWK = static_fields->GBWK;
   if (GBWK)
   {
-    nmeSetFontImageToGW(GBWK->TargetNo, &static_fields->GBWK);
+    nmeSetFontImageToGW(GBWK->TargetNo, &GBWK);
     nmeTexFree(&GBWK);
     frDelFontStyle(4u);
     GBWK = 0;
@@ -209,18 +205,22 @@ void nmeInitDefaultName(void) {
   v3 = Allocate(nmeData_t);
   nmeData_t___ctor(v3);
   pData = v3;
+LABEL_7:
   nmeSetDefaultNameCore(0, 0, &pData);
   nmeSetDefaultNameCore(0, 1, &pData);
   nmeSetDefaultNameCore(0, 2, &pData);
   nmeSetFontImageToGW(0, &pData);
+LABEL_14:
   nmeSetDefaultNameCore(1, 0, &pData);
   nmeSetDefaultNameCore(1, 1, &pData);
   nmeSetDefaultNameCore(1, 2, &pData);
   nmeSetFontImageToGW(1, &pData);
+LABEL_21:
   nmeSetDefaultNameCore(2, 0, &pData);
   nmeSetDefaultNameCore(2, 1, &pData);
   nmeSetDefaultNameCore(2, 2, &pData);
   nmeSetFontImageToGW(2, &pData);
+LABEL_28:
   nmeSetDefaultNameCore(3, 0, &pData);
   nmeSetDefaultNameCore(3, 1, &pData);
   nmeSetDefaultNameCore(3, 2, &pData);
@@ -318,6 +318,7 @@ void nmeInitInputMode(s8 InputMode, nmeData_t **pData) {
     v13 = 15;
     v14 = v12 == 2;
     if (v12 < 2)
+      goto LABEL_23;
   }
   if (v14)
   {
@@ -325,30 +326,45 @@ void nmeInitInputMode(s8 InputMode, nmeData_t **pData) {
     v13 = 16;
     v19 = (*pData)->CharCursor;
     if (!LODWORD(v19->max_length))
+      goto LABEL_25;
+    goto LABEL_26;
   }
   if (v12 == 3)
   {
+LABEL_23:
     v15 = v12 == 3;
     if (v12 >= 3)
+      goto LABEL_36;
+LABEL_24:
     LOBYTE(v18) = 6;
     v19 = (*pData)->CharCursor;
     if (!LODWORD(v19->max_length))
+      goto LABEL_25;
+    goto LABEL_26;
   }
   v13 = 0;
   v15 = v12 == 3;
   if (v12 < 3)
+    goto LABEL_24;
+LABEL_36:
   if (v15)
   {
     v18 = SLODWORD(nmeTblList24->m_Items[3]->max_length) / 16;
     (*pData)->ListCapFlag = 0;
     v19 = (*pData)->CharCursor;
+    if (!LODWORD(v19->max_length))
+    {
+LABEL_25:
+    }
   }
   else
   {
     LOBYTE(v18) = 0;
     v19 = (*pData)->CharCursor;
     if (!LODWORD(v19->max_length))
+      goto LABEL_25;
   }
+LABEL_26:
   v21 = v19->m_Items[0];
   cmpInitCursorInfo(v21, v18, 6u, 0);
   v22 = (*pData)->CharCursor;
@@ -361,7 +377,6 @@ void nmeInitInputMode(s8 InputMode, nmeData_t **pData) {
 
 // 0x18a7590
 s32 nmeNameEntry(void) {
-  struct Nme_Init_StaticFields *static_fields;
   s32 gProcessStat;
   s8 IntPara;
   s8 v7;
@@ -371,10 +386,9 @@ s32 nmeNameEntry(void) {
 
   else
   {
-    static_fields = Nme_Init->static_fields;
-    gProcessStat = static_fields->gProcessStat;
     if (gProcessStat != 2)
     {
+LABEL_6:
       if (!gProcessStat)
       {
         IntPara = scrGetIntPara(0);
@@ -383,20 +397,22 @@ s32 nmeNameEntry(void) {
       }
       v10 = 0;
       v11 = 1;
+      goto LABEL_20;
     }
   }
   v11 = 0;
   v10 = 1;
-  static_fields->gProcessStat = 0;
+  gProcessStat = 0;
+LABEL_20:
   scrSetIntReturnValue(v11);
   return v10;
 }
 
 // 0x18a73e0
 void nmeNameProcessEnd(void) {
-  dds3KillProcessName(StringLiteral_6, 1);
-  dds3KillProcessName(StringLiteral_5626, 1);
-  dds3KillProcessName(StringLiteral_5627, 1);
+  dds3KillProcessName("name", 1);
+  dds3KillProcessName("name_draw", 1);
+  dds3KillProcessName("name_update", 1);
 }
 
 // 0x18a69d0
@@ -419,7 +435,6 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
   u64 *v26;
   struct cmpCursorInfo_t_array *v28;
   u64 *v29;
-  struct Nme_Init_StaticFields *static_fields;
   u64 *v43;
   Il2CppObject *data;
   u64 *v46;
@@ -442,22 +457,28 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
   v6 = Allocate(nmeData_t);
   nmeData_t___ctor(v6);
   asset_bc = get_asset_bc();
-  Prefab_16624656 = LoadPrefab_16624656(asset_bc, StringLiteral_4611, StringLiteral_5156, StringLiteral_5623);
-  v10 = Find(StringLiteral_4905, 0);
+  Prefab_16624656 = LoadPrefab_16624656(asset_bc, "common", "dds3data/UI", "nameUI");
+  v10 = Find("Canvas_UI", 0);
   transform = get_transform(v10, 0);
   v14 = Instantiate_object__425664(Prefab_16624656, transform, 0);
   oName_UI = v14;
   AddComponent_object_(oName_UI);
   if ((byte_3F5AA06 & 1) != 0)
   {
+LABEL_17:
     if ((v17->_2.bitflags2 & 2) == 0)
+      goto LABEL_20;
+    goto LABEL_18;
   }
+    goto LABEL_20;
+LABEL_18:
+LABEL_20:
   v19 = oName_UI;
   v20 = get_transform(oName_UI, 0);
-  v21 = Find(v20, StringLiteral_5553, 0);
+  v21 = Find(v20, "namelist", 0);
   gameObject = get_gameObject(v21);
   v23 = get_transform(v19, 0);
-  v24 = Find(v23, StringLiteral_5624, 0);
+  v24 = Find(v23, "nameinput/nameconfirm", 0);
   get_gameObject(v24);
   CharCursor = v6->CharCursor;
   v26 = Allocate(cmpCursorInfo_t);
@@ -469,10 +490,10 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
   v28->m_Items[1] = v29;
   else
   {
-    static_fields = Nme_Init->static_fields;
-    if (static_fields->name_count != 1)
+    if (name_count != 1)
+      goto LABEL_50;
   }
-  if (get_activeSelf(static_fields->oName_UI))
+  if (get_activeSelf(oName_UI))
   {
     yesnoflag = 0;
     SetActive(gameObject, 1, 0);
@@ -480,34 +501,41 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
   }
   NameInit();
   NameInit2();
+LABEL_50:
   char_sel = TargetNo;
   else
   {
     DefNameDraw();
     if (TargetNo < 4)
+      goto LABEL_64;
   }
   {
+LABEL_66:
     if (GBWK)
       return;
+    goto LABEL_69;
   }
+LABEL_65:
+    goto LABEL_66;
   if (GBWK)
     return;
+LABEL_69:
   GBWK = nmeInit(TargetNo, EntryMode, 0);
-  ButtonGuideDispSet(StringLiteral_5592, 0, 0, 90);
+  ButtonGuideDispSet("NAME01", 0, 0, 90);
   v43 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v43,
     0,
     Method_Nme_Calc_nmeCalc__);
   data = GBWK;
-  dds3StartProcess(StringLiteral_6, 0x406u, 1, 1, v43, 0, 0, 0, data, 0);
+  dds3StartProcess("name", 0x406u, 1, 1, v43, 0, 0, 0, data, 0);
   v46 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v46,
     0,
     Method_Nme_Draw_nmeDraw__);
   dds3StartProcess(
-    StringLiteral_5626,
+    "name_draw",
     0x2B16u,
     1,
     1,
@@ -528,7 +556,7 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
     0,
     Method_Nme_Init_nmeDestroyName__);
   dds3StartProcess(
-    StringLiteral_5627,
+    "name_update",
     0x5212u,
     1,
     1,
@@ -548,6 +576,7 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
     v55->m_Items[1] = 0;
     v57 = gFadeCol;
     v57->m_Items[2] = 0;
+      goto LABEL_102;
   }
   else
   {
@@ -557,7 +586,9 @@ void nmeNameProcessStart(s8 TargetNo, s8 EntryMode, s8 DebugMode) {
     v62->m_Items[1] = -1;
     v64 = gFadeCol;
     v64->m_Items[2] = -1;
+      goto LABEL_102;
   }
+LABEL_102:
   v66 = gFadeCol;
   max_length = v66->max_length;
   v68 = v66->m_Items[0];
@@ -616,6 +647,7 @@ void nmeSetDefaultNameCore(s8 TargetNo, s8 Type, nmeData_t **pData) {
   v7 = 0;
   v58 = pData;
   {
+LABEL_9:
   }
   while (v6 > v7)
   {
@@ -633,6 +665,7 @@ void nmeSetDefaultNameCore(s8 TargetNo, s8 Type, nmeData_t **pData) {
     v18 = v16[2].length;
     ++v7;
     v15->m_Items[v18 * (v13 + v17 * Type) + 1] = -1;
+      goto LABEL_9;
   }
   Unicode = get_Unicode();
   v29 = Type + (3 * TargetNo);
@@ -672,6 +705,153 @@ void nmeSetDefaultNameCore(s8 TargetNo, s8 Type, nmeData_t **pData) {
 
 // 0x18a52d0
 void nmeSetFontImageToGW(s8 TargetNo, nmeData_t **pData) {
+  s64 v5;
+  char v6;
+  u32 v7;
+  struct System_Byte_array_array *name_nums;
+  System_Byte_array *v11;
+  struct System_SByte_array *InputNums;
+  s8 v14;
+  u64 v16;
+  struct System_SByte_array *v17;
+  struct System_Byte_array *InputCode;
+  Il2CppArrayBounds *bounds;
+  il2cpp_array_size_t length;
+  il2cpp_array_size_t v22;
+  u8 v23;
+  struct System_Byte_array *v24;
+  Il2CppArrayBounds *v25;
+  il2cpp_array_size_t v26;
+  il2cpp_array_size_t v27;
+  u64 *v30;
+  struct System_Byte_array_array *name_code;
+  System_Byte_array *v34;
+  struct System_Byte_array *v35;
+  Il2CppArrayBounds *v36;
+  il2cpp_array_size_t v37;
+  il2cpp_array_size_t v38;
+  char *v39;
+  s64 v40;
+  struct System_Byte_array_array *v42;
+  System_Byte_array *v44;
+  struct System_Byte_array *v45;
+  Il2CppArrayBounds *v46;
+  il2cpp_array_size_t v47;
+  il2cpp_array_size_t v48;
+  u8 v50;
+  s64 v51;
+  struct System_SByte_array *v63;
+  u64 v65;
+  u64 i;
+  char *v67;
+  struct System_SByte_array *v68;
+  struct System_Byte_array_array *cname_code;
+  struct System_Byte_array *v73;
+  Il2CppArrayBounds *v74;
+  System_Byte_array *v75;
+  il2cpp_array_size_t v76;
+  il2cpp_array_size_t v77;
+  u8 v78;
+  struct System_Byte_array_array *v80;
+  struct System_Byte_array *v82;
+  Il2CppArrayBounds *v83;
+  System_Byte_array *v84;
+  il2cpp_array_size_t v85;
+  il2cpp_array_size_t v86;
+  u8 v88;
+  struct System_Byte_array *cname_nums;
+  struct System_SByte_array *v96;
+  s8 v98;
+  s64 v100;
+  s32 v101;
+
+  v5 = 0;
+  v6 = 0;
+  v7 = TargetNo;
+  v100 = TargetNo;
+  do
+  {
+    name_nums = DDS3_GBWK->name_nums;
+    v11 = name_nums->m_Items[v100];
+    InputNums = (*pData)->InputNums;
+    v14 = InputNums->m_Items[v5];
+    v16 = 0;
+    v11->m_Items[v5] = v14;
+    while (1)
+    {
+      v17 = (*pData)->InputNums;
+      if (v16 >= v17->m_Items[v5])
+        break;
+      InputCode = (*pData)->InputCode;
+      bounds = InputCode->bounds;
+      length = bounds[1].length;
+      v22 = bounds[2].length;
+      v23 = InputCode->m_Items[v22 * (v16 + v5 * length)];
+      v24 = (*pData)->InputCode;
+      v25 = v24->bounds;
+      v26 = v25[1].length;
+      v27 = v25[2].length;
+      v101 = v24->m_Items[v27 * (v16 + v5 * v26) + 1] | (v23 << 8);
+      v30 = sub_8D3950(s32, &v101);
+      Write_2930400("{0:x4} ", v30);
+      name_code = DDS3_GBWK->name_code;
+      v34 = name_code->m_Items[v100];
+      v35 = (*pData)->InputCode;
+      v36 = v35->bounds;
+      v37 = v36[1].length;
+      v38 = v36[2].length;
+      v39 = v35 + v38 * (v16 + v5 * v37);
+      v40 = 2LL * v6;
+      v34->m_Items[v40] = v39[32];
+      v42 = DDS3_GBWK->name_code;
+      v44 = v42->m_Items[v100];
+      v45 = (*pData)->InputCode;
+      v46 = v45->bounds;
+      v47 = v46[1].length;
+      v48 = v46[2].length;
+      v50 = v45->m_Items[v48 * (v16 + v5 * v47) + 1];
+      v51 = v40 | 1LL;
+      ++v6;
+      ++v16;
+      v44->m_Items[v51] = v50;
+    }
+    Write("\n", 0);
+    ++v5;
+  }
+  while (v5 != 2);
+  v63 = (*pData)->InputNums;
+  if (v63->m_Items[2] >= 1)
+  {
+    v65 = 0;
+    for (i = 0; ; ++i)
+    {
+      v68 = (*pData)->InputNums;
+      if (i >= v68->m_Items[2])
+        break;
+      cname_code = DDS3_GBWK->cname_code;
+      v73 = (*pData)->InputCode;
+      v74 = v73->bounds;
+      v75 = cname_code->m_Items[0];
+      v76 = v74[1].length;
+      v77 = v74[2].length;
+      v78 = v73->m_Items[v77 * (i + 2 * v76)];
+      v75->m_Items[v65] = v78;
+      v80 = DDS3_GBWK->cname_code;
+      v82 = (*pData)->InputCode;
+      v83 = v82->bounds;
+      v84 = v80->m_Items[0];
+      v85 = v83[1].length;
+      v86 = v83[2].length;
+      v88 = v82->m_Items[v86 * (i + 2 * v85) + 1];
+      v67 = v84 + v65;
+      v65 += 2LL;
+      v67[33] = v88;
+    }
+    cname_nums = DDS3_GBWK->cname_nums;
+    v96 = (*pData)->InputNums;
+    v98 = v96->m_Items[2];
+    cname_nums->m_Items[0] = v98;
+  }
 }
 
 // 0x18a74f0
@@ -729,15 +909,15 @@ void nmeTexLoad(s8 TargetNo, nmeData_t **pData) {
   s64 *v28;
 
   Tex = (*pData)->Tex;
-  Texture = fclLoadTexture(StringLiteral_5619);
+  Texture = fclLoadTexture("/name/tmx/name_01.tmx");
   v7 = Texture;
   Tex->m_Items[0] = v7;
   v9 = (*pData)->Tex;
-  v10 = fclLoadTexture(StringLiteral_5620);
+  v10 = fclLoadTexture("/name/tmx/name_02.tmx");
   v11 = v10;
   v9->m_Items[1] = v11;
   v13 = (*pData)->Tex;
-  v14 = fclLoadTexture(StringLiteral_5621);
+  v14 = fclLoadTexture("/name/tmx/name_03.tmx");
   v15 = v14;
   v13->m_Items[2] = v15;
   v18 = evtBitCheck(2224);
@@ -745,12 +925,14 @@ void nmeTexLoad(s8 TargetNo, nmeData_t **pData) {
   if (TargetNo || !v18)
   {
     v23 = nmeCharTexFile->m_Items[TargetNo];
+      goto LABEL_26;
   }
   else
   {
     v21 = nmeCharTexFile;
     v23 = v21->m_Items[4];
     {
+LABEL_26:
     }
   }
   v27 = fclLoadTexture(v23);

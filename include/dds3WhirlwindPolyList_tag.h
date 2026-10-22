@@ -15,13 +15,13 @@ struct dds3WhirlwindPolyList_tag {
     u32 number;
     s32 point;
     f32 scale;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    sdfVector2_t pUV[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
-    u32 pABGR[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    sdfVector2_t *pUV;
+    u32 *pVC;
+    u32 *pABGR;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
     dds3ScatterPolyListTexResource_tag *hTexRes;
     void *pTexture;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
 };

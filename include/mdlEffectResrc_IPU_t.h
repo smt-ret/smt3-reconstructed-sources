@@ -11,9 +11,9 @@ struct mdlEffectResrc_IPU_t {
     sdfMemHandle_t *dataMemHandle;
     u8 busy;
     u8 playing;
-    u8 pad[UNKNOWN_ARRAY_SIZE];
+    u8 *pad;
     sdfTexHandle_t *tex;
     s32 dataSize;
-    s32 pad2[UNKNOWN_ARRAY_SIZE];
+    s32 *pad2;
     sdfIpuDecodeCb_t *decodeCb;
 };

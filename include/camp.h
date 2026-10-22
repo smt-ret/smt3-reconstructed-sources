@@ -265,8 +265,8 @@ struct cmpCursorPos_t {
     u8 Shift;
     u8 DrawShift;
     u8 ShiftMax;
-    char pStr[UNKNOWN_ARRAY_SIZE];
-    u8 pFlag[UNKNOWN_ARRAY_SIZE];
+    char *pStr;
+    u8 *pFlag;
     s32 Timer;
     s32 ActiveTimer;
     s8 EffFlag;
@@ -430,7 +430,7 @@ struct cmpYesNoInfo_t {
     s8 Style;
     s8 MainStrNo;
     dds3ProcessID_t *ScriptPID;
-    u8 pMainStrScr[UNKNOWN_ARRAY_SIZE];
+    u8 *pMainStrScr;
     char *pSelStr[2];
     cmpCursorInfo_t *CursorInfo;
 };
@@ -444,7 +444,7 @@ struct cmpStatusModel_t {
 };
 
 struct cmpCmdSelInfo_t {
-    s8 pCmdStr[UNKNOWN_ARRAY_SIZE];
+    s8 *pCmdStr;
     cmpCursorInfo_t *CursorInfo;
 };
 

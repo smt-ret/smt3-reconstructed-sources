@@ -9,14 +9,14 @@ struct cmpTest_cmpDbgList_s {
     char *word;
     s32 Para;
     cmpTest_cmpDbgList_s_funcDelegate *func;
-    cmpTest_cmpDbgList_s nextList[UNKNOWN_ARRAY_SIZE];
+    cmpTest_cmpDbgList_s *nextList;
     s32 nextSize;
 };
 
 static cmpTest_cmpDbgList_s *cmpDbgListParam[11];
 static cmpTest_cmpDbgList_s *cmpDbgRootList[13];
 static cmpTest_cmpDbgList_s *cmpDbgStatusList[1];
-static cmpTest_cmpDbgList_s gRootList[UNKNOWN_ARRAY_SIZE];
+static cmpTest_cmpDbgList_s *gRootList;
 static s8 gListNums;
 static cmpCursorInfo_t *gCursorInfo[3];
 static u16 gTargetModel;
@@ -33,5 +33,5 @@ static s32 Skill_id;
 
 static s8 pCaption;
 static s8 CallbackMode;
-static cmpTest_cmpDbgList_s pNextList[UNKNOWN_ARRAY_SIZE];
+static cmpTest_cmpDbgList_s *pNextList;
 static s8 ListSize;

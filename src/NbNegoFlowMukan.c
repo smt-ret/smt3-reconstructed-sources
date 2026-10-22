@@ -157,11 +157,12 @@ s32 Flow12_2(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0xC0018u);
   id = (*n)->ework->id;
   mukanindex = Get(id, 0)->mukanindex;
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5316);
+  RandIntA = dds3GetRandIntA(0x64u, "12_2");
   v11 = datNegoMukanTypeList->m_Items[mukanindex];
   if (RandIntA < v11->m_Items[0])
   {
     v12 = 0;
+LABEL_56:
     v38 = *n;
     nextkouho = v38->nextkouho;
     v38->nextnegoid = nextkouho->m_Items[v12];
@@ -175,6 +176,7 @@ s32 Flow12_2(nbNegoProcessData_t **n) {
   if (RandIntA < v19 + v24->m_Items[1])
   {
     v12 = 1;
+    goto LABEL_56;
   }
   v27 = datNegoMukanTypeList;
   v29 = v27->m_Items[mukanindex];
@@ -185,6 +187,7 @@ s32 Flow12_2(nbNegoProcessData_t **n) {
   if (RandIntA < v35 + v36->m_Items[2])
   {
     v12 = 2;
+    goto LABEL_56;
   }
   v43 = datNegoMukanTypeList;
   return 0;
@@ -320,13 +323,109 @@ s32 Flow12_26(nbNegoProcessData_t **n) {
 
 // 0x53fa50
 s32 Flow12_27(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    dds3GetRandIntA(0, 0);
-    datGetRace(0);
-    datSearchDevilStock(0);
-    datCheckStockFull();
-    datGetPlayerLevel();
-    return 0;
+  nbNegoProcessData_t_o *v4;
+  struct System_UInt32_array *nextkouho;
+  u32 RandIntA;
+  datUnitWork_t_o *ework;
+  datUnitWork_t_o *v11;
+  datUnitWork_t_o *v12;
+  struct System_UInt32_array *v13;
+  datUnitWork_t_o *v15;
+  datUnitWork_t_o *v17;
+  nbNegoProcessData_t_o *v18;
+  struct System_UInt32_array *v19;
+  u32 nextnegoid;
+  struct System_UInt32_array *v21;
+  s32 id;
+  struct System_UInt32_array *v26;
+  struct System_UInt32_array *v28;
+  u64 *v30;
+  Il2CppObject *v31;
+  u64 *v33;
+  struct System_UInt32_array *v35;
+  s32 v36;
+  nbNegoProcessData_t_o *v37;
+  struct System_UInt32_array *v38;
+  u16 v42[2];
+  s32 PlayerLevel;
+
+  nbAddNegoIdKouho(n, 0xC001Cu);
+  nbAddNegoIdKouho(n, 0xC0023u);
+  nbAddNegoIdKouho(n, 0xC0028u);
+  nbAddNegoIdKouho(n, 0xC002Bu);
+  v4 = *n;
+  nextkouho = (*n)->nextkouho;
+  RandIntA = dds3GetRandIntA(4u, "12_27");
+  v4->nextnegoid = nextkouho->m_Items[RandIntA];
+  ework = (*n)->ework;
+  if (datGetRace(ework) == 21)
+    goto LABEL_26;
+  v11 = (*n)->ework;
+  if (datGetRace(v11) == 22)
+    goto LABEL_26;
+  v12 = (*n)->ework;
+  if (datGetRace(v12) == 23)
+  {
+LABEL_26:
+    v13 = (*n)->nextkouho;
+    (*n)->nextnegoid = v13->m_Items[0];
+  }
+  v15 = (*n)->ework;
+  if (datGetRace(v15) != 19)
+  {
+    v17 = (*n)->ework;
+    if (datGetRace(v17) != 18)
+    {
+      v18 = *n;
+      if ((*n)->ework->id != 154)
+      {
+        v19 = v18->nextkouho;
+        nextnegoid = v18->nextnegoid;
+        if (LODWORD(v19->max_length))
+          goto LABEL_39;
+LABEL_44:
+      }
+    }
+  }
+  v21 = (*n)->nextkouho;
+  (*n)->nextnegoid = v21->m_Items[2];
+  v19 = (*n)->nextkouho;
+  nextnegoid = (*n)->nextnegoid;
+  if (!LODWORD(v19->max_length))
+    goto LABEL_44;
+LABEL_39:
+  if (nextnegoid == v19->m_Items[0])
+  {
+    id = (*n)->ework->id;
+    if ((datSearchDevilStock(id) & 0x80000000) == 0)
+    {
+      v26 = (*n)->nextkouho;
+      (*n)->nextnegoid = v26->m_Items[2];
+    }
+    if (datCheckStockFull())
+    {
+      v28 = (*n)->nextkouho;
+      (*n)->nextnegoid = v28->m_Items[2];
+    }
+  }
+  PlayerLevel = datGetPlayerLevel();
+  v30 = sub_8D3950(s32, &PlayerLevel);
+  v42[0] = (*n)->ework->level;
+  v31 = v30;
+  v33 = sub_8D3950(ushort, v42);
+  Write_2930752("plv = {0:D}, elv = {1:D}\n", v31, v33, 0);
+  v35 = (*n)->nextkouho;
+  if ((*n)->nextnegoid == v35->m_Items[0])
+  {
+    v36 = datGetPlayerLevel();
+    v37 = *n;
+    if (v36 < v37->ework->level)
+    {
+      v38 = v37->nextkouho;
+      v37->nextnegoid = v38->m_Items[2];
+    }
+  }
+  return 0;
 }
 
 // 0x53ff50
@@ -450,7 +549,7 @@ s32 Flow12_3(nbNegoProcessData_t **n) {
         v23 = v21;
       if ((*n)->nowselect)
       {
-        RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5317);
+        RandIntA = dds3GetRandIntA(0x64u, "12_3");
         v25 = *n;
         nextkouho = v25->nextkouho;
         max_length = nextkouho->max_length;
@@ -465,7 +564,7 @@ s32 Flow12_3(nbNegoProcessData_t **n) {
       }
       else
       {
-        v34 = dds3GetRandIntA(0x64u, StringLiteral_5317);
+        v34 = dds3GetRandIntA(0x64u, "12_3");
         v25 = *n;
         v35 = v25->nextkouho;
         v36 = v35->max_length;
@@ -488,6 +587,7 @@ s32 Flow12_3(nbNegoProcessData_t **n) {
       v10 = n;
       v11 = v33;
       v12 = 1;
+      goto LABEL_44;
     case 0:
       v5 = v3->flowmsg;
       v6 = v3->ekucyo;
@@ -496,6 +596,7 @@ s32 Flow12_3(nbNegoProcessData_t **n) {
       v10 = n;
       v11 = v8;
       v12 = 0;
+LABEL_44:
       nbDispNegoMessage(v10, v11, v9, v12);
       break;
   }
@@ -522,7 +623,7 @@ s32 Flow12_30(nbNegoProcessData_t **n) {
     nbAddNegoIdKouho(n, 0xC001Fu);
     if ((*n)->negotype == 2)
     {
-      RandIntA = dds3GetRandIntA(2u, StringLiteral_5321);
+      RandIntA = dds3GetRandIntA(2u, "12_30");
       flowmsg = (*n)->flowmsg;
       ekucyo = (*n)->ekucyo;
       v11 = flowmsg->m_Items[ekucyo];
@@ -537,7 +638,7 @@ s32 Flow12_30(nbNegoProcessData_t **n) {
     }
     else
     {
-      v13 = dds3GetRandIntA(2u, StringLiteral_5321);
+      v13 = dds3GetRandIntA(2u, "12_30");
       v15 = (*n)->flowmsg;
       v16 = (*n)->ekucyo;
       v11 = v15->m_Items[v16];
@@ -597,7 +698,7 @@ s32 Flow12_36(nbNegoProcessData_t **n) {
   s32 getinfotype;
 
   nbAddNegoIdKouho(n, 0xC0025u);
-  (*n)->getinfotype = 2 * (dds3GetRandIntA(2u, StringLiteral_5322) != 0);
+  (*n)->getinfotype = 2 * (dds3GetRandIntA(2u, "12_36") != 0);
   v5 = *n;
   getinfotype = (*n)->getinfotype;
   v5->getinfomsg = nbGetInfoMsg(getinfotype);
@@ -625,7 +726,7 @@ s32 Flow12_38(nbNegoProcessData_t **n) {
   s32 v10;
 
   nbAddNegoIdKouho(n, 0xC0027u);
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_5323);
+  RandIntA = dds3GetRandIntA(2u, "12_38");
   flowmsg = (*n)->flowmsg;
   ekucyo = (*n)->ekucyo;
   v9 = flowmsg->m_Items[ekucyo];
@@ -714,7 +815,7 @@ s32 Flow12_4(nbNegoProcessData_t **n) {
         v23 = v21;
       if ((*n)->nowselect)
       {
-        RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5318);
+        RandIntA = dds3GetRandIntA(0x64u, "12_4");
         v25 = *n;
         nextkouho = v25->nextkouho;
         max_length = nextkouho->max_length;
@@ -729,7 +830,7 @@ s32 Flow12_4(nbNegoProcessData_t **n) {
       }
       else
       {
-        v34 = dds3GetRandIntA(0x64u, StringLiteral_5318);
+        v34 = dds3GetRandIntA(0x64u, "12_4");
         v25 = *n;
         v35 = v25->nextkouho;
         v36 = v35->max_length;
@@ -752,6 +853,7 @@ s32 Flow12_4(nbNegoProcessData_t **n) {
       v10 = n;
       v11 = v33;
       v12 = 1;
+      goto LABEL_44;
     case 0:
       v5 = v3->flowmsg;
       v6 = v3->ekucyo;
@@ -760,6 +862,7 @@ s32 Flow12_4(nbNegoProcessData_t **n) {
       v10 = n;
       v11 = v8;
       v12 = 0;
+LABEL_44:
       nbDispNegoMessage(v10, v11, v9, v12);
       break;
   }
@@ -903,7 +1006,7 @@ s32 Flow12_47(nbNegoProcessData_t **n) {
 
   nbAddNegoIdKouho(n, 0xC0030u);
   nbAddNegoIdKouho(n, 0xC0031u);
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_5324);
+  RandIntA = dds3GetRandIntA(2u, "12_47");
   v5 = *n;
   nextkouho = v5->nextkouho;
   v7 = nextkouho[6];

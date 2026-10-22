@@ -10,6 +10,7 @@ static s32 sdfDelayedResrcSemaId;
 
 // 0x17e4a90
 s32 sdfDelayedResrcCheck(void) {
+LABEL_7:
   return sdfDelayedResrcLink != 0;
 }
 
@@ -20,16 +21,13 @@ s32 sdfDelayedResrcCheckFunc(void) {
 
 // 0x17e47f0
 sdfDelayedResrcChunk_t *sdfDelayedResrcClose(void) {
-  struct sdfDelayedResrc_StaticFields *v2;
   sdfDelayedResrcChunk_t_o *result;
   sdfDelayedResrcChunk_t_o *next;
-  struct sdfDelayedResrc_StaticFields *static_fields;
 
   else
   {
-    v2 = sdfDelayedResrc->static_fields;
-    result = v2->sdfDelayedResrcLink;
-    v2->sdfDelayedResrcLink = 0;
+    result = sdfDelayedResrcLink;
+    sdfDelayedResrcLink = 0;
     if (!result)
       return result;
   }
@@ -62,6 +60,8 @@ void sdfDelayedResrcProc(void) {
   sdfDelayedResrcItems_t_o *next;
 
   if (!LODWORD(sdfDelayedResrcList->max_length))
+    goto LABEL_14;
+LABEL_6:
   v3 = sdfDelayedResrcList->m_Items[0];
   next = Allocate(sdfDelayedResrcItems_t);
   sdfDelayedResrcItems_t___ctor(next);

@@ -20,10 +20,55 @@ void sdfModelRootNode_t__dCopy(sdfModelRootNode_t *this, sdfModelRootNode_t **ds
 
 // 0x19bfb40
 void dds3LightEditorWork_t__Clear(dds3LightEditorWork_t *this) {
+  f32 v3;
+  f32 v4;
+  s64 v5;
+  f32 v6;
+  f32 v7;
+
+  this->lightSrc = 0;
+  v5 = 0;
+  sub_854690(&v5, 0.0, 0.0, 0.0, 0.0);
+  v4 = v6;
+  v3 = v7;
+  *&this->ambientSrc.x = v5;
+  this->ambientSrc.z = v4;
+  this->ambientSrc.w = v3;
+  this->drawTag = 0;
+  *&this->mode = 0;
+  this->padSrc = 0;
 }
 
 // 0x19ada90
 void dds3ModelBlurCb_t__Clear(dds3ModelBlurCb_t *this) {
+  f32 v3;
+  f32 v4;
+  f32 v5;
+  s64 v6;
+  s64 v7;
+  s64 v8;
+  s64 v9;
+  s64 v10;
+
+  this->keepCount = 0;
+  this->instants = 0;
+  *&this->spawnCount = 0;
+  v9 = 0;
+  v10 = 0;
+  sub_854690(&v9, 0.0, 0.0, 0.0, 0.0);
+  v4 = *&v10;
+  v3 = *(&v10 + 1);
+  *&this->colorBase.x = v9;
+  this->colorBase.z = v4;
+  this->colorBase.w = v3;
+  v7 = 0;
+  v8 = 0;
+  sub_854690(&v7, 0.0, 0.0, 0.0, 0.0);
+  v5 = *(&v8 + 1);
+  v6 = v7;
+  LODWORD(this->colorDelta.z) = v8;
+  this->colorDelta.w = v5;
+  *&this->colorDelta.x = v6;
 }
 
 // 0x19bfbc0

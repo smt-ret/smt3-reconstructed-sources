@@ -70,6 +70,7 @@ s32 Cls1(nbEventProcessData_t **ed) {
   v4 = *ed;
   if (*ed)
   {
+LABEL_6:
     ++v4->seq;
     (*ed)->seqtime = 0;
   }
@@ -87,6 +88,7 @@ s32 Daisupe(nbEventProcessData_t **ed) {
   v6 = *ed;
   if (*ed)
   {
+LABEL_12:
     ++v6->seq;
     (*ed)->seqtime = 0;
   }
@@ -109,10 +111,43 @@ s32 End(nbEventProcessData_t **ed) {
 
 // 0x16ec670
 s32 ReadWait2(nbEventProcessData_t **ed) {
-    nbGetEventForm();
-    SDF_VU0__COPYVECTOR(0, (sdfVector4_t){0});
-    nbSetFormPos(0, (sdfVector4_t){0});
-    return 0;
+  nbFormation_t_o *EventForm;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  nbFormation_t_o *form;
+  UnityEngine_Vector4_o dst;
+  UnityEngine_Vector4_o v14;
+
+  form = 0;
+  *&dst.x = 0;
+  *&dst.z = 0;
+  else
+  {
+    EventForm = nbGetEventForm(nbEventProcess);
+    form = EventForm;
+    if (EventForm->type)
+      return 0;
+  }
+  SDF_VU0__COPYVECTOR(&dst, EventForm->pos);
+  sub_854710(&dst, 1u);
+  sub_854930(&dst, 1u);
+  x = dst.x;
+  y = dst.y;
+  z = dst.z;
+  w = dst.w;
+  v14.x = x;
+  v14.y = y;
+  v14.z = z;
+  v14.w = w;
+  nbSetFormPos(&form, v14);
+  if (*ed)
+  {
+    ++(*ed)->seq;
+    (*ed)->seqtime = 0;
+  }
+  return 0;
 }
 
 // 0x16eb0d0
@@ -154,11 +189,13 @@ s32 RunUgou(nbEventProcessData_t **ed) {
       if ((*(*(&v9->obj.klass + i) + 136LL) & 1) != 0)
         break;
       if (++i == 18)
+        goto LABEL_18;
     }
     v11 = v7;
     ++v7;
     *(v4 + v11 + 8) = i - 4;
   }
+LABEL_18:
   if (v7 >= 0)
     v13 = v7;
   else
@@ -200,7 +237,7 @@ s32 RunUgou(nbEventProcessData_t **ed) {
     v28 = 0;
     do
     {
-      RandIntA = dds3GetRandIntA(0xFu, StringLiteral_416);
+      RandIntA = dds3GetRandIntA(0xFu, "");
       v30 = (*ed)->data->form;
       v32 = *(v4 + v28 + 9);
       nbAddMotionKoukaPacket(RandIntA + 15, 0, &v30->m_Items[v32], 16);
@@ -222,29 +259,179 @@ s32 RunUgou(nbEventProcessData_t **ed) {
 
 // 0x16eb6d0
 s32 SetUp1(nbEventProcessData_t **ed) {
-    dds3GetActiveScene();
-    evtGetResorceData(0, 0);
-    evtRegistBEUnit(0, 0);
-    dds3SearchSceneBasic(0, 0, 0);
-    nbEventPrefabRead(0, 0, 0);
-    dds3SetPosPoseSet(0, (sdfVector4_t){0});
-    dds3GetUnitHandleObjectBasic(0);
-    evtSetUnitMotion(0, 0, 0, 0, 0);
-    dds3AddBEDEffectObjectBasic2(0, (sdfVector4_t){0}, (sdfVector4_t){0});
-    dds3EffectObjectBasicStatOn(0, 0);
-    return 0;
+  u64 *v3;
+  System_Byte_array *ResorceData;
+  s32 v8;
+  dds3Basic_t_o *v11;
+  s32 eventrid;
+  s64 v15;
+  s64 v16;
+  dds3Basic_t_o *pBasic;
+  evtUnitHandle_t_o *h;
+  UnityEngine_Vector4_o v22;
+  UnityEngine_Vector4_o v23;
+  dds3Basic_t_o *basic;
+  UnityEngine_Vector4_o v25;
+
+  *&v23.x = 0;
+  *&v23.z = 0;
+  *&v22.x = 0;
+  *&v22.z = 0;
+  pBasic = 0;
+  sub_854690(&v23.x, 0.0, -600.0, 0.0, 0.0);
+  sub_854690(&v22.x, 0.0, 0.0, 0.0, 1.0);
+  v3 = Allocate(evtUnitHandle_t);
+  evtUnitHandle_t___ctor(v3);
+  h = v3;
+  pBasic = dds3GetActiveScene();
+  ResorceData = evtGetResorceData(901, 2);
+  v8 = evtRegistBEUnit((*ed)->eventrid, 1, 0);
+  v11 = dds3SearchSceneBasic(&pBasic, v8, 5u);
+  pathbasic = v11;
+  eventrid = (*ed)->eventrid;
+  nbEventPrefabRead(&pathbasic, eventrid, 2);
+  sub_854930(&v23, 0);
+  sub_854930(&v23, 1u);
+  sub_854930(&v23, 2u);
+  v15 = *&v23.x;
+  v16 = *&v23.z;
+  *&v25.x = v15;
+  *&v25.z = v16;
+  dds3SetPosPoseSet(&pathbasic, v25);
+  h = dds3GetUnitHandleObjectBasic(&pathbasic);
+  evtSetUnitMotion(&h, 0, 0, 0, 2);
+  basic = dds3AddBEDEffectObjectBasic2(&ResorceData->obj, v23, v22);
+  dds3EffectObjectBasicStatOn(&basic, 1u);
+  bedbasic = basic;
+  if (*ed)
+  {
+    ++(*ed)->seq;
+    (*ed)->seqtime = 0;
+  }
+  return 0;
 }
 
 // 0x16ebe60
 s32 SyuGo(nbEventProcessData_t **ed) {
-    nbEventPrefabDelete(0);
-    nbCameraBoss_Sp_DOUTYO_TPFix_Set(0);
-    dds3GetUnitHandleObjectBasic(0);
-    sdfModelGetMarkPosUnity(0, 0);
-    SDF_VU0__STOREVECTOR(0);
-    nbSetFormPos(0, (sdfVector4_t){0});
-    evtUnitRotationTarget(0, (sdfVector4_t){0}, 0);
+  u64 *v3;
+  nbEventProcessData_t_o *v5;
+  s32 seqtime;
+  evtUnitHandle_t_o *UnitHandleObjectBasic;
+  s32 v9;
+  s64 i;
+  struct nbFormation_t_array *v11;
+  sdfModelRootNode_t_o *modelRoot;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  struct evtUnitHandle_t_o **p_hunit;
+  s64 v21;
+  s64 v22;
+  f32 v23;
+  evtUnitHandle_t_o **v24;
+  s64 v25;
+  s64 v26;
+  nbFormation_t_o *form;
+  s64 v30;
+  s64 v31;
+  s64 v32;
+  s64 v33;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector4_o v37;
+  UnityEngine_Vector4_o v38;
+
+  form = 0;
+  v32 = 0;
+  v33 = 0;
+  v30 = 0;
+  v31 = 0;
+  *&p.x = 0;
+  *&p.z = 0;
+  sub_854690(&v32, 0.0, 0.0, -100.0, 0.0);
+  sub_854690(&v30, 0.0, 0.0, -5000.0, 0.0);
+  v3 = Allocate(evtUnitHandle_t);
+  evtUnitHandle_t___ctor(v3);
+  v5 = *ed;
+  seqtime = (*ed)->seqtime;
+  if (seqtime != 2)
+  {
+    if (seqtime != 5)
+      goto LABEL_5;
+LABEL_42:
+    v5->data->press4_p = 0;
+    (*ed)->data->press4_ten = 0;
+    v5 = *ed;
+    if ((*ed)->seqtime < 56)
+      goto LABEL_6;
+LABEL_43:
+    if (v5)
+    {
+      ++v5->seq;
+      (*ed)->seqtime = 0;
+    }
+    nbEventPrefabDelete(&pathbasic);
     return 0;
+  }
+  nbCameraBoss_Sp_DOUTYO_TPFix_Set(&nbCameraCurrent);
+  v5 = *ed;
+  seqtime = (*ed)->seqtime;
+  if (seqtime == 5)
+    goto LABEL_42;
+LABEL_5:
+  if (seqtime >= 56)
+    goto LABEL_43;
+LABEL_6:
+  UnitHandleObjectBasic = dds3GetUnitHandleObjectBasic(&pathbasic);
+  v9 = 5;
+  for (i = 8; i != 14; ++i)
+  {
+    while (1)
+    {
+      v11 = (*ed)->data->form;
+      form = *(&v11->obj.klass + i);
+      if ((form->stat & 1) != 0)
+        break;
+      ++i;
+      --v9;
+      if (i == 14)
+        return 0;
+    }
+    modelRoot = UnitHandleObjectBasic->Model->modelRoot;
+    sdfModelGetMarkPosUnity(modelRoot, v9);
+    SDF_VU0__STOREVECTOR(&p);
+    x = p.x;
+    y = p.y;
+    z = p.z;
+    w = p.w;
+    v37.x = x;
+    v37.y = y;
+    v37.z = z;
+    v37.w = w;
+    nbSetFormPos(&form, v37);
+    p_hunit = &form->hunit;
+    if ((*ed)->seqtime <= 50)
+    {
+      v25 = v32;
+      v26 = v33;
+      v24 = p_hunit;
+      *&v38.x = v25;
+      *&v38.z = v26;
+      v23 = 0.08;
+    }
+    else
+    {
+      v21 = v30;
+      v22 = v31;
+      *&v38.x = v21;
+      *&v38.z = v22;
+      v23 = 0.05;
+      v24 = p_hunit;
+    }
+    evtUnitRotationTarget(v24, v38, v23);
+    --v9;
+  }
+  return 0;
 }
 
 // 0x16ec320
@@ -277,14 +464,21 @@ s32 SyuGo2(nbEventProcessData_t **ed) {
       seqtime = v3->seqtime;
       if (seqtime != 25)
       {
+LABEL_6:
         if (seqtime < 49)
           return 0;
+        goto LABEL_21;
       }
     }
-    else    dds3StartBEDEffectObjectBasic(&bedbasic, 2u);
+    else if (seqtime != 25)
+    {
+      goto LABEL_6;
+    }
+    dds3StartBEDEffectObjectBasic(&bedbasic, 2u);
     v3 = *ed;
     if ((*ed)->seqtime >= 49)
     {
+LABEL_21:
       if (v3)
       {
         ++v3->seq;
@@ -302,6 +496,7 @@ s32 Syutugen(nbEventProcessData_t **ed) {
   v3 = *ed;
   if (*ed)
   {
+LABEL_6:
     ++v3->seq;
     (*ed)->seqtime = 0;
   }
@@ -310,16 +505,102 @@ s32 Syutugen(nbEventProcessData_t **ed) {
 
 // 0x16ecc50
 s32 Syutugen2(nbEventProcessData_t **ed) {
-    nbGetEventForm();
-    nbAddHitEffKoukaPacket(0, 0, 0, 0);
-    dds3SetQuake(0, 0);
-    SDF_VU0__COPYVECTOR(0, (sdfVector4_t){0});
-    nbSetFormPos(0, (sdfVector4_t){0});
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    SDF_VU0__STOREVECTOR(0);
-    nbCameraBoss_Sp_DOUTYO_Set(0);
-    nbCameraBoss_Sp_DOUTYO_Run(0);
-    return 0;
+  s32 seqtime;
+  u64 v6;
+  f32 v8;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  s32 v14;
+  f32 v16;
+  f32 v17;
+  f32 v18;
+  f32 v19;
+  nbFormation_t_o *EventForm;
+  nbFormation_t_o *form;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector4_o dst;
+  UnityEngine_Vector4_o v26;
+  UnityEngine_Vector4_o v27;
+
+  EventForm = 0;
+  form = 0;
+  *&dst.x = 0;
+  *&dst.z = 0;
+  *&p.x = 0;
+  *&p.z = 0;
+  EventForm = nbGetEventForm();
+  seqtime = (*ed)->seqtime;
+  if (seqtime == 3)
+  {
+    nbAddHitEffKoukaPacket(0, 0, &EventForm, 4);
+    if ((*ed)->seqtime != 5)
+    {
+LABEL_8:
+        goto LABEL_16;
+      goto LABEL_9;
+    }
+  }
+  else if (seqtime != 5)
+  {
+    goto LABEL_8;
+  }
+  dds3SetQuake(30, 0x258u);
+  {
+LABEL_9:
+  }
+LABEL_16:
+  form = nbGetEventForm(v6);
+  SDF_VU0__COPYVECTOR(&dst, form->pos);
+  sub_854710(&dst, 1u);
+  sub_854930(&dst, 1u);
+  sub_854710(&dst, 1u);
+  if (v8 > 0.0)
+  {
+    sub_854930(&dst, 1u);
+    if (*ed)
+    {
+      ++(*ed)->seq;
+      (*ed)->seqtime = 0;
+    }
+  }
+  x = dst.x;
+  y = dst.y;
+  z = dst.z;
+  w = dst.w;
+  v26.x = x;
+  v26.y = y;
+  v26.z = z;
+  v26.w = w;
+  nbSetFormPos(&form, v26);
+  v14 = (*ed)->seqtime;
+  if (v14 >= 4)
+  {
+    if (v14 == 4)
+    {
+      SDF_VU0__LOADVECTOR(form->pos);
+      SDF_VU0__STOREVECTOR(&dst);
+      SDF_VU0__STOREVECTOR(&p);
+      sub_854930(&dst, 1u);
+      v17 = dst.x;
+      v16 = dst.y;
+      v19 = dst.z;
+      v18 = dst.w;
+      v27.x = v17;
+      v27.y = v16;
+      v27.z = v19;
+      v27.w = v18;
+      nbSetFormPos(&form, v27);
+      nbCameraBoss_Sp_DOUTYO_Set(&nbCameraCurrent);
+      nbSetFormPos(&form, p);
+    }
+    else
+    {
+      nbCameraBoss_Sp_DOUTYO_Run(&nbCameraCurrent);
+    }
+  }
+  return 0;
 }
 
 // 0x16eb640
@@ -353,9 +634,58 @@ s32 Wait2(nbEventProcessData_t **ed) {
 
 // 0x16ed140
 void *nbE901Process_1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    effPadVibeFadeOUT(0, 0, 0);
-    dds3PadAct(0, 0, 0);
-    nbUpdateEventProcessData(0);
-    return 0;
+  nbEventProcessData_t_o *ProcessData;
+  nbEventProcessData_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  struct nbE901_funcDelegate_array *func;
+  s64 seq;
+  s32 time;
+  nbEventProcessData_t_o *UnnamedParameter;
+  dds3ProcessID_t_o *ida;
+  u64 v18[3];
+
+  ida = id;
+  UnnamedParameter = 0;
+  else
+  {
+    ProcessData = dds3GetProcessData(&ida);
+    if (!ProcessData)
+      goto LABEL_12;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v18);
+    if ((v18[0] & 1) != 0)
+      v7 = v18[2];
+    else
+      v7 = v18 + 1;
+    v8 = sub_8C4940(v7);
+  }
+LABEL_12:
+  UnnamedParameter = ProcessData;
+  seq = ProcessData->seq;
+  if (Invoke(func->m_Items[seq], &UnnamedParameter))
+  {
+    ida->func_ans = -1;
+  }
+  else
+  {
+    time = UnnamedParameter->time;
+    if (time == 222)
+    {
+      effPadVibeFadeOUT(0, 1u, 45);
+      effPadVibeFadeOUT(1u, 0x8Cu, 45);
+    }
+    else if (time == 212)
+    {
+      dds3PadAct(0, 1u, 0xAu);
+      dds3PadAct(1u, 0xE1u, 0xAu);
+    }
+    nbUpdateEventProcessData(&ida);
+  }
+  return 0;
 }

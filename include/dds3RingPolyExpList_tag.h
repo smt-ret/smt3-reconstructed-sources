@@ -14,11 +14,11 @@ struct dds3RingPolyExpList_tag {
     u32 blend;
     u32 abgr;
     s32 point;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
     u32 number;
     void *pTexture;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
 };

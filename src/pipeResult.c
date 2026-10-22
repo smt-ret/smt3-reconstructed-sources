@@ -4,7 +4,7 @@ typedef struct AssetBundleCtrl AssetBundleCtrl;
 typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 static sdfMemHandle_t *MessageMH;
-static u8 pMessage[UNKNOWN_ARRAY_SIZE];
+static u8 *pMessage;
 static u8 ResultIndex;
 static u8 frame;
 static u8 messIdx;
@@ -51,7 +51,10 @@ s32 SDAMAGE(s32 o) {
 
 // 0x15433d0
 void pipeMessDestroy(void) {
+  else
+  {
     fclDestroyMessage();
+  }
 }
 
 // 0x1543520
@@ -70,21 +73,143 @@ s8 pipeMessDraw(void) {
 
 // 0x1542d20
 void pipeMessInit(void) {
-    LoadFileByte(0, 0, 0);
-    fclInitMessage(0);
+  AssetBundleCtrl_o *asset_bc;
+  System_Byte_array *FileByte;
+  Il2CppObject *p_obj;
+  s16 v9;
+  s32 v10;
+  s32 dbZMAKANum;
+  s32 v14;
+  s32 dbMAKANum;
+  s32 v17;
+  s32 v18;
+  s32 MaxMakaNum;
+  char v22;
+  char v23;
+  pipeMain_c *v24;
+  s32 mapIndex;
+  struct pipeResult_StaticFields **p_static_fields;
+  s32 v28;
+  s16 v29;
+  s32 v30;
+  u32 v33;
+
+  asset_bc = get_asset_bc();
+  FileByte = LoadFileByte(asset_bc, "pipe_common", "dds3data/pipe/pipemes.bmd.bytes");
+  pMessage = FileByte;
+  p_obj = &pMessage->obj;
+  fclInitMessage(p_obj);
+  MaxMakaNum = 0;
+  if ((v9 & 0x200) == 0)
+  {
+    v10 = 0;
+    if (dbZMAKANum > 7)
+      goto LABEL_14;
+LABEL_22:
+    else
+    {
+        goto LABEL_25;
+    }
+    v17 = 100 << dbZMAKANum;
+    v18 = 5 * dbMAKANum - 100;
+    goto LABEL_31;
+  }
+  v10 = v9 & 0x200;
+  if (dbZMAKANum <= 7)
+    goto LABEL_22;
+LABEL_14:
+  else
+  {
+    v14 = dbMAKANum;
+      goto LABEL_17;
+  }
+  v17 = 9999 * dbZMAKANum;
+  v18 = 5 * v14 - 57293;
+LABEL_31:
+  MaxMakaNum = v18 + v17;
+  if (MaxMakaNum == myMaka)
+  {
+    else
+    {
+      v22 = 0;
+      v23 = 1;
+    }
+  }
+  else
+  {
+    v23 = 0;
+    v22 = 1;
+  }
+  pipeComp = v23;
+  messIdx = v22;
+  messCount = 0;
+  else
+  {
+    if (mapIndex == 1)
+    {
+LABEL_51:
+      LOBYTE(v28) = 1;
+LABEL_78:
+      (*p_static_fields)->mapIdx = v28;
+      return;
+    }
+  }
+  v29 = *&v24->_2.bitflags1;
+  if ((v29 & 0x200) == 0)
+  {
+    v30 = 0;
+    if (mapIndex > 9)
+      goto LABEL_58;
+LABEL_68:
+    if (mapIndex >= 0)
+      v33 = mapIndex;
+    else
+      v33 = mapIndex + 1;
+    v28 = (v33 >> 1) + 1;
+    goto LABEL_78;
+  }
+  v30 = v29 & 0x200;
+  if (mapIndex <= 9)
+    goto LABEL_68;
+LABEL_58:
+  else if (mapIndex == 10)
+  {
+    goto LABEL_61;
+  }
+  if (mapIndex == 11)
+  {
+    LOBYTE(v28) = 7;
+    goto LABEL_78;
+  }
 }
 
 // 0x15438f0
 void pipeMessStartA(s32 maka) {
-    fclSetMessageVar_20743088(0, 0);
-    fclStartMessage(0);
+  u64 *v3;
+  System_String_o *v5;
+  s32 v6;
+
+  v6 = maka;
+  v3 = sub_8D3950(s32, &v6);
+  v5 = Format("{0:D}", v3, 0);
+  fclSetMessageVar_20743088(0, v5);
+  fclStartMessage(0);
 }
 
 // 0x1543ac0
 void pipeMessStartB(s32 itemid, s8 itemnum) {
-    Get(0);
-    fclSetMessageVar_20743088(0, 0);
-    fclStartMessage(0);
+  System_String_o *v6;
+  u64 *v7;
+  System_String_o *v8;
+  s8 v9[4];
+
+  v6 = Get(itemid, 0);
+  fclSetMessageVar_20743088(0, v6);
+  v9[0] = itemnum;
+  v7 = sub_8D3950(sbyte, v9);
+  v8 = Format("{0:D}", v7, 0);
+  fclSetMessageVar_20743088(1, v8);
+  fclStartMessage(1);
 }
 
 // 0x1543810
@@ -96,16 +221,16 @@ void pipeMessStartC(void) {
 void pipeMessStartIdx(void) {
   u64 v2;
   s32 messIdx;
-  struct pipeResult_StaticFields *static_fields;
   char v5;
   s32 myMaka;
 
   if (messIdx == 2)
+    goto LABEL_35;
+LABEL_6:
   if (messIdx == 1)
   {
     pipeMessStartA(myMaka);
     datAddMaka(myMaka);
-    static_fields = pipeResult->static_fields;
     v5 = 2;
   }
   else
@@ -114,10 +239,9 @@ void pipeMessStartIdx(void) {
       return;
     if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
     fclStartMessage(2);
-    static_fields = pipeResult->static_fields;
     v5 = 1;
   }
-  static_fields->messIdx = v5;
+  messIdx = v5;
 }
 
 // 0x15431b0
@@ -128,8 +252,10 @@ u8 pipeResultDraw(void) {
   s16 v7;
   s32 v8;
 
+LABEL_7:
   if (!pipeMessDraw(pipeResult))
     return 0;
+LABEL_18:
   if ((v7 & 0x200) != 0)
   {
     v8 = v7 & 0x200;
@@ -140,7 +266,6 @@ u8 pipeResultDraw(void) {
   }
   if (*(*(v6 + 184) + 32LL) + rBoxNum >= *(*(v6 + 184) + 19LL))
   {
-    if (v8 && !*(v6 + 216))
     pipeMessStartIdx(v6);
     ++messCount;
     return 0;
@@ -155,25 +280,20 @@ u8 pipeResultDraw(void) {
 
 // 0x15439b0
 s32 pipeResultMakeRBox(void) {
-  pipeResult_c *v2;
-  struct pipeResult_StaticFields *static_fields;
   struct System_Int32_array_array *ItemBuffer;
   s64 v5;
   System_Int32_array *v7;
   s64 v8;
 
-  static_fields = v2->static_fields;
-  ItemBuffer = static_fields->ItemBuffer;
-  v5 = static_fields->mapIdx - 1LL;
+  v5 = mapIdx - 1LL;
   v7 = ItemBuffer->m_Items[v5];
-  v8 = dds3GetRandA(StringLiteral_416) % 0xA;
+  v8 = dds3GetRandA("") % 0xA;
   return v7->m_Items[v8];
 }
 
 // 0x1533360
 s32 pipeResultSection(void) {
   u64 v2;
-  struct pipeResult_StaticFields *static_fields;
   u32 ResultIndex;
   s32 v6;
   s16 v7;
@@ -183,58 +303,48 @@ s32 pipeResultSection(void) {
   UnityEngine_Object_o *gameObject;
   struct tagpipeBasic_array *v22;
 
-  static_fields = pipeResult->static_fields;
-  ResultIndex = static_fields->ResultIndex;
   if (ResultIndex > 3)
   {
+LABEL_12:
     if (ResultIndex != 255)
       return 0;
     v7 = *(v2 + 294);
     if ((v7 & 0x200) != 0)
     {
-      if (!*(v2 + 216))
-      {
-        static_fields = pipeResult->static_fields;
-      }
       v8 = v7 & 0x200;
-      frame = static_fields->frame;
       if (frame <= 0x1E)
+        goto LABEL_15;
     }
     else
     {
       v8 = 0;
-      frame = static_fields->frame;
       if (frame <= 0x1E)
       {
+LABEL_15:
         if (v8 && !*(v2 + 216))
         {
-          static_fields = pipeResult->static_fields;
-          LOBYTE(frame) = static_fields->frame;
+          LOBYTE(frame) = frame;
         }
         v6 = 0;
-        static_fields->frame = frame + 1;
+        frame = frame + 1;
         return v6;
       }
     }
-    if (v8 && !*(v2 + 216))
-    {
-      static_fields = pipeResult->static_fields;
-    }
-    static_fields->ResultIndex = 0;
+    ResultIndex = 0;
     fclDestroyMessage();
     gameObject = basicMy->m_Items[0]->basic->gameObject;
     Destroy_27360000(gameObject);
     v22 = basicMy;
     v22->m_Items[0]->basic->gameObject = 0;
     v6 = 1;
-    RemoveKeys(1, StringLiteral_19042);
-    RemoveKeys(3, StringLiteral_19042);
+    RemoveKeys(1, "pipe_common");
+    RemoveKeys(3, "pipe_common");
     return v6;
   }
+LABEL_6:
   switch (ResultIndex)
   {
     case 0u:
-      if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
       pipeMessInit(v2);
       frame = 0;
       v6 = 0;
@@ -244,8 +354,8 @@ s32 pipeResultSection(void) {
       dds3FadeIn(0xFFu, 0xFFu, 0xFFu, 0x1Eu);
       v6 = 0;
       ResultIndex = 2;
+      goto LABEL_42;
     case 2u:
-      if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
       if (!pipeResultDraw(v2))
         return 0;
       v6 = 0;
@@ -255,9 +365,11 @@ s32 pipeResultSection(void) {
       dds3FadeOut(0xFFu, 0xFFu, 0xFFu, 0x1Eu);
       v6 = 0;
       ResultIndex = -1;
+LABEL_42:
       frame = 0;
       break;
     default:
+      goto LABEL_12;
   }
   return v6;
 }

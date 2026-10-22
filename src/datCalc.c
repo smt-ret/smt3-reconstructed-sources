@@ -160,6 +160,7 @@ s32 GetMagicAttack(s32 nskill, datUnitWork_t *s, datUnitWork_t *d, s32 waza) {
     v14.n64_u16[0] = v16->m_Items[nskill]->magiclimit;
     v13 = vmovl_s16(v14).n128_i32[0];
   }
+LABEL_19:
   BaseParam = datGetBaseParam(s, 2, d);
   if ((s->badstatus & 0xFFF) == 0x200)
     v19 = 1;
@@ -182,6 +183,7 @@ s32 GetMagicKaifuku(s32 nskill, datUnitWork_t *s, datUnitWork_t *d, s32 waza) {
   s32 v10;
   s32 level;
 
+LABEL_7:
   BaseParam = datGetBaseParam(s, 2, d);
   if ((s->badstatus & 0xFFF) == 0x200)
     v9 = 1;
@@ -192,7 +194,7 @@ s32 GetMagicKaifuku(s32 nskill, datUnitWork_t *s, datUnitWork_t *d, s32 waza) {
   else
     v10 = v9;
   level = s->level;
-  return (((level + 4 * v10 + dds3GetRandIntA(8u, StringLiteral_12665)) / 10.0) * waza);
+  return (((level + 4 * v10 + dds3GetRandIntA(8u, "GetMagicKaifuku")) / 10.0) * waza);
 }
 
 // 0x1638500
@@ -250,12 +252,17 @@ s32 datAddDevil(s32 id, s32 sw) {
       if ((*(*(&unitwork->obj.klass + i) + 16LL) & 1) != 0)
         break;
       if (++i == 20)
+        goto LABEL_18;
     }
     v12 = DDS3_GBWK->unitwork;
     v5 += (*(*(&v12->obj.klass + i) + 16LL) >> 1) & 1;
   }
+LABEL_18:
   v14 = 8;
   v16 = 0;
+    goto LABEL_23;
+LABEL_21:
+LABEL_23:
   while (1)
   {
     if (v16 >= DDS3_GBWK->maxstock)
@@ -267,6 +274,7 @@ s32 datAddDevil(s32 id, s32 sw) {
     }
     ++v14;
     v16 = v14 - 8;
+      goto LABEL_21;
   }
   v20 = DDS3_GBWK;
   if (v14 - v20->maxstock == 8)
@@ -301,9 +309,79 @@ void datAddExp(datUnitWork_t *w, s32 exp) {
 
 // 0x163ad10
 s32 datAddHearts(s32 id) {
-    evtBitOn(0);
-    Unlock_16599376(0);
-    return 0;
+  s64 v3;
+  s16 v5;
+  u64 v6;
+  s32 v7;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  u64 heartscnt;
+  struct System_Byte_array *hearts;
+  s32 v12;
+  struct System_Byte_array *v13;
+  struct System_Byte_array *heartsskcnt;
+  struct datUnitWork_t_array *unitwork;
+  datUnitWork_t_o *v22;
+  u32 v25;
+  s64 *achievementTbl;
+  System_String_o *v28;
+  s32 v29;
+
+  v3 = 32;
+  while (1)
+  {
+    v6 = v3 - 32;
+    if ((v5 & 0x200) != 0)
+    {
+      v7 = v5 & 0x200;
+    }
+    else
+    {
+      v7 = 0;
+    }
+    heartscnt = DDS3_GBWK->heartscnt;
+    if (v6 >= heartscnt)
+      break;
+    else
+    {
+      hearts = DDS3_GBWK->hearts;
+      if (v6 >= LODWORD(hearts->max_length))
+        goto LABEL_13;
+    }
+    v12 = *(&hearts->obj.klass + v3++);
+    if (v12 == id)
+      return 0;
+  }
+  else
+  {
+    v13 = DDS3_GBWK->hearts;
+    if (heartscnt >= LODWORD(v13->max_length))
+      goto LABEL_21;
+  }
+  v13->m_Items[heartscnt] = id;
+  ++DDS3_GBWK->heartscnt;
+  heartsskcnt = DDS3_GBWK->heartsskcnt;
+  heartsskcnt->m_Items[id] = 0;
+  if (cmpChkHaveNormalHeartsAll())
+    evtBitOn(2144);
+  unitwork = DDS3_GBWK->unitwork;
+  v22 = unitwork->m_Items[0];
+  cmbCreateDefaultHeartsSkill(id, v22);
+  v25 = 0;
+  SystemWork->MagaTama_Bit |= 1 << (id - 1);
+  while (1)
+  {
+    v29 = 1;
+    if ((SystemWork->MagaTama_Bit & (1 << v25)) == 0)
+      break;
+    if (v25++ >= 0x18)
+    {
+      achievementTbl = get_achievementTbl();
+      v28 = sub_B7950(0x18u, DefineAchievementID_string_, achievementTbl);
+      Unlock_16599376(v28);
+      return 1;
+    }
+  }
+  return v29;
 }
 
 // 0x1639dd0
@@ -366,13 +444,17 @@ void datAddItem(s32 id, s32 num) {
         LOBYTE(v20) = 0;
       }
     }
+      goto LABEL_44;
+    goto LABEL_42;
   }
   if (v20 + num >= 99)
     LOBYTE(v20) = 99;
   else
     LOBYTE(v20) = v20 + num;
   {
+LABEL_42:
   }
+LABEL_44:
   v22 = DDS3_GBWK->item;
   v22->m_Items[141] = v20;
 }
@@ -401,6 +483,27 @@ void datAddKotowariPoint(s32 type, s32 point) {
 
 // 0x163a840
 void datAddMaka(s32 addmaka) {
+  s16 v4;
+  s32 v5;
+  struct dds3GlobalWork_t_o *DDS3_GBWK;
+  s32 v7;
+
+  if ((v4 & 0x200) != 0)
+  {
+    v5 = v4 & 0x200;
+  }
+  else
+  {
+    v5 = 0;
+  }
+  if (((DDS3_GBWK->maka + addmaka) & ~((DDS3_GBWK->maka + addmaka) >> 31)) >= 9999999)
+    v7 = 9999999;
+  else
+    v7 = (DDS3_GBWK->maka + addmaka) & ~((DDS3_GBWK->maka + addmaka) >> 31);
+  else
+  {
+    DDS3_GBWK->maka = v7;
+  }
 }
 
 // 0x163a910
@@ -728,10 +831,41 @@ s32 datCheckSkillInParty(s32 skillid) {
 
 // 0x163e960
 s32 datCheckSkillTakaraSagasi(void) {
-    evtBitCheck(0);
-    datCheckSyojiSkill(0, 0);
-    dds3GetRandIntA(0, 0);
-    return 0;
+  s32 flag;
+  u64 v5;
+  struct datUnitWork_t_array *unitwork;
+  datUnitWork_t_o *v10;
+  struct System_SByte_array *param;
+  s32 v13;
+  s32 v14;
+
+  flag = datTakaraSagasi->flag;
+  if (flag)
+    goto LABEL_6;
+LABEL_9:
+  v5 = 0;
+  while (1)
+  {
+    unitwork = DDS3_GBWK->unitwork;
+    v10 = unitwork->m_Items[v5];
+    if ((~v10->flag & 3) != 0)
+      goto LABEL_27;
+    param = v10->param;
+    v13 = param->m_Items[5];
+      break;
+    if (datCheckSyojiSkill(v10, 0x161u))
+      goto LABEL_23;
+LABEL_27:
+    if (v5++ >= 0xF)
+      return 0;
+  }
+  if (!datCheckSyojiSkill(v10, 0x161u))
+    goto LABEL_27;
+LABEL_23:
+  v14 = (v13 << 7) / 100;
+  if (v14 < dds3GetRandIntA(0x20u, "datCheckSkillTakaraSagasi"))
+    goto LABEL_27;
+  return v10->id;
 }
 
 // 0x163d510
@@ -897,11 +1031,104 @@ void datClearCommMemory(datUnitWork_t *work) {
 
 // 0x163fcf0
 void datCopyDevilWork(s32 id, datUnitWork_t *w) {
-    Get(0);
-    Get(0);
-    datGetMaxHp(0);
-    datGetMaxMp(0);
-    fclEncycRegist(0, 0, 0);
+  struct System_SByte_array *param;
+  struct System_SByte_array *v8;
+  s8 v9;
+  struct System_SByte_array *v10;
+  struct System_SByte_array *v12;
+  s8 v13;
+  struct System_SByte_array *v14;
+  struct System_SByte_array *v16;
+  s8 v18;
+  struct System_SByte_array *v20;
+  struct System_SByte_array *v22;
+  s8 v23;
+  struct System_SByte_array *v24;
+  struct System_SByte_array *v26;
+  s8 v28;
+  struct System_SByte_array *v30;
+  struct System_SByte_array *v32;
+  u32 v35;
+  s64 i;
+  u64 v37;
+  struct fclSkillParam_t_array *Event;
+  struct fclSkillParam_t_array *v40;
+  struct System_Int32_array *skill;
+  struct fclSkillParam_t_array *v43;
+  char *v46;
+  datUnitWork_t_o *v47;
+  u16 MaxHp;
+  u16 MaxMp;
+  u16 level;
+  u64 *v53;
+  s32 v55;
+  u64 *v56;
+  datUnitWork_t_o *v58;
+  u32 exp;
+  u16 v66;
+  datUnitWork_t_o *work;
+
+  work = w;
+  w->level = Get(id, 1, 0)->level;
+  param = w->param;
+  v8 = Get(id, 1, 0)->param;
+  v9 = v8->m_Items[0];
+  param->m_Items[0] = v9;
+  v10 = w->param;
+  v12 = Get(id, 1, 0)->param;
+  v13 = v12->m_Items[1];
+  v10->m_Items[1] = v13;
+  v14 = w->param;
+  v16 = Get(id, 1, 0)->param;
+  v18 = v16->m_Items[2];
+  v14->m_Items[2] = v18;
+  v20 = w->param;
+  v22 = Get(id, 1, 0)->param;
+  v23 = v22->m_Items[3];
+  v20->m_Items[3] = v23;
+  v24 = w->param;
+  v26 = Get(id, 1, 0)->param;
+  v28 = v26->m_Items[4];
+  v24->m_Items[4] = v28;
+  v30 = w->param;
+  v32 = Get(id, 1, 0)->param;
+  v30->m_Items[5] = v32->m_Items[5];
+  v35 = 0;
+  for (i = 4; i != 28; ++i)
+  {
+    v37 = i - 4;
+    Event = Get(id, 0)->Event;
+    if (!*(*(&Event->obj.klass + i) + 16LL))
+    {
+      v40 = Get(id, 0)->Event;
+      if (*(*(&v40->obj.klass + i) + 17LL) == 1)
+      {
+        skill = work->skill;
+        v43 = Get(id, 0)->Event;
+        v46 = skill + 4 * v35++;
+        *(v46 + 8) = *(*(&v43->obj.klass + i) + 18LL);
+      }
+    }
+  }
+  v47 = work;
+  MaxHp = datGetMaxHp(work);
+  work->maxhp = MaxHp;
+  v47->hp = MaxHp;
+  MaxMp = datGetMaxMp(v47);
+  level = v47->level;
+  v47->maxmp = MaxMp;
+  v47->mp = MaxMp;
+  v47->skillcnt = v35;
+  v66 = level;
+  v53 = sub_8D3950(ushort, &v66);
+  Write_2930400("YAMI-B Lv:{0:D}\n", v53);
+  v55 = v47->level;
+  v47->exp = cmbCalcLevelUpExp(&work, v55);
+  exp = work->exp;
+  v56 = sub_8D3950(uint, &exp);
+  Write_2930400("YAMI-B Exp:{0:D}\n", v56);
+  v58 = work;
+  fclEncycRegist(v58, 0, 0);
 }
 
 // 0x163bba0
@@ -992,6 +1219,7 @@ s32 datExecSkill(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
   s32 v25;
 
   if (!s || !d)
+    goto LABEL_38;
   SkillKouka = datGetSkillKouka(nskill, 0, s, d);
   v10 = datGetSkillKouka(nskill, 1, s, d);
   SkillBadKouka = datGetSkillBadKouka(nskill, s, d);
@@ -1004,11 +1232,14 @@ s32 datExecSkill(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
       {
         d->badstatus &= ~SkillBadKouka;
         if (!v10)
+          goto LABEL_27;
+        goto LABEL_21;
       }
       datSetBadStat(d, SkillBadKouka);
     }
     if (!v10)
     {
+LABEL_27:
       if (SkillKouka)
       {
         v19 = (SkillKouka + d->hp) & ~((SkillKouka + d->hp) >> 31);
@@ -1020,17 +1251,22 @@ s32 datExecSkill(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
           datSetBadStat(d, 0x800u);
         }
       }
+LABEL_38:
       v21 = tbl;
       switch (v21->m_Items[nskill]->program)
       {
         case 8u:
           v25 = DDS3_GBWK->stat | 1;
+          goto LABEL_60;
         case 9u:
           v25 = DDS3_GBWK->stat | 2;
+          goto LABEL_60;
         case 0xAu:
           v25 = DDS3_GBWK->stat | 4;
+          goto LABEL_60;
         case 0xBu:
           v25 = DDS3_GBWK->stat | 8;
+LABEL_60:
           DDS3_GBWK->stat = v25;
           break;
         default:
@@ -1038,10 +1274,12 @@ s32 datExecSkill(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
       }
       return 1;
     }
+LABEL_21:
     v18 = (v10 + d->mp) & ~((v10 + d->mp) >> 31);
     if (v18 > d->maxmp)
       LOWORD(v18) = d->maxmp;
     d->mp = v18;
+    goto LABEL_27;
   }
   return result;
 }
@@ -1218,6 +1456,7 @@ s32 datGetBaseMaxHp(datUnitWork_t *work) {
   s32 result;
 
   level = work->level;
+LABEL_7:
   BaseParam = datGetBaseParam(work, 3);
   if ((work->badstatus & 0xFFF) == 0x200)
     v6 = 1;
@@ -1240,6 +1479,7 @@ s32 datGetBaseMaxMp(datUnitWork_t *work) {
   s32 result;
 
   level = work->level;
+LABEL_7:
   magic = datGetBaseParam(work, 2);
   if ((work->badstatus & 0xFFF) == 0x200)
     magic_1 = 1;
@@ -1292,6 +1532,7 @@ s32 datGetDefPow(datUnitWork_t *work) {
   s32 BaseParam;
   s32 v5;
 
+LABEL_7:
   BaseParam = datGetBaseParam(work, 3);
   if ((work->badstatus & 0xFFF) == 0x200)
     v5 = 1;
@@ -1312,7 +1553,7 @@ s32 datGetItemSkillNo(s32 itemid) {
   InitializeArray_1543888(v3, Field__PrivateImplementationDetails__CE77C6C1C59F8885B997EDBF3FAF9172243357A4);
   if (itemid == 1)
   {
-    RandIntA = dds3GetRandIntA(6u, StringLiteral_12672);
+    RandIntA = dds3GetRandIntA(6u, "datGetItemSkillNo");
     return *(&v3[2].klass + RandIntA);
   }
   else
@@ -1367,12 +1608,24 @@ s32 datGetKotowariLank(s32 lank) {
   v15 = v7[10];
   v16 = v14->m_Items[v15];
   if (v13 > v16)
+    goto LABEL_29;
+  if (v13 == v16)
+  {
+    if (dds3GetRandIntA(0x64u, "datGetKotowariLank") < 50)
+    {
+LABEL_29:
+        goto LABEL_32;
+      goto LABEL_30;
+    }
+  }
   v17 = *v6;
   v18 = v7[9];
   v7[9] = v7[10];
   v7[10] = v18;
   {
+LABEL_30:
   }
+LABEL_32:
   v24 = DDS3_GBWK->kotowari;
   v25 = v7[9];
   v27 = v24->m_Items[v25];
@@ -1380,12 +1633,24 @@ s32 datGetKotowariLank(s32 lank) {
   v29 = v7[11];
   v30 = v28->m_Items[v29];
   if (v27 > v30)
+    goto LABEL_51;
+  if (v27 == v30)
+  {
+    if (dds3GetRandIntA(0x64u, "datGetKotowariLank") < 50)
+    {
+LABEL_51:
+        goto LABEL_54;
+      goto LABEL_52;
+    }
+  }
   v31 = *v6;
   v32 = v7[9];
   v7[9] = v7[11];
   v7[11] = v32;
   {
+LABEL_52:
   }
+LABEL_54:
   v38 = DDS3_GBWK->kotowari;
   v40 = v7[10];
   v42 = v38->m_Items[v40];
@@ -1395,8 +1660,10 @@ s32 datGetKotowariLank(s32 lank) {
   if (v42 <= v45)
   {
     if (v42 != v45)
-    if (dds3GetRandIntA(0x64u, StringLiteral_12671) >= 50)
+      goto LABEL_66;
+    if (dds3GetRandIntA(0x64u, "datGetKotowariLank") >= 50)
     {
+LABEL_66:
       v46 = *v6;
       v48 = v7[10];
       v7[10] = v7[11];
@@ -1424,8 +1691,16 @@ s32 datGetMagicAtkPow(datUnitWork_t *work) {
   s32 v11;
   s64 v12;
 
+  if ((work->flag & 4) != 0)
   {
+      goto LABEL_9;
   }
+  else
+  {
+      goto LABEL_9;
+  }
+LABEL_9:
+LABEL_11:
   BaseParam = datGetBaseParam(work, 2);
   if ((work->badstatus & 0xFFF) == 0x200)
     v8 = 1;
@@ -1454,6 +1729,7 @@ s32 datGetMagicHitPow(datUnitWork_t *work) {
   s32 v9;
   s32 v10;
 
+LABEL_7:
   BaseParam = datGetBaseParam(work, 2);
   if ((work->badstatus & 0xFFF) == 0x200)
     v7 = 1;
@@ -1483,15 +1759,22 @@ u32 datGetMaxHp(datUnitWork_t *work) {
   if (datCheckSyojiSkill(work, 0x122u))
   {
     v7 = 10 * BaseMaxHp / 0x64u;
+      goto LABEL_12;
   }
   else
   {
     v7 = 0;
+      goto LABEL_12;
   }
+LABEL_12:
   if (datCheckSyojiSkill(work, 0x123u))
+LABEL_13:
     v7 += 20 * BaseMaxHp / 0x64u;
+LABEL_14:
   if (datCheckSyojiSkill(work, 0x124u))
+LABEL_17:
     v7 += 30 * BaseMaxHp / 0x64u;
+LABEL_18:
   result = v7 + BaseMaxHp;
   if ((work->flag & 0x20) == 0 && result >= 0x3E7)
     return 999;
@@ -1508,15 +1791,22 @@ u32 datGetMaxMp(datUnitWork_t *work) {
   if (datCheckSyojiSkill(work, 0x125u))
   {
     v7 = 10 * BaseMaxMp / 0x64u;
+      goto LABEL_12;
   }
   else
   {
     v7 = 0;
+      goto LABEL_12;
   }
+LABEL_12:
   if (datCheckSyojiSkill(work, 0x126u))
+LABEL_13:
     v7 += 20 * BaseMaxMp / 0x64u;
+LABEL_14:
   if (datCheckSyojiSkill(work, 0x127u))
+LABEL_17:
     v7 += 30 * BaseMaxMp / 0x64u;
+LABEL_18:
   result = v7 + BaseMaxMp;
   if ((work->flag & 0x20) == 0 && result >= 0x3E7)
     return 999;
@@ -1580,8 +1870,16 @@ s32 datGetNormalAtkPow(datUnitWork_t *work) {
   s32 v9;
   s32 v10;
 
+  if ((work->flag & 4) != 0)
   {
+      goto LABEL_9;
   }
+  else
+  {
+      goto LABEL_9;
+  }
+LABEL_9:
+LABEL_11:
   BaseParam = datGetBaseParam(work, 0);
   v6 = work->badstatus & 0xFFF;
   if (v6 == 512)
@@ -1609,6 +1907,7 @@ s32 datGetNormalHitPow(datUnitWork_t *work) {
   s32 v8;
   s32 v9;
 
+LABEL_7:
   BaseParam = datGetBaseParam(work, 4);
   if (BaseParam <= 1)
     v7 = 1;
@@ -1642,7 +1941,19 @@ s32 datGetParam(datUnitWork_t *work, s32 paratype) {
 
 // 0x163baa0
 s32 datGetPlayerLND(void) {
-    return 0;
+  struct datUnitWork_t_array *unitwork;
+  u8 PlayerRaceID;
+
+  unitwork = DDS3_GBWK->unitwork;
+  else if (!LODWORD(unitwork->max_length))
+  {
+    goto LABEL_9;
+  }
+  PlayerRaceID = cmbGetPlayerRaceID(unitwork->m_Items);
+  if (PlayerRaceID)
+    return (PlayerRaceID - 1) % 3;
+  else
+    return 1;
 }
 
 // 0x163b440
@@ -1693,6 +2004,7 @@ s32 datGetSakePow(datUnitWork_t *work) {
   s32 v8;
   s32 v9;
 
+LABEL_7:
   BaseParam = datGetBaseParam(work, 4);
   if (BaseParam <= 1)
     v7 = 1;
@@ -1748,91 +2060,136 @@ s32 datGetSkillBadKouka(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
       *(v8 + 8) = 0;
       if ((basstatus & 2) != 0)
       {
+LABEL_11:
         v16 = v8 + 4 * v14;
         v14 = (v14 + 1);
         *(v16 + 8) = 1;
         if ((basstatus & 4) != 0)
         {
+LABEL_30:
           v20 = v8 + 4 * v14;
           v14 = (v14 + 1);
           *(v20 + 8) = 2;
           if ((basstatus & 8) != 0)
           {
+LABEL_33:
             v22 = v8 + 4 * v14;
             v14 = (v14 + 1);
             *(v22 + 8) = 3;
             if ((basstatus & 0x10) != 0)
             {
+LABEL_36:
               v24 = v8 + 4 * v14;
               v14 = (v14 + 1);
               *(v24 + 8) = 4;
               if ((basstatus & 0x20) != 0)
               {
+LABEL_39:
                 v26 = v8 + 4 * v14;
                 v14 = (v14 + 1);
                 *(v26 + 8) = 5;
                 if ((basstatus & 0x40) != 0)
                 {
+LABEL_42:
                   v28 = v8 + 4 * v14;
                   v14 = (v14 + 1);
                   *(v28 + 8) = 6;
                   if ((basstatus & 0x80) != 0)
                   {
+LABEL_45:
                     v30 = v8 + 4 * v14;
                     v14 = (v14 + 1);
                     *(v30 + 8) = 7;
                     if ((basstatus & 0x100) != 0)
                     {
+LABEL_48:
                       v32 = v8 + 4 * v14;
                       v14 = (v14 + 1);
                       *(v32 + 8) = 8;
                       if ((basstatus & 0x200) != 0)
                       {
+LABEL_51:
                         v34 = v8 + 4 * v14;
                         v14 = (v14 + 1);
                         *(v34 + 8) = 9;
                         if ((basstatus & 0x400) != 0)
                         {
+LABEL_54:
                           v36 = v8 + 4 * v14;
                           v14 = (v14 + 1);
                           *(v36 + 8) = 10;
                           if ((basstatus & 0x800) == 0)
+                            goto LABEL_57;
+                          goto LABEL_27;
                         }
+LABEL_26:
                         if ((basstatus & 0x800) == 0)
                         {
+LABEL_57:
                           {
                           }
-                          RandIntA = dds3GetRandIntA(v14, StringLiteral_12668);
+                          RandIntA = dds3GetRandIntA(v14, "datGetSkillBadKouka");
                           basstatus = 1 << *(v8 + RandIntA + 8);
+                          goto LABEL_63;
                         }
+LABEL_27:
                         v18 = v8 + 4 * v14;
                         LODWORD(v14) = v14 + 1;
                         *(v18 + 8) = 11;
+                        goto LABEL_57;
                       }
+LABEL_25:
                       if ((basstatus & 0x400) != 0)
+                        goto LABEL_54;
+                      goto LABEL_26;
                     }
+LABEL_24:
                     if ((basstatus & 0x200) != 0)
+                      goto LABEL_51;
+                    goto LABEL_25;
                   }
+LABEL_23:
                   if ((basstatus & 0x100) != 0)
+                    goto LABEL_48;
+                  goto LABEL_24;
                 }
+LABEL_22:
                 if ((basstatus & 0x80) != 0)
+                  goto LABEL_45;
+                goto LABEL_23;
               }
+LABEL_21:
               if ((basstatus & 0x40) != 0)
+                goto LABEL_42;
+              goto LABEL_22;
             }
+LABEL_20:
             if ((basstatus & 0x20) != 0)
+              goto LABEL_39;
+            goto LABEL_21;
           }
+LABEL_19:
           if ((basstatus & 0x10) != 0)
+            goto LABEL_36;
+          goto LABEL_20;
         }
+LABEL_18:
         if ((basstatus & 8) != 0)
+          goto LABEL_33;
+        goto LABEL_19;
       }
     }
     else
     {
       v14 = 0;
       if ((basstatus & 2) != 0)
+        goto LABEL_11;
     }
     if ((basstatus & 4) != 0)
+      goto LABEL_30;
+    goto LABEL_18;
   }
+LABEL_63:
   if (tbl->m_Items[nskill]->badtype == 1)
   {
     BadStatusAttr = datGetBadStatusAttr(basstatus);
@@ -1840,19 +2197,24 @@ s32 datGetSkillBadKouka(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
     if ((Aisyo & 0x170000) != 0)
     {
       v45 = 0.0;
+        goto LABEL_79;
     }
     else
     {
       v9 = Aisyo;
       v45 = v9 / 100.0;
+        goto LABEL_79;
     }
   }
   else
   {
     v45 = 1.0;
+      goto LABEL_79;
   }
+LABEL_79:
   v47 = tbl;
   if (v47->m_Items[nskill]->badlevel == 255)
+    goto LABEL_94;
   v50 = tbl;
   LOBYTE(v9) = v50->m_Items[nskill]->badlevel;
   v52 = v45 * (LODWORD(v9) / 100.0);
@@ -1860,8 +2222,9 @@ s32 datGetSkillBadKouka(s32 nskill, datUnitWork_t *s, datUnitWork_t *d) {
     v53 = (v52 * 100.0) * 0.7;
   else
     v53 = v52 * 100.0;
-  if (dds3GetRandIntA(0x64u, StringLiteral_12668) >= v53)
+  if (dds3GetRandIntA(0x64u, "datGetSkillBadKouka") >= v53)
     return 0;
+LABEL_94:
   v55 = tbl;
   if (v55->m_Items[nskill]->badtype == 1 && basstatus <= (d->badstatus & 0xFFF))
     return 0;
@@ -1886,9 +2249,11 @@ s32 datGetSkillCost(datUnitWork_t *w, s32 nskill) {
     if (costtype == 1)
     {
       if ((w->flag & 4) != 0)
+        goto LABEL_16;
       id = w->id;
       if ((Get(id, 1, 0)->flag & 0x200) == 0 && (w->flag & 0x20) == 0)
       {
+LABEL_16:
         maxhp = w->maxhp;
         v12 = tbl;
         max_length = v12->max_length;
@@ -1959,8 +2324,10 @@ s32 datGetSkillKouka(s32 nskill, s32 type, datUnitWork_t *s, datUnitWork_t *d) {
     mptype = tbl->m_Items[nskill]->mptype;
     if (mptype > 0xF)
     {
+LABEL_44:
       v20 = -1;
       v36 = -1;
+      goto LABEL_106;
     }
   }
   else
@@ -1989,6 +2356,7 @@ s32 datGetSkillKouka(s32 nskill, s32 type, datUnitWork_t *s, datUnitWork_t *d) {
       if (v31->m_Items[nskill]->koukatype == 1)
       {
         MagicAttack = GetMagicAttack(nskill, s, v10, mpn);
+        goto LABEL_97;
       }
       if (!v31->m_Items[nskill]->koukatype)
       {
@@ -2001,34 +2369,50 @@ s32 datGetSkillKouka(s32 nskill, s32 type, datUnitWork_t *s, datUnitWork_t *d) {
           else
             v35 = MagicAttack + 1;
           v36 = (v35 >> 1) + mpbase;
+          goto LABEL_105;
         }
+LABEL_97:
         v36 = MagicAttack + mpbase;
+        goto LABEL_105;
       }
       v36 = mpbase;
+LABEL_105:
       v20 = -1;
+LABEL_106:
       v50 = tbl;
       hptype = v50->m_Items[nskill]->hptype;
       if (hptype > 7)
+        goto LABEL_121;
       if (((1 << hptype) & 0x38) != 0)
+        goto LABEL_126;
       if (((1 << hptype) & 0x42) != 0)
       {
         if (v36 < 1)
-        RandFloatA = dds3GetRandFloatA(StringLiteral_12667);
+          goto LABEL_126;
+LABEL_122:
+        RandFloatA = dds3GetRandFloatA("datGetSkillKouka0");
         v54 = (((RandFloatA + -0.5) + (RandFloatA + -0.5)) * 0.05) * v36;
         v36 = (v13 * ((v54 + v36) & ~((v54 + v36) >> 31)));
+        goto LABEL_126;
       }
       if (((1 << hptype) & 0x84) == 0)
       {
+LABEL_121:
         if (v36 < 1 || hptype != 12)
+          goto LABEL_126;
+        goto LABEL_122;
       }
       if (v20 >= 1)
       {
         v20 = (v13 * v20);
         if ((v20 & 0x80000000) == 0)
           return v20;
+        goto LABEL_127;
       }
+LABEL_126:
       if ((v20 & 0x80000000) == 0)
         return v20;
+LABEL_127:
       if (v36)
         return -v36;
       else
@@ -2047,17 +2431,21 @@ s32 datGetSkillKouka(s32 nskill, s32 type, datUnitWork_t *s, datUnitWork_t *d) {
       {
         MagicKaifuku = GetButuriAttack(nskill, s, d, mpn);
       }
+      goto LABEL_141;
     case 3u:
       if (mpn + mpbase >= v29)
         v36 = -1;
       else
         v36 = v29 - (mpn + mpbase);
+      goto LABEL_105;
     case 4u:
     case 0xDu:
       v36 = mpn + mpbase;
+      goto LABEL_105;
     case 5u:
       v20 = mpn + mpbase;
       v36 = -1;
+      goto LABEL_106;
     case 6u:
       if ((s->flag & 0x20) != 0)
       {
@@ -2069,6 +2457,7 @@ s32 datGetSkillKouka(s32 nskill, s32 type, datUnitWork_t *s, datUnitWork_t *d) {
         v45 = (LODWORD(AisyoRitu) / 69.6) * mpn;
       }
       v48 = v45;
+      goto LABEL_104;
     case 7u:
       if ((s->flag & 0x20) != 0)
       {
@@ -2081,27 +2470,38 @@ s32 datGetSkillKouka(s32 nskill, s32 type, datUnitWork_t *s, datUnitWork_t *d) {
       }
       v20 = v46 + mpbase;
       v36 = -1;
+      goto LABEL_106;
     case 8u:
       v39 = v29 * mpn;
+      goto LABEL_88;
     case 9u:
       v40 = v29 * mpn;
+      goto LABEL_83;
     case 0xAu:
       v39 = v28 * mpn;
+LABEL_88:
       v48 = v39 / 100;
+LABEL_104:
       v36 = v48 + mpbase;
+      goto LABEL_105;
     case 0xBu:
       v40 = v28 * mpn;
+LABEL_83:
       v47 = v40 / 100 + mpbase;
       if (v47 <= 1)
         v20 = 1;
       else
         v20 = v47;
       v36 = -1;
+      goto LABEL_106;
     case 0xFu:
-      MagicKaifuku = dds3GetRandIntA(mpn, StringLiteral_12666);
+      MagicKaifuku = dds3GetRandIntA(mpn, "datGetSkillKouka");
+LABEL_141:
       v20 = MagicKaifuku + mpbase;
       v36 = -1;
+      goto LABEL_106;
     default:
+      goto LABEL_44;
   }
 }
 
@@ -2173,6 +2573,7 @@ void datInitPlayer(void) {
   u32 v7;
   struct datUnitWork_t_array *v8;
   datUnitWork_t_o *v11;
+  dds3GlobalWork_c *v13;
   struct System_Int32_array *stocklist;
   u64 v16;
   struct System_Byte_array *item;
@@ -2194,13 +2595,20 @@ void datInitPlayer(void) {
   stocklist->m_Items[0] = 0;
   v16 = 0;
   DDS3_GBWK->maka = 0;
+  if ((v13->_2.bitflags2 & 2) != 0)
+  {
+LABEL_23:
+    goto LABEL_25;
+  }
   while (1)
   {
+LABEL_25:
     item = DDS3_GBWK->item;
     item->m_Items[v16] = 0;
     if (v16 == 159)
       break;
     ++v16;
+      goto LABEL_23;
   }
   evtBitOn(3076);
 }
@@ -2223,8 +2631,231 @@ void datOverwriteBadStat(datUnitWork_t *work, u32 badstat) {
 
 // 0x163be70
 void datPartyDamage(s32 mode) {
-    IsDLC();
-    datSetBadStat(0, 0);
+  s64 i;
+  u64 v6;
+  struct datUnitWork_t_array *unitwork;
+  struct datUnitWork_t_array *v10;
+  struct datUnitWork_t_array *v13;
+  u32 v15;
+  u32 v16;
+  s32 Bit;
+  s32 v19;
+  s32 v20;
+  s16 v21;
+  struct datUnitWork_t_array *v22;
+  s64 j;
+  u64 v26;
+  struct datUnitWork_t_array *v27;
+  struct datUnitWork_t_array *v30;
+  struct datUnitWork_t_array *v33;
+  u32 v35;
+  s32 v36;
+  s32 v37;
+  s32 v39;
+  s32 v40;
+  s16 v41;
+  struct datUnitWork_t_array *v42;
+  u64 v44;
+  struct datUnitWork_t_array *v46;
+  struct datUnitWork_t_array *v49;
+  struct datUnitWork_t_array *v52;
+  s32 v54;
+  struct datUnitWork_t_array *v56;
+  struct datUnitWork_t_array *v58;
+  u32 hp;
+  s32 v61;
+  s32 v62;
+  s16 v63;
+  struct datUnitWork_t_array *v64;
+  u64 k;
+  struct datUnitWork_t_array *v68;
+  struct datUnitWork_t_array *v71;
+  struct datUnitWork_t_array *v74;
+  datUnitWork_t_o *v76;
+  datUnitWork_t_o *v77;
+  u32 v78;
+  struct datUnitWork_t_array *v80;
+  datUnitWork_t_o *v82;
+  struct datUnitWork_t_array *v84;
+  datUnitWork_t_o *v86;
+
+  switch (mode)
+  {
+    case 1:
+    case 4:
+    case 5:
+    case 6:
+      for (i = 4; i != 20; ++i)
+      {
+        v6 = i - 4;
+        unitwork = DDS3_GBWK->unitwork;
+        if ((*(*(&unitwork->obj.klass + i) + 16LL) & 2) != 0)
+        {
+          v10 = DDS3_GBWK->unitwork;
+          if (*(*(&v10->obj.klass + i) + 22LL))
+          {
+            v13 = DDS3_GBWK->unitwork;
+            v15 = *(*(&v13->obj.klass + i) + 22LL);
+            v16 = v15 / 0xA;
+            Bit = cfgGetBit(9u);
+            if (Bit == 2)
+            {
+              v16 *= 3;
+            }
+            else if (!Bit)
+            {
+              v16 = 30 * v16 / 0x64;
+            }
+            if (v16)
+              v19 = v16;
+            else
+              v19 = 1;
+            v20 = v15 - v19;
+            if (v20 <= 1)
+              v21 = 1;
+            else
+              v21 = v20;
+            v22 = DDS3_GBWK->unitwork;
+            *(*(&v22->obj.klass + i) + 22LL) = v21;
+          }
+        }
+      }
+      if ((mode - 4) < 3)
+        goto LABEL_139;
+      if (mode == 3)
+        goto LABEL_85;
+      if (mode == 2)
+        goto LABEL_45;
+      return;
+    case 2:
+LABEL_45:
+      for (j = 4; j != 20; ++j)
+      {
+        v26 = j - 4;
+        v27 = DDS3_GBWK->unitwork;
+        if ((*(*(&v27->obj.klass + j) + 16LL) & 2) != 0)
+        {
+          v30 = DDS3_GBWK->unitwork;
+          if (*(*(&v30->obj.klass + j) + 22LL))
+          {
+            v33 = DDS3_GBWK->unitwork;
+            v35 = *(*(&v33->obj.klass + j) + 22LL);
+            v36 = v35 >> 1;
+            v37 = cfgGetBit(9u);
+            if (v37 == 2)
+            {
+              v36 *= 3;
+            }
+            else if (!v37)
+            {
+              v36 = 30 * v36 / 0x64u;
+            }
+            if (v36)
+              v39 = v36;
+            else
+              v39 = 1;
+            v40 = v35 - v39;
+            if (v40 <= 1)
+              v41 = 1;
+            else
+              v41 = v40;
+            v42 = DDS3_GBWK->unitwork;
+            *(*(&v42->obj.klass + j) + 22LL) = v41;
+          }
+        }
+      }
+      if ((mode - 4) < 3)
+        goto LABEL_139;
+      if (mode == 3)
+        goto LABEL_85;
+      return;
+    case 3:
+LABEL_85:
+      v44 = 0;
+      break;
+    default:
+      return;
+  }
+  do
+  {
+    while (1)
+    {
+      else if (!IsDLC())
+      {
+        goto LABEL_97;
+      }
+      v46 = DDS3_GBWK->unitwork;
+      if (v46->m_Items[v44]->id == 192)
+        goto LABEL_119;
+LABEL_97:
+      v49 = DDS3_GBWK->unitwork;
+      if ((v49->m_Items[v44]->flag & 2) == 0)
+        goto LABEL_119;
+      v52 = DDS3_GBWK->unitwork;
+      if (!v52->m_Items[v44]->hp)
+        goto LABEL_119;
+      v54 = cfgGetBit(9u);
+      if (!v54)
+        break;
+      v56 = DDS3_GBWK->unitwork;
+      v56->m_Items[v44]->hp = 1;
+LABEL_119:
+      if (++v44 == 16)
+        goto LABEL_138;
+    }
+    v58 = DDS3_GBWK->unitwork;
+    hp = v58->m_Items[v44]->hp;
+    if (50 * hp <= 0x63)
+      v61 = 1;
+    else
+      v61 = hp >> 1;
+    v62 = hp - v61;
+    if (v62 <= 1)
+      v63 = 1;
+    else
+      v63 = v62;
+    v64 = DDS3_GBWK->unitwork;
+    v64->m_Items[v44++]->hp = v63;
+  }
+  while (v44 != 16);
+LABEL_138:
+  if ((mode - 4) <= 2)
+  {
+LABEL_139:
+    for (k = 0; k != 16; ++k)
+    {
+      v68 = DDS3_GBWK->unitwork;
+      if ((v68->m_Items[k]->flag & 2) != 0)
+      {
+        v71 = DDS3_GBWK->unitwork;
+        if (v71->m_Items[k]->hp)
+        {
+          if (mode == 6)
+          {
+            v80 = DDS3_GBWK->unitwork;
+            v82 = v80->m_Items[k];
+            v77 = v82;
+            v78 = 32;
+          }
+          else if (mode == 5)
+          {
+            v84 = DDS3_GBWK->unitwork;
+            v86 = v84->m_Items[k];
+            v77 = v86;
+            v78 = 256;
+          }
+          else
+          {
+            v74 = DDS3_GBWK->unitwork;
+            v76 = v74->m_Items[k];
+            v77 = v76;
+            v78 = 64;
+          }
+          datSetBadStat(v77, v78);
+        }
+      }
+    }
+  }
 }
 
 // 0x163c7b0
@@ -2354,9 +2985,12 @@ void datPartyDamageFld(s32 mode) {
         }
       }
       if (mode == 4)
+        goto LABEL_128;
       if (mode == 3)
+        goto LABEL_88;
       break;
     case 3:
+LABEL_88:
       v86 = mode;
       for (k = 4; k != 20; ++k)
       {
@@ -2369,7 +3003,7 @@ void datPartyDamageFld(s32 mode) {
           {
             v55 = DDS3_GBWK->unitwork;
             v57 = *(*(&v55->obj.klass + k) + 22LL);
-            v59 = (dds3GetRandIntA(2u, StringLiteral_12669) + 1) * v57;
+            v59 = (dds3GetRandIntA(2u, "datPartyDamageFld") + 1) * v57;
             v20 = cfgGetBit(9u) == 0;
             if (v20)
               v61 = 200;
@@ -2389,8 +3023,10 @@ void datPartyDamageFld(s32 mode) {
         }
       }
       if (v86 == 4)
+        goto LABEL_128;
       break;
     case 4:
+LABEL_128:
       for (m = 4; m != 20; ++m)
       {
         v69 = m - 4;
@@ -2642,6 +3278,8 @@ void datSetAutoKaifukuSkill(datUnitWork_t *work, s32 skill) {
           v12 = 0;
           v13 = work->maxhp / n;
           if (v13 < 1)
+            goto LABEL_24;
+          goto LABEL_15;
         }
         return;
       case 347:
@@ -2649,6 +3287,7 @@ void datSetAutoKaifukuSkill(datUnitWork_t *work, s32 skill) {
         if (n >= 1)
         {
           v12 = work->maxmp / n;
+          goto LABEL_24;
         }
         return;
       case 348:
@@ -2657,27 +3296,35 @@ void datSetAutoKaifukuSkill(datUnitWork_t *work, s32 skill) {
           v13 = 0;
           if (m >= 1)
           {
+LABEL_34:
             v12 = work->maxmp / m;
             if (v13 < 1)
+              goto LABEL_24;
+            goto LABEL_15;
           }
         }
         else
         {
           v13 = work->maxhp / n;
           if (m >= 1)
+            goto LABEL_34;
         }
         v12 = 0;
         if (v13 < 1)
         {
+LABEL_24:
           if (v12 < 1)
             return;
+          goto LABEL_25;
         }
+LABEL_15:
         v14 = (v13 + work->hp) & ~((v13 + work->hp) >> 31);
         if (v14 > work->maxhp)
           LOWORD(v14) = work->maxhp;
         work->hp = v14;
         if (v12 >= 1)
         {
+LABEL_25:
           v15 = (v12 + work->mp) & ~((v12 + work->mp) >> 31);
           if (v15 > work->maxmp)
             LOWORD(v15) = work->maxmp;
@@ -2693,7 +3340,31 @@ void datSetAutoKaifukuSkill(datUnitWork_t *work, s32 skill) {
 
 // 0x1639c90
 void datSetBadStat(datUnitWork_t *work, u32 badstat) {
-    Unlock_16599376(0);
+  u16 badstatus;
+  u16 v6;
+  s64 *achievementTbl;
+  System_String_o *v9;
+
+  badstatus = work->badstatus;
+  if (badstat == 0x8000)
+  {
+    v6 = badstatus | 0x8000;
+  }
+  else
+  {
+    if ((badstatus & 0xFFFu) >= badstat)
+      goto LABEL_8;
+    v6 = badstatus & 0xF000 | badstat & 0xFFF;
+  }
+  work->badstatus = v6;
+LABEL_8:
+  if ((work->flag & 0x24) != 0x20)
+  {
+    SystemWork->Bad_Bit |= badstat;
+    achievementTbl = get_achievementTbl();
+    v9 = sub_B7950(0x10u, DefineAchievementID_string_, achievementTbl);
+    Unlock_16599376(v9);
+  }
 }
 
 // 0x163d610
@@ -2767,8 +3438,11 @@ void datSetDevilWork(s32 id, datUnitWork_t *w) {
     v39 = 4;
     v40 = 0;
     if ((v37->_2.bitflags2 & 2) == 0)
+      goto LABEL_51;
+LABEL_49:
     while (1)
     {
+LABEL_51:
       Event = Get(id, 0)->Event;
       if (!*(*(&Event->obj.klass + v39) + 16LL))
       {
@@ -2784,6 +3458,7 @@ void datSetDevilWork(s32 id, datUnitWork_t *w) {
       if (v39 == 27)
         break;
       v40 = ++v39 - 4;
+        goto LABEL_49;
     }
   }
   MaxHp = datGetMaxHp(w);

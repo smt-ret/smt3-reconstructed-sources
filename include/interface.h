@@ -231,7 +231,7 @@ struct FontGsControl_t {
     u32 unit_size;
     u32 unit_num_max;
     u32 unit_nums;
-    FontMem_t root[UNKNOWN_ARRAY_SIZE];
+    FontMem_t *root;
 };
 
 struct _RING_BUF {
@@ -241,11 +241,11 @@ struct _RING_BUF {
 };
 
 struct itfMesBinMesHeader_t {
-    u8 label[UNKNOWN_ARRAY_SIZE];
+    u8 *label;
     s16 page;
     u16 speaker;
-    u32 addr[UNKNOWN_ARRAY_SIZE];
-    s32 len[UNKNOWN_ARRAY_SIZE];
+    u32 *addr;
+    s32 *len;
 };
 
 struct itfpanel_t {
@@ -286,9 +286,9 @@ struct hmTreeTbl_t {
 };
 
 struct hmDecodeTbl_t {
-    hmTreeTbl_t tree_table[UNKNOWN_ARRAY_SIZE];
+    hmTreeTbl_t *tree_table;
     u8 access_table;
-    u8 data[UNKNOWN_ARRAY_SIZE];
+    u8 *data;
 };
 
 struct itfMesBinFileHeader_t {
@@ -319,13 +319,13 @@ struct itfMesBinTypeHeader2_t {
 };
 
 struct itfMesBinSelHeader_t {
-    u8 label[UNKNOWN_ARRAY_SIZE];
+    u8 *label;
     s16 ext;
     s16 item;
     s16 pattern;
     u16 reserved;
-    u32 ptr[UNKNOWN_ARRAY_SIZE];
-    s32 len[UNKNOWN_ARRAY_SIZE];
+    u32 *ptr;
+    s32 *len;
 };
 
 struct itfMiscCoord_t {

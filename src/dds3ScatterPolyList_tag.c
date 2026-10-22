@@ -12,14 +12,14 @@ struct dds3ScatterPolyList_tag {
     u32 abgr;
     s32 point;
     f32 scale;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
     dds3ScatterPolyListTexResource_tag *hTexRes;
     u32 number;
     void *pTexture;
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    XRD773Unity_CommonMesh *pMesh;
 };
 
 // 0x14f77f0

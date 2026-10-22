@@ -32,7 +32,27 @@ void Display(talkUI *this, bool sw) {
 
 // 0x169d540
 void DisplayOff(talkUI *this) {
-    Log(0, 0);
+  UnityEngine_Object_o *canv;
+  u64 *v4;
+  System_String_o *v5;
+  System_Object_array *v7;
+  s32 wnd_mode;
+  f32 alpha;
+
+  canv = this->canv;
+  if (!op_Equality(canv, 0, 0))
+  {
+    alpha = this->alpha;
+    v4 = sub_8D3950(f32, &alpha);
+    v5 = Concat("DisplayOff : ", v4);
+    v7 = Empty_string_();
+    Log(v5, v7, 0);
+    set_alpha(this->canv, 0.0);
+    wnd_mode = this->wnd_mode;
+    this->alpha = 0.0;
+    if (wnd_mode != 1)
+      this->wnd_mode = 0;
+  }
 }
 
 // 0x169d660

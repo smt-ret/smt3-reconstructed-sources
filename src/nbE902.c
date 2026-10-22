@@ -54,10 +54,45 @@ void p2sdPlaySE_20173184(char *define_name);
 
 // 0x16eefb0
 s32 Bunshin1(nbEventProcessData_t *ed) {
-    nbAddOngBunshin2Packet(0, 0, 0, 0, 0, 0);
-    nbSetFormPos(0, (sdfVector4_t){0});
-    nbCameraBoss_Ongy_BUNSIN_Run(0);
-    return 0;
+  struct nbFormation_t_array *form;
+  u32 max_length;
+  struct nbFormation_t_array *v9;
+  f32 *v11;
+  f32 v12;
+  f32 v13;
+  f32 v14;
+  f32 v15;
+  struct nbFormation_t_array *v17;
+  u32 v18;
+  struct nbFormation_t_array *v21;
+  UnityEngine_Vector4_o v26;
+
+  form = ed->data->form;
+  max_length = form->max_length;
+  nbAddOngBunshin2Packet(0, ed->uniqueid, &form->m_Items[5], &form->m_Items[6], &form->m_Items[4], &form->m_Items[7]);
+  v9 = ed->data->form;
+  v11 = v9->m_Items[6];
+  v12 = v11[12];
+  v13 = v11[13];
+  v15 = v11[14];
+  v14 = v11[15];
+  else if (LODWORD(v9->max_length) <= 7)
+  {
+    goto LABEL_15;
+  }
+  v26.x = v12;
+  v26.y = v13;
+  v26.z = v15;
+  v26.w = v14;
+  nbSetFormPos(&v9->m_Items[7], v26);
+  v17 = ed->data->form;
+  v18 = v17->max_length;
+  nbSetFormPos(&v17->m_Items[6], v17->m_Items[5]->pos);
+  v21 = ed->data->form;
+  nbSetFormPos(&v21->m_Items[4], v21->m_Items[5]->pos);
+  nbCameraBoss_Ongy_BUNSIN_Run(&nbCameraCurrent);
+  *&ed->seq = (ed->seq + 1);
+  return 0;
 }
 
 // 0x16eee10
@@ -84,7 +119,7 @@ s32 Copy(nbEventProcessData_t *ed) {
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 1)
     return 0;
-  Write(StringLiteral_21326, 0);
+  Write("オンギョウギ分身!\n", 0);
   effBTLSkillEnd();
   if (evtBitCheck(3056))
     ed->data->stat &= ~8u;
@@ -124,16 +159,18 @@ s32 Hontai(nbEventProcessData_t *ed) {
   v16->m_Items[7]->stat |= 0x1000u;
   v18 = p_fields->data->form;
   dds3ObjectBaseOffFlag(&v18->m_Items[7]->basic, 0x400u);
-  RandIntA = dds3GetRandIntA(4u, StringLiteral_416);
+  RandIntA = dds3GetRandIntA(4u, "");
   v23 = p_fields->data->form;
   v24 = RandIntA + 4LL;
   v26 = v23->m_Items[v24];
   v26->stat &= ~0x1000u;
   if (evtGetAgeOfMoon() == 8)
   {
+LABEL_27:
     dds3ObjectBaseOnFlag(&v26->basic, 0x400u, 0);
     v26->basic->poseset->r = 200.0;
   }
+LABEL_28:
   nbSetEnemyFormation(&ed->data);
   nbGroupFormDispOn(1);
   *&ed->seq = (ed->seq + 1);
@@ -159,7 +196,7 @@ s32 Loading(nbEventProcessData_t *ed) {
     v6->m_Items[6]->stat &= ~1u;
     v8 = ed->data->form;
     v8->m_Items[7]->stat &= ~1u;
-    p2sdPlaySE_20173184(StringLiteral_8985);
+    p2sdPlaySE_20173184("BSE_E902_SE00");
     form = nbGetEventForm();
     nbAddMotionKoukaPacket(0, 0, &form, 4);
     formindex = form->formindex;
@@ -192,10 +229,12 @@ s32 Pos1(nbEventProcessData_t *ed) {
       if ((*(*(&form->obj.klass + i) + 137LL) & 8) != 0)
         break;
       if (++i == 18)
+        goto LABEL_18;
     }
     v11 = p_fields->data->form;
     *(*(&v11->obj.klass + i) + 136LL) |= 8u;
   }
+LABEL_18:
   SelectCopy(ed);
   *&ed->seq = (ed->seq + 1);
   return 0;
@@ -261,6 +300,7 @@ void SelectCopy(nbEventProcessData_t *ed) {
       if ((form->m_Items[i]->stat & 8) != 0)
         break;
       if (++i == 14)
+        goto LABEL_70;
     }
     data = p_fields->data;
     appended = nbAppendEnemyDevilWork(data, 269, i);
@@ -324,6 +364,7 @@ void SelectCopy(nbEventProcessData_t *ed) {
     v64 = v62->m_Items[7];
     v63->m_Items[7] = v64;
   }
+LABEL_70:
   nbLoadUnitGroup(1, 0, 0);
 }
 
@@ -331,6 +372,7 @@ void SelectCopy(nbEventProcessData_t *ed) {
 s32 SetForm(nbEventProcessData_t *ed) {
   nbSetEnemyFormation(&ed->data);
   if (ed)
+LABEL_9:
     *&ed->seq = (ed->seq + 1);
   return 0;
 }
@@ -353,7 +395,6 @@ s32 Wait1(nbEventProcessData_t *ed) {
 // 0x16ef2c0
 s32 Wait2(nbEventProcessData_t *ed) {
   s32 seqtime;
-  struct nbCameraProcess_StaticFields *static_fields;
   f32 v8;
 
   if (ed->seqtime == 1)
@@ -368,23 +409,60 @@ s32 Wait2(nbEventProcessData_t *ed) {
   }
   if ((DDS3EFFECT_RAND_I & 1) != 0)
   {
-    static_fields = nbCameraProcess->static_fields;
     v8 = -0.2618;
   }
   else
   {
-    static_fields = nbCameraProcess->static_fields;
     v8 = 0.2618;
   }
-  nbCameraEnemyPartySet(&static_fields->nbCameraCurrent, -0.34907, v8);
+  nbCameraEnemyPartySet(&nbCameraCurrent, -0.34907, v8);
   *&ed->seq = (ed->seq + 1);
   return 0;
 }
 
 // 0x16ef910
 void *nbE902Process_1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    dds3PadAct(0, 0, 0);
-    nbUpdateEventProcessData(0);
-    return 0;
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v5;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  struct nbE902_funcDelegate_array *func;
+  s64 seq;
+  dds3ProcessID_t_o *v16[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ProcessData = dds3GetProcessData(&ida);
+  v5 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v16);
+      if ((v16[0] & 1) != 0)
+        v8 = v16[2];
+      else
+        v8 = v16 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  seq = v5->seq;
+  if (Invoke(func->m_Items[seq], v5))
+  {
+    ida->func_ans = -1;
+  }
+  else
+  {
+    if (v5->time == 37)
+    {
+      dds3PadAct(0, 1u, 4u);
+      dds3PadAct(1u, 0xFAu, 6u);
+    }
+    nbUpdateEventProcessData(&ida);
+  }
+  return 0;
 }

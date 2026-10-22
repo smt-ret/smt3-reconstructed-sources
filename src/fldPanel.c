@@ -64,13 +64,17 @@ void *fldAddressProcess1(dds3ProcessID_t *id) {
 
 // 0x10c9080
 dds3ProcessFunc_t *fldAddressProcess2(dds3ProcessID_t *id) {
-  if (dds3SearchProcessName(StringLiteral_14979))
+  if (dds3SearchProcessName("titleProc"))
   {
     SetAreaUI(kernelObject, 0, 0, 0, 0, 0xFFFFFFFF);
     id->func_ans = -1;
     return 0;
   }
-  else  if (!fldProcAmChk())
+  else if (fldProcCampChk())
+  {
+    goto LABEL_39;
+  }
+  if (!fldProcAmChk())
   {
     if (fmProcessChk() != 1)
     {
@@ -92,6 +96,7 @@ dds3ProcessFunc_t *fldAddressProcess2(dds3ProcessID_t *id) {
       }
     }
   }
+LABEL_39:
   SetAreaUI(kernelObject, 0, 0, 0, 0, 0xFFFFFFFF);
   return 0;
 }
@@ -146,7 +151,7 @@ void fldInitAddressProcess(void) {
     v3,
     0,
     Method_fldPanel_fldAddressShutdown__);
-  started = dds3StartProcess(StringLiteral_2860, 0x2B0Bu, 1, 1, v2, 0, v3, 0, 0, 0);
+  started = dds3StartProcess("address", 0x2B0Bu, 1, 1, v2, 0, v3, 0, 0, 0);
   addressprocess_id = started;
 }
 
@@ -170,22 +175,73 @@ void fldInitInputPanel(void) {
     v3,
     0,
     Method_fldPanel_fldInputPanelShutdown__);
-  started = dds3StartProcess(StringLiteral_16708, 0x2B0Bu, 1, 1, v2, 0, v3, 0, 0, 0);
+  started = dds3StartProcess("inputpanel", 0x2B0Bu, 1, 1, v2, 0, v3, 0, 0, 0);
   inputpanel_id = started;
 }
 
 // 0x10c8be0
 s32 fldInputPanelCheckKey(void) {
-    fldProcCampChk();
-    fldProcAmChk();
-    fmProcessChk();
-    fldCamMiwatasiChk();
-    fldProcKiretaChk();
-    fldProcHirakenaiChk();
-    dds3GetProcessData(0);
-    DDS3_PADCHECK_TRIG(0);
-    dds3FadeIn2(0);
+  Il2CppObject *ProcessData;
+  Il2CppObject *v13;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v16;
+  s64 *v17;
+  u64 v23[3];
+
+  else if (fldProcCampChk())
+  {
     return 0;
+  }
+  else if (fldProcAmChk())
+  {
+    return 0;
+  }
+  if (fldDbg->MenuOn)
+    return 0;
+  if (fmProcessChk() == 1)
+    return 0;
+  if (fldCamMiwatasiChk() == 1)
+    return 0;
+  if (fldProcKiretaChk() == 1)
+    return 0;
+  if (fldProcHirakenaiChk() == 1)
+    return 0;
+  if (fldGb->NoroiDamegeCnt)
+    return 0;
+  ProcessData = dds3GetProcessData(&inputpanel_id);
+  v13 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fldInputPanelProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fldInputPanelProcessData_t, v23);
+      if ((v23[0] & 1) != 0)
+        v16 = v23[2];
+      else
+        v16 = v23 + 1;
+      v17 = sub_8C4940(v16);
+    }
+  }
+  if (!WORD2(ProcessData[1].klass))
+    return -1;
+  if (fldGb->FukiTalk)
+    goto LABEL_69;
+  if (gFldInf_WpExit != 1)
+  {
+    if (!DDS3_PADCHECK_TRIG(1))
+      return 0;
+  }
+LABEL_69:
+  WORD2(v13[1].klass) = 0;
+  if (fldGb->FukiTalk)
+  {
+    dds3FadeIn2(8u);
+    fldGb->FukiTalk = 0;
+  }
+  return 1;
 }
 
 // 0x10c83c0
@@ -212,7 +268,7 @@ void *fldInputPanelProcess1(dds3ProcessID_t *id) {
     if (op_Equality(v10, 0, 0))
     {
       transform = get_transform(AnnounceUI, 0);
-      v13 = Find(transform, StringLiteral_16707, 0);
+      v13 = Find(transform, "guidetext/TextTM", 0);
       v2[4] = get_gameObject(v13);
     }
     v14 = v2[3];
@@ -229,27 +285,186 @@ void *fldInputPanelProcess1(dds3ProcessID_t *id) {
 
 // 0x10c7d30
 dds3ProcessFunc_t *fldInputPanelProcess2(dds3ProcessID_t *id) {
-    fldProcCampChk();
-    fldProcAmChk();
-    fmProcessChk();
-    fldCamMiwatasiChk();
-    fldProcKiretaChk();
-    fldProcHirakenaiChk();
-    GetAnnounceUI(0);
-    dds3GetProcessData(0);
-    GetLocalizeText(0);
-    RepColTag(0, 0);
+  UnityEngine_GameObject_o *AnnounceUI;
+  Il2CppObject *ProcessData;
+  Il2CppObject *v15;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v18;
+  s64 *v19;
+  UnityEngine_GameObject_o *v22;
+  UnityEngine_Object_o *v24;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_Component_o *v27;
+  UnityEngine_Object_o *monitor;
+  TMPro_TMP_Text_o *v31;
+  struct System_String_array *inputpanel_mes0;
+  s64 v33;
+  System_String_o *v35;
+  System_String_o *LocalizeText;
+  System_Object_array *v37;
+  s64 *v38;
+  s64 *v40;
+  System_String_o *v43;
+  UnityEngine_GameObject_o *v48;
+  dds3ProcessID_t_o *v51[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  else if (fldProcCampChk())
+  {
     return 0;
+  }
+  else if (fldProcAmChk())
+  {
+    return 0;
+  }
+  if (fmProcessChk() != 1)
+  {
+    if (fldCamMiwatasiChk() != 1)
+    {
+      if (fldProcKiretaChk() != 1)
+      {
+        if (fldProcHirakenaiChk() == 1)
+        {
+          AnnounceUI = GetAnnounceUI(kernelObject);
+          cmpSetupObject(AnnounceUI, 0);
+        }
+        else
+        {
+          if (!fldGb->NoroiDamegeCnt)
+          {
+            ProcessData = dds3GetProcessData(&ida);
+            v15 = ProcessData;
+            if (ProcessData)
+            {
+              klass = ProcessData->klass;
+              if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+                || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fldInputPanelProcessData_t)
+              {
+                sub_8FC2C0(klass->_1.element_class, fldInputPanelProcessData_t, v51);
+                if ((v51[0] & 1) != 0)
+                  v18 = v51[2];
+                else
+                  v18 = v51 + 1;
+                v19 = sub_8C4940(v18);
+              }
+            }
+            if (WORD2(ProcessData[1].klass) == 1)
+            {
+              v22 = GetAnnounceUI(kernelObject);
+              {
+              }
+              if (op_Inequality(v22, 0, 0)
+                && !get_activeInHierarchy(v22))
+              {
+                v24 = v15[2].klass;
+                {
+                }
+                if (op_Equality(v24, 0, 0))
+                {
+                  transform = get_transform(v22, 0);
+                  v27 = Find(transform, "guidetext/TextTM", 0);
+                  v15[2].klass = get_gameObject(v27);
+                }
+                monitor = v15[1].monitor;
+                {
+                }
+                if (op_Equality(monitor, 0, 0))
+                  v15[1].monitor = GetComponent_object_(v15[2].klass);
+                SetActive(v22, 1, 0);
+                v31 = v15[1].monitor;
+                v33 = WORD1(v15[1].klass);
+                v35 = inputpanel_mes0->m_Items[v33];
+                LocalizeText = GetLocalizeText(v35);
+                LODWORD(v51[0]) = 0;
+                v37 = NewSpecific(object, 1u);
+                v38 = sub_8D3950(s32, v51);
+                v40 = v38;
+                v37->m_Items[0] = v40;
+                v43 = RepColTag(LocalizeText, v37);
+                set_text(v31, v43);
+              }
+              ++LOWORD(v15[1].klass);
+              bChanged = 1;
+              WORD2(v15[1].klass) = 0;
+            }
+            else
+            {
+              if (bChanged == 1)
+              {
+                v48 = GetAnnounceUI(kernelObject);
+                {
+                }
+                if (op_Inequality(v48, 0, 0)
+                  && get_activeInHierarchy(v48))
+                {
+                  SetActive(v48, 0, 0);
+                }
+                bChanged = 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return 0;
 }
 
 // 0x10c8950
 void fldInputPanelSetDraw(s32 flag) {
-    dds3GetProcessData(0);
+  s16 v2;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  v2 = flag;
+  ProcessData = dds3GetProcessData(&inputpanel_id);
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fldInputPanelProcessData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fldInputPanelProcessData_t, v8);
+    if ((v8[0] & 1) != 0)
+      v6 = v8[2];
+    else
+      v6 = v8 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  WORD2(ProcessData[1].klass) = v2;
 }
 
 // 0x10c8a90
 void fldInputPanelSetMessage(s32 no) {
-    dds3GetProcessData(0);
+  s16 v2;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  u64 v8[3];
+
+  v2 = no;
+  ProcessData = dds3GetProcessData(&inputpanel_id);
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fldInputPanelProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, fldInputPanelProcessData_t, v8);
+      if ((v8[0] & 1) != 0)
+        v6 = v8[2];
+      else
+        v6 = v8 + 1;
+      v7 = sub_8C4940(v6);
+    }
+    WORD1(ProcessData[1].klass) = v2;
+  }
 }
 
 // 0x10c85e0

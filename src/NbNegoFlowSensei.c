@@ -92,15 +92,18 @@ s32 Flow13_2(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0xD0004u);
   v4 = *n;
   nextkouho = (*n)->nextkouho;
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_416);
+  RandIntA = dds3GetRandIntA(2u, "");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   ework = (*n)->ework;
   if (datGetRace(ework) == 21)
+    goto LABEL_26;
   v11 = (*n)->ework;
   if (datGetRace(v11) == 22)
+    goto LABEL_26;
   v13 = (*n)->ework;
   if (datGetRace(v13) == 23)
   {
+LABEL_26:
     v14 = *n;
     v15 = v14->nextkouho;
     v14->nextnegoid = v15->m_Items[1];
@@ -226,7 +229,7 @@ s32 Flow13_7(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0xD000Cu);
   v4 = *n;
   nextkouho = v4->nextkouho;
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_416);
+  RandIntA = dds3GetRandIntA(2u, "");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   return 0;
 }
@@ -254,11 +257,13 @@ s32 Flow13_8(nbNegoProcessData_t **n) {
       ekucyo = v3->ekucyo;
       v8 = flowmsg->m_Items[ekucyo];
       v9 = 81;
+      goto LABEL_20;
     case 2:
       v10 = v3->flowmsg;
       v11 = v3->ekucyo;
       v8 = v10->m_Items[v11];
       v9 = 299;
+LABEL_20:
       nbDispNegoMessage(n, v8, v9, 0);
       return 0;
     case 3:

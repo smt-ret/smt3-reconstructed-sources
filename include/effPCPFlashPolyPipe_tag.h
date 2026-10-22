@@ -8,7 +8,7 @@ typedef struct effPCPFlashPolyPipe_tag effPCPFlashPolyPipe_tag;
 
 struct effPCPFlashPolyPipe_tag {
     effPCPFlashPolyPipeParam_t *param;
-    effPCPFlashPolyPipePart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPFlashPolyPipePart_tag *pPart;
     u32 frame;
     u32 abgr;
     f32 scale;

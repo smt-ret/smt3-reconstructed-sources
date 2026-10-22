@@ -164,5 +164,175 @@ void Start(d0x129zanzou *this) {
 
 // 0x161ec50
 void Update(d0x129zanzou *this) {
-    ChkMotion(0, 0);
+  Il2CppObject *Component_object;
+  s32 v5;
+  s32 v6;
+  s32 Count;
+  s32 v9;
+  s32 v10;
+  System_WeakReference_o *Item;
+  UnityEngine_Object_o *sharedMesh;
+  System_WeakReference_o *v14;
+  UnityEngine_Object_o *v16;
+  System_WeakReference_o *v17;
+  s32 v18;
+  System_WeakReference_o *v19;
+  UnityEngine_Mesh_o *v20;
+  System_WeakReference_o *v21;
+  UnityEngine_Transform_o *transform;
+  System_WeakReference_o *v23;
+  UnityEngine_Transform_o *v24;
+  System_WeakReference_o *v25;
+  UnityEngine_Transform_o *v26;
+  System_WeakReference_o *v27;
+  UnityEngine_Transform_o *v28;
+  u64 v29;
+  struct UnityEngine_Material_array_array *mat_list;
+  UnityEngine_Material_array *v32;
+  u64 v33;
+  struct System_Single_array_array *blendpow;
+  System_Single_array *v36;
+  UnityEngine_Material_o *v40;
+  struct System_Single_array_array *v41;
+  System_Single_array *v43;
+  u64 *v45;
+  System_WeakReference_o *v46;
+  UnityEngine_Transform_o *v47;
+  UnityEngine_Transform_o *v48;
+  f32 v49;
+  f32 v50;
+  f32 v51;
+  f32 v52;
+  f32 v53;
+  f32 v54;
+  System_WeakReference_o *v55;
+  UnityEngine_Transform_o *v56;
+  System_WeakReference_o *v57;
+  UnityEngine_Transform_o *v59;
+  UnityEngine_Quaternion_o v60;
+  UnityEngine_Vector3_o v61;
+  UnityEngine_Vector3_o position;
+  UnityEngine_Quaternion_o rotation;
+  UnityEngine_Quaternion_o v64;
+
+  *&v60.x = 0;
+  *&v60.z = 0;
+  Component_object = GetComponent_object_(this->InstantiateObj);
+  if (op_Inequality(Component_object, 0, 0) && !ChkMotion(Component_object, 1))
+    v5 = 3;
+  else
+    v5 = 1;
+  v6 = this->FlameCount + 1;
+  this->FlameCountMax = v5;
+  this->FlameCount = v6;
+  if (!(v6 % v5))
+  {
+    Count = _get_Count(this->BakeCloneMeshList);
+    if (Count > 1)
+    {
+      v9 = Count;
+      do
+      {
+        v10 = v9 - 1;
+        if (v9 == _get_Count(this->BakeCloneMeshList))
+        {
+          Item = _get_Item(
+                   this->BakeCloneMeshList,
+                   v10);
+          sharedMesh = get_sharedMesh(Item);
+          if (op_Inequality(sharedMesh, 0, 0))
+          {
+            v14 = _get_Item(
+                    this->BakeCloneMeshList,
+                    v10);
+            v16 = get_sharedMesh(v14);
+            Destroy_27360000(v16);
+          }
+        }
+        v17 = _get_Item(
+                this->BakeCloneMeshList,
+                v10);
+        v18 = v9 - 2;
+        v19 = _get_Item(
+                this->BakeCloneMeshList,
+                v18);
+        v20 = get_sharedMesh(v19);
+        set_sharedMesh(v17, v20);
+        v21 = _get_Item(
+                this->BakeCloneMeshList,
+                v10);
+        transform = get_transform(v21, 0);
+        v23 = _get_Item(
+                this->BakeCloneMeshList,
+                v18);
+        v24 = get_transform(v23, 0);
+        position = get_position(v24);
+        set_position(transform, position);
+        v25 = _get_Item(
+                this->BakeCloneMeshList,
+                v10);
+        v26 = get_transform(v25, 0);
+        v27 = _get_Item(
+                this->BakeCloneMeshList,
+                v18);
+        v28 = get_transform(v27, 0);
+        rotation = get_rotation(v28);
+        set_rotation(v26, rotation);
+        v9 = v10;
+      }
+      while (v10 > 1);
+    }
+    if (this->CloneCount >= 1)
+    {
+      v29 = 0;
+      do
+      {
+        mat_list = this->mat_list;
+        v32 = mat_list->m_Items[v29];
+        if (SLODWORD(v32->max_length) >= 1)
+        {
+          v33 = 0;
+          do
+          {
+            blendpow = this->blendpow;
+            v36 = blendpow->m_Items[v29];
+            v36->m_Items[v33] = this->blendini;
+            v40 = v32->m_Items[v33];
+            v41 = this->blendpow;
+            v43 = v41->m_Items[v29];
+            SetFloat_27246832(v40, id_BlendPower, v43->m_Items[v33++]);
+          }
+          while (v33 < SLODWORD(v32->max_length));
+        }
+        ++v29;
+      }
+      while (v29 < this->CloneCount);
+    }
+    v45 = Allocate(UnityEngine_Mesh);
+    _ctor(v45, 0);
+    BakeMesh(this->BaseMeshObj, v45);
+    v46 = _get_Item(
+            this->BakeCloneMeshList,
+            0);
+    set_sharedMesh(v46, v45);
+    v47 = get_transform(this, 0);
+    v61 = get_position(v47);
+    v48 = get_transform(this, 0);
+    v60 = get_rotation(v48);
+    sub_1A1CAE0(&v60.x, 0);
+    v50 = v49;
+    v52 = v51;
+    v54 = v53;
+    v55 = _get_Item(
+            this->BakeCloneMeshList,
+            0);
+    v56 = get_transform(v55, 0);
+    set_position(v56, v61);
+    v57 = _get_Item(
+            this->BakeCloneMeshList,
+            0);
+    v59 = get_transform(v57, 0);
+    v64 = Euler(v50, v52, v54);
+    set_rotation(v59, v64);
+  }
 }

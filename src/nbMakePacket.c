@@ -416,19 +416,24 @@ nbKoukaPacket_t *nbAddHatudoEffectKoukaPacket(s32 startframe, s32 framelength, s
     switch (id)
     {
       case 0x123u:
-        v21 = &StringLiteral_8992;
+LABEL_15:
+        v21 = &"BSE_E905_SE02";
         type = 13;
+        goto LABEL_51;
       case 0x124u:
         if (skillid == 169)
         {
           v13 += 10;
           type = 20;
+          goto LABEL_43;
         }
         v20 = 15;
         break;
       case 0x125u:
-        v21 = &StringLiteral_8999;
+LABEL_28:
+        v21 = &"BSE_E909_SE02";
         type = 17;
+        goto LABEL_51;
       case 0x126u:
       case 0x127u:
       case 0x128u:
@@ -477,18 +482,28 @@ nbKoukaPacket_t *nbAddHatudoEffectKoukaPacket(s32 startframe, s32 framelength, s
       case 0x153u:
       case 0x154u:
       case 0x155u:
+        goto LABEL_22;
       case 0x156u:
-        v21 = &StringLiteral_9003;
+LABEL_32:
+        v21 = &"BSE_E914_SE01";
         type = 22;
+        goto LABEL_51;
       case 0x157u:
-        v21 = &StringLiteral_9005;
+LABEL_36:
+        v21 = &"BSE_E915_SE01";
         type = 23;
+        goto LABEL_51;
       case 0x158u:
+        goto LABEL_55;
       default:
         if (id != 264)
-        v21 = &StringLiteral_9000;
+          goto LABEL_22;
+LABEL_47:
+        v21 = &"BSE_E909_SE03";
         type = 18;
+        goto LABEL_51;
     }
+    goto LABEL_55;
   }
   if (!id)
   {
@@ -497,6 +512,7 @@ nbKoukaPacket_t *nbAddHatudoEffectKoukaPacket(s32 startframe, s32 framelength, s
       v22 = 65547;
       type = 19;
       v13 = 0x7FFF;
+LABEL_52:
       k = 0;
       v23 = nbCheckSePacket(startframe, v22, 5);
       if (!v23)
@@ -506,16 +522,22 @@ nbKoukaPacket_t *nbAddHatudoEffectKoukaPacket(s32 startframe, s32 framelength, s
         v25->type = 25;
         v25->data1->i = v22;
       }
+LABEL_54:
       v20 = type;
+      goto LABEL_55;
     }
+    goto LABEL_22;
   }
   if (id == 258)
   {
-    v21 = &StringLiteral_8993;
+LABEL_24:
+    v21 = &"BSE_E905_SE03";
     type = 14;
+    goto LABEL_51;
   }
   if (id != 259)
   {
+LABEL_22:
     v22 = 65547;
     v20 = type;
     switch (type)
@@ -529,37 +551,57 @@ nbKoukaPacket_t *nbAddHatudoEffectKoukaPacket(s32 startframe, s32 framelength, s
       case 11:
       case 12:
       case 19:
+        goto LABEL_52;
       case 3:
         v22 = 65548;
+        goto LABEL_52;
       case 4:
         v22 = 65549;
+        goto LABEL_52;
       case 5:
         v22 = 65550;
+        goto LABEL_52;
       case 6:
         v22 = 65551;
+        goto LABEL_52;
       case 13:
+        goto LABEL_15;
       case 14:
+        goto LABEL_24;
       case 15:
       case 16:
+        goto LABEL_55;
       case 17:
+        goto LABEL_28;
       case 18:
+        goto LABEL_47;
       case 20:
       case 21:
+        goto LABEL_43;
       case 22:
+        goto LABEL_32;
       case 23:
+        goto LABEL_36;
       default:
+        goto LABEL_54;
     }
+    goto LABEL_55;
   }
   if (skillid != 170)
   {
     v20 = 16;
+    goto LABEL_55;
   }
   v13 += 10;
   type = 21;
-  v21 = &StringLiteral_8996;
+LABEL_43:
+  v21 = &"BSE_E907_SE02";
+LABEL_51:
   v22 = FindId(1, *v21);
   v20 = type;
   if (v22)
+    goto LABEL_52;
+LABEL_55:
   v29 = effBTLSystemCut1Create(form, v20);
   effBTLCutSetCutEndFrame(&v29, v13);
   k = nbGetKoukaProcessData();
@@ -571,12 +613,105 @@ nbKoukaPacket_t *nbAddHatudoEffectKoukaPacket(s32 startframe, s32 framelength, s
 
 // 0x1985f30
 nbKoukaPacket_t *nbAddHitEffKoukaPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 type) {
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    effBTLSystemCreate(0, 0);
-    effBTLSystemGetLength(0);
-    nbCheckSePacket(0, 0, 0);
-    return 0;
+  s32 v8;
+  nbKoukaPacket_t_o *v9;
+  nbKoukaPacket_t_o *v11;
+  s32 v13;
+  s32 v14;
+  u32 v15;
+  s16 Length;
+  u64 *v18;
+  nbKoukaPacket_t_o *v22;
+  struct nbKoukaData_t_o *data1;
+  Il2CppObject *v25;
+  nbKoukaProcessData_t_o *k;
+  nbKoukaProcessData_t_o *KoukaProcessData;
+
+  v8 = startframe;
+  v25 = 0;
+  k = 0;
+  v9 = 0;
+  if (((*form)->stat & 1) != 0)
+  {
+    k = nbGetKoukaProcessData(*&startframe);
+    v11 = nbAddKoukaPacket(&k, v8, 0, uniqueid);
+    v11->type = 15;
+    v11->form = *form;
+    v9 = v11;
+    v13 = type;
+    v11->data1->i = type;
+    v14 = 0;
+    v15 = 25;
+    switch (v13)
+    {
+      case 0:
+        v14 = 0;
+        v15 = 24;
+        goto LABEL_15;
+      case 1:
+        v14 = 65544;
+        v15 = 17;
+        goto LABEL_15;
+      case 2:
+        v14 = 65545;
+        v15 = 18;
+        goto LABEL_15;
+      case 3:
+        v11->framelength = 0;
+        return v9;
+      case 4:
+        v15 = 26;
+        v14 = 65537;
+        goto LABEL_15;
+      case 5:
+        v15 = 20;
+        v14 = 0x10000;
+        goto LABEL_15;
+      case 6:
+        v14 = 0;
+        v15 = 14;
+        goto LABEL_15;
+      case 7:
+        goto LABEL_15;
+      case 8:
+        v14 = 65541;
+        v15 = 27;
+        goto LABEL_15;
+      case 9:
+        v14 = 65543;
+        v15 = 28;
+        goto LABEL_15;
+      case 10:
+        v14 = 65542;
+        v15 = 29;
+LABEL_15:
+        v25 = effBTLSystemCreate(form, v15);
+        v9->data2->p = v25;
+        v9->framelength = 0;
+        Length = effBTLSystemGetLength(&v25);
+        v9->framelength = Length;
+        LOWORD(KoukaProcessData) = Length;
+        v18 = sub_8D3950(s16, &KoukaProcessData);
+        Write_2930400("length = {0:D}\n", v18);
+        if (v14)
+        {
+          KoukaProcessData = 0;
+          v20 = nbCheckSePacket(v8, v14, 5);
+          if (!v20)
+          {
+            KoukaProcessData = nbGetKoukaProcessData();
+            v22 = nbAddKoukaPacket(&KoukaProcessData, v8, 0, uniqueid);
+            data1 = v22->data1;
+            v22->type = 25;
+            data1->i = v14;
+          }
+        }
+        break;
+      default:
+        return v9;
+    }
+  }
+  return v9;
 }
 
 // 0x1986f40
@@ -726,12 +861,17 @@ nbKoukaPacket_t *nbAddMojiEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid
       {
         v15->framelength = (v10 - v17) & ~((v10 - v17) >> 15);
         if (!first)
+          goto LABEL_17;
       }
       else
       {
+LABEL_16:
         if (!first)
         {
+LABEL_17:
           if (type != 4)
+            goto LABEL_22;
+          goto LABEL_20;
         }
       }
     }
@@ -740,9 +880,12 @@ nbKoukaPacket_t *nbAddMojiEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid
       s = v15->data1->s;
       v14 = s->m_Items[0];
     }
+    goto LABEL_16;
   }
   v14 = 0;
   if (type != 4)
+    goto LABEL_22;
+LABEL_20:
   k = 0;
   v20 = nbCheckSePacket(v10, 65546, 5);
   if (!v20)
@@ -752,6 +895,7 @@ nbKoukaPacket_t *nbAddMojiEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid
     v22->type = 25;
     v22->data1->i = 65546;
   }
+LABEL_22:
   v23 = nbAddKoukaPacket(&KoukaProcessData, v10, frame, uniqueid);
   v23->type = 22;
   v23->form = *form;
@@ -764,27 +908,27 @@ nbKoukaPacket_t *nbAddMojiEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid
   SetActive(HitNum, 1, 0);
   GetComponent_object_(HitNum);
   transform = get_transform(HitNum, 0);
-  v32 = Find(transform, StringLiteral_21418, 0);
+  v32 = Find(transform, "num_damage", 0);
   gameObject = get_gameObject(v32);
   SetActive(gameObject, 0, 0);
   v34 = get_transform(HitNum, 0);
-  v35 = Find(v34, StringLiteral_21419, 0);
+  v35 = Find(v34, "critical", 0);
   v36 = get_gameObject(v35);
   SetActive(v36, 0, 0);
   v37 = get_transform(HitNum, 0);
-  v38 = Find(v37, StringLiteral_21420, 0);
+  v38 = Find(v37, "weakpoint", 0);
   v39 = get_gameObject(v38);
   SetActive(v39, 0, 0);
   v40 = get_transform(HitNum, 0);
-  v41 = Find(v40, StringLiteral_21421, 0);
+  v41 = Find(v40, "miss", 0);
   v42 = get_gameObject(v41);
   SetActive(v42, 0, 0);
   v43 = get_transform(HitNum, 0);
-  v44 = Find(v43, StringLiteral_21422, 0);
+  v44 = Find(v43, "block", 0);
   v45 = get_gameObject(v44);
   SetActive(v45, 0, 0);
   v46 = get_transform(HitNum, 0);
-  v47 = Find(v46, StringLiteral_21423, 0);
+  v47 = Find(v46, "talk", 0);
   v48 = get_gameObject(v47);
   SetActive(v48, 0, 0);
   return v27;
@@ -918,7 +1062,9 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
         first = first->next;
         if (v18->type == 16)
           break;
+LABEL_11:
         if (!first)
+          goto LABEL_16;
       }
       v19 = v18->form;
       v20 = *form;
@@ -926,6 +1072,7 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
       {
         v21 = v18->startframe;
         if (v18->framelength + v21 <= startframe)
+          goto LABEL_11;
         v18->framelength = (startframe - v21) & ~((startframe - v21) >> 15);
         if (!first)
           break;
@@ -933,6 +1080,7 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
       else
       {
         if (v19 != v20)
+          goto LABEL_11;
         s = v18->data1->s;
         _Add(v14, s->m_Items[0]);
         if (!first)
@@ -940,6 +1088,7 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
       }
     }
   }
+LABEL_16:
   v24 = nbAddKoukaPacket(&k, startframe, frame, uniqueid);
   v24->type = 16;
   v24->form = *form;
@@ -953,6 +1102,8 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
     v28 = 0;
     v30 = v25->data1->s;
     if (LODWORD(v30->max_length))
+      goto LABEL_23;
+LABEL_33:
   }
   v28 = 0;
   while (_Contains(v14, v28))
@@ -966,32 +1117,34 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
   }
   v30 = v25->data1->s;
   if (!LODWORD(v30->max_length))
+    goto LABEL_33;
+LABEL_23:
   v30->m_Items[0] = v28;
   formindex = (*form)->formindex;
   HitNum = GetHitNum(formindex, v28);
   SetActive(HitNum, 1, 0);
   transform = get_transform(HitNum, 0);
-  v34 = Find(transform, StringLiteral_21418, 0);
+  v34 = Find(transform, "num_damage", 0);
   gameObject = get_gameObject(v34);
   SetActive(gameObject, 0, 0);
   v36 = get_transform(HitNum, 0);
-  v37 = Find(v36, StringLiteral_21419, 0);
+  v37 = Find(v36, "critical", 0);
   v38 = get_gameObject(v37);
   SetActive(v38, 0, 0);
   v39 = get_transform(HitNum, 0);
-  v40 = Find(v39, StringLiteral_21420, 0);
+  v40 = Find(v39, "weakpoint", 0);
   v41 = get_gameObject(v40);
   SetActive(v41, 0, 0);
   v42 = get_transform(HitNum, 0);
-  v43 = Find(v42, StringLiteral_21421, 0);
+  v43 = Find(v42, "miss", 0);
   v44 = get_gameObject(v43);
   SetActive(v44, 0, 0);
   v45 = get_transform(HitNum, 0);
-  v46 = Find(v45, StringLiteral_21422, 0);
+  v46 = Find(v45, "block", 0);
   v47 = get_gameObject(v46);
   SetActive(v47, 0, 0);
   v48 = get_transform(HitNum, 0);
-  v49 = Find(v48, StringLiteral_21423, 0);
+  v49 = Find(v48, "talk", 0);
   v50 = get_gameObject(v49);
   SetActive(v50, 0, 0);
   if ((type & 0xFFFFFFFE) == 4)
@@ -1000,27 +1153,27 @@ nbKoukaPacket_t *nbAddNumEffKoukaPacket(s32 startframe, s32 frame, s32 uniqueid,
     v54 = GetHitNum(v53, v28 + 1);
     SetActive(v54, 1, 0);
     v55 = get_transform(v54, 0);
-    v56 = Find(v55, StringLiteral_21418, 0);
+    v56 = Find(v55, "num_damage", 0);
     v57 = get_gameObject(v56);
     SetActive(v57, 0, 0);
     v58 = get_transform(v54, 0);
-    v59 = Find(v58, StringLiteral_21419, 0);
+    v59 = Find(v58, "critical", 0);
     v60 = get_gameObject(v59);
     SetActive(v60, 0, 0);
     v61 = get_transform(v54, 0);
-    v62 = Find(v61, StringLiteral_21420, 0);
+    v62 = Find(v61, "weakpoint", 0);
     v63 = get_gameObject(v62);
     SetActive(v63, 0, 0);
     v64 = get_transform(v54, 0);
-    v65 = Find(v64, StringLiteral_21421, 0);
+    v65 = Find(v64, "miss", 0);
     v66 = get_gameObject(v65);
     SetActive(v66, 0, 0);
     v67 = get_transform(v54, 0);
-    v68 = Find(v67, StringLiteral_21422, 0);
+    v68 = Find(v67, "block", 0);
     v69 = get_gameObject(v68);
     SetActive(v69, 0, 0);
     v70 = get_transform(v54, 0);
-    v71 = Find(v70, StringLiteral_21423, 0);
+    v71 = Find(v70, "talk", 0);
     v72 = get_gameObject(v71);
     SetActive(v72, 0, 0);
   }
@@ -1373,12 +1526,32 @@ nbKoukaPacket_t *nbAddSkillEffectKoukaPacket2(s32 startframe, s32 framelength, s
 
 // 0x1984c50
 nbKoukaPacket_t *nbAddSkillEffectKoukaPacket3(s32 startframe, s32 uniqueid, u8 **bed, s32 cutno, nbFormation_t **form) {
-    effBTLCreate(0);
-    effBTLCutCreate(0, 0, 0, 0);
-    effBTLGetCutEndFrame(0, 0);
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    return 0;
+  u16 v7;
+  struct effBTLCutHandle_t_o *v11;
+  s32 v12;
+  u64 *v14;
+  nbKoukaPacket_t_o *result;
+  u32 v18;
+  effBTL_t_o *hBTLEffect;
+  nbKoukaProcessData_t_o *k;
+
+  v7 = cutno;
+  k = 0;
+  hBTLEffect = 0;
+  hBTLEffect = effBTLCreate(bed);
+  v11 = effBTLCutCreate(&hBTLEffect, v7, *form, 1u);
+  v18 = effBTLGetCutEndFrame(&hBTLEffect, v7);
+  v12 = v18;
+  v14 = sub_8D3950(s32, &v18);
+  Write_2930400("カット長 = {0:D}\n", v14);
+  k = nbGetKoukaProcessData();
+  result = nbAddKoukaPacket(&k, startframe, v12, uniqueid);
+  result->type = 43;
+  result->cuteff = 0;
+  result->data1->p = hBTLEffect;
+  result->form = *form;
+  result->cuteff = v11;
+  return result;
 }
 
 // 0x1985a50
@@ -1631,11 +1804,13 @@ s32 nbMakeBadKaifukuPacket(s32 startframe, s32 uniqueid, nbFormation_t **form) {
       {
         return 1;
       }
+      goto LABEL_18;
     }
     if (v9 <= 0x100)
     {
       if (v9 != 64 && v9 != 128 && v9 != 256)
         return 1;
+LABEL_18:
       k = nbGetKoukaProcessData(BadStat);
       v12 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
       v12->type = 20;
@@ -1647,6 +1822,7 @@ s32 nbMakeBadKaifukuPacket(s32 startframe, s32 uniqueid, nbFormation_t **form) {
       return 1;
     }
     if (v9 == 512 || v9 == 2048 || v9 == 1024)
+      goto LABEL_18;
   }
   return 1;
 }
@@ -1674,10 +1850,13 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
   formindex = (*form)->formindex;
   v19 = startframe;
   if (formindex > 15)
+    goto LABEL_28;
   if (dead)
   {
     *&startframe = nbMakeDeadVisualPacket(startframe, uniqueid, form, deadtype, 1, *&mp);
     if (!hiteff)
+      goto LABEL_28;
+LABEL_22:
     if (type != 2)
     {
       if (type == 1)
@@ -1686,26 +1865,39 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
         v22 = uniqueid;
         v23 = form;
         v24 = 7;
+        goto LABEL_27;
       }
       if (type)
+        goto LABEL_28;
     }
     v21 = v19;
     v22 = uniqueid;
     v23 = form;
     v24 = 0;
+LABEL_27:
     *&startframe = nbAddHitEffKoukaPacket(v21, v22, v23, v24, *&hp);
+    goto LABEL_28;
   }
   if (badstat <= 32)
   {
     if (badstat <= 4)
     {
       if (badstat > 4 || ((1 << badstat) & 0x16) == 0)
+        goto LABEL_52;
     }
-    else    *&startframe = nbMakeBadDamagePacket(startframe, uniqueid, form, badstat, *&hp);
+    else if (((1LL << badstat) & 0x100010100LL) == 0)
+    {
+      goto LABEL_52;
+    }
+LABEL_20:
+    *&startframe = nbMakeBadDamagePacket(startframe, uniqueid, form, badstat, *&hp);
+    goto LABEL_21;
   }
   if (badstat <= 256)
   {
     if (badstat != 64 && badstat != 128 && badstat != 256)
+      goto LABEL_52;
+    goto LABEL_20;
   }
   if (badstat == 512)
   {
@@ -1715,8 +1907,12 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
     *(*&startframe + 48LL) = *form;
     *(*(*&startframe + 88LL) + 32LL) = 0;
     if (hiteff)
+      goto LABEL_22;
+    goto LABEL_28;
   }
   if (badstat == 2048 || badstat == 1024)
+    goto LABEL_20;
+LABEL_52:
   if ((type - 1) >= 2 && type)
   {
     if (type == 3)
@@ -1736,9 +1932,14 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
         *(*&startframe + 20LL) = 25;
         *(*(*&startframe + 88LL) + 32LL) = 65538;
         if (hiteff)
+          goto LABEL_22;
+        goto LABEL_28;
       }
     }
+LABEL_21:
     if (!hiteff)
+      goto LABEL_28;
+    goto LABEL_22;
   }
   k = nbGetKoukaProcessData(*&startframe);
   *&startframe = nbAddKoukaPacket(&k, v19, 0, uniqueid);
@@ -1747,6 +1948,8 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
   *(*(*&startframe + 88LL) + 36LL) = 1099431936;
   *(*(*&startframe + 96LL) + 32LL) = 1;
   if (hiteff)
+    goto LABEL_22;
+LABEL_28:
   v25 = v19 + animeoff + 1;
   if (((mp | hp) & 0x80000000) == 0)
   {
@@ -1762,9 +1965,12 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
     k = nbGetKoukaProcessData(v27);
     v30 = nbAddKoukaPacket(&k, v19, 0, uniqueid);
     v30->type = 17;
+LABEL_38:
     v30->form = *form;
     v30->data1->i = 1;
+LABEL_39:
     v30->data2->i = v28;
+    goto LABEL_40;
   }
   if ((mp & 0x80000000) == 0)
   {
@@ -1774,6 +1980,7 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
     k = nbGetKoukaProcessData(*&startframe);
     v30 = nbAddKoukaPacket(&k, v19, 0, uniqueid);
     v30->type = 17;
+    goto LABEL_38;
   }
   if ((hp & 0x80000000) == 0)
   {
@@ -1785,7 +1992,9 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
     v30->type = 17;
     v30->form = *form;
     v30->data1->i = 0;
+    goto LABEL_39;
   }
+LABEL_40:
   if (moji)
   {
     if (type == 2)
@@ -1794,6 +2003,7 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
       v33 = uniqueid;
       v34 = form;
       v35 = 1;
+      goto LABEL_45;
     }
     if (type == 1)
     {
@@ -1801,6 +2011,7 @@ s32 nbMakeDamagePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 t
       v33 = uniqueid;
       v34 = form;
       v35 = 2;
+LABEL_45:
       nbAddMojiEffKoukaPacket(v32, 45, v33, v34, v35, *&mp);
     }
   }
@@ -1835,9 +2046,11 @@ s32 nbMakeDeadPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 dea
     {
       if (deadchk != 1)
         return 1;
+      goto LABEL_20;
     }
     if (deadchk == 1 || (v19->flag & 4) == 0)
     {
+LABEL_20:
       k = nbGetKoukaProcessData();
       v23 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
       v23->type = 11;
@@ -1851,23 +2064,214 @@ s32 nbMakeDeadPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 dea
 
 // 0x1987e10
 s32 nbMakeDeadVisualPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 deadtype, s32 deadpcm) {
-    nbGetMainProcessData();
-    nbCheckEventDead(0);
-    nbGetUnitWorkFromFormindex(0);
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    nbAddHitEffKoukaPacket(0, 0, 0, 0);
-    Get(0);
-    nbMakeBadKaifukuPacket(0, 0, 0);
-    nbCheckDeadEvent(0);
-    nbGetDeadEventFadeTime(0);
-    nbGetDeadEventFadeOutFrame(0);
-    nbGetDeadEventFadeStopFrame(0);
-    nbGetDeadEventFadeInFrame(0);
-    nbAddDeadPcmPacket(0, 0, 0);
-    nbCheckSePacket(0, 0, 0);
-    nbAddPadShockPacket(0, 0, 0, 0, 0);
-    return 0;
+  nbFormation_t_o *v13;
+  s32 v17;
+  s32 formindex;
+  datUnitWork_t_o *UnitWorkFromFormindex;
+  nbKoukaPacket_t_o *v22;
+  nbKoukaPacket_t_o *v24;
+  s32 v25;
+  nbKoukaPacket_t_o *v27;
+  s32 v29;
+  datUnitWork_t_o *v30;
+  s32 v35;
+  s32 id;
+  struct datUnitMotion_s_array *motion;
+  u32 motion_no;
+  nbKoukaPacket_t_o *v44;
+  struct nbKoukaData_t_o *data1;
+  s32 v47;
+  nbFormation_t_o *v48;
+  s32 v49;
+  s32 v50;
+  s32 DeadEventFadeTime;
+  s32 DeadEventFadeOutFrame;
+  s32 DeadEventFadeStopFrame;
+  s32 v55;
+  s32 v56;
+  nbKoukaPacket_t_o *v58;
+  s32 v59;
+  nbKoukaProcessData_t_o *KoukaProcessData;
+  nbKoukaPacket_t_o *v63;
+  s32 v65;
+  nbFormation_t_o *v68;
+  s32 v69;
+  s32 v71;
+  s32 v72;
+  s32 v73;
+  s32 v74;
+  nbKoukaPacket_t_o *v76;
+  nbKoukaProcessData_t_o *k;
+
+  nbGetMainProcessData();
+  v13 = *form;
+  v14 = nbCheckEventDead(v13);
+  if ()
+    v17 = 2;
+  else
+    v17 = deadtype;
+  if (v17)
+  {
+    if (v17 != 2)
+    {
+      if (v17 == 1)
+      {
+        formindex = (*form)->formindex;
+        UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(formindex);
+        if ((UnitWorkFromFormindex->flag & 4) == 0)
+        {
+          k = nbGetKoukaProcessData(UnitWorkFromFormindex);
+          v22 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+          v22->type = 5;
+          v22->form = *form;
+          v22->data1->i = 2;
+          v22->data2->i = 0;
+          k = nbGetKoukaProcessData(v22);
+          v24 = nbAddKoukaPacket(&k, startframe + 2, 0, uniqueid);
+          v24->type = 7;
+          v24->form = *form;
+          v24->data1->i = 2;
+          v24->data2->i = 0;
+        }
+        nbAddHitEffKoukaPacket(startframe + 1, uniqueid, form, 6);
+        v25 = 65540;
+        if (!deadpcm)
+          goto LABEL_56;
+      }
+      else
+      {
+        v25 = 0;
+        if (!deadpcm)
+          goto LABEL_56;
+      }
+      goto LABEL_54;
+    }
+    v35 = (*form)->formindex;
+    id = nbGetUnitWorkFromFormindex(v35)->id;
+    motion = Get(id, 0)->motion;
+    motion_no = motion->m_Items[23]->motion_no;
+    BadKaifukuPacket = nbMakeBadKaifukuPacket(startframe, uniqueid, form);
+    k = nbGetKoukaProcessData();
+    v44 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+    if (motion_no)
+    {
+      v44->type = 27;
+      v44->form = *form;
+      data1 = v44->data1;
+      v47 = 1;
+    }
+    else
+    {
+      v44->type = 10;
+      v44->form = *form;
+      v44->data1->f = 30.0;
+      data1 = v44->data2;
+      v47 = -1;
+    }
+    data1->i = v47;
+    v48 = *form;
+    else
+    {
+      v49 = nbCheckDeadEvent(*form);
+      if (v49)
+      {
+LABEL_43:
+        v50 = v49;
+        DeadEventFadeTime = nbGetDeadEventFadeTime(v50);
+        DeadEventFadeOutFrame = nbGetDeadEventFadeOutFrame(v50);
+        DeadEventFadeStopFrame = nbGetDeadEventFadeStopFrame(v50);
+        DeadEventFadeInFrame = nbGetDeadEventFadeInFrame(v50);
+        v55 = DeadEventFadeInFrame;
+        v56 = DeadEventFadeTime + startframe;
+        k = nbGetKoukaProcessData();
+        v58 = nbAddKoukaPacket(&k, v56, 0, uniqueid);
+        v58->type = 47;
+        v58->data1->i = DeadEventFadeOutFrame;
+        v59 = DeadEventFadeOutFrame + v56;
+        v58->data2->i = 1;
+        if (v55 >= 1)
+        {
+          k = nbGetKoukaProcessData(v58);
+          v58 = nbAddKoukaPacket(&k, v59 + DeadEventFadeStopFrame + 2, 0, uniqueid);
+          v58->type = 48;
+          v58->data1->i = v55;
+          v58->data2->i = 1;
+        }
+        KoukaProcessData = nbGetKoukaProcessData(v58);
+        k = KoukaProcessData;
+        v63 = nbAddKoukaPacket(&k, v59 + DeadEventFadeStopFrame - 3, 0, uniqueid);
+        KoukaProcessData->data->actionstackp = 0;
+        KoukaProcessData->data->eventno = v63->data1->i;
+        KoukaProcessData->data->endtype = 7;
+        v63->type = 46;
+        v63->form = *form;
+        v63->data1->i = v50;
+        v25 = 0x10000;
+        if (!deadpcm)
+          goto LABEL_56;
+        goto LABEL_54;
+      }
+    }
+    goto LABEL_53;
+  }
+  k = nbGetKoukaProcessData();
+  v27 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  v27->type = 10;
+  v27->form = *form;
+  v27->data1->f = 17.0;
+  v27->data2->i = 0;
+  v29 = (*form)->formindex;
+  else
+  {
+    v30 = nbGetUnitWorkFromFormindex(v29);
+    if ((v30->flag & 4) == 0)
+      goto LABEL_25;
+  }
+LABEL_53:
+  v25 = 0x10000;
+  if (!deadpcm)
+    goto LABEL_56;
+LABEL_54:
+  v65 = startframe + 7;
+  nbAddDeadPcmPacket(startframe + 7, uniqueid, form);
+  if (v25)
+  {
+    k = 0;
+    v67 = nbCheckSePacket(v65, v25, 5);
+    if (!v67)
+    {
+      k = nbGetKoukaProcessData();
+      v76 = nbAddKoukaPacket(&k, v65, 0, uniqueid);
+      v76->type = 25;
+      v76->data1->i = v25;
+      v68 = *form;
+      if (((*form)->stat & 0x100) == 0)
+        return 1;
+LABEL_57:
+      v69 = v68->formindex;
+      else if ((nbGetUnitWorkFromFormindex(v69)->flag & 4) == 0)
+      {
+LABEL_60:
+        v71 = 150;
+        v72 = 20;
+        v73 = startframe;
+        v74 = uniqueid;
+LABEL_65:
+        nbAddPadShockPacket(v73, v74, 1, v71, v72);
+        return 1;
+      }
+      v71 = 250;
+      v73 = startframe;
+      v74 = uniqueid;
+      v72 = 30;
+      goto LABEL_65;
+    }
+  }
+LABEL_56:
+  v68 = *form;
+  if (((*form)->stat & 0x100) != 0)
+    goto LABEL_57;
+  return 1;
 }
 
 // 0x1988ab0
@@ -1911,12 +2315,15 @@ s32 nbMakeKaifukuPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 
       *(*&startframe + 48LL) = *form;
       *(*(*&startframe + 88LL) + 32LL) = 10;
       if (((mp | hp) & 0x80000000) == 0)
+        goto LABEL_6;
+      goto LABEL_12;
     }
     if (type == 1)
       *&startframe = nbAddHitEffKoukaPacket(startframe, uniqueid, form, 2, *&hp);
   }
   if (((mp | hp) & 0x80000000) == 0)
   {
+LABEL_6:
     if (formindex <= 15)
     {
       if ((type & 0xFFFFFFFE) != 2)
@@ -1932,10 +2339,13 @@ s32 nbMakeKaifukuPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 
     k = nbGetKoukaProcessData(v17);
     v19 = nbAddKoukaPacket(&k, v15, 0, uniqueid);
     v19->type = 17;
+LABEL_16:
     v19->form = *form;
     v19->data1->i = 1;
     v19->data2->i = mp;
+    goto LABEL_17;
   }
+LABEL_12:
   if ((mp & 0x80000000) == 0)
   {
     if (formindex <= 15)
@@ -1943,6 +2353,7 @@ s32 nbMakeKaifukuPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 
     k = nbGetKoukaProcessData(*&startframe);
     v19 = nbAddKoukaPacket(&k, v15, 0, uniqueid);
     v19->type = 17;
+    goto LABEL_16;
   }
   if ((hp & 0x80000000) == 0)
   {
@@ -1955,59 +2366,233 @@ s32 nbMakeKaifukuPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, s32 
     v26->data1->i = 0;
     v26->data2->i = hp;
     if (badstat)
+      goto LABEL_18;
     return 1;
   }
+LABEL_17:
   if (badstat)
+LABEL_18:
     nbMakeBadKaifukuPacket(v15 + 1, uniqueid, form, *&type);
   return 1;
 }
 
 // 0x198a6c0
 s32 nbMakeNegoBackPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, nbFormation_t **target) {
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    ToMatrix();
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__STOREVECTOR(0);
-    nbMakeUnitMoveGetCyDist(0, 0);
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__ADDVECTOR();
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    SDF_VU0__COPYVECTOR(0, (sdfVector4_t){0});
-    return 0;
+  s64 v10;
+  s64 v11;
+  s32 partyindex;
+  nbKoukaPacket_t_o *v15;
+  nbKoukaPacket_t_o *v16;
+  nbKoukaPacket_t_o *v19;
+  nbKoukaPacket_t_o *v21;
+  UnityEngine_Vector4_o v23;
+  UnityEngine_Vector4_o v24;
+  UnityEngine_Vector4_o p;
+  nbKoukaProcessData_t_o *k;
+  UnityEngine_Vector4_o v27;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  *&v24.x = 0;
+  *&v24.z = 0;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v24.x, 0.0, 0.0, 0.0, 0.0);
+  *&v23.x = 0;
+  *&v23.z = 0;
+  sub_854690(&v23.x, 0.0, 0.0, 1.0, 0.0);
+  SDF_VU0__LOADVECTOR((*target)->rot, 0);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR(v23);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__STOREVECTOR(&p);
+  nbMakeUnitMoveGetCyDist(form, target);
+  SDF_VU0__LOADVECTOR(p);
+  SDF_VU0__SCALEVECTOR((*form)->r * (*form)->scl, 0);
+  SDF_VU0__LOADVECTOR_B((*form)->pos, 0);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__STOREVECTOR(&v24);
+  v10 = *&v24.x;
+  v11 = *&v24.z;
+  partyindex = (*form)->partyindex;
+  k = nbGetKoukaProcessData();
+  v15 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  *&v27.x = v10;
+  *&v27.z = v11;
+  v16 = v15;
+  v15->type = 1;
+  v15->partyno = partyindex;
+  SDF_VU0__COPYVECTOR(&v15->v, v27);
+  v16->data1->f = 0.05;
+  k = nbGetKoukaProcessData();
+  v19 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  v19->type = 5;
+  v19->form = *form;
+  v19->data1->i = 5;
+  v19->data2->i = 0;
+  k = nbGetKoukaProcessData(v19);
+  v21 = nbAddKoukaPacket(&k, startframe + 4, 0, uniqueid);
+  v21->type = 7;
+  v21->form = *form;
+  v21->data1->i = 5;
+  v21->data2->i = 0;
+  return 1;
 }
 
 // 0x198a900
 s32 nbMakeNegoForwardPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, nbFormation_t **target) {
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    ToMatrix();
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__STOREVECTOR(0);
-    nbMakeUnitMoveGetCyDist(0, 0);
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__ADDVECTOR();
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    SDF_VU0__COPYVECTOR(0, (sdfVector4_t){0});
-    return 0;
+  f32 CyDist;
+  s64 v11;
+  s64 v12;
+  s32 partyindex;
+  nbKoukaPacket_t_o *v16;
+  nbKoukaPacket_t_o *v17;
+  nbKoukaPacket_t_o *v20;
+  nbKoukaPacket_t_o *v22;
+  nbKoukaPacket_t_o *v24;
+  UnityEngine_Vector4_o v26;
+  UnityEngine_Vector4_o v27;
+  UnityEngine_Vector4_o p;
+  nbKoukaProcessData_t_o *k;
+  UnityEngine_Vector4_o v30;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  *&v27.x = 0;
+  *&v27.z = 0;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v27.x, 0.0, 0.0, 0.0, 0.0);
+  *&v26.x = 0;
+  *&v26.z = 0;
+  sub_854690(&v26.x, 0.0, 0.0, 1.0, 0.0);
+  SDF_VU0__LOADVECTOR((*target)->rot, 0);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR(v26);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__STOREVECTOR(&p);
+  CyDist = nbMakeUnitMoveGetCyDist(form, target);
+  SDF_VU0__LOADVECTOR(p);
+  SDF_VU0__SCALEVECTOR(CyDist + (((*target)->r * (*target)->scl) + 100.0), 0);
+  SDF_VU0__LOADVECTOR_B((*target)->pos, 0);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__STOREVECTOR(&v27);
+  v11 = *&v27.x;
+  v12 = *&v27.z;
+  partyindex = (*form)->partyindex;
+  k = nbGetKoukaProcessData();
+  v16 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  *&v30.x = v11;
+  *&v30.z = v12;
+  v17 = v16;
+  v16->type = 1;
+  v16->partyno = partyindex;
+  SDF_VU0__COPYVECTOR(&v16->v, v30);
+  v17->data1->f = 0.05;
+  k = nbGetKoukaProcessData();
+  v20 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  v20->type = 5;
+  v20->form = *form;
+  v20->data1->i = 0;
+  v20->data2->i = 0;
+  k = nbGetKoukaProcessData(v20);
+  v22 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  v22->type = 8;
+  v22->form = *form;
+  v22->data1->i = 5;
+  k = nbGetKoukaProcessData(v22);
+  v24 = nbAddKoukaPacket(&k, startframe + 4, 0, uniqueid);
+  v24->type = 6;
+  v24->form = *form;
+  v24->data1->i = 5;
+  return 1;
 }
 
 // 0x198a3d0
 s32 nbMakeNegoWorkPosPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, nbFormation_t **target) {
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    ToMatrix();
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__STOREVECTOR(0);
-    nbMakeUnitMoveGetCyDist(0, 0);
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__ADDVECTOR();
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    SDF_VU0__COPYVECTOR(0, (sdfVector4_t){0});
-    return 0;
+  f32 CyDist;
+  s64 v11;
+  s64 v12;
+  s32 partyindex;
+  nbKoukaPacket_t_o *v16;
+  nbKoukaPacket_t_o *v17;
+  s64 v18;
+  s64 v19;
+  s32 v20;
+  nbKoukaPacket_t_o *v23;
+  nbKoukaPacket_t_o *v24;
+  nbKoukaPacket_t_o *v27;
+  nbKoukaPacket_t_o *v29;
+  UnityEngine_Vector4_o v31;
+  UnityEngine_Vector4_o v32;
+  UnityEngine_Vector4_o p;
+  nbKoukaProcessData_t_o *k;
+  UnityEngine_Vector4_o v35;
+  UnityEngine_Vector4_o v36;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  *&v32.x = 0;
+  *&v32.z = 0;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v32.x, 0.0, 0.0, 0.0, 0.0);
+  *&v31.x = 0;
+  *&v31.z = 0;
+  sub_854690(&v31.x, 0.0, 0.0, 1.0, 0.0);
+  SDF_VU0__LOADVECTOR((*target)->rot, 0);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR(v31);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__STOREVECTOR(&p);
+  CyDist = nbMakeUnitMoveGetCyDist(form, target);
+  SDF_VU0__LOADVECTOR(p);
+  SDF_VU0__SCALEVECTOR(
+    CyDist
+  + ((((*target)->r * (*target)->scl)
+    + (((*form)->r * (*form)->scl) + ((*form)->r * (*form)->scl)))
+   + 100.0),
+    0);
+  SDF_VU0__LOADVECTOR_B((*target)->pos, 0);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__STOREVECTOR(&v32);
+  v11 = *&v32.x;
+  v12 = *&v32.z;
+  partyindex = (*form)->partyindex;
+  k = nbGetKoukaProcessData();
+  v16 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  *&v35.x = v11;
+  *&v35.z = v12;
+  v17 = v16;
+  v16->type = 1;
+  v16->partyno = partyindex;
+  SDF_VU0__COPYVECTOR(&v16->v, v35);
+  v17->data1->f = 1.0;
+  SDF_VU0__LOADVECTOR(p);
+  SDF_VU0__SCALEVECTOR(-1.0);
+  SDF_VU0__STOREVECTOR(&v32);
+  v18 = *&v32.x;
+  v19 = *&v32.z;
+  v20 = (*form)->partyindex;
+  k = nbGetKoukaProcessData();
+  v23 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  *&v36.x = v18;
+  *&v36.z = v19;
+  v24 = v23;
+  v23->type = 3;
+  v23->partyno = v20;
+  SDF_VU0__COPYVECTOR(&v23->v, v36);
+  v24->data1->i = 100;
+  k = nbGetKoukaProcessData();
+  v27 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  v27->type = 5;
+  v27->form = *form;
+  v27->data1->i = 0;
+  v27->data2->i = 0;
+  k = nbGetKoukaProcessData(v27);
+  v29 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+  v29->type = 7;
+  v29->form = *form;
+  v29->data1->i = 0;
+  v29->data2->i = 0;
+  return 1;
 }
 
 // 0x1989050
@@ -2306,49 +2891,524 @@ s32 nbMakeUnitFadeOutPacket(s32 startframe, s32 uniqueid, nbFormation_t **form, 
 
 // 0x1989210
 f32 nbMakeUnitMoveGetCyDist(nbFormation_t **i_form, nbFormation_t **t_form) {
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    ToMatrix();
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__ADDVECTOR();
-    SDF_VU0__STOREVECTOR(0);
-    sdfFabs(0);
-    sdfAtan2(0, 0);
-    return 0;
+  f32 v5;
+  f32 v6;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 v13;
+  f32 v14;
+  f32 v15;
+  f32 v16;
+  f32 scl;
+  f32 r;
+  f32 v19;
+  f32 result;
+  unsigned __int128 v21;
+  UnityEngine_Vector4_o p;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  v21 = 0u;
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v21, 0.0, 0.0, 0.0, 0.0);
+  SDF_VU0__LOADVECTOR((*i_form)->rot, 0);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR((*i_form)->center, 0);
+  SDF_VU0__SCALEVECTOR((*i_form)->scl, 0);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__LOADVECTOR_B((*i_form)->pos, 0);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__STOREVECTOR(&v21);
+  sub_854710(&v21, 1u);
+  sub_854930(&v21, 1u);
+  SDF_VU0__LOADVECTOR((*t_form)->rot, 0);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR((*t_form)->center, 0);
+  SDF_VU0__SCALEVECTOR((*t_form)->scl, 0);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__LOADVECTOR_B((*t_form)->pos, 0);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__STOREVECTOR(&p);
+  sub_854710(&p, 1u);
+  sub_854930(&p, 1u);
+  sub_854710(&p, 1u);
+  v6 = v5;
+  sub_854710(&v21, 1u);
+  v9 = v8;
+  v10 = sdfFabs(v6 - v9);
+  v11 = sdfAtan2(v10, 100.0);
+  sub_854710(&p, 1u);
+  v13 = v12;
+  sub_854710(&v21, 1u);
+  if (v13 >= v14)
+  {
+    v15 = v11 * 100.0;
+    if ((v11 * 100.0) > 100.0)
+      v15 = 100.0;
+  }
+  else
+  {
+    v15 = v11 * 50.0;
+    if ((v11 * 50.0) > 50.0)
+      v15 = 50.0;
+  }
+  v16 = v15 + 100.0;
+  sub_854710(&(*i_form)->center, 2u);
+  scl = (*i_form)->scl;
+  r = (*i_form)->r;
+  result = v16 + (v19 * scl);
+  if (result < (scl * (r - (*i_form)->cr)))
+    return scl * (r - (*i_form)->cr);
+  return result;
 }
 
 // 0x1989510
 s32 nbMakeUnitMovePacket(s32 startframe, s32 uniqueid, nbFormation_t **form, u32 select, s32 movetype, f32 ritu) {
-    nbGetMainProcessData();
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    ToMatrix();
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__STOREVECTOR(0);
-    nbGetFormCenter(0);
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    SDF_VU0__SUBVECTOR();
-    SDF_VU0__SETVECTOR_Y(0);
-    SDF_VU0__NORMALIZE();
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__ADDVECTOR();
-    nbMakeUnitMoveGetCyDist(0, 0);
-    SDF_VU0__VECTOR_W_SET_ZERO();
-    SDF_VU0__COPYVECTOR_A_TO_B();
-    SDF_VU0__LOADIDENTITYVECTOR();
-    SDF_VU0__SETVECTOR_Z(0);
-    SDF_VU0__ADDVECTOR_B_A();
-    SDF_VU0__STOREVECTOR_B(0);
-    nbGetKoukaProcessData();
-    nbAddKoukaPacket(0, 0, 0, 0);
-    SDF_VU0__COPYVECTOR(0, (sdfVector4_t){0});
-    SDF_VU0__COPYVECTOR_A_TO_C();
-    SDF_VU0__COPYVECTOR_C_TO_B();
-    SDF_VU0__INNERPRODUCT();
-    SDF_DEGtoRAD(0);
-    sdfCos(0);
-    dds3RotationArc();
-    sdfAcos(0);
-    Lerp(0);
-    return 0;
+  f32 CyDist;
+  nbMainProcessData_t_o *MainProcessData;
+  nbFormation_t_o *v16;
+  u64 *v18;
+  nbMainProcessData_t_o *v20;
+  u32 v22;
+  u32 v23;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  s32 v27;
+  s32 v28;
+  s32 v29;
+  f32 v31;
+  nbFormation_t_o *v32;
+  struct nbFormation_t_array *v33;
+  f32 v35;
+  f32 v37;
+  f32 v40;
+  nbFormation_t_o *v41;
+  s32 formindex;
+  _BOOL4 v43;
+  s32 v44;
+  s64 i;
+  struct nbFormation_t_array *v46;
+  u64 v47;
+  struct nbFormation_t_array *v49;
+  struct nbFormation_t_array *v51;
+  struct nbFormation_t_array *v53;
+  struct nbFormation_t_array *v56;
+  u32 max_length;
+  struct nbFormation_t_array *v58;
+  struct nbFormation_t_array *v60;
+  u32 v61;
+  f32 v62;
+  f32 v65;
+  f32 v67;
+  f32 v70;
+  s32 partyindex;
+  f32 y;
+  f32 x;
+  f32 w;
+  f32 z;
+  nbKoukaPacket_t_o *v77;
+  nbKoukaPacket_t_o *v78;
+  s32 v80;
+  f32 v81;
+  f32 v82;
+  s32 v83;
+  f32 v84;
+  f32 v85;
+  s32 v86;
+  nbKoukaPacket_t_o *v88;
+  nbKoukaPacket_t_o *v89;
+  s32 v91;
+  System_Object_array *v92;
+  s32 v93;
+  s64 *v94;
+  s64 *v95;
+  s32 v98;
+  s64 *v99;
+  s64 *v100;
+  s32 v103;
+  s64 *v104;
+  s64 *v105;
+  s32 v108;
+  s64 *v109;
+  s64 *v111;
+  f32 v114;
+  f32 v115;
+  f32 v116;
+  f32 v117;
+  s32 v118;
+  nbKoukaPacket_t_o *v121;
+  nbKoukaPacket_t_o *v122;
+  s32 v123;
+  s32 v124;
+  s32 v125;
+  s32 v126;
+  UnityEngine_Vector4_o v127;
+  UnityEngine_Vector4_o v128;
+  UnityEngine_Vector4_o v129;
+  UnityEngine_Vector4_o v130;
+  UnityEngine_Vector4_o v131;
+  UnityEngine_Vector4_o p;
+  UnityEngine_Vector4_o v133;
+  UnityEngine_Vector4_o v134;
+  nbKoukaProcessData_t_o *k;
+  UnityEngine_Vector4_o v136;
+  UnityEngine_Vector4_o v137;
+  UnityEngine_Vector4_o v138;
+  UnityEngine_Vector4_o v139;
+
+  CyDist = 0.0;
+  *&v134.x = 0;
+  *&v134.z = 0;
+  *&v133.x = 0;
+  *&v133.z = 0;
+  *&p.x = 0;
+  *&p.z = 0;
+  *&v131.x = 0;
+  *&v131.z = 0;
+  *&v130.x = 0;
+  *&v130.z = 0;
+  *&v129.x = 0;
+  *&v129.z = 0;
+  *&v128.x = 0;
+  *&v128.z = 0;
+  *&v127.x = 0;
+  *&v127.z = 0;
+  sub_854690(&v134.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v133.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&p.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v131.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v130.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v129.x, 0.0, 0.0, 0.0, 0.0);
+  sub_854690(&v128.x, 0.0, 0.0, 1.0, 0.0);
+  else
+  {
+    MainProcessData = nbGetMainProcessData(nbMainProcess);
+    v16 = *form;
+    if (((*form)->stat & 0x40) == 0)
+    {
+LABEL_6:
+      LOWORD(k) = v16->formindex;
+      v18 = sub_8D3950(s16, &k);
+      Write_2930400("formindex = {0:D}\n", v18);
+      while (1)
+        ;
+    }
+  }
+  v20 = MainProcessData;
+  SDF_VU0__LOADVECTOR(v16->orgrot);
+  ToMatrix();
+  SDF_VU0__LOADVECTOR(v128);
+  SDF_VU0__APPLYMATRIX();
+  SDF_VU0__STOREVECTOR(&p);
+  v22 = (select >> 1) & 1;
+  v23 = (select & 1)
+      + v22
+      + ((select & 4) >> 2)
+      + ((select & 8) >> 3)
+      + ((select & 0x10) >> 4)
+      + ((select & 0x20) >> 5)
+      + ((select & 0x40) >> 6)
+      + ((select & 0x80) >> 7);
+  if ((select & 4) != 0)
+    v22 = 2;
+  if ((select & 8) != 0)
+    v22 = 3;
+  if ((select & 0x10) != 0)
+    v22 = 4;
+  if ((select & 0x20) != 0)
+    v22 = 5;
+  if ((select & 0x40) != 0)
+    v22 = 6;
+  v24 = v23 + ((select & 0x100) >> 8) + ((select & 0x200) >> 9) + ((select & 0x400) >> 10);
+  if ((select & 0x80) != 0)
+    v22 = 7;
+  if ((select & 0x100) != 0)
+    v22 = 8;
+  if ((select & 0x200) != 0)
+    v22 = 9;
+  v25 = v24 + ((select & 0x800) >> 11) + ((select & 0x1000) >> 12);
+  if ((select & 0x400) != 0)
+    v22 = 10;
+  if ((select & 0x800) != 0)
+    v22 = 11;
+  v26 = v25 + ((select & 0x2000) >> 13);
+  if ((select & 0x1000) != 0)
+    v22 = 12;
+  v27 = v26 + ((select & 0x4000) >> 14);
+  if ((select & 0x2000) != 0)
+    v22 = 13;
+  if ((select & 0x4000) != 0)
+    v22 = 14;
+  if ((select & 0x8000) != 0)
+    v28 = 15;
+  else
+    v28 = v22;
+  v29 = v27 + ((select & 0x8000) >> 15);
+  if (v29)
+  {
+    if (movetype != 1)
+    {
+      if (movetype == 4)
+        goto LABEL_70;
+      if (movetype == 5)
+        goto LABEL_45;
+      if ((movetype - 2) > 3)
+        return 1;
+      if (v29 == 1)
+      {
+LABEL_70:
+        v41 = *form;
+        formindex = (*form)->formindex;
+        if (formindex <= 3)
+          v43 = v28 < 4;
+        else
+          v43 = (v28 - 4) < 0xA && formindex < 14;
+        nbGetFormCenter(v41);
+        SDF_VU0__STOREVECTOR(&v131);
+        v53 = v20->form;
+        nbGetFormCenter(v53->m_Items[v28]);
+        SDF_VU0__STOREVECTOR(&v130);
+        if (v43)
+        {
+          SDF_VU0__LOADVECTOR(v131);
+          SDF_VU0__LOADVECTOR_B(v130);
+          SDF_VU0__SUBVECTOR();
+          SDF_VU0__SETVECTOR_Y(0.0);
+          SDF_VU0__NORMALIZE();
+          v56 = v20->form;
+          max_length = v56->max_length;
+          SDF_VU0__SCALEVECTOR(
+            (v56->m_Items[v28]->r * v56->m_Items[v28]->scl) + ((*form)->cr * (*form)->scl),
+            0);
+          SDF_VU0__LOADVECTOR_B(v130);
+          SDF_VU0__ADDVECTOR();
+          sub_854710(&(*form)->fields, 1u);
+          SDF_VU0__SETVECTOR_Y(v65);
+          SDF_VU0__STOREVECTOR(&v134);
+          SDF_VU0__LOADVECTOR(v130);
+          SDF_VU0__LOADVECTOR_B(v131);
+          SDF_VU0__SUBVECTOR();
+          SDF_VU0__SETVECTOR_Y(0.0);
+          SDF_VU0__NORMALIZE();
+          SDF_VU0__STOREVECTOR(&v133);
+          v67 = 40.0;
+          goto LABEL_114;
+        }
+        if (movetype == 3)
+        {
+          v58 = v20->form;
+          CyDist = nbMakeUnitMoveGetCyDist(form, &v58->m_Items[v28]);
+        }
+        SDF_VU0__LOADVECTOR(v131);
+        SDF_VU0__LOADVECTOR_B(v130);
+        SDF_VU0__SUBVECTOR();
+        SDF_VU0__VECTOR_W_SET_ZERO();
+        SDF_VU0__SETVECTOR_Y(0.0);
+        SDF_VU0__NORMALIZE();
+        v60 = v20->form;
+        v61 = v60->max_length;
+        SDF_VU0__SCALEVECTOR(
+          CyDist
+        + ((v60->m_Items[v28]->r * v60->m_Items[v28]->scl) + ((*form)->cr * (*form)->scl)),
+          0);
+        SDF_VU0__LOADVECTOR_B(v130);
+        SDF_VU0__ADDVECTOR();
+        sub_854710(&(*form)->fields, 1u);
+        SDF_VU0__SETVECTOR_Y(v70);
+        SDF_VU0__STOREVECTOR(&v134);
+        SDF_VU0__COPYVECTOR_A_TO_B();
+        SDF_VU0__LOADVECTOR(v130);
+        SDF_VU0__SUBVECTOR();
+        SDF_VU0__SETVECTOR_Y(0.0);
+        SDF_VU0__NORMALIZE();
+      }
+      else
+      {
+LABEL_45:
+        SDF_VU0__LOADIDENTITYVECTOR();
+        if (((*form)->stat & 0x200) != 0)
+          v31 = 200.0;
+        else
+          v31 = -200.0;
+        SDF_VU0__SETVECTOR_Z(v31);
+        SDF_VU0__VECTOR_W_SET_ZERO();
+        SDF_VU0__STOREVECTOR(&v134);
+        sub_854690(&v127.x, 0.0, 0.0, 0.0, 0.0);
+        v136.w = v127.w;
+        v136.x = 0.0;
+        v136.y = 0.0;
+        v136.z = 0.0;
+        *&v127.x = 0;
+        v127.z = 0.0;
+        SDF_VU0__LOADVECTOR_B(v136);
+        v44 = 0;
+        for (i = 4; i != 20; ++i)
+        {
+          v46 = v20->form;
+          v47 = i - 4;
+          if ((*(*(&v46->obj.klass + i) + 136LL) & 8) != 0)
+          {
+            v49 = v20->form;
+            if ((*(*(&v49->obj.klass + i) + 136LL) & 1) != 0)
+            {
+              v51 = v20->form;
+              SDF_VU0__LOADVECTOR(*(*(&v51->obj.klass + i) + 16LL), 0);
+              SDF_VU0__ADDVECTOR_B_A();
+              ++v44;
+            }
+          }
+        }
+        SDF_VU0__STOREVECTOR_B(&v127);
+        if (v44)
+        {
+          sub_854710(&v127, 0);
+          sub_854930(&v127, 0);
+          sub_854710(&v127, 1u);
+          sub_854930(&v127, 1u);
+          sub_854710(&v127, 2u);
+          sub_854930(&v127, 2u);
+          SDF_VU0__LOADVECTOR(v127);
+          SDF_VU0__LOADVECTOR_B(v134);
+          SDF_VU0__SUBVECTOR();
+          SDF_VU0__SETVECTOR_Y(0.0);
+          SDF_VU0__NORMALIZE();
+          SDF_VU0__STOREVECTOR(&v133);
+        }
+        else
+        {
+          SDF_VU0__LOADIDENTITYVECTOR();
+          if (((*form)->stat & 0x200) != 0)
+            v62 = -1.0;
+          else
+            v62 = 1.0;
+          SDF_VU0__SETVECTOR_Z(v62);
+        }
+      }
+      SDF_VU0__STOREVECTOR(&v133);
+      v67 = 20.0;
+LABEL_114:
+      partyindex = (*form)->partyindex;
+      x = v134.x;
+      y = v134.y;
+      z = v134.z;
+      w = v134.w;
+      k = nbGetKoukaProcessData();
+      v77 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+      v137.x = x;
+      v137.y = y;
+      v137.z = z;
+      v137.w = w;
+      v78 = v77;
+      v77->type = 1;
+      v77->partyno = partyindex;
+      SDF_VU0__COPYVECTOR(&v77->v, v137);
+      v78->data1->f = ritu * 0.2;
+      v80 = (v67 * ritu);
+      v82 = v133.x;
+      v81 = v133.y;
+      v83 = (*form)->partyindex;
+      v85 = v133.z;
+      v84 = v133.w;
+      if (v80 >= 100)
+        v86 = 100;
+      else
+        v86 = v80;
+      k = nbGetKoukaProcessData();
+      v88 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+      v138.x = v82;
+      v138.y = v81;
+      v138.z = v85;
+      v138.w = v84;
+      v89 = v88;
+      v88->type = 3;
+      v88->partyno = v83;
+      SDF_VU0__COPYVECTOR(&v88->v, v138);
+      v89->data1->i = v86;
+      return 1;
+    }
+    if (v29 == 1)
+    {
+      v32 = *form;
+      if (v28 != (*form)->formindex)
+      {
+        nbGetFormCenter(v32);
+        SDF_VU0__COPYVECTOR_A_TO_C();
+        v33 = v20->form;
+        nbGetFormCenter(v33->m_Items[v28]);
+        SDF_VU0__COPYVECTOR_C_TO_B();
+        SDF_VU0__SUBVECTOR();
+        SDF_VU0__SETVECTOR_Y(0.0);
+        SDF_VU0__NORMALIZE();
+        SDF_VU0__COPYVECTOR_A_TO_B();
+        SDF_VU0__LOADVECTOR((*form)->orgrot, 0);
+        ToMatrix();
+        SDF_VU0__LOADVECTOR(v128);
+        SDF_VU0__APPLYMATRIX();
+        v35 = SDF_VU0__INNERPRODUCT();
+        SDF_VU0__STOREVECTOR(&v129);
+        v37 = SDF_DEGtoRAD(70.0);
+        if (v35 >= sdfCos(v37))
+        {
+          SDF_VU0__STOREVECTOR_B(&v133);
+        }
+        else
+        {
+          dds3RotationArc();
+          v40 = sdfAcos(v35);
+          Lerp(70.0 / v40, 0);
+          ToMatrix();
+          SDF_VU0__LOADVECTOR(v129);
+          SDF_VU0__APPLYMATRIX();
+          SDF_VU0__STOREVECTOR(&v133);
+        }
+        if ((ritu * 25.0) >= 100)
+          v91 = 100;
+        else
+          v91 = (ritu * 25.0);
+        v92 = NewSpecific(object, 4u);
+        sub_854710(&v133, 0);
+        v126 = v93;
+        v94 = sub_8D3950(f32, &v126);
+        v95 = v94;
+        v92->m_Items[0] = v95;
+        sub_854710(&v133, 1u);
+        v125 = v98;
+        v99 = sub_8D3950(f32, &v125);
+        v100 = v99;
+        v92->m_Items[1] = v100;
+        sub_854710(&v133, 2u);
+        v124 = v103;
+        v104 = sub_8D3950(f32, &v124);
+        v105 = v104;
+        v92->m_Items[2] = v105;
+        sub_854710(&v133, 3u);
+        v123 = v108;
+        v109 = sub_8D3950(f32, &v123);
+        v111 = v109;
+        v92->m_Items[3] = v111;
+        Write_2930544("rotv_rot {0:f}, {1:f}, {2:f}, {3:f}\n", v92, 0);
+        v115 = v133.x;
+        v114 = v133.y;
+        v117 = v133.z;
+        v116 = v133.w;
+        v118 = (*form)->partyindex;
+        k = nbGetKoukaProcessData();
+        v121 = nbAddKoukaPacket(&k, startframe, 0, uniqueid);
+        v139.x = v115;
+        v139.y = v114;
+        v139.z = v117;
+        v139.w = v116;
+        v122 = v121;
+        v121->type = 3;
+        v121->partyno = v118;
+        SDF_VU0__COPYVECTOR(&v121->v, v139);
+        v122->data1->i = v91;
+      }
+    }
+  }
+  return 1;
 }

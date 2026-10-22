@@ -12,7 +12,7 @@ struct frMsgInfo_t {
     u8 ColNo;
     u8 Tp;
     u8 Spd;
-    u8 pMsg[UNKNOWN_ARRAY_SIZE];
+    u8 *pMsg;
     _FRQ *pFRQ;
     s32 Ofs;
     s8 FrqFlag;

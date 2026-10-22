@@ -26,8 +26,8 @@ void Awake(AlfMaskImageSet *this) {
          localPosition.z);
   sprite = get_sprite(Component_object);
   texture = get_texture(sprite);
-  SetTexture(v7, StringLiteral_4569, texture, 0);
-  SetFloat(v7, StringLiteral_4570, 1.0);
+  SetTexture(v7, "_MaskTex", texture, 0);
+  SetFloat(v7, "_AlfMaskOn", 1.0);
 }
 
 // 0xfd6370
@@ -41,5 +41,5 @@ void Update(AlfMaskImageSet *this) {
   transform = get_transform(this->moveobject, 0);
   x = get_localPosition(transform).x;
   v6 = (Component_object->klass->vtable[32].methodPtr)(Component_object, Component_object->klass->vtable[32].method);
-  SetFloat(v6, StringLiteral_4571, (x + this->lr_offset) * 0.00048828, 0);
+  SetFloat(v6, "_MaskU", (x + this->lr_offset) * 0.00048828, 0);
 }

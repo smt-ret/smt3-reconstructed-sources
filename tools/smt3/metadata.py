@@ -25,6 +25,7 @@ _TD_FIELD_START = 44  # fieldStart (int32)
 _TD_FIELD_COUNT = 80  # field_count (uint16)
 _FIELD_SIZE = 12     # Il2CppFieldDefinition: nameIndex, typeIndex, token
 _FDV_SIZE = 12       # Il2CppFieldDefaultValue: fieldIndex, typeIndex, dataIndex
+_STRING_LITERAL_SIZE = 8  # Il2CppStringLiteral: length (int32), dataIndex (int32)
 _TYPEDEFS_INDEX = 19  # ordinal of typeDefinitions in the header
 
 
@@ -56,6 +57,10 @@ def _empty_constants() -> dict[str, list[tuple[str, int | str | None]]]:
     return {}
 
 
+def _empty_strings() -> dict[int, str]:
+    return {}
+
+
 @dataclass
 class Metadata:
     """Enum and constant values keyed by IL2CPP short type name."""
@@ -64,6 +69,8 @@ class Metadata:
     constants: dict[str, list[tuple[str, int | str | None]]] = field(
         default_factory=_empty_constants
     )
+    strings: dict[int, str] = field(default_factory=_empty_strings)
+    """Literal index -> text, for the `StringLiteral_<n>` placeholders in a body."""
 
     @classmethod
     def from_file(cls, path: Path) -> Metadata:
@@ -109,13 +116,24 @@ class Metadata:
             raw = d[data_off + data_index : data_off + bounds[j]]
             return decode_value(raw)
 
+        lit_off, lit_size = sec["stringLiteral"]
+        lit_data_off = sec["stringLiteralData"][0]
+        strings: dict[int, str] = {}
+        for k in range(lit_size // _STRING_LITERAL_SIZE):
+            b = lit_off + k * _STRING_LITERAL_SIZE
+            length, data_index = i32(b), i32(b + 4)
+            if length < 0 or data_index < 0:
+                continue
+            raw = d[lit_data_off + data_index : lit_data_off + data_index + length]
+            strings[k] = raw.decode("utf-8", "replace")
+
         fields_off = sec["fields"][0]
 
         def field_name(fi: int) -> str:
             return name(i32(fields_off + fi * _FIELD_SIZE))
 
         td_off, td_size = pair(_TYPEDEFS_INDEX)
-        meta = cls()
+        meta = cls(strings=strings)
         for t in range(td_size // _TYPEDEF_SIZE):
             b = td_off + t * _TYPEDEF_SIZE
             start = i32(b + _TD_FIELD_START)

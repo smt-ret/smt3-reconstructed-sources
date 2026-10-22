@@ -22,15 +22,97 @@ s32 shpGetShopItemNums(s32 Place);
 
 // 0x19a0560
 void *shpCalc(dds3ProcessID_t *PID) {
-    dds3GetProcessData(0);
-    fclChkDbgProcess();
-    fclShopEventStart(0);
-    fclChkSignal(0);
-    fclClearSignal(0);
-    fclClearPanelTimer(0);
-    dds3GetProcessStat(0);
-    fclScriptStart(0, 0, 0);
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  struct fclDataShop_t_o *GBWK;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  struct fclDataShop_t_o *v16;
+  dds3ProcessID_t_o **p_ScriptPID;
+  struct fclDataShop_t_o *v19;
+  System_Byte_array *pScriptData;
+  struct cmpSeqInfo_t_o *v22;
+  dds3ProcessID_t_o *pPID;
+  dds3ProcessID_t_o *id;
+  u64 v25[3];
+
+  id = PID;
+  pPID = 0;
+  ProcessData = dds3GetProcessData(&id);
+  else
+  {
+    if (!ProcessData)
+      goto LABEL_15;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclDataShop_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclDataShop_t, v25);
+    if ((v25[0] & 1) != 0)
+      v7 = v25[2];
+    else
+      v7 = v25 + 1;
+    v8 = sub_8C4940(v7);
+  }
+LABEL_15:
+  GBWK = ProcessData;
+  else if (fclChkDbgProcess())
+  {
     return 0;
+  }
+  else if (GBWK->InitFlag)
+  {
+    goto LABEL_30;
+  }
+  fclShopEventStart(1);
+  GBWK->InitFlag = 1;
+LABEL_30:
+  if (fclChkSignal(1))
+  {
+    SeqInfo = GBWK->SeqInfo;
+    if (SeqInfo->Current == 8)
+    {
+      if (SeqInfo->Change == 1)
+      {
+        fclClearSignal(2);
+      }
+    }
+    else if (!SeqInfo->Current)
+    {
+      fclClearPanelTimer(GBWK->BackPanel);
+      v16 = GBWK;
+      if (v16->SeqInfo->Change == 1)
+      {
+        p_ScriptPID = &v16->ScriptPID;
+        if (dds3GetProcessStat(p_ScriptPID) != 2)
+        {
+          pPID = 0;
+          v19 = GBWK;
+          pScriptData = v19->pScriptData;
+          v19->ScriptPID = fclScriptStart(pScriptData, 0, &pPID);
+            goto LABEL_69;
+          goto LABEL_67;
+        }
+      }
+    }
+    {
+LABEL_69:
+      GBWK->SeqInfo->Change = 0;
+      v22 = GBWK->SeqInfo;
+      if ((v22->Flag & 0x10) != 0)
+      {
+        cmpUpdateTerminate(v22);
+        id->func_ans = -1;
+      }
+      return 0;
+    }
+LABEL_67:
+    goto LABEL_69;
+  }
+  return 0;
 }
 
 // 0x199fd80
@@ -84,6 +166,7 @@ s8 shpCalcPayOfMoney(s32 Index, s8 Mode) {
     LOBYTE(v9) = -1;
     if (!v8)
       return v9;
+    goto LABEL_6;
   }
   CursorInfo = GBWK->ListWindow->CursorInfo;
   Index = cmpGetCursorIndex(CursorInfo);
@@ -93,6 +176,7 @@ s8 shpCalcPayOfMoney(s32 Index, s8 Mode) {
   LOBYTE(v9) = -1;
   if (v8)
   {
+LABEL_6:
     if (v7 >= 1)
     {
       if (DDS3_GBWK->maka / v7 >= 99)
@@ -138,6 +222,7 @@ s8 shpChkChoiceMax(s32 Index, s8 Mode, s8 CalcMode) {
     LOBYTE(v18) = item->m_Items[v18];
     if (!CalcMode)
       return v18;
+LABEL_47:
     GBWK->PayMoney = PayMoney;
     return v18;
   }
@@ -150,6 +235,7 @@ s8 shpChkChoiceMax(s32 Index, s8 Mode, s8 CalcMode) {
   if (v29 && v18 >= 1)
     LOBYTE(v18) = 1;
   if (CalcMode)
+    goto LABEL_47;
   return v18;
 }
 
@@ -184,12 +270,14 @@ void shpCreateItemList(fclDataShop_t *pData) {
       {
         v17 = v15;
         if (cmbChkGetHearts(v17))
+          goto LABEL_24;
         pData->HeartsFlag = 1;
       }
       BuyItemCnt = pData->BuyItemCnt;
       BuyItemList = pData->BuyItemList;
       ++pData->BuyItemCnt;
       BuyItemList->m_Items[BuyItemCnt] = ID;
+LABEL_24:
       ++v7;
     }
     while (v7 < shpGetShopItemNums(pData->Place));
@@ -208,11 +296,16 @@ u16 shpGetItemID(s32 Index, s8 Mode) {
     ItemIdx = GBWK->SellItemList->ItemIdx;
     v7 = Index;
     if (LODWORD(ItemIdx->max_length) <= Index)
+      goto LABEL_8;
   }
   else
   {
     ItemIdx = GBWK->BuyItemList;
     v7 = Index;
+    if (LODWORD(ItemIdx->max_length) <= Index)
+    {
+LABEL_8:
+    }
   }
   return ItemIdx->m_Items[v7];
 }
@@ -231,11 +324,14 @@ s32 shpGetPackID(s32 Place) {
   if (v7 < 0)
   {
     v8 = 0;
+      goto LABEL_15;
   }
   else
   {
     v8 = evtBitCheck(v7);
+      goto LABEL_15;
   }
+LABEL_15:
   v11 = fclShopTbl;
   ItemPackID = v11->m_Items[Place]->ItemPackID;
   return ItemPackID->m_Items[v8];

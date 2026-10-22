@@ -36,20 +36,38 @@ void sdfIpuAllocBuff(sdfIpuDecodeCb_t *cb) {
 
 // 0x1793b70
 void sdfIpuAttachQueue(sdfIpuDecodeCb_t *cb, s32 critical) {
-    sdfIpuDetachQueue(0, 0);
+  sdfIpu_c *v4;
+  struct sdfIpuDecodeCb_t_o *sdfIpuQueueTail;
+
+  if (cb->queueLinked)
+  {
+    sdfIpuDetachQueue(cb, critical);
+  }
+  cb->queueLinked = 1;
+  else
+  {
+    if (sdfIpuQueueTail)
+      goto LABEL_11;
+  }
+  sdfIpuQueueHead = cb;
+  cb->prev = sdfIpuQueueTail;
+  cb->next = 0;
+  if ((v4->_2.bitflags2 & 2) != 0)
+  {
+LABEL_12:
+  }
+LABEL_19:
+  sdfIpuQueueTail = cb;
 }
 
 // 0x1793c90
 void sdfIpuAttachTask(sdfIpuDecodeCb_t *cb) {
-  sdfIpu_c *v3;
   struct sdfIpu_StaticFields *static_fields;
   struct sdfIpuDecodeCb_t_o *sdfIpuTaskLink;
 
-  static_fields = v3->static_fields;
   do
   {
-    sdfIpuTaskLink = static_fields->sdfIpuTaskLink;
-    static_fields = &static_fields->sdfIpuTaskLink->taskNext;
+    static_fields = &sdfIpuTaskLink->taskNext;
   }
   while (sdfIpuTaskLink);
   cb->taskNext = 0;
@@ -62,8 +80,62 @@ void sdfIpuClose(void) {
 
 // 0x1793e20
 void sdfIpuDecode(sdfIpuDecodeCb_t *cb, sdfIpuInitParm_t *parm, void *data, s32 leng) {
-    sdfIpuAttachQueue(0, 0);
-    sdfIpuExecQueue(0);
+  s32 rgbMode;
+  s32 v9;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 monitor_low;
+  bool v13;
+  s32 v14;
+  s32 v15;
+  s32 v16;
+  s32 v17;
+  char *v19;
+  s64 *v20;
+  u64 v21[3];
+
+  rgbMode = parm->rgbMode;
+  if (!parm->rgbMode)
+    goto LABEL_10;
+LABEL_6:
+  if (parm->ditherMode)
+  {
+    cb->rgbMode = 2;
+    rgbMode = 1;
+  }
+  else
+  {
+    rgbMode = 1;
+    cb->rgbMode = 1;
+  }
+LABEL_11:
+  cb->loopMode = parm->loopMode;
+  cb->fps = parm->fps;
+  klass = data->klass;
+  if (data->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfIpuHeader_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, sdfIpuHeader_t, v21);
+    if ((v21[0] & 1) != 0)
+      v19 = v21[2];
+    else
+      v19 = v21 + 1;
+    v20 = sub_8C4940(v19);
+  }
+  monitor_low = LOWORD(data[1].monitor);
+  cb->width = monitor_low;
+  v13 = rgbMode == 0;
+  v14 = WORD1(data[1].monitor);
+  cb->height = v14;
+  v15 = v14 * monitor_low;
+  cb->frameCount = HIDWORD(data[1].monitor);
+  if (v13)
+    v16 = 4;
+  else
+    v16 = 2;
+  cb->buffSize = v15 * v16;
+  sdfIpuAttachQueue(cb, v9, data);
+  sdfIpuExecQueue(v17);
 }
 
 // 0x17940f0
@@ -86,7 +158,9 @@ void sdfIpuDetachQueue(sdfIpuDecodeCb_t *cb, s32 critical) {
       prev->next = next;
       if (next)
       {
+LABEL_6:
         p_fields = &next->fields;
+LABEL_15:
         p_fields->prev = prev;
         cb->queueLinked = 0;
         return;
@@ -96,24 +170,23 @@ void sdfIpuDetachQueue(sdfIpuDecodeCb_t *cb, s32 critical) {
     {
       sdfIpuQueueHead = next;
       if (next)
+        goto LABEL_6;
     }
     p_fields = &sdfIpuQueueTail;
+    goto LABEL_15;
   }
 }
 
 // 0x1793d10
 void sdfIpuDetachTask(sdfIpuDecodeCb_t *cb) {
-  sdfIpu_c *v3;
   struct sdfIpu_StaticFields *static_fields;
   sdfIpuDecodeCb_t_o *sdfIpuTaskLink;
   bool v6;
 
-  static_fields = v3->static_fields;
   do
   {
-    sdfIpuTaskLink = static_fields->sdfIpuTaskLink;
-    v6 = static_fields->sdfIpuTaskLink == 0;
-    static_fields = &static_fields->sdfIpuTaskLink->taskNext;
+    v6 = sdfIpuTaskLink == 0;
+    static_fields = &sdfIpuTaskLink->taskNext;
     v6 = v6 || sdfIpuTaskLink == cb;
   }
   while (!v6);
@@ -121,16 +194,13 @@ void sdfIpuDetachTask(sdfIpuDecodeCb_t *cb) {
 
 // 0x1793990
 void sdfIpuExecQueue(s32 critical) {
-  struct sdfIpu_StaticFields *static_fields;
   sdfIpuDecodeCb_t_o *sdfIpuQueueHead;
 
   else
   {
-    static_fields = sdfIpu->static_fields;
-    if (static_fields->sdfCurrIpuDecodeCb)
+    if (sdfCurrIpuDecodeCb)
       return;
   }
-  sdfIpuQueueHead = static_fields->sdfIpuQueueHead;
   if (sdfIpuQueueHead)
   {
     while (sdfIpuQueueHead->imageTrans + sdfIpuQueueHead->activeBuffCount > 1
@@ -238,18 +308,15 @@ void sdfIpuMakeToIpuDmaTag(sdfIpuDecodeCb_t *cb, void *data, s32 leng) {
 
 // 0x1794220
 void sdfIpuPlay(sdfIpuDecodeCb_t *cb, sdfIpuInitParm_t *parm, void *data, s32 leng, u32 gsAddr) {
-  sdfIpu_c *v12;
   struct sdfIpu_StaticFields *static_fields;
   struct sdfIpuDecodeCb_t_o *sdfIpuTaskLink;
 
   ipu_error_info = 0;
   sdfIpuDecode(cb, parm, data, leng, *&gsAddr);
   cb->gsAddr = gsAddr;
-  static_fields = v12->static_fields;
   do
   {
-    sdfIpuTaskLink = static_fields->sdfIpuTaskLink;
-    static_fields = &static_fields->sdfIpuTaskLink->taskNext;
+    static_fields = &sdfIpuTaskLink->taskNext;
   }
   while (sdfIpuTaskLink);
   cb->taskNext = 0;
@@ -283,11 +350,14 @@ void sdfIpuStrmDecode(sdfIpuDecodeCb_t *cb, sdfIpuInitParm_t *parm, sdfIpuStrmCa
   u8 v9;
 
   if (!parm->rgbMode)
+    goto LABEL_11;
+LABEL_6:
   if (parm->ditherMode)
     v9 = 2;
   else
     v9 = 1;
   cb->rgbMode = v9;
+LABEL_12:
   cb->loopMode = parm->loopMode;
   cb->fps = parm->fps;
   cb->type = 1;
@@ -304,17 +374,19 @@ void sdfIpuStrmDecodeInit(sdfIpuDecodeCb_t *cb) {
 void sdfIpuStrmPlay(sdfIpuDecodeCb_t *cb, sdfIpuInitParm_t *parm, sdfIpuStrmCallback_t *callback, void *callbackParm, u32 gsAddr) {
   u8 v12;
   u8 fps;
-  sdfIpu_c *v14;
   struct sdfIpu_StaticFields *static_fields;
   struct sdfIpuDecodeCb_t_o *sdfIpuTaskLink;
 
   ipu_error_info = 0;
   if (!parm->rgbMode)
+    goto LABEL_16;
+LABEL_11:
   if (parm->ditherMode)
     v12 = 2;
   else
     v12 = 1;
   cb->rgbMode = v12;
+LABEL_17:
   cb->loopMode = parm->loopMode;
   fps = parm->fps;
   cb->type = 1;
@@ -322,11 +394,9 @@ void sdfIpuStrmPlay(sdfIpuDecodeCb_t *cb, sdfIpuInitParm_t *parm, sdfIpuStrmCall
   cb->strmCallback = callback;
   cb->strmCallbackParm = callbackParm;
   cb->fps = fps;
-  static_fields = v14->static_fields;
   do
   {
-    sdfIpuTaskLink = static_fields->sdfIpuTaskLink;
-    static_fields = &static_fields->sdfIpuTaskLink->taskNext;
+    static_fields = &sdfIpuTaskLink->taskNext;
   }
   while (sdfIpuTaskLink);
   cb->taskNext = 0;

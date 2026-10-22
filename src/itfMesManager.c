@@ -227,8 +227,45 @@ void CalcCurCtr(instanceMes_tag *pinst) {
 
 // 0x13ba0d0
 dds3ProcessFunc_t *CalcManagerProc(dds3ProcessID_t *proc_id) {
-    CalcMesFlow(0);
-    return 0;
+  itfMesManager_c *v2;
+  struct mesflow_tag_o *puse_top;
+  instanceMes_tag_o *pinst;
+  mesflow_tag_c *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  u64 v10[3];
+
+  puse_top = g_manager->linkstack->puse_top;
+  if (puse_top)
+  {
+    pinst = puse_top->pinst;
+    if ((v2->_2.bitflags2 & 2) == 0)
+      goto LABEL_12;
+LABEL_10:
+LABEL_12:
+    while (1)
+    {
+      CalcMesFlow(pinst);
+      puse_top = puse_top->linkheader->pnext;
+      if (!puse_top)
+        break;
+      klass = puse_top->klass;
+      if (puse_top->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+      {
+        sub_8FC2C0(klass->_1.element_class, mesflow_tag, v10);
+        if ((v10[0] & 1) != 0)
+          v7 = v10[2];
+        else
+          v7 = v10 + 1;
+        v8 = sub_8C4940(v7);
+      }
+      pinst = puse_top->pinst;
+        goto LABEL_10;
+    }
+  }
+  return 0;
 }
 
 // 0x13ad9f0
@@ -299,6 +336,7 @@ void CalcMessage(instanceMes_tag *pinst) {
   {
     else if (!DDS3_PADCHECK_TRIG(OK))
     {
+LABEL_65:
       if (!DDS3_PADCHECK_TRIG(CANCEL))
       {
         if (!DDS3_PADCHECK_PRESS(2))
@@ -314,9 +352,11 @@ void CalcMessage(instanceMes_tag *pinst) {
           pfont->draw_spd = 0x80;
           pfont = pfont->prev;
           if (!pfont)
+            goto LABEL_90;
         }
         pfont->draw_spd = 0x80;
       }
+LABEL_90:
       v23 = pinst->speaker->pfont;
       if (v23)
       {
@@ -332,14 +372,18 @@ void CalcMessage(instanceMes_tag *pinst) {
   ++pinst->curctr->ctr_key;
   stat = pinst->stat;
   if ((stat & 0x800000) != 0)
+    goto LABEL_123;
   if ((stat & 0x100000) == 0)
     pinst->curctr->isdraw = 1;
   v7 = OK;
   if (DDS3_PADCHECK_TRIG(v7))
+    goto LABEL_126;
   v10 = CANCEL;
   if (DDS3_PADCHECK_TRIG(v10))
+    goto LABEL_126;
   if (DDS3_PADCHECK_PRESS(2) && pinst->curctr->ctr_key > 4 || !message->wait)
   {
+LABEL_126:
     if (message->wait)
     {
       if (cfgGetBit(2u))
@@ -351,6 +395,7 @@ void CalcMessage(instanceMes_tag *pinst) {
             StopKuti(KutiManager);
           StopVoice_Compulsion();
           {
+LABEL_102:
             bVoicePlaySw = 0;
             bNowSpeaking = 2;
             SwitchOK(0);
@@ -374,13 +419,18 @@ void CalcMessage(instanceMes_tag *pinst) {
               pinst->stat = pinst->stat & 0xFFFFFFF8 | 3;
               return;
             }
+LABEL_123:
             message->phase = -1;
             return;
           }
+LABEL_100:
+          goto LABEL_102;
         }
       }
       p2sdPlaySE(9);
     }
+      goto LABEL_102;
+    goto LABEL_100;
   }
 }
 
@@ -428,12 +478,13 @@ void CalcSelect(instanceMes_tag *pinst) {
         }
         pinst->stat = stat & 0xFFFFFFC7 | 0x18;
         if (select->numdef)
-          v9 = &StringLiteral_17042;
+          v9 = &"EVENT02";
         else
-          v9 = &StringLiteral_17043;
+          v9 = &"EVENT01";
         v10 = *v9;
         ButtonGuideDispSet(v10, 0, 0, 90);
         v11 = 2;
+        goto LABEL_55;
       }
       break;
     case 2:
@@ -458,6 +509,7 @@ void CalcSelect(instanceMes_tag *pinst) {
           ButtonGuideDispOff();
           select->alpha = 128;
           v11 = 3;
+          goto LABEL_55;
         }
       }
       break;
@@ -484,6 +536,7 @@ void CalcSelect(instanceMes_tag *pinst) {
       break;
     case 4:
       if (!message->pfont)
+        goto LABEL_54;
       pm = message->pos->pm;
       if (pm->m_Items[1] <= 6317)
       {
@@ -491,7 +544,9 @@ void CalcSelect(instanceMes_tag *pinst) {
       }
       else
       {
+LABEL_54:
         v11 = -1;
+LABEL_55:
         select->phase = v11;
       }
       break;
@@ -548,6 +603,8 @@ void CalcWindow(instanceMes_tag *pinst) {
       stat = pinst->stat;
       v22 = stat & 0x3000;
       if (v22 != 12288)
+        goto LABEL_38;
+LABEL_40:
       pinst->stat = stat & 0xFFFFCFFF;
       window->spk = 0;
       return;
@@ -572,6 +629,8 @@ void CalcWindow(instanceMes_tag *pinst) {
   stat = pinst->stat;
   v22 = stat & 0x3000;
   if (v22 == 12288)
+    goto LABEL_40;
+LABEL_38:
   if (v22 == 4096)
     pinst->stat = stat & 0xFFFFCFFF | 0x2000;
 }
@@ -593,19 +652,21 @@ void CallEventVoice(instanceMes_tag *pinst) {
   {
     tag_id = pfont->tag_id;
     TagName = tag_id;
-    VoiceName = StringLiteral_416;
+    VoiceName = "";
     if (!IsNullOrEmpty(tag_id))
     {
-      v6 = Replace_5267216(tag_id, StringLiteral_2303, StringLiteral_416);
-      v8 = Replace_5267216(v6, StringLiteral_604, StringLiteral_416);
+      v6 = Replace_5267216(tag_id, "<", "");
+      v8 = Replace_5267216(v6, ">", "");
       bVoicePlaySw = 0;
       VoiceName = v8;
       result = -1;
       KutiManager = GetKutiManager();
       v12 = Substring_5248048(v8, 1, 3);
       if (TryParse(v12, &result, 0))
+        goto LABEL_46;
       if (!check_aimsg(v8))
       {
+LABEL_46:
         {
         }
         if (IsConstantsVoice(v8))
@@ -613,7 +674,7 @@ void CallEventVoice(instanceMes_tag *pinst) {
           {
           }
           v16 = ReplaceVoice(v8);
-          VoiceName = Concat_5221536(VoiceName, StringLiteral_17050, v16);
+          VoiceName = Concat_5221536(VoiceName, " / VOICE=", v16);
           if (op_Inequality(KutiManager, 0, 0))
             SetKutiName(KutiManager, v16);
           PlayVoice(v16);
@@ -701,7 +762,72 @@ void ChangeFontPosition(_FRQ *pfont, s32 dist_x, s32 dist_y) {
 
 // 0x13abe80
 void ChangeSelection(s32 index, s32 onoff) {
-    RepColTag(0, 0);
+  u64 *v5;
+  System_String_o *v7;
+  System_WeakReference_o *Item;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_Component_o *v11;
+  UnityEngine_GameObject_o *gameObject;
+  UnityEngine_Transform_o *v13;
+  UnityEngine_Component_o *v14;
+  UnityEngine_GameObject_o *v16;
+  Il2CppObject *Component_object;
+  System_String_o *text;
+  s32 v19;
+  s32 v20;
+  s32 Length;
+  System_Object_array *v22;
+  s32 v23;
+  System_Object_array *v24;
+  s64 *v25;
+  s64 *v28;
+  System_String_o *v30;
+  UnityEngine_Transform_o *v31;
+  UnityEngine_Component_o *v32;
+  UnityEngine_GameObject_o *v33;
+  s32 v35;
+  s32 v36;
+
+  v36 = index + 1;
+  v5 = sub_8D3950(s32, &v36);
+  v7 = Format("choice_answer{0:D2}", v5, 0);
+  Item = _get_Item(
+           MsgWnd,
+           MsgWndIndex + 2);
+  transform = get_transform(Item, 0);
+  v11 = Find(transform, v7, 0);
+  gameObject = get_gameObject(v11);
+  v13 = get_transform(gameObject, 0);
+  v14 = Find(v13, "answer01TM", 0);
+  v16 = get_gameObject(v14);
+  if (op_Inequality(v16, 0, 0))
+  {
+    Component_object = GetComponent_object_(v16);
+    text = get_text(Component_object);
+    v19 = IndexOf(text, 0x3Eu, 0);
+    if (v19 != -1)
+    {
+      v20 = v19;
+      Length = get_Length(text);
+      text = Substring_5248048(text, v20 + 1, Length + ~v20);
+    }
+    v22 = NewSpecific(object, 1u);
+    if (onoff == 1)
+      v23 = 8;
+    else
+      v23 = 22;
+    v35 = v23;
+    v24 = v22;
+    v25 = sub_8D3950(UI_COL, &v35);
+    v28 = v25;
+    v24->m_Items[0] = v28;
+    v30 = RepColTag(text, v24);
+    set_text(Component_object, v30);
+  }
+  v31 = get_transform(gameObject, 0);
+  v32 = Find(v31, "choice_cursur", 0);
+  v33 = get_gameObject(v32);
+  SetActive(v33, onoff == 1, 0);
 }
 
 // 0x13a9f90
@@ -724,15 +850,15 @@ void ClearMessage(void) {
   Item = _get_Item(
            MsgWnd,
            MsgWndIndex);
-  SetMessage(Item, 0, StringLiteral_17020);
+  SetMessage(Item, 0, "<alpha=#00>あああああ</alpha>");
   v7 = _get_Item(
          MsgWnd,
          MsgWndIndex);
-  SetMessage(v7, 1, StringLiteral_17020);
+  SetMessage(v7, 1, "<alpha=#00>あああああ</alpha>");
   v11 = _get_Item(
           MsgWnd,
           MsgWndIndex);
-  SetMessage(v11, 2, StringLiteral_17020);
+  SetMessage(v11, 2, "<alpha=#00>あああああ</alpha>");
 }
 
 // 0x13aa9f0
@@ -743,7 +869,7 @@ void ClearSpeaker(void) {
 
   if (op_Inequality(SpkWndTMP, 0, 0))
   {
-    set_text(SpkWndTMP, StringLiteral_416);
+    set_text(SpkWndTMP, "");
   }
   Item = _get_Item(
            MsgWnd,
@@ -865,7 +991,7 @@ void ConvertZenkakuNumber(char **buf, s32 num) {
   v19 = *buf;
   do
   {
-    v21 = Substring_5248048(StringLiteral_16782, v6[v7 + 8], 1);
+    v21 = Substring_5248048("０１２３４５６７８９", v6[v7 + 8], 1);
     v19 = Concat_5224608(v19, v21);
     v22 = v7-- <= 0;
     *buf = v19;
@@ -908,7 +1034,44 @@ char *DAT_STR_REF_SKNAME(s32 idx) {
 
 // 0x13b62c0
 mesflow_tag *DebugChangeInstance(mesflow_tag *pflow) {
+  s32 numuse;
+  s32 v5;
+  mesflow_tag_c *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  u64 v11[3];
+
+  numuse = g_manager->numuse;
+  if (numuse < 1)
     return 0;
+  v5 = -1;
+  while (1)
+  {
+    if (pflow && (pflow = pflow->linkheader->pprev) != 0)
+    {
+      klass = pflow->klass;
+      if (pflow->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+      {
+        sub_8FC2C0(klass->_1.element_class, mesflow_tag, v11);
+        if ((v11[0] & 1) != 0)
+          v8 = v11[2];
+        else
+          v8 = v11 + 1;
+        v9 = sub_8C4940(v8);
+      }
+    }
+    else
+    {
+      pflow = g_manager->linkstack->puse_tail;
+    }
+    if (pflow->pinst->window->mes)
+      break;
+    if (++v5 >= numuse)
+      return 0;
+  }
+  return pflow;
 }
 
 // 0x13b8070
@@ -1010,8 +1173,59 @@ void DebugDrawWindowLine(itfpanel_t *meswin) {
 
 // 0x13b68d0
 void DebugMoveWinAlpha(window_tag *pwin) {
-    DDS3_PAD2CHECK_REP(0);
-    DDS3_PAD2CHECK_PRESS(0);
+  s32 v4;
+  s32 v7;
+  s32 OK;
+  s32 v10;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v13;
+  struct itfpanel_t_o *mes;
+  struct System_Int32_array *v16;
+  struct System_Int32_array *v17;
+  s32 v19;
+
+  else if (DDS3_PAD2CHECK_REP(4))
+  {
+    goto LABEL_6;
+  }
+  v4 = DDS3_PAD2CHECK_REP(5);
+  {
+LABEL_15:
+    if (!DDS3_PAD2CHECK_REP(6))
+      goto LABEL_17;
+LABEL_16:
+    v7 = -1;
+    goto LABEL_23;
+  }
+LABEL_7:
+    goto LABEL_15;
+  if (DDS3_PAD2CHECK_REP(6))
+    goto LABEL_16;
+LABEL_17:
+  if (DDS3_PAD2CHECK_REP(7))
+    v7 = 1;
+  else
+    v7 = v4;
+LABEL_23:
+  if (DDS3_PAD2CHECK_PRESS(OK))
+    v10 = 10 * v7;
+  else
+    v10 = v7;
+  if (v10)
+  {
+    pm = pwin->mes_color->pm;
+    pm->m_Items[3] += v10;
+    v13 = pwin->mes_color->pm;
+    v13->m_Items[3] = LOBYTE(v13->m_Items[3]);
+    mes = pwin->mes;
+    if (mes)
+    {
+      v16 = mes->color->pm;
+      v17 = pwin->mes_color->pm;
+      v19 = v17->m_Items[3];
+      v16->m_Items[3] = v19;
+    }
+  }
 }
 
 // 0x13b6450
@@ -1041,12 +1255,20 @@ void DebugMoveWinVert(window_tag *pwin, s32 flag) {
     return;
   mes_offset = pwin->mes_offset;
   if (!DDS3_PAD2CHECK_REP(4))
+    goto LABEL_17;
+LABEL_7:
   v7 = -16;
+    goto LABEL_24;
+LABEL_8:
+LABEL_24:
   if (DDS3_PAD2CHECK_REP(6))
+    goto LABEL_25;
+LABEL_10:
   if (DDS3_PAD2CHECK_REP(7))
     v10 = 8;
   else
     v10 = 0;
+LABEL_26:
   v13 = DDS3_PAD2CHECK_PRESS(OK);
   if (v13)
     v15 = 8 * v10;
@@ -1068,6 +1290,7 @@ void DebugMoveWinVert(window_tag *pwin, s32 flag) {
       v27->m_Items[1] += v15;
       v29 = mes_offset->pm;
       if (LODWORD(v29->max_length) >= 3)
+        goto LABEL_65;
     }
     else
     {
@@ -1083,17 +1306,20 @@ void DebugMoveWinVert(window_tag *pwin, s32 flag) {
         v22 = v20->m_Items[1];
         v21 = &v20->m_Items[1];
         v23 = v22 + v15;
+        goto LABEL_68;
       }
       v28 = pwin->mes;
       itfPnlSetPositionOffset(v28, 0, 0, v16, v15, 0);
       v29 = mes_offset->pm;
       if (LODWORD(v29->max_length) >= 3)
       {
+LABEL_65:
         v29->m_Items[2] += v16;
         v33 = mes_offset->pm;
         v34 = v33->m_Items[3];
         v21 = &v33->m_Items[3];
         v23 = v34 + v15;
+LABEL_68:
         *v21 = v23;
         return;
       }
@@ -1142,19 +1368,29 @@ s32 DebugWindowSwitch(s32 itfon) {
       Display(Component_object, 1);
       if ((v2 & 4) == 0)
       {
+LABEL_31:
         {
+LABEL_42:
           MsgWndSetActive(MsgWndIndex + 2, (v2 & 8) != 0);
           v13 = v10 | v7;
           return v13 | v12;
         }
+LABEL_32:
+        goto LABEL_42;
       }
     }
-    else    MsgWndSetActive(MsgWndIndex + 1, 1);
+    else if ((v2 & 4) == 0)
+    {
+      goto LABEL_31;
+    }
+    MsgWndSetActive(MsgWndIndex + 1, 1);
     v24 = _get_Item(
             MsgWnd,
             MsgWndIndex + 1);
     v25 = GetComponent_object_(v24);
     Display(v25, 1);
+      goto LABEL_42;
+    goto LABEL_32;
   }
   v13 = v10 | v7 | 1;
   WindowDispOff(0);
@@ -1202,8 +1438,46 @@ void DestructFlow(s32 id) {
 
 // 0x13ba240
 dds3ProcessFunc_t *DrawManagerProc(dds3ProcessID_t *proc_id) {
-    DrawMesFlow(0);
-    return 0;
+  itfMesManager_c *v2;
+  struct mesflow_tag_o *puse_top;
+  instanceMes_tag_o *pinst;
+  mesflow_tag_c *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  u64 v10[3];
+
+  puse_top = g_manager->linkstack->puse_top;
+  if (puse_top)
+  {
+    pinst = puse_top->pinst;
+    if ((v2->_2.bitflags2 & 2) == 0)
+      goto LABEL_12;
+LABEL_10:
+LABEL_12:
+    while (1)
+    {
+      DrawMesFlow(pinst);
+      puse_top = puse_top->linkheader->pnext;
+      if (!puse_top)
+        break;
+      klass = puse_top->klass;
+      if (puse_top->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+      {
+        sub_8FC2C0(klass->_1.element_class, mesflow_tag, v10);
+        if ((v10[0] & 1) != 0)
+          v7 = v10[2];
+        else
+          v7 = v10 + 1;
+        v8 = sub_8C4940(v7);
+      }
+      pinst = puse_top->pinst;
+        goto LABEL_10;
+    }
+  }
+  ++g_manager->ctr;
+  return 0;
 }
 
 // 0x13b7450
@@ -1265,9 +1539,175 @@ void DrawMesFlow(instanceMes_tag *pinst) {
 
 // 0x13b7ad0
 s32 DrawMessage(_FRQ *pfont) {
-    GetFRQString(0);
-    frDrawFont(0);
-    return 0;
+  struct _FRQ_o *head;
+  System_String_o *FRQString;
+  struct itfMesManager_StaticFields *static_fields;
+  u32 v10;
+  struct _TEXT_o *str;
+  s32 y;
+  s32 col_no;
+  System_Text_StringBuilder_o *pMsgMes;
+  u64 *v16;
+  s32 draw_spd;
+  struct _TEXT_o *prev;
+  u32 color;
+  struct _FRQ_o *v20;
+  struct _TEXT_o *str_end;
+  s32 tp;
+  u32 *p_color;
+  u32 v24;
+  s32 v25;
+  u32 v26;
+  s32 color_low;
+  System_WeakReference_o *Item;
+  System_String_o *v31;
+  System_String_o *v32;
+  u32 v35;
+  System_WeakReference_o *v39;
+  System_String_o *v40;
+  System_String_o *v41;
+  s32 v43;
+  u32 v44;
+  s32 v45;
+
+  if (!pfont)
+    return pfont;
+  head = pfont->head;
+  FRQString = GetFRQString(head);
+  if (IsNullOrEmpty(FRQString))
+  {
+    return frDrawFont(pfont);
+  }
+  v43 = 3 * MsgWndIndex;
+  Clear(pMsgMes, 0);
+  LODWORD(pfont) = 1;
+  v10 = 0;
+  do
+  {
+    v44 = v10;
+    if (!head)
+    {
+LABEL_62:
+      v35 = v44;
+        goto LABEL_63;
+      goto LABEL_65;
+    }
+    do
+    {
+      str = head->str;
+      y = head->y;
+      col_no = str->col_no;
+      v45 = col_no;
+      v16 = sub_8D3950(s32, &v45);
+      AppendFormat(pMsgMes, "<material=\"MsgFont{0}\">", v16);
+      if (pfont == 1)
+      {
+LABEL_21:
+        draw_spd = head->draw_spd;
+        else
+        {
+          prev = str->prev;
+          if (prev)
+            goto LABEL_24;
+LABEL_26:
+          v20 = head->prev;
+          if (v20)
+          {
+            str_end = v20->str_end;
+            if (str_end)
+            {
+              color = str_end->color;
+              tp = str_end->tp;
+              p_color = &str->color;
+              v24 = str->color;
+              if (tp && tp != str->tp)
+              {
+                if (color != 128)
+                  goto LABEL_42;
+LABEL_31:
+                LOBYTE(v25) = draw_spd;
+                if ((draw_spd & 0x80000000) == 0)
+                  v25 = (draw_spd << 6) / (str->lw + head->space);
+                if (128 - v24 >= v25)
+                  v26 = v24 + v25;
+                else
+                  v26 = v24 & 0xFFFFFF00 | 0x80;
+                *p_color = v26;
+                goto LABEL_42;
+              }
+LABEL_39:
+              if (color < 0x1Cu)
+                goto LABEL_42;
+              goto LABEL_31;
+            }
+          }
+          LOBYTE(color) = 0x80;
+        }
+        p_color = &str->color;
+        v24 = str->color;
+        goto LABEL_39;
+      }
+      while (1)
+      {
+LABEL_42:
+        color_low = LOBYTE(str->color);
+        LODWORD(pfont) = pfont & (color_low >> 7);
+        if (color_low == 128)
+        {
+            goto LABEL_50;
+LABEL_44:
+          goto LABEL_50;
+        }
+        Append_5380272(pMsgMes, "<alpha=#00>");
+          goto LABEL_44;
+LABEL_50:
+        Append_5387312(pMsgMes, str->chcode);
+        str = str->next;
+        if (!str)
+          break;
+        y = head->y;
+        if (pfont == 1)
+          goto LABEL_21;
+      }
+      head = head->next;
+      if (!head)
+        goto LABEL_62;
+    }
+    while (y == head->y);
+    Item = _get_Item(
+             MsgWndTMP,
+             v44 + v43);
+    v31 = (pMsgMes->klass->vtable._3_ToString.methodPtr)(
+            pMsgMes,
+            pMsgMes->klass->vtable._3_ToString.method);
+    v32 = Replace_5267216(v31, "\t", "");
+    set_text(Item, v32);
+    (Item->klass[4].static_fields)(Item, Item->klass[4].rgctx_data);
+    Clear(pMsgMes, 0);
+    v10 = v44 + 1;
+  }
+  while (v44 != 2);
+  v35 = 3;
+    goto LABEL_65;
+LABEL_63:
+LABEL_65:
+  if (get_Length(pMsgMes))
+  {
+    if (v35 <= 2)
+    {
+      v39 = _get_Item(
+              MsgWndTMP,
+              v35 + v43);
+      v40 = (pMsgMes->klass->vtable._3_ToString.methodPtr)(
+              pMsgMes,
+              pMsgMes->klass->vtable._3_ToString.method);
+      v41 = Replace_5267216(v40, "\t", "");
+      set_text(v39, v41);
+      (v39->klass[4].static_fields)(v39, v39->klass[4].rgctx_data);
+    }
+    Clear(pMsgMes, 0);
+  }
+  return pfont;
 }
 
 // 0x13b9cf0
@@ -1343,15 +1783,349 @@ void DrawRetPageCursor(instanceMes_tag *pinst) {
 
 // 0x13b8790
 void DrawSelectCursor(instanceMes_tag *pinst) {
-    CMP_XM(0);
-    CMP_YM(0);
-    sdfDrawTagInit(0);
-    itfMiscDrawSpritePlanePrim(0, 0, 0, 0, 0);
-    Draw(0, 0, 0, 0);
-    itfMiscDrawRectanglePrim(0, 0, 0, 0, 0, 0, 0);
-    itfMiscDrawSpritePrim(0, 0, 0, 0, 0, 0, 0);
-    itfMiscDrawAlphaPrim(0, 0, 0);
-    sdfDrawTagLinkOt(0, 0);
+  sdfIVector2_t_array *v3;
+  sdfIVector2_t_o *v4;
+  struct System_Int32_array *v6;
+  s32 v7;
+  s32 v9;
+  sdfIVector2_t_o *v12;
+  struct System_Int32_array *v13;
+  s32 v14;
+  s32 v16;
+  sdfIVector2_t_o *v19;
+  struct System_Int32_array *v20;
+  s32 v21;
+  s32 v23;
+  sdfIVector2_t_o *v26;
+  struct System_Int32_array *v27;
+  s32 v28;
+  s32 v30;
+  sdfIVector4_t_array *v33;
+  sdfIVector4_t_o *v34;
+  struct System_Int32_array *v35;
+  u32 max_length;
+  sdfIVector4_t_o *v40;
+  System_Array_o *v41;
+  u64 *v43;
+  u32 v44;
+  System_Byte_array *v45;
+  sdfIVector4_t_o *v47;
+  sdfIVector4_t_o *v48;
+  sdfIVector4_t_o *v49;
+  struct select_tag_o *select;
+  s32 select_imm;
+  u64 *v52;
+  struct System_Int32_array *pm;
+  s32 v57;
+  struct System_Int32_array *v58;
+  s32 v60;
+  s32 v61;
+  struct System_Int32_array *v62;
+  u32 v63;
+  s32 v64;
+  struct System_Int32_array *v66;
+  struct System_Int32_array *v67;
+  struct System_Int32_array *v68;
+  s32 v69;
+  struct System_Int32_array *v71;
+  s32 v73;
+  s32 v75;
+  struct System_Int32_array *v77;
+  struct System_Int32_array *v79;
+  struct System_Int32_array *v81;
+  struct System_Int32_array *v83;
+  u64 *v87;
+  struct System_Int32_array *v89;
+  u32 v90;
+  struct System_Int32_array *v91;
+  struct System_Int32_array *v92;
+  s32 v93;
+  struct System_Int32_array *v94;
+  struct System_Int32_array *v95;
+  s32 v97;
+  s32 v98;
+  struct System_Int32_array *v100;
+  struct System_Int32_array *v111;
+  s32 v113;
+  u64 *v115;
+  struct System_Int32_array *v116;
+  struct System_Int32_array *v118;
+  instanceMes_tag_o *v119;
+  u32 v120;
+  struct System_Int32_array *v122;
+  s32 v124;
+  s32 v125;
+  struct System_Int32_array *v127;
+  s32 v129;
+  s32 v130;
+  struct System_Int32_array *v132;
+  s32 v133;
+  struct System_Int32_array *v135;
+  s32 v136;
+  struct System_Int32_array *v138;
+  s32 v139;
+  struct System_Int32_array *v141;
+  s32 v143;
+  struct System_Int32_array *v145;
+  struct System_Int32_array *v147;
+  struct System_Int32_array *v149;
+  struct System_Int32_array *v151;
+  u64 *v154;
+  struct System_Int32_array *v155;
+  s32 v157;
+  s32 v158;
+  struct System_Int32_array *v160;
+  s32 v162;
+  s32 v163;
+  struct System_Int32_array *v165;
+  s32 v166;
+  struct System_Int32_array *v168;
+  s32 v169;
+  struct System_Int32_array *v171;
+  s32 v172;
+  struct System_Int32_array *v174;
+  s32 v175;
+  struct System_Int32_array *v177;
+  u64 *v179;
+  s32 ctr1;
+  struct System_Int32_array *v182;
+  s32 v183;
+  struct System_Int32_array *v184;
+  s32 v185;
+  s32 v193;
+  struct System_Int32_array *v194;
+  struct System_Int32_array *v196;
+  struct System_Int32_array *v198;
+  struct sdfGrOt_t_array *dds3Ot;
+  sdfGrOt_t_o *v207;
+  struct curctr_tag_o *curctr;
+  System_Array_o *pvertindex;
+  instanceMes_tag_o *v211;
+  s32 v212;
+  u32 z;
+  u32 v214;
+
+  v3 = NewSpecific(sdfIVector2_t, 4u);
+  v4 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v4);
+  v6 = NewSpecific(s32, 2u);
+  v7 = CMP_XM(129);
+  v6->m_Items[0] = v7;
+  v9 = CMP_YM(376);
+  v6->m_Items[1] = v9;
+  v4->pm = v6;
+  v3->m_Items[0] = v4;
+  v12 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v12);
+  v13 = NewSpecific(s32, 2u);
+  v14 = CMP_XM(195);
+  v13->m_Items[0] = v14;
+  v16 = CMP_YM(376);
+  v13->m_Items[1] = v16;
+  v12->pm = v13;
+  v3->m_Items[1] = v12;
+  v19 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v19);
+  v20 = NewSpecific(s32, 2u);
+  v21 = CMP_XM(195);
+  v20->m_Items[0] = v21;
+  v23 = CMP_YM(398);
+  v20->m_Items[1] = v23;
+  v19->pm = v20;
+  v3->m_Items[2] = v19;
+  v26 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v26);
+  v27 = NewSpecific(s32, 2u);
+  v28 = CMP_XM(129);
+  v27->m_Items[0] = v28;
+  v30 = CMP_YM(398);
+  v27->m_Items[1] = v30;
+  v26->pm = v27;
+  v3->m_Items[3] = v26;
+  v33 = NewSpecific(sdfIVector4_t, 2u);
+  v34 = Allocate(sdfIVector4_t);
+  sdfIVector4_t___ctor(v34);
+  v35 = NewSpecific(s32, 4u);
+  max_length = v35->max_length;
+  v35->m_Items[0] = 87;
+  v35->m_Items[2] = 16;
+  v34->pm = v35;
+  v33->m_Items[0] = v34;
+  v40 = Allocate(sdfIVector4_t);
+  sdfIVector4_t___ctor(v40);
+  v41 = NewSpecific(s32, 4u);
+  InitializeArray_1543888(v41, Field__PrivateImplementationDetails__D89A0A163C6675B26F0127CB03FD29EB5150F83E);
+  v40->pm = v41;
+  v33->m_Items[1] = v40;
+  pvertindex = NewSpecific(byte, 4u);
+  InitializeArray_1543888(pvertindex, Field__PrivateImplementationDetails__A02A05B025B928C039CF1AE7E8EE04E7C190C0DB);
+  v43 = NewSpecific(byte, 4u);
+  v44 = *(v43 + 6);
+  v45 = v43;
+  *(v43 + 32) = 1;
+  *(v43 + 35) = 1;
+  v47 = Allocate(sdfIVector4_t);
+  sdfIVector4_t___ctor(v47);
+  v48 = Allocate(sdfIVector4_t);
+  sdfIVector4_t___ctor(v48);
+  v49 = Allocate(sdfIVector4_t);
+  sdfIVector4_t___ctor(v49);
+  select = pinst->select;
+  select_imm = select->select_imm;
+  if (select_imm != 0xFFFF)
+  {
+    curctr = pinst->curctr;
+    v211 = pinst;
+    z = pinst->z;
+    v52 = Allocate(sdfDrawTag_t);
+    sdfDrawTag_t___ctor(v52);
+    sdfDrawTagInit(v52);
+    pm = select->pos->pm;
+    v57 = pm->m_Items[0];
+    v212 = v57 - CMP_XM(21);
+    v58 = select->pos->pm;
+    v60 = v58->m_Items[1];
+    v61 = CMP_YM(33 * select->lines - 24);
+    v62 = v49->pm;
+    v63 = v60 - v61 + vcvts_n_s32_f32((select_imm * 30.0) * 2.25, 3u);
+    v64 = CMP_XM(6) + v212;
+    v62->m_Items[0] = v64;
+    v66 = v49->pm;
+    v66->m_Items[1] = v63;
+    v67 = v49->pm;
+    v68 = v3->m_Items[0]->pm;
+    v69 = 2 * v68->m_Items[0];
+    v67->m_Items[2] = v69;
+    v71 = v49->pm;
+    v73 = v71->m_Items[1];
+    v75 = CMP_YM(33) + v73;
+    v71->m_Items[3] = v75;
+    v77 = v48->pm;
+    v77->m_Items[0] = 87;
+    v79 = v48->pm;
+    v79->m_Items[1] = 0;
+    v81 = v48->pm;
+    v81->m_Items[2] = 16;
+    v83 = v48->pm;
+    v214 = z >> 4;
+    v83->m_Items[3] = 76;
+    itfMiscDrawSpritePlanePrim(v49, v48, v214 - 1, 0, v52);
+    Draw(gfxMgr, "MsgPanel", 0x4000000u, v52, 0);
+    v87 = Allocate(sdfDrawTag_t);
+    sdfDrawTag_t___ctor(v87);
+    sdfDrawTagInit(v87);
+    v89 = v3->m_Items[0]->pm;
+    v90 = v63 - CMP_YM(1);
+    v89->m_Items[1] = v90;
+    v91 = v3->m_Items[1]->pm;
+    v92 = v3->m_Items[0]->pm;
+    v93 = v92->m_Items[1];
+    v91->m_Items[1] = v93;
+    v94 = v3->m_Items[2]->pm;
+    v95 = v3->m_Items[0]->pm;
+    v97 = v95->m_Items[1];
+    v98 = CMP_YM(22) + v97;
+    v94->m_Items[1] = v98;
+    v100 = v3->m_Items[3]->pm;
+    v111 = v3->m_Items[2]->pm;
+    v113 = v111->m_Items[1];
+    v100->m_Items[1] = v113;
+    itfMiscDrawRectanglePrim(v3, 0, v33, pvertindex, v45, v214 - 2, v87);
+    Draw(gfxMgr, "MsgPanelG", 0x4000000u, v87, 0);
+    v115 = Allocate(sdfDrawTag_t);
+    sdfDrawTag_t___ctor(v115);
+    sdfDrawTagInit(v115);
+    v116 = v49->pm;
+    v116->m_Items[0] = v212;
+    v118 = v49->pm;
+    v119 = v211;
+    v120 = CMP_YM(1) + v63;
+    v118->m_Items[1] = v120;
+    v122 = v49->pm;
+    v124 = v122->m_Items[0];
+    v125 = CMP_XM(6) + v124;
+    v122->m_Items[2] = v125;
+    v127 = v49->pm;
+    v129 = v127->m_Items[1];
+    v130 = CMP_YM(16) + v129;
+    v127->m_Items[3] = v130;
+    v132 = v47->pm;
+    v133 = CMP_XM(21);
+    v132->m_Items[0] = v133;
+    v135 = v47->pm;
+    v136 = CMP_XM(47);
+    v135->m_Items[1] = v136;
+    v138 = v47->pm;
+    v139 = CMP_XM(27);
+    v138->m_Items[2] = v139;
+    v141 = v47->pm;
+    v143 = CMP_XM(63);
+    v141->m_Items[3] = v143;
+    v145 = v48->pm;
+    v145->m_Items[0] = 128;
+    v147 = v48->pm;
+    v147->m_Items[1] = 128;
+    v149 = v48->pm;
+    v149->m_Items[2] = 128;
+    v151 = v48->pm;
+    v151->m_Items[3] = 38;
+    itfMiscDrawSpritePrim(v49, v47, v48, v214 - 3, g_manager->tex, 0, v115);
+    Draw(gfxMgr, "MsgRound", 0x4000000u, v115, 0);
+    v154 = Allocate(sdfDrawTag_t);
+    sdfDrawTag_t___ctor(v154);
+    sdfDrawTagInit(v154);
+    v155 = v49->pm;
+    v157 = v155->m_Items[0];
+    v158 = CMP_XM(16) + v157;
+    v155->m_Items[2] = v158;
+    v160 = v49->pm;
+    v162 = v160->m_Items[1];
+    v163 = CMP_YM(24) + v162;
+    v160->m_Items[3] = v163;
+    v165 = v47->pm;
+    v166 = CMP_XM(38);
+    v165->m_Items[0] = v166;
+    v168 = v47->pm;
+    v169 = CMP_XM(47);
+    v168->m_Items[1] = v169;
+    v171 = v47->pm;
+    v172 = CMP_XM(54);
+    v171->m_Items[2] = v172;
+    v174 = v47->pm;
+    v175 = CMP_XM(63);
+    v174->m_Items[3] = v175;
+    v177 = v48->pm;
+    v177->m_Items[3] = curctr->ctr0;
+    itfMiscDrawSpritePrim(v49, v47, v48, v214 - 4, g_manager->tex, 0, v154);
+    Draw(gfxMgr, "MsgCsr", 0x4000000u, v154, 0);
+    v179 = Allocate(sdfDrawTag_t);
+    sdfDrawTag_t___ctor(v179);
+    sdfDrawTagInit(v179);
+    ctr1 = curctr->ctr1;
+    if (ctr1 >= 1)
+    {
+      v182 = v49->pm;
+      v183 = 128 - ctr1;
+      v182->m_Items[0] -= v183;
+      v184 = v49->pm;
+      v185 = v183 >> 1;
+      v184->m_Items[1] -= v183 >> 1;
+      v193 = 2 * v183;
+      v194 = v49->pm;
+      v194->m_Items[2] += v193;
+      v196 = v49->pm;
+      v119 = v211;
+      v196->m_Items[3] += v185;
+      v198 = v48->pm;
+      v198->m_Items[3] = ctr1;
+      itfMiscDrawAlphaPrim(v179, 1, 0);
+      itfMiscDrawSpritePrim(v49, v47, v48, v214 - 5, g_manager->tex, 0, v179);
+      itfMiscDrawAlphaPrim(v179, 0, 0);
+      Draw(gfxMgr, "MsgAlpha", 0x4000000u, v179, 0);
+    }
+    v207 = dds3Ot->m_Items[v119->otindex];
+    sdfDrawTagLinkOt(v207, v179);
+  }
 }
 
 // 0x13b7ff0
@@ -1364,9 +2138,29 @@ s32 DrawSelection(u32 stat) {
 
 // 0x13b7920
 void DrawSpeaker(_FRQ *pfont) {
-    GetFRQString(0);
-    frDrawFont(0);
-    RepColTag(0, 0);
+  System_String_o *FRQString;
+  TMPro_TMP_Text_o *SpkWndTMP;
+  System_Object_array *v7;
+  s64 *v8;
+  s64 *v11;
+  System_String_o *v13;
+  s32 v15;
+
+  FRQString = GetFRQString(pfont);
+  if (IsNullOrEmpty(FRQString))
+  {
+    frDrawFont(pfont);
+  }
+  else
+  {
+    v15 = 9;
+    v7 = NewSpecific(object, 1u);
+    v8 = sub_8D3950(UI_COL, &v15);
+    v11 = v8;
+    v7->m_Items[0] = v11;
+    v13 = RepColTag(FRQString, v7);
+    set_text(SpkWndTMP, v13);
+  }
 }
 
 // 0x13b76d0
@@ -1455,7 +2249,6 @@ void FinalDanteEventMsg(void) {
   s32 v12;
   System_WeakReference_o *Item;
   UnityEngine_Transform_o *transform;
-  struct itfMesManager_StaticFields *static_fields;
   struct System_Single_array *EnablePos;
   f32 v18;
   System_WeakReference_o *v19;
@@ -1482,11 +2275,9 @@ void FinalDanteEventMsg(void) {
                v10);
       transform = get_transform(Item, 0);
       localPosition = get_localPosition(transform);
-      static_fields = itfMesManager->static_fields;
-      EnablePos = static_fields->EnablePos;
       v18 = *(&EnablePos->obj.klass + v11 - 12 * (v9 / 3));
       v19 = _get_Item(
-              static_fields->MsgWnd,
+              MsgWnd,
               v10);
       v20 = get_transform(v19, 0);
       v26.x = localPosition.x;
@@ -1572,6 +2363,8 @@ _FRQ *GetFontHandleUnit(u8 **dat, u32 **ppstr, s32 **pplen, s32 num, u32 mask, s
       v18 = pplen->m_Items[v13];
         break;
       if ((byte_3F596B3 & 1) == 0)
+        goto LABEL_14;
+LABEL_15:
       v19 = NewSpecific(byte, (v18 + 1));
       Copy_3880080(dat, v16, v19, 0, v18);
       *(&v19[2].klass + v18) = 0;
@@ -1584,10 +2377,15 @@ _FRQ *GetFontHandleUnit(u8 **dat, u32 **ppstr, s32 **pplen, s32 num, u32 mask, s
       ++v13;
       mask >>= 1;
       if (v31 == v13)
+        goto LABEL_25;
     }
     if ((byte_3F596B3 & 1) != 0)
+      goto LABEL_15;
+LABEL_14:
+    goto LABEL_15;
   }
   v14 = 0;
+LABEL_25:
   head = v14->head;
   InitializeSelectWindow(head, max, pplen);
   prev = v14;
@@ -1865,6 +2663,7 @@ s32 GetMessageWidth(_FRQ *pfont) {
   if (!pfont)
     return 0;
   v3 = 0;
+LABEL_7:
   y = pfont->y;
   v5 = 0;
   while (1)
@@ -1878,6 +2677,7 @@ s32 GetMessageWidth(_FRQ *pfont) {
     {
       if (v3 < v5)
         v3 = v5;
+      goto LABEL_7;
     }
   }
   if (v3 >= v5)
@@ -1910,17 +2710,135 @@ s32 GetNumSelectItem(s32 allitem, u32 mask) {
 
 // 0x13ab510
 u8 **GetSpeakerName(instanceMes_tag *pinst) {
-    return 0;
+  Il2CppObject *pdata;
+  Il2CppClass *v4;
+  s64 *Interface;
+  char *v6;
+  s64 *v7;
+  itfMesBinTypeHeader2_t_o *v8;
+  s32 v11;
+  s32 v12;
+  u64 *v13;
+  u32 v14;
+  u8 *v15;
+  u64 v19[2];
+  char *v20;
+  s64 v21;
+  s32 pos;
+
+  pdata = pinst->pdata;
+  if (pdata)
+  {
+    Interface = QueryInterface(pinst->pdata, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pdata->klass->_1.element_class, v4, v19);
+      if ((v19[0] & 1) != 0)
+        v6 = v20;
+      else
+        v6 = v19 + 1;
+      v7 = sub_8C4940(v6);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+LABEL_14:
+  pos = 0;
+  v20 = 0;
+  v21 = 0;
+  v19[0] = 0;
+  v19[1] = 0;
+  sub_13A7EC0(v19, Interface, &pos);
+  pos += 8 * v21;
+  v8 = Allocate(itfMesBinTypeHeader2_t);
+  itfMesBinTypeHeader2_t___ctor(v8, Interface, &pos);
+  v11 = v8->ppspkhead + 4 * pinst->speaker->num + 32;
+  v12 = ToInt32(Interface, v11, 0);
+  v13 = Allocate(System_Collections_Generic_List_byte_);
+  __ctor(v13);
+  v14 = v12 + 32;
+  v15 = Interface + v14 + 32;
+  if (v14 >= *(Interface + 6))
+  {
+LABEL_20:
+  }
+  while (*v15)
+  {
+    _Add(v13, *v15);
+    ++v14;
+    ++v15;
+    if (v14 >= *(Interface + 6))
+      goto LABEL_20;
+  }
+  _Add(v13, 0);
+  return _ToArray(v13);
 }
 
 // 0x13a8f70
 itfMesBinTypeHeader_t *GetTypeHeader(instanceMes_tag *pinst, s32 index) {
-    return 0;
+  Il2CppObject *pdata;
+  Il2CppClass *v6;
+  s64 *Interface;
+  char *v8;
+  s64 *v9;
+  u64 *v10;
+  s32 v12;
+  u64 v14[2];
+  char *v15;
+  s64 v16;
+  s32 v17;
+
+  v17 = 0;
+  pdata = pinst->pdata;
+  if (pdata)
+  {
+    Interface = QueryInterface(pinst->pdata, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pdata->klass->_1.element_class, v6, v14);
+      if ((v14[0] & 1) != 0)
+        v8 = v15;
+      else
+        v8 = v14 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  v17 = 0;
+  v15 = 0;
+  v16 = 0;
+  v14[0] = 0;
+  v14[1] = 0;
+  sub_13A7EC0(v14, Interface, &v17);
+  v17 += 8 * index;
+  v10 = Allocate(itfMesBinTypeHeader_t);
+  _ctor(v10, 0);
+  v12 = v17;
+  *(v10 + 4) = ToUInt32(Interface, v12, 0);
+  *(v10 + 5) = ToInt32(Interface, v17 + 4, 0);
+  return v10;
 }
 
 // 0x13a9120
 itfMesBinTypeHeader2_t *GetTypeHeader2(u8 **pfileheader) {
-    return 0;
+  u64 *v3;
+  u64 v6[3];
+  s64 v7;
+  s32 pos;
+
+  pos = 0;
+  v7 = 0;
+  memset(v6, 0, sizeof(v6));
+  sub_13A7EC0(v6, pfileheader, &pos);
+  pos += 8 * v7;
+  v3 = Allocate(itfMesBinTypeHeader2_t);
+  itfMesBinTypeHeader2_t___ctor(v3, pfileheader, &pos);
+  return v3;
 }
 
 // 0x13baa20
@@ -1931,7 +2849,6 @@ void InitDanteEventMsg(void) {
   u32 v11;
   System_WeakReference_o *v12;
   UnityEngine_Transform_o *transform;
-  struct itfMesManager_StaticFields *static_fields;
   struct System_Single_array *EnablePos;
   f32 v17;
   System_WeakReference_o *v18;
@@ -1964,7 +2881,9 @@ void InitDanteEventMsg(void) {
                 MsgWnd,
                 v9);
         v27 = 0;
+        goto LABEL_50;
       }
+LABEL_51:
       if (v9 == 5)
         return;
       ++v9;
@@ -1974,11 +2893,9 @@ void InitDanteEventMsg(void) {
             v9);
     transform = get_transform(v12, 0);
     localPosition = get_localPosition(transform);
-    static_fields = itfMesManager->static_fields;
-    EnablePos = static_fields->EnablePos;
     v17 = *(&EnablePos->obj.klass + i - 12 * (v9 / 3));
     v18 = _get_Item(
-            static_fields->MsgWnd,
+            MsgWnd,
             v9);
     v19 = get_transform(v18, 0);
     v30.x = localPosition.x;
@@ -1991,19 +2908,26 @@ void InitDanteEventMsg(void) {
       {
         ClearMessage();
       }
+        goto LABEL_49;
+      goto LABEL_36;
     }
     else
     {
       ClearSpeaker(itfMesManager);
       {
+LABEL_49:
         MsgWndSetActive(v9, 1);
         v26 = _get_Item(
                 MsgWnd,
                 v9);
         v27 = 1;
+LABEL_50:
         SetActive(v26, v27, 0);
+        goto LABEL_51;
       }
     }
+LABEL_36:
+    goto LABEL_49;
   }
 }
 
@@ -2052,8 +2976,73 @@ void InitializeSelect(select_tag *pselect) {
 
 // 0x13abb40
 void InitializeSelectWindow(_FRQ *pFRQ, s32 max) {
-    GetFRQString(0);
-    ChangeSelection(0, 0);
+  System_WeakReference_o *Item;
+  UnityEngine_Transform_o *transform;
+  u32 *v7;
+  u64 v8;
+  u32 *v9;
+  u64 v10;
+  u64 *v11;
+  System_String_o *v12;
+  UnityEngine_Component_o *v13;
+  s64 *gameObject;
+  UnityEngine_GameObject_o *v15;
+  u32 *v19;
+  u64 v20;
+  Il2CppObject *ComponentInChildren_object;
+  System_String_o *FRQString;
+  s32 v29;
+
+  Item = _get_Item(
+           MsgWnd,
+           MsgWndIndex + 2);
+  transform = get_transform(Item, 0);
+  v7 = NewSpecific(UnityEngine_GameObject, 8u);
+  v8 = 0;
+  v9 = v7 + 8;
+  do
+  {
+    while (1)
+    {
+      v10 = v8 + 1;
+      v29 = v8 + 1;
+      v11 = sub_8D3950(s32, &v29);
+      v12 = Format("choice_answer{0:D2}", v11, 0);
+      v13 = Find(transform, v12, 0);
+      gameObject = get_gameObject(v13);
+      v15 = gameObject;
+      *&v9[2 * v8] = v15;
+      if (get_activeSelf(v15))
+        break;
+      ++v8;
+      if (v10 == 8)
+        goto LABEL_18;
+    }
+    SetActive(*&v9[2 * v8++], 0, 0);
+  }
+  while (v10 != 8);
+LABEL_18:
+  if (max >= 1)
+  {
+    v19 = v7 + 8;
+    v20 = 0;
+    do
+    {
+      ComponentInChildren_object = GetComponentInChildren_object_(*&v19[2 * v20]);
+      if (!op_Equality(ComponentInChildren_object, 0, 0))
+      {
+        FRQString = GetFRQString(pFRQ);
+        set_text(ComponentInChildren_object, FRQString);
+        ChangeSelection(v20, 0);
+        pFRQ = pFRQ->next;
+        SetActive(*&v19[2 * v20], 1, 0);
+        if (!pFRQ)
+          break;
+      }
+      ++v20;
+    }
+    while (v20 < max);
+  }
 }
 
 // 0x13ace10
@@ -2155,42 +3144,37 @@ bool IsSelectWindowDispOn(void) {
 
 // 0x13ba920
 bool IsSpeakStart(void) {
-  struct itfMesManager_StaticFields *static_fields;
-
   else
   {
-    static_fields = itfMesManager->static_fields;
-    if (static_fields->bNowSpeaking == 2)
+    if (bNowSpeaking == 2)
       return 0;
   }
-  if (!static_fields->bVoicePlaySw)
+  if (!bVoicePlaySw)
     return 0;
+LABEL_9:
     return ChkVoicePlaying();
   return ChkVoicePlaying();
 }
 
 // 0x13ba7f0
 bool IsSpeaking(void) {
-  struct itfMesManager_StaticFields *static_fields;
-
   else
   {
-    static_fields = itfMesManager->static_fields;
-    if (static_fields->bNowSpeaking == 2)
+    if (bNowSpeaking == 2)
       return 0;
   }
-  else if (static_fields->bVoicePlaySw)
+  else if (bVoicePlaySw)
   {
+LABEL_11:
       return ChkVoicePlaying();
     return ChkVoicePlaying();
   }
-  return static_fields->bNowSpeaking != 3;
+  return bNowSpeaking != 3;
 }
 
 // 0x13aa2e0
 bool MsgWndActiveSelf(s32 i) {
   s32 v4;
-  struct itfMesManager_StaticFields *static_fields;
   System_WeakReference_o *Item;
   UnityEngine_Transform_o *transform;
   System_WeakReference_o *v9;
@@ -2198,25 +3182,25 @@ bool MsgWndActiveSelf(s32 i) {
   {
     else
     {
-      static_fields = itfMesManager->static_fields;
-      if (static_fields->bDanteEvent)
+      if (bDanteEvent)
+        goto LABEL_5;
     }
   }
   else
   {
     v4 = 0;
-    static_fields = itfMesManager->static_fields;
-    if (static_fields->bDanteEvent)
+    if (bDanteEvent)
     {
+LABEL_5:
       Item = _get_Item(
-               static_fields->MsgWnd,
+               MsgWnd,
                i);
       transform = get_transform(Item, 0);
       return get_localPosition(transform).y == 10000.0;
     }
   }
   v9 = _get_Item(
-         static_fields->MsgWnd,
+         MsgWnd,
          i);
   return get_activeSelf(v9);
 }
@@ -2224,7 +3208,6 @@ bool MsgWndActiveSelf(s32 i) {
 // 0x13aa410
 void MsgWndSetActive(s32 i, bool sw) {
   s32 v6;
-  struct itfMesManager_StaticFields *static_fields;
   System_WeakReference_o *Item;
   UnityEngine_Transform_o *transform;
   struct System_Single_array *EnablePos;
@@ -2238,29 +3221,31 @@ void MsgWndSetActive(s32 i, bool sw) {
   {
     else
     {
-      static_fields = itfMesManager->static_fields;
-      if (static_fields->bDanteEvent)
+      if (bDanteEvent)
+        goto LABEL_5;
     }
   }
   else
   {
     v6 = 0;
-    static_fields = itfMesManager->static_fields;
-    if (static_fields->bDanteEvent)
+    if (bDanteEvent)
     {
+LABEL_5:
       Item = _get_Item(
-               static_fields->MsgWnd,
+               MsgWnd,
                i);
       transform = get_transform(Item, 0);
       localPosition = get_localPosition(transform);
       if (sw)
       {
         v14 = EnablePos->m_Items[i % 3];
+          goto LABEL_24;
       }
       else
       {
         v14 = 10000.0;
         {
+LABEL_24:
           v17 = _get_Item(
                   MsgWnd,
                   i);
@@ -2272,10 +3257,11 @@ void MsgWndSetActive(s32 i, bool sw) {
           return;
         }
       }
+      goto LABEL_24;
     }
   }
   v16 = _get_Item(
-          static_fields->MsgWnd,
+          MsgWnd,
           i);
   SetActive(v16, sw, 0);
 }
@@ -2385,6 +3371,7 @@ void OpenMessageWindow(instanceMes_tag *pinst) {
     window = pinst->window;
     message = pinst->message;
     if (window->mes)
+      goto LABEL_3;
   }
   else
   {
@@ -2392,8 +3379,11 @@ void OpenMessageWindow(instanceMes_tag *pinst) {
     message = pinst->message;
     if (window->mes)
     {
+LABEL_3:
       pm = message->pos->pm;
       if (LODWORD(pm->max_length))
+        goto LABEL_4;
+LABEL_48:
     }
   }
   if (pinst->type == 2)
@@ -2409,6 +3399,8 @@ void OpenMessageWindow(instanceMes_tag *pinst) {
   window->mes = itfPnlRegist2(v39, tex);
   pm = message->pos->pm;
   if (!LODWORD(pm->max_length))
+    goto LABEL_48;
+LABEL_4:
   v6 = window->mes_offset->pm;
   v7 = pm->m_Items[0];
   v9 = message->pos->pm;
@@ -2475,13 +3467,176 @@ void RaiseMessageSpeedMaxAll(_FRQ *pfont) {
 
 // 0x13a92f0
 void ReadytoMessage(instanceMes_tag *pinst, s32 mode) {
-    frDestroyFontRequestAfter(0);
-    GetMessagePagePtr(0, 0, 0);
-    ClearMessage();
-    MessageRequestExLocalize(0, 0, 0, 0, 0, 0, 0, 0);
-    SwitchSpeaker(0, 0);
-    Hide(0);
-    WindowDispOn_20618496(0);
+  struct message_tag_o *message;
+  _FRQ_o *pfont;
+  itfMesBinMesHeader_t_o *pbinheader;
+  s64 *pdata;
+  s32 page;
+  Il2CppClass *v11;
+  s64 *Interface;
+  char *v13;
+  s64 *v14;
+  System_Byte_array *MessagePagePtr;
+  struct System_Int32_array *pm;
+  u32 max_length;
+  s32 v19;
+  s32 v20;
+  s32 v22;
+  u8 last_style;
+  u8 last_col;
+  u8 last_tp;
+  u8 last_spd;
+  _FRQ_o *v29;
+  _FRQ_o *prev;
+  struct _TEXT_o *str_end;
+  char gMessageRequestResult;
+  struct _FRQ_o *v35;
+  System_WeakReference_o *Item;
+  UnityEngine_GameObject_o *gameObject;
+  Il2CppObject *Component_object;
+  instanceMes_tag_func_kutiDelegate_o *func_kuti;
+  u32 z;
+  _FRQ_o *v49;
+  _FRQ_o *v50;
+  _FRQ_o *v51;
+  u64 v52;
+  u64 v54[3];
+
+  message = pinst->message;
+  pfont = message->pfont;
+  if (pfont)
+  {
+    frDestroyFontRequestAfter(pfont, *&mode);
+    message->pfont = 0;
+  }
+  pbinheader = message->pbinheader;
+  pdata = pinst->pdata;
+  page = message->page;
+  if (!pdata)
+    goto LABEL_17;
+LABEL_11:
+  Interface = QueryInterface(pdata, byte);
+  if (!Interface)
+  {
+    sub_8FC2C0(*(*pdata + 64), v11, v54);
+    if ((v54[0] & 1) != 0)
+      v13 = v54[2];
+    else
+      v13 = v54 + 1;
+    v14 = sub_8C4940(v13);
+  }
+LABEL_18:
+  MessagePagePtr = GetMessagePagePtr(pbinheader, Interface, page);
+  ClearMessage(MessagePagePtr);
+  bNowSpeaking = 1;
+  pm = message->pos->pm;
+  max_length = pm->max_length;
+  v19 = pm->m_Items[0];
+  v20 = mode;
+  v22 = message->pos->pm->m_Items[1];
+  last_style = message->last_style;
+  last_col = message->last_col;
+  last_tp = message->last_tp;
+  last_spd = message->last_spd;
+  v29 = MessageRequestExLocalize(v19, v22, last_style, last_col, last_tp, last_spd, MessagePagePtr, 0);
+  if (v20 != 2)
+  {
+    if ((pinst->stat & 0x400000) == 0)
+    {
+      if ((g_manager->stat & 1) != 0)
+      {
+        if (v29)
+        {
+          prev = v29;
+          do
+          {
+            while (1)
+            {
+              while (prev->str->tp)
+              {
+                prev = prev->prev;
+                if (!prev)
+                  goto LABEL_45;
+              }
+                break;
+              prev->draw_spd = 0x80;
+              prev = prev->prev;
+              if (!prev)
+                goto LABEL_45;
+            }
+            prev->draw_spd = 0x80;
+            prev = prev->prev;
+          }
+          while (prev);
+        }
+      }
+    }
+LABEL_45:
+    if (v29)
+    {
+      str_end = v29->str_end;
+      if (str_end)
+      {
+        message->last_spd = v29->draw_spd >> 1;
+        message->last_style = str_end->style;
+        message->last_col = str_end->col_no;
+        message->last_tp = str_end->tp;
+      }
+    }
+    message->wait = gMessageRequestResult & 3;
+    if ((gMessageRequestResult & 2) != 0)
+    {
+      SwitchSpeaker(0, 0);
+      pinst->stat |= 0x10000u;
+      if (fclCombineGreetingFlag)
+      {
+        Item = _get_Item(
+                 MsgWnd,
+                 MsgWndIndex + 1);
+        gameObject = get_gameObject(Item);
+        Component_object = GetComponent_object_(gameObject);
+        Hide(Component_object);
+        fclCombineGreetingFlag = 0;
+      }
+        goto LABEL_88;
+    }
+    else
+    {
+      v35 = pinst->speaker->pfont;
+      SwitchSpeaker(v35 != 0, v35 != 0);
+      pinst->stat &= ~0x10000u;
+        goto LABEL_88;
+    }
+LABEL_88:
+    WindowDispOn_20618496(pinst);
+    if ((gMessageRequestResult & 4) != 0)
+    {
+      func_kuti = pinst->func_kuti;
+      if (func_kuti)
+        Invoke(func_kuti);
+    }
+    z = pinst->z;
+    if (v29)
+    {
+      v49 = v29;
+      do
+      {
+        v49->priority = z;
+        v49 = v49->prev;
+      }
+      while (v49);
+      v50 = v29;
+      do
+      {
+        v51 = v50;
+        v50 = v50->prev;
+      }
+      while (v50);
+      v52 = 715827883LL * ((v29->y - v51->y) >> 3);
+      message->lines = (v52 >> 34) + (v52 >> 63) + 1;
+    }
+  }
+  message->pfont = v29;
 }
 
 // 0x13a8e80
@@ -2587,6 +3742,7 @@ void ResetWindowPara(window_tag *pwin, s32 type, s32 alpha) {
     else
       v26 = 174;
     if (LODWORD(v25->max_length) <= 3)
+      goto LABEL_48;
   }
   else
   {
@@ -2616,6 +3772,8 @@ void ResetWindowPara(window_tag *pwin, s32 type, s32 alpha) {
       else
         v26 = 270;
       if (LODWORD(v25->max_length) > 3)
+        goto LABEL_49;
+LABEL_48:
     }
     v46 = pwin->mes_offset->pm;
     v47 = CMP_XM(-313);
@@ -2641,7 +3799,9 @@ void ResetWindowPara(window_tag *pwin, s32 type, s32 alpha) {
     else
       v26 = 204;
     if (LODWORD(v25->max_length) <= 3)
+      goto LABEL_48;
   }
+LABEL_49:
   v25->m_Items[3] = v26;
 }
 
@@ -2666,18 +3826,26 @@ s32 SelectItem(instanceMes_tag *pinst) {
   select = pinst->select;
   else if (DDS3_PADCHECK_REP(6))
   {
+LABEL_6:
     if (select->select)
+      goto LABEL_11;
     if (DDS3_PADCHECK_TRIG(6))
     {
+LABEL_11:
       v6 = -1;
+      goto LABEL_23;
     }
+    goto LABEL_27;
   }
   if (DDS3_PADCHECK_REP(7))
   {
     if (select->lines - 1 != select->select)
+      goto LABEL_22;
     if (DDS3_PADCHECK_TRIG(7))
     {
+LABEL_22:
       v6 = 1;
+LABEL_23:
       SelectItemMove(select, v6);
       curctr = pinst->curctr;
       *&curctr->phase = 0x400000;
@@ -2685,17 +3853,23 @@ s32 SelectItem(instanceMes_tag *pinst) {
       curctr->ctr_key = 0;
     }
   }
+LABEL_27:
   else if (DDS3_PADCHECK_TRIG(OK))
   {
+LABEL_33:
     else
     {
       if (SelectYesSe < 1)
+        goto LABEL_37;
     }
     if (!select->select)
     {
       v13 = SelectYesSe;
+      goto LABEL_61;
     }
+LABEL_37:
     v13 = 8;
+LABEL_61:
     p2sdPlaySE(v13);
     return 1;
   }
@@ -2704,6 +3878,7 @@ s32 SelectItem(instanceMes_tag *pinst) {
   v14 = SelectItemDefKey(select);
   if (v14 < 0)
     return 0;
+LABEL_46:
   v16 = v14;
   p2sdPlaySE(8);
   v19 = select->select;
@@ -2767,11 +3942,14 @@ s32 SelectItemDefKey(select_tag *psel) {
             }
             while (v19);
             if (v17)
+              goto LABEL_26;
           }
           else
           {
             result = 0;
             if ((index & 3) == 0)
+              goto LABEL_28;
+LABEL_26:
             v21 = -v17;
             do
             {
@@ -2783,13 +3961,16 @@ s32 SelectItemDefKey(select_tag *psel) {
             }
             while (v21);
           }
+LABEL_28:
           if (!v16)
             return result;
+          goto LABEL_29;
         }
         result = 0;
         if ((mask & 1) == 0)
           return result;
       }
+LABEL_29:
       if (++v3 >= psel->numdef)
         return -1;
     }
@@ -2799,27 +3980,49 @@ s32 SelectItemDefKey(select_tag *psel) {
 
 // 0x13b7130
 void SelectItemMove(select_tag *psel, s32 direct) {
-    ChangeSelection(0, 0);
-    p2sdPlaySE(0);
+  s32 select;
+  s32 v8;
+
+  select = psel->select;
+  else
+  {
+    ChangeSelection(select, 0);
+    if ((direct & 0x80000000) == 0)
+      goto LABEL_6;
+  }
+  if (select <= 0)
+  {
+    v8 = psel->lines - 1;
+      goto LABEL_17;
+  }
+  else
+  {
+    v8 = select - 1;
+      goto LABEL_17;
+  }
+LABEL_10:
+LABEL_17:
+  ChangeSelection(v8, 1);
+  psel->select = v8;
+  psel->select_imm = v8;
+  p2sdPlaySE(1);
 }
 
 // 0x13ab150
 void SelectWindowDispOff(instanceMes_tag *pinst) {
   s32 id;
-  struct itfMesManager_StaticFields *static_fields;
   System_WeakReference_o *Item;
   Il2CppObject *Component_object;
 
   id = pinst->id;
   else
   {
-    static_fields = itfMesManager->static_fields;
-    if (id != static_fields->SelWndId)
+    if (id != SelWndId)
       return;
   }
   Item = _get_Item(
-           static_fields->MsgWnd,
-           static_fields->MsgWndIndex + 2);
+           MsgWnd,
+           MsgWndIndex + 2);
   Component_object = GetComponent_object_(Item);
   Display(Component_object, 0);
   SelWndId = -1;
@@ -2844,6 +4047,7 @@ void SelectWindowDispOn(instanceMes_tag *pinst) {
     {
       if (SelWndId == -1)
       {
+LABEL_13:
         id = pinst->id;
         SelWndId = id;
         MsgWndSetActive(MsgWndIndex + 2, 1);
@@ -2852,24 +4056,25 @@ void SelectWindowDispOn(instanceMes_tag *pinst) {
       }
     }
     v10 = pinst->id;
-    else    v13 = Empty_string_();
-    Log(StringLiteral_17022, v13, 0);
+    else if (v10 == SelWndId)
+    {
+      goto LABEL_13;
+    }
+    v13 = Empty_string_();
+    Log("Not Closed", v13, 0);
   }
 }
 
 // 0x13aa890
 void SetMessage(void *obj, s32 line, char *text) {
-  itfMesManager_c *v6;
-  struct itfMesManager_StaticFields *static_fields;
   s32 v8;
   System_WeakReference_o *Item;
   System_WeakReference_o *v10;
   UnityEngine_Canvas_o *v12;
 
-  static_fields = v6->static_fields;
-  v8 = 3 * static_fields->MsgWndIndex + line;
+  v8 = 3 * MsgWndIndex + line;
   Item = _get_Item(
-           static_fields->MsgWndTMP,
+           MsgWndTMP,
            v8);
   v10 = _get_Item(
           MsgWndCnv,
@@ -2909,7 +4114,67 @@ void SetVar(instanceMes_tag *pinst, s32 index, char *pstr, s32 length) {
 
 // 0x13ba3e0
 void ShutdownProc(dds3ProcessID_t *proc_id) {
-    DestructFlow(0);
+  struct mesflow_tag_o *puse_top;
+  struct itfmisclinkheader_t_o *linkheader;
+  s32 id;
+  mesflow_tag_c *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  u64 v10;
+  s16 v12;
+  Il2CppClass **v13;
+  s32 i;
+  struct manager_tag_o *g_manager;
+  struct UnityEngine_Texture2D_array *image;
+  u64 max_length_low;
+  u64 v19[3];
+
+  puse_top = g_manager->linkstack->puse_top;
+  if (puse_top)
+  {
+    while (1)
+    {
+      linkheader = puse_top->linkheader;
+      puse_top = linkheader->pnext;
+      id = linkheader->id;
+      DestructFlow(id);
+      if (!puse_top)
+        break;
+      klass = puse_top->klass;
+      if (puse_top->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+      {
+        sub_8FC2C0(klass->_1.element_class, mesflow_tag, v19);
+        if ((v19[0] & 1) != 0)
+          v8 = v19[2];
+        else
+          v8 = v19 + 1;
+        v9 = sub_8C4940(v8);
+      }
+    }
+  }
+  v10 = 0;
+  if ((v12 & 0x200) != 0)
+    goto LABEL_23;
+LABEL_22:
+  for (i = 0; ; i = v12 & 0x200)
+  {
+    image = g_manager->tex->image;
+    max_length_low = LODWORD(image->max_length);
+    if (v10 >= max_length_low)
+      break;
+    else if (v10 >= max_length_low)
+    {
+      goto LABEL_30;
+    }
+    v13 = &image->obj.klass + v10++;
+    v13[4] = 0;
+    if ((v12 & 0x200) == 0)
+      goto LABEL_22;
+LABEL_23:
+  }
+  g_manager->tex = 0;
 }
 
 // 0x13b6f10
@@ -2963,7 +4228,7 @@ void SwitchOK(bool sw) {
            MsgWnd,
            MsgWndIndex);
   transform = get_transform(Item, 0);
-  v6 = Find(transform, StringLiteral_17023, 0);
+  v6 = Find(transform, "ok", 0);
   gameObject = get_gameObject(v6);
   if (op_Inequality(gameObject, 0, 0))
     SetActive(gameObject, sw, 0);
@@ -2971,18 +4236,15 @@ void SwitchOK(bool sw) {
 
 // 0x13a9bb0
 void SwitchSpeaker(bool sw, bool disp) {
-  itfMesManager_c *v5;
-  struct itfMesManager_StaticFields *static_fields;
   s32 v7;
   System_WeakReference_o *Item;
   s32 v12;
   bool v13;
   Il2CppObject *Component_object;
 
-  static_fields = v5->static_fields;
-  v7 = static_fields->MsgWndIndex + 1;
+  v7 = MsgWndIndex + 1;
   Item = _get_Item(
-           static_fields->MsgWnd,
+           MsgWnd,
            v7);
   if (disp)
   {
@@ -2990,6 +4252,7 @@ void SwitchSpeaker(bool sw, bool disp) {
     {
       v12 = v7;
       v13 = 1;
+LABEL_23:
       MsgWndSetActive(v12, v13);
     }
   }
@@ -2999,6 +4262,7 @@ void SwitchSpeaker(bool sw, bool disp) {
     {
       v12 = v7;
       v13 = 0;
+      goto LABEL_23;
     }
   }
   Component_object = GetComponent_object_(Item);
@@ -3024,10 +4288,12 @@ _FRQ *UnchainFontHandleUnit(_FRQ *pfont, s32 index, s32 lines) {
   if (v9 < 1)
   {
     v10 = pfont->y;
+    goto LABEL_17;
   }
   v10 = pfont->y;
   if (y != v10)
   {
+LABEL_12:
     while (1)
     {
       v12 = v9-- < 2;
@@ -3036,7 +4302,9 @@ _FRQ *UnchainFontHandleUnit(_FRQ *pfont, s32 index, s32 lines) {
         break;
       v10 = pfont->y;
       if (y == v10)
+        goto LABEL_7;
     }
+LABEL_17:
     prev = pfont;
     while (1)
     {
@@ -3058,6 +4326,7 @@ _FRQ *UnchainFontHandleUnit(_FRQ *pfont, s32 index, s32 lines) {
               break;
             frDestroyFontRequestAfter(v15, *&index);
             if (!prev)
+              goto LABEL_25;
           }
           frDestroyFontRequestAfter(v15);
         }
@@ -3065,6 +4334,7 @@ _FRQ *UnchainFontHandleUnit(_FRQ *pfont, s32 index, s32 lines) {
         break;
       }
     }
+LABEL_25:
     pfont->next = 0;
     v14->prev = 0;
     if (pfont)
@@ -3081,6 +4351,7 @@ _FRQ *UnchainFontHandleUnit(_FRQ *pfont, s32 index, s32 lines) {
   }
   while (1)
   {
+LABEL_7:
     v11 = pfont->prev;
     pfont->prev = 0;
     pfont->next = 0;
@@ -3091,6 +4362,7 @@ _FRQ *UnchainFontHandleUnit(_FRQ *pfont, s32 index, s32 lines) {
     v10 = v11->y;
     pfont = v11;
     if (y != v10)
+      goto LABEL_12;
   }
 }
 
@@ -3104,7 +4376,7 @@ void WindowDispOff(bool sw) {
   Il2CppObject *Component_object;
 
   v4 = Empty_string_();
-  Log(StringLiteral_17021, v4, 0);
+  Log("WindowDispOff", v4, 0);
   for (i = 0; i != 6; ++i)
   {
     while (1)
@@ -3116,9 +4388,11 @@ void WindowDispOff(bool sw) {
                i);
       Component_object = GetComponent_object_(Item);
       if (!op_Inequality(Component_object, 0, 0))
+        goto LABEL_28;
       if (sw)
       {
         Display(Component_object, 0);
+LABEL_28:
         if (++i == 6)
           return;
       }
@@ -3134,6 +4408,7 @@ void WindowDispOff(bool sw) {
            i);
     v10 = GetComponent_object_(v8);
     if (!op_Inequality(v10, 0, 0))
+      goto LABEL_28;
     if (sw)
       Display(v10, 0);
     DisplayOff(v10);
@@ -3153,13 +4428,45 @@ void WindowDispOn(s32 MsgID) {
 
 // 0x13a9d00
 void WindowDispOn_20618496(instanceMes_tag *pinst) {
-    MsgWndActiveSelf(0);
-    MsgWndSetActive(0, 0);
-    Log(0, 0);
-    SwitchSpeaker(0, 0);
+  s32 MsgWndIndex;
+  System_String_o *v11;
+  System_String_o *v12;
+  System_Object_array *v14;
+  s32 v18;
+  char v26[4];
+
+  v26[0] = 0;
+  if (!get_activeSelf(MsgWndOwner))
+  {
+    SetActive(MsgWndOwner, 1, 0);
+  }
+  MsgWndIndex = 0;
+  if (!MsgWndActiveSelf(MsgWndIndex))
+  {
+    MsgWndSetActive(MsgWndIndex, 1);
+    v26[0] = 1;
+  }
+  v11 = sub_3C0020(v26);
+  v12 = Concat_5224608("WindowDispOn : ", v11);
+  v14 = Empty_string_();
+  Log(v12, v14, 0);
+  if (v26[0])
+  {
+    v18 = 3 - MsgWndIndex;
+    MsgWndSetActive(MsgWndIndex + 1, 1);
+    if (pinst->speaker->pfont)
+    {
+      SwitchSpeaker(1, 1);
+    }
     SwitchOK(0);
-    IsFadeOutWindow();
-    FadeInWindow();
+    MsgWndSetActive(v18, 0);
+    MsgWndSetActive(v18 + 1, 0);
+  }
+  else if (!IsFadeOutWindow(itfMesManager))
+  {
+    return;
+  }
+  FadeInWindow();
 }
 
 // 0x13a8690
@@ -3183,10 +4490,12 @@ void itfMesMngChangeWindowType(s32 id, s32 type, s32 alpha) {
     window = pinst->window;
     v12 = window;
     if (pinst->type != type)
+      goto LABEL_14;
     pm = window->mes_color->pm;
     if (pm->m_Items[3] != alpha)
     {
       v12 = pinst->window;
+LABEL_14:
       pinst->type = type;
       ResetWindowPara(v12, type, alpha);
       mes = window->mes;
@@ -3232,6 +4541,7 @@ s32 itfMesMngCloseWindow(void) {
   MessageHandle = scrGetMessageHandle();
   if (MessageHandle < 0)
     return 1;
+LABEL_6:
   v4 = MessageHandle;
   pmesflow = g_manager->pmesflow;
   v8 = pmesflow->m_Items[v4]->pinst->stat & 0x300;
@@ -3245,16 +4555,340 @@ s32 itfMesMngCloseWindow(void) {
 
 // 0x13b5050
 dds3ProcessFunc_t *itfMesMngDebugProc(dds3ProcessID_t *proc_id) {
-    DebugChangeInstance(0);
-    DebugMoveWinAlpha(0);
-    DebugMoveWinVert(0, 0);
-    DDS3_PAD2CHECK_REP(0);
-    DDS3_PAD2CHECK_TRIG(0);
-    dds3ConsPanelTagLink(0, 0, 0, 0, 0);
-    sdfDevPrintf(0, 0, 0, 0, 0, 0);
-    sdfDrawTagLink(0, 0);
-    sdfDrawTagLinkOt(0, 0);
-    return 0;
+  u64 *v3;
+  u64 *v4;
+  char v5;
+  char v7;
+  char v9;
+  char v11;
+  char v13;
+  u64 *v15;
+  s16 v16;
+  mesflow_tag_c *v18;
+  s16 v20;
+  struct debug_tag_o *g_debug;
+  mesflow_tag_o *v24;
+  struct mesflow_tag_o **p_pmesflow;
+  mesflow_tag_o *v26;
+  mesflow_tag_c *v27;
+  s64 v28;
+  char *v29;
+  s64 *v30;
+  struct debug_tag_o *v31;
+  window_tag_o *window;
+  s32 mode;
+  itfMesManager_c *v35;
+  struct debug_tag_o *v36;
+  s32 v38;
+  u64 v40;
+  u64 *v41;
+  u64 *v42;
+  s32 v43;
+  System_Object_array *v48;
+  struct debug_tag_o *v50;
+  System_String_o *v51;
+  _BOOL8 v52;
+  u16 *v54;
+  s64 *v55;
+  s64 *v56;
+  s64 *v58;
+  s64 *v60;
+  Il2CppObject *v63;
+  struct sdfIVector4_t_o *pos;
+  System_Object_array *v65;
+  struct System_Int32_array *pm;
+  System_Object_array *v67;
+  s64 *v69;
+  s64 *v70;
+  struct System_Int32_array *v72;
+  s64 *v74;
+  s64 *v76;
+  Il2CppObject *v79;
+  System_Object_array *v80;
+  struct System_Int32_array *v81;
+  System_Object_array *v82;
+  s64 *v84;
+  s64 *v85;
+  struct System_Int32_array *v87;
+  s64 *v89;
+  s64 *v90;
+  Il2CppObject *v92;
+  System_Object_array *v93;
+  struct System_Int32_array *v94;
+  System_Object_array *v95;
+  s64 *v97;
+  s64 *v98;
+  Il2CppObject *v100;
+  struct sdfIVector4_t_o *mes_offset;
+  System_Object_array *v104;
+  struct System_Int32_array *v105;
+  System_Object_array *v106;
+  s64 *v108;
+  s64 *v109;
+  struct System_Int32_array *v111;
+  s64 *v113;
+  s64 *v114;
+  struct System_Int32_array *v116;
+  s64 *v118;
+  s64 *v119;
+  struct System_Int32_array *v121;
+  s64 *v123;
+  s64 *v124;
+  Il2CppObject *v126;
+  struct sdfGrOt_t_array *dds3Ot;
+  mesflow_tag_o *pmesflow;
+  mesflow_tag_c *klass;
+  s64 typeHierarchyDepth;
+  bool v147;
+  struct debug_tag_o *v148;
+  s32 OK;
+  bool v150;
+  struct debug_tag_o *v152;
+  u32 cursor;
+  s32 CANCEL;
+  window_tag_o *v155;
+  u64 *v156;
+  s32 v157;
+  s32 v158;
+  s32 v159;
+  s32 v160;
+  s32 v161;
+  s32 v162;
+  s32 v163;
+  s32 v164;
+  char v165[16];
+  char *v166;
+
+  v3 = Allocate(sdfIVector4_t);
+  sdfIVector4_t___ctor(v3);
+  v4 = NewSpecific(byte, 5u);
+  v5 = *il2cp::SizeOf("LEFT-TOP", qword_3F088F8);
+  *(v4 + 32) = v5;
+  v7 = *il2cp::SizeOf("RIGHT-BOTTOM", qword_3F088F8);
+  *(v4 + 33) = v7;
+  v9 = *il2cp::SizeOf("POSITION", qword_3F088F8);
+  *(v4 + 34) = v9;
+  v11 = *il2cp::SizeOf("ALPHA", qword_3F088F8);
+  *(v4 + 35) = v11;
+  v13 = *il2cp::SizeOf("CHANGE INSTANCE", qword_3F088F8);
+  *(v4 + 36) = v13;
+  v15 = NewSpecific(char, 2u);
+  v16 = *il2cp::SizeOf("> ", char);
+  v156 = v15;
+  *(v15 + 16) = v16;
+  v20 = *il2cp::SizeOf("* ", char);
+  *(v15 + 17) = v20;
+  else
+  {
+    if (g_debug->pmesflow)
+      goto LABEL_33;
+  }
+  else
+  {
+    v24 = 0;
+    p_pmesflow = &g_debug->pmesflow;
+  }
+  v26 = DebugChangeInstance(v24, v18);
+  if (v26)
+  {
+    v27 = v26->klass;
+    if (v26->klass->_2.typeHierarchyDepth < v28 || v27->_2.typeHierarchy[v28 - 1] != mesflow_tag)
+    {
+      sub_8FC2C0(v27->_1.element_class, mesflow_tag, v165);
+      if ((v165[0] & 1) != 0)
+        v29 = v166;
+      else
+        v29 = &v165[1];
+      v30 = sub_8C4940(v29);
+    }
+  }
+  *p_pmesflow = v26;
+  if (g_debug->pmesflow)
+  {
+LABEL_33:
+    v31 = g_debug;
+    window = v31->pmesflow->pinst->window;
+    mode = v31->mode;
+    switch (mode)
+    {
+      case 2:
+        DebugMoveWinAlpha(window, v18);
+        break;
+      case 1:
+        DebugMoveWinVert(window, v31->cursor);
+        break;
+      case 0:
+        else if (DDS3_PAD2CHECK_REP(6))
+        {
+LABEL_42:
+          --g_debug->cursor;
+          v36 = g_debug;
+          if (v36->cursor < 0)
+          {
+            v36->cursor = 2;
+            if ((v35->_2.bitflags2 & 2) == 0)
+            {
+LABEL_203:
+              v150 = DDS3_PAD2CHECK_TRIG(OK);
+              if (v150)
+              {
+                v152 = g_debug;
+                cursor = v152->cursor;
+                if (cursor >= 3)
+                {
+                  if (cursor == 3)
+                  {
+                    v152->mode = 2;
+                  }
+                  else if (cursor == 4)
+                  {
+                    v152->pmesflow = DebugChangeInstance(v152->pmesflow, v18);
+                  }
+                }
+                else
+                {
+                  v152->mode = 1;
+                }
+              }
+              else
+              {
+                if (DDS3_PAD2CHECK_TRIG(CANCEL))
+                {
+                  proc_id->func_ans = -1;
+                  return 0;
+                }
+              }
+              goto LABEL_67;
+            }
+LABEL_201:
+            goto LABEL_203;
+          }
+LABEL_200:
+          if ((v35->_2.bitflags2 & 2) == 0)
+            goto LABEL_203;
+          goto LABEL_201;
+        }
+        v147 = DDS3_PAD2CHECK_REP(7);
+        if (v147)
+        {
+          ++g_debug->cursor;
+          v148 = g_debug;
+          if (v148->cursor >= 5)
+          {
+            v148->cursor = 0;
+          }
+        }
+        goto LABEL_200;
+      default:
+LABEL_67:
+        v155 = window;
+        dds3ConsPanelTagLink(0, 16, 16, 30, 9);
+        v40 = 0;
+        v41 = v4;
+        v42 = v4 + 4;
+        v43 = 31232;
+        do
+        {
+          v48 = NewSpecific(object, 2u);
+          v50 = g_debug;
+          v51 = "{0}{1}";
+          if (v40 == v50->cursor)
+          {
+            v52 = v50->mode != 0;
+            v54 = v156 + v52 + 16;
+          }
+          else
+          {
+            v54 = il2cp::SizeOf("  ", char);
+          }
+          *v165 = *v54;
+          v55 = sub_8D3950(char, v165);
+          v56 = v55;
+          v48->m_Items[0] = v56;
+          LOBYTE(v164) = *(v42 + v40);
+          v58 = sub_8D3950(qword_3F088F8, &v164);
+          v60 = v58;
+          v48->m_Items[1] = v60;
+          v63 = sdfDevPrintf(29056, v43, 0xFFFFF0u, 0, v51, v48);
+          sdfDrawTagLink(0, v63);
+          ++v40;
+          v43 += 96;
+        }
+        while (v40 != 5);
+        pos = window->mes->pos;
+        v65 = NewSpecific(object, 2u);
+        pm = pos->pm;
+        v67 = v65;
+        *v165 = pm->m_Items[0] >> 4;
+        v69 = sub_8D3950(s32, v165);
+        v70 = v69;
+        v67->m_Items[0] = v70;
+        v72 = pos->pm;
+        v164 = v72->m_Items[1] >> 3;
+        v74 = sub_8D3950(s32, &v164);
+        v76 = v74;
+        v67->m_Items[1] = v76;
+        v79 = sdfDevPrintf(32256, 31232, 0xFFFFF0u, 0, "({0},{1})", v67, 0);
+        sdfDrawTagLink(0, v79);
+        v80 = NewSpecific(object, 2u);
+        v81 = pos->pm;
+        v82 = v80;
+        v163 = v81->m_Items[2] >> 4;
+        v84 = sub_8D3950(s32, &v163);
+        v85 = v84;
+        v82->m_Items[0] = v85;
+        v87 = pos->pm;
+        v162 = v87->m_Items[3] >> 3;
+        v89 = sub_8D3950(s32, &v162);
+        v90 = v89;
+        v82->m_Items[1] = v90;
+        v92 = sdfDevPrintf(32256, 31328, 0xFFFFF0u, 0, "({0},{1})", v82, 0);
+        sdfDrawTagLink(0, v92);
+        v93 = NewSpecific(object, 1u);
+        v94 = v155->mes_color->pm;
+        v95 = v93;
+        v161 = v94->m_Items[3];
+        v97 = sub_8D3950(s32, &v161);
+        v98 = v97;
+        v95->m_Items[0] = v98;
+        v100 = sdfDevPrintf(32256, 31520, 0xFFFFF0u, 0, "({0})", v95, 0);
+        sdfDrawTagLink(0, v100);
+        mes_offset = g_debug->pmesflow->pinst->window->mes_offset;
+        v104 = NewSpecific(object, 4u);
+        v105 = mes_offset->pm;
+        v106 = v104;
+        v160 = v105->m_Items[0] >> 4;
+        v108 = sub_8D3950(s32, &v160);
+        v109 = v108;
+        v106->m_Items[0] = v109;
+        v111 = mes_offset->pm;
+        v159 = v111->m_Items[1] >> 3;
+        v113 = sub_8D3950(s32, &v159);
+        v114 = v113;
+        v106->m_Items[1] = v114;
+        v116 = mes_offset->pm;
+        v158 = v116->m_Items[2] >> 4;
+        v118 = sub_8D3950(s32, &v158);
+        v119 = v118;
+        v106->m_Items[2] = v119;
+        v121 = mes_offset->pm;
+        v157 = v121->m_Items[3] >> 3;
+        v123 = sub_8D3950(s32, &v157);
+        v124 = v123;
+        v106->m_Items[3] = v124;
+        v126 = sdfDevPrintf(29056, 31808, 0xFFFFF0u, 0, "OFFSET : {0}, {1} - {2}, {3}", v106, 0);
+        sdfDrawTagLink(0, v126);
+        sdfDrawTagLinkOt(dds3Ot->m_Items[83], 0);
+        return 0;
+    }
+    v38 = CANCEL;
+    if (DDS3_PAD2CHECK_TRIG(v38))
+    {
+      g_debug->mode = 0;
+    }
+    goto LABEL_67;
+  }
+  return 0;
 }
 
 // 0x13b6b20
@@ -3266,8 +4900,38 @@ void itfMesMngDebugShutdown(dds3ProcessID_t *proc_id) {
 
 // 0x13b3ec0
 u8 **itfMesMngGetDataPtrImmediate(s32 id, s32 message, s32 page) {
-    GetMessagePagePtr(0, 0, 0);
-    return 0;
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  itfMesBinMesHeader_t_o *pbinheader;
+  s64 *pdata;
+  Il2CppClass *v12;
+  s64 *Interface;
+  char *v14;
+  s64 *v15;
+  u64 v17[3];
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  pbinheader = pinst->message->pbinheader;
+  pdata = pinst->pdata;
+  if (pdata)
+  {
+    Interface = QueryInterface(pdata, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(*(*pdata + 64), v12, v17);
+      if ((v17[0] & 1) != 0)
+        v14 = v17[2];
+      else
+        v14 = v17 + 1;
+      v15 = sub_8C4940(v14);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  return GetMessagePagePtr(pbinheader, Interface, page);
 }
 
 // 0x13b4190
@@ -3349,7 +5013,7 @@ char *itfMesMngGetStrImmediate(s32 id, s32 message, s32 page) {
   System_String_o *v17;
 
   v8 = itfMesMngRequestMessage(id, message, page, 2);
-  v11 = StringLiteral_416;
+  v11 = "";
   if (v8 == 1)
   {
     pmesflow = g_manager->pmesflow;
@@ -3397,11 +5061,76 @@ char *itfMesMngGetVarLocalize(s32 id, s32 index) {
 
 // 0x13b4240
 s32 itfMesMngGetWidth(s32 id, s32 message, s32 page) {
-    CommitVarTable(0);
-    GetMessagePagePtr(0, 0, 0);
-    MessageRequestEx2(0, 0, 0, 0, 0, 0, 0, 0, 0);
-    frDestroyFontRequestAfter(0);
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  s64 pext;
+  itfMesBinMesHeader_t_o *pbinheader;
+  s64 *pdata;
+  System_Byte_array *MessagePagePtr;
+  System_Byte_array *v20;
+  _FRQ_o *v22;
+  s32 y;
+  s32 v24;
+  _FRQ_o *prev;
+  s32 v26;
+  s32 w_pxls;
+  s32 v28;
+  s32 v29;
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  CommitVarTable(pinst->variable, *&message);
+  pext = pinst->pext;
+  if (pext)
+  {
+    il2cp::SizeOf(pext, qword_3F088F8);
+  }
+  pbinheader = pinst->message->pbinheader;
+  pdata = pinst->pdata;
+  else if (pdata)
+  {
+    goto LABEL_16;
+  }
+  MessagePagePtr = GetMessagePagePtr(pbinheader, 0, page);
+  if (!MessagePagePtr)
     return 0;
+LABEL_18:
+  v20 = MessagePagePtr;
+  v22 = MessageRequestEx2(0, 0, 0, 0, 0, 0, 0x80u, v20, 0);
+  if (v22)
+  {
+    y = v22->y;
+    v24 = 0;
+    prev = v22;
+LABEL_36:
+    v26 = 0;
+    while (1)
+    {
+      w_pxls = prev->w_pxls;
+      prev = prev->prev;
+      v26 += w_pxls;
+      if (!prev)
+        break;
+      if (y != prev->y)
+      {
+        if (v24 < v26)
+          v24 = v26;
+        y = prev->y;
+        goto LABEL_36;
+      }
+    }
+    if (v24 >= v26)
+      v28 = v24;
+    else
+      v28 = v26;
+    v29 = 16 * v28;
+  }
+  else
+  {
+    v29 = 0;
+  }
+  frDestroyFontRequestAfter(v22);
+  return v29;
 }
 
 // 0x13b1150
@@ -3526,10 +5255,194 @@ s32 itfMesMngInitialize(void *presource, char **master_text, char *key) {
 
 // 0x13b46d0
 void itfMesMngInitializeManager(void) {
-    itfMiscLinkInitialize(0, 0, 0);
-    dds3StartProcess(0, 0, 0, 0, 0, 0, 0);
-    LoadPrefab_16624656(0, 0, 0, 0);
-    WindowDispOff(0);
+  struct manager_tag_o *g_manager;
+  itfmisclinkstack_t_o *linkstack;
+  mesflow_tag_array **p_pmesflow;
+  struct mesflow_tag_o *pdisuse_top;
+  Il2CppObject *i;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  u64 *v12;
+  u64 *v14;
+  AssetBundleCtrl_o *asset_bc;
+  Il2CppObject *Prefab_16624656;
+  u64 *v18;
+  UnityEngine_GameObject_o *v21;
+  UnityEngine_Transform_o *transform;
+  Il2CppObject *v24;
+  u64 *v26;
+  u64 *v27;
+  itfMesManager_c *v29;
+  s32 v30;
+  s32 v31;
+  UnityEngine_Transform_o *v32;
+  s32 childCount;
+  UnityEngine_Transform_o *v36;
+  UnityEngine_Component_o *Child;
+  UnityEngine_GameObject_o *gameObject;
+  u64 *v39;
+  System_String_o *v41;
+  System_Collections_Generic_List_mdlEffectResrcItem_t__o *MsgWndTMP;
+  UnityEngine_Transform_o *v44;
+  UnityEngine_Component_o *v45;
+  UnityEngine_GUILayer_o *Component_GUILayer;
+  struct System_Collections_Generic_List_Canvas__o *MsgWndCnv;
+  UnityEngine_Transform_o *v48;
+  UnityEngine_Component_o *v49;
+  UnityEngine_GUILayer_o *v50;
+  u64 *v51;
+  System_String_o *v53;
+  System_Collections_Generic_List_mdlEffectResrcItem_t__o *v55;
+  UnityEngine_Transform_o *v56;
+  UnityEngine_Component_o *v57;
+  UnityEngine_GUILayer_o *v58;
+  struct System_Collections_Generic_List_Canvas__o *v59;
+  UnityEngine_Transform_o *v60;
+  UnityEngine_Component_o *v61;
+  UnityEngine_GUILayer_o *v62;
+  u64 *v63;
+  System_String_o *v65;
+  System_Collections_Generic_List_mdlEffectResrcItem_t__o *v67;
+  UnityEngine_Transform_o *v68;
+  UnityEngine_Component_o *v69;
+  UnityEngine_GUILayer_o *v70;
+  struct System_Collections_Generic_List_Canvas__o *v71;
+  UnityEngine_Transform_o *v72;
+  UnityEngine_Component_o *v73;
+  UnityEngine_GUILayer_o *v74;
+  System_WeakReference_o *Item;
+  UnityEngine_Transform_o *v76;
+  UnityEngine_Component_o *v77;
+  UnityEngine_GUILayer_o *v78;
+  u64 v81[3];
+
+  g_manager->numuse = 0;
+  g_manager->ctr = 0;
+  g_manager->stat = 0;
+  linkstack = g_manager->linkstack;
+  p_pmesflow = &g_manager->pmesflow;
+  itfMiscLinkInitialize(linkstack, p_pmesflow, 128);
+  pdisuse_top = g_manager->linkstack->pdisuse_top;
+  if (pdisuse_top)
+  {
+    pdisuse_top->pinst = 0;
+    for (i = pdisuse_top->linkheader->pnext; i; i = i[1].klass->_1.namespaze)
+    {
+      klass = i->klass;
+      if (i->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mesflow_tag)
+      {
+        sub_8FC2C0(klass->_1.element_class, mesflow_tag, v81);
+        if ((v81[0] & 1) != 0)
+          v10 = v81[2];
+        else
+          v10 = v81 + 1;
+        v11 = sub_8C4940(v10);
+      }
+      i[1].monitor = 0;
+    }
+  }
+  v12 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v12,
+    0,
+    Method_itfMesManager_CalcManagerProc__);
+  dds3StartProcess("ItfMesCalc", 0x409u, 0, 0, v12, 0, 0, 0, 0, 0);
+  v14 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v14,
+    0,
+    Method_itfMesManager_DrawManagerProc__);
+  dds3StartProcess("ItfMesDraw", 0x2B1Au, 0, 0, v14, 0, 0, 0, 0, 0);
+  asset_bc = get_asset_bc();
+  Prefab_16624656 = LoadPrefab_16624656(asset_bc, "common", "dds3data/UI", "talkUI");
+  v18 = Allocate(System_Collections_Generic_List_GameObject_);
+  __ctor(v18);
+  MsgWnd = v18;
+  v21 = Find("Canvas_UI", 0);
+  transform = get_transform(v21, 0);
+  v24 = Instantiate_object__425520(Prefab_16624656, transform);
+  MsgWndOwner = v24;
+  set_name(MsgWndOwner, "talkUI");
+  v26 = Allocate(System_Collections_Generic_List_TextMeshProUGUI_);
+  __ctor(
+    v26);
+  MsgWndTMP = v26;
+  v27 = Allocate(System_Collections_Generic_List_Canvas_);
+  __ctor(v27);
+  v30 = 0;
+  v31 = 0;
+  MsgWndCnv = v27;
+  if ((v29->_2.bitflags2 & 2) != 0)
+  {
+LABEL_34:
+  }
+  while (1)
+  {
+    v32 = get_transform(MsgWndOwner, 0);
+    childCount = get_childCount(v32);
+    if (v31 >= childCount)
+      break;
+    v36 = get_transform(MsgWndOwner, 0);
+    Child = GetChild(v36, v31);
+    gameObject = get_gameObject(Child);
+    _Add(MsgWnd, gameObject);
+    SetActive(gameObject, 0, 0);
+    if (!(v30 + 3 * (v31 / 3u)))
+    {
+      LODWORD(v81[0]) = 1;
+      v39 = sub_8D3950(s32, v81);
+      v41 = Format("talk_window/Text{0:D2}TM", v39, 0);
+      v44 = get_transform(gameObject, 0);
+      v45 = Find(v44, v41, 0);
+      Component_GUILayer = GetComponent_GUILayer_(v45);
+      _Add(MsgWndTMP, Component_GUILayer);
+      v48 = get_transform(gameObject, 0);
+      v49 = Find(v48, v41, 0);
+      v50 = GetComponent_GUILayer_(v49);
+      _Add(MsgWndCnv, v50);
+      LODWORD(v81[0]) = 2;
+      v51 = sub_8D3950(s32, v81);
+      v53 = Format("talk_window/Text{0:D2}TM", v51, 0);
+      v55 = MsgWndTMP;
+      v56 = get_transform(gameObject, 0);
+      v57 = Find(v56, v53, 0);
+      v58 = GetComponent_GUILayer_(v57);
+      _Add(v55, v58);
+      v59 = MsgWndCnv;
+      v60 = get_transform(gameObject, 0);
+      v61 = Find(v60, v53, 0);
+      v62 = GetComponent_GUILayer_(v61);
+      _Add(v59, v62);
+      LODWORD(v81[0]) = 3;
+      v63 = sub_8D3950(s32, v81);
+      v65 = Format("talk_window/Text{0:D2}TM", v63, 0);
+      v67 = MsgWndTMP;
+      v68 = get_transform(gameObject, 0);
+      v69 = Find(v68, v65, 0);
+      v70 = GetComponent_GUILayer_(v69);
+      _Add(v67, v70);
+      v71 = MsgWndCnv;
+      v72 = get_transform(gameObject, 0);
+      v73 = Find(v72, v65, 0);
+      v74 = GetComponent_GUILayer_(v73);
+      _Add(v71, v74);
+    }
+    ++v31;
+    --v30;
+      goto LABEL_34;
+  }
+  Item = _get_Item(
+           MsgWnd,
+           MsgWndIndex + 1);
+  v76 = get_transform(Item, 0);
+  v77 = Find(v76, "name_window/TextTM", 0);
+  v78 = GetComponent_GUILayer_(v77);
+  SpkWndTMP = v78;
+  SetActive(MsgWndOwner, 0, 0);
+  WindowDispOff(0);
 }
 
 // 0x13b07c0
@@ -3544,9 +5457,22 @@ void itfMesMngMarkBitStat(s32 id, u32 flag) {
 
 // 0x13b0260
 s32 itfMesMngMaskSelect(void) {
-    scrGetMessageHandle();
-    scrGetIntPara(0);
-    return 0;
+  s32 MessageHandle;
+  s32 v4;
+  s32 IntPara;
+
+  MessageHandle = scrGetMessageHandle();
+  if ((MessageHandle & 0x80000000) == 0)
+  {
+    v4 = MessageHandle;
+    IntPara = scrGetIntPara(0);
+    else if ((byte_3F596AA & 1) != 0)
+    {
+      goto LABEL_14;
+    }
+    goto LABEL_14;
+  }
+  return 1;
 }
 
 // 0x13aeb90
@@ -3618,9 +5544,20 @@ s32 itfMesMngOpenSelectWindow(void) {
 
 // 0x13b0660
 s32 itfMesMngOpenWindow(void) {
-    scrGetMessageHandle();
-    fldPanelSet(0);
-    return 0;
+  s32 MessageHandle;
+  s32 v4;
+
+  MessageHandle = scrGetMessageHandle();
+  if ((MessageHandle & 0x80000000) == 0)
+  {
+    v4 = MessageHandle;
+    else if ((byte_3F596AB & 1) != 0)
+    {
+      goto LABEL_11;
+    }
+    goto LABEL_11;
+  }
+  return 1;
 }
 
 // 0x13b2750
@@ -3639,18 +5576,245 @@ void itfMesMngRelease(s32 id) {
 
 // 0x13aed00
 s32 itfMesMngRequestMessage(s32 id, s32 message, s32 page, s32 callmode) {
-    GetTypeHeader(0, 0);
-    CommitVarTable(0);
-    ReadytoMessage(0, 0);
-    CallEventVoice(0);
-    frDestroyFontRequestAfter(0);
-    SwitchSpeaker(0, 0);
-    itfPnlRelease(0);
-    GetSpeakerName(0);
-    MessageRequestExLocalize(0, 0, 0, 0, 0, 0, 0, 0);
-    OpenCheckSpeakerWindow(0);
-    OpenMessageWindow(0);
+  s16 v6;
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  u64 *v13;
+  Il2CppObject *pdata;
+  Il2CppClass *v16;
+  s64 *Interface;
+  char *v18;
+  s64 *v19;
+  s32 ptr;
+  System_Array_o *v21;
+  u64 v24;
+  u64 v25;
+  s32 v26;
+  u32 v27;
+  u64 v29;
+  s32 v31;
+  s32 v32;
+  s64 v34;
+  u64 v35;
+  s64 v36;
+  u64 v37;
+  s32 v38;
+  u64 v39;
+  u64 v40;
+  s64 v41;
+  s32 v43;
+  u64 v46;
+  struct message_tag_o *v49;
+  variable_tag_o *variable;
+  s64 pext;
+  struct Speaker_tag_o *speaker;
+  s32 v57;
+  _FRQ_o *pfont;
+  u32 stat;
+  s32 v65;
+  s32 result;
+  itfpanel_t_o *spk;
+  struct System_Int32_array *pm;
+  u32 max_length;
+  s32 v70;
+  s32 v71;
+  _FRQ_o *bufferdata;
+  struct System_Int32_array *v74;
+  u32 v75;
+  s32 v77;
+  s32 v79;
+  struct _FRQ_o *prev;
+  u32 z;
+  System_Byte_array *SpeakerName;
+  s32 ida;
+  s16 v88;
+  u64 v89[3];
+
+  v6 = page;
+  v88 = v6;
+  pmesflow = g_manager->pmesflow;
+  ida = id;
+  pinst = pmesflow->m_Items[id]->pinst;
+  v13 = Allocate(itfMesBinMesHeader_t);
+  _ctor(v13, 0);
+  pdata = pinst->pdata;
+  if (pdata)
+  {
+    Interface = QueryInterface(pinst->pdata, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pdata->klass->_1.element_class, v16, v89);
+      if ((v89[0] & 1) != 0)
+        v18 = v89[2];
+      else
+        v18 = v89 + 1;
+      v19 = sub_8C4940(v18);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  ptr = GetTypeHeader(pinst, message)->ptr;
+  v21 = NewSpecific(byte, 0x18u);
+  v13[2] = v21;
+  Copy_3880080(Interface, ptr + 32, v21, 0, 24);
+  *(v13 + 12) = ToInt16(Interface, ptr + 56, 0);
+  *(v13 + 13) = ToUInt16(Interface, ptr + 58);
+  v13[4] = NewSpecific(uint, *(v13 + 12));
+  v13[5] = NewSpecific(s32, *(v13 + 12));
+  v24 = v13[4];
+  if (*(v13 + 12) >= 1)
+  {
+    v25 = 0;
+    v26 = ptr + 60;
+    do
+    {
+      v27 = ToUInt32(Interface, v26, 0) + 32;
+      v29 = v24 + 4 * v25++;
+      *(v29 + 32) = v27;
+      v24 = v13[4];
+      v26 += 4;
+    }
+    while (v25 < *(v13 + 12));
+  }
+  v31 = *(v24 + 32) - 4;
+  v32 = ToInt32(Interface, v31, 0);
+  v34 = *(v13 + 12);
+  v35 = v13[5];
+  v36 = v34 - 1;
+  if (v34 - 1 < 1)
+  {
+    v38 = 0;
+  }
+  else
+  {
+    v37 = 0;
+    v38 = 0;
+    do
+    {
+      v39 = v13[4];
+      v40 = *(v39 + 24);
+      v41 = v37 + 1;
+      v43 = *(v39 + 4 * v37 + 36);
+      *(v35 + 4 * v37 + 32) = v43 - *(v13[4] + 4 * v37 + 32);
+      v46 = v13[5];
+      v35 = v46;
+      v36 = *(v13 + 12) - 1LL;
+      v38 += *(v46 + 4 * v37++ + 32);
+    }
+    while (v41 < v36);
+  }
+  *(v35 + 4 * v36 + 32) = v32 + ~v38;
+  v49 = pinst->message;
+  v49->pbinheader = v13;
+  v49->page = v88;
+  v49->maxpage = *(v13 + 12);
+  v49->callmode = callmode;
+  if (!*(v13 + 12))
     return 0;
+  variable = pinst->variable;
+  CommitVarTable(variable);
+  pext = pinst->pext;
+  if (pext)
+  {
+    il2cp::SizeOf(pext, qword_3F088F8);
+  }
+  ReadytoMessage(pinst, callmode);
+  if (callmode == 2)
+    return 1;
+  if (callmode == 1)
+  {
+    CallEventVoice(pinst);
+  }
+  speaker = pinst->speaker;
+  v57 = *(v13 + 13);
+  pfont = speaker->pfont;
+  if (speaker->num != v57)
+  {
+    if (pfont)
+    {
+      frDestroyFontRequestAfter(pfont);
+      speaker->pfont = 0;
+    }
+    speaker->num = v57;
+    if (v57 == 0xFFFF)
+    {
+      SwitchSpeaker(0, 0);
+      pinst->stat &= 0xFFFFCFFF;
+        goto LABEL_118;
+      goto LABEL_69;
+    }
+    spk = pinst->window->spk;
+    if (spk)
+    {
+      itfPnlRelease(spk);
+      pinst->window->spk = 0;
+    }
+    if ((v57 & 0x8000) != 0)
+    {
+      bufferdata = create_bufferdata(ida, v57 & 0x7FFF);
+      speaker->pfont = bufferdata;
+      if (!bufferdata)
+      {
+LABEL_128:
+        SwitchSpeaker(0, 0);
+        pinst->stat &= 0xFFFFCFFF;
+        speaker->num = 0;
+          goto LABEL_118;
+        goto LABEL_69;
+      }
+    }
+    else
+    {
+      pm = speaker->pos->pm;
+      max_length = pm->max_length;
+      v70 = pm->m_Items[0];
+      v71 = speaker->pos->pm->m_Items[1];
+      SpeakerName = GetSpeakerName(pinst);
+      bufferdata = MessageRequestExLocalize(v70, v71, 0, 3u, 0, 8u, SpeakerName, 0);
+      speaker->pfont = bufferdata;
+      if (!bufferdata)
+        goto LABEL_128;
+    }
+    v74 = speaker->pos->pm;
+    v75 = v74->max_length;
+    v77 = v74->m_Items[0];
+    v79 = speaker->pos->pm->m_Items[1];
+    bufferdata->x = v77;
+    bufferdata->y = v79;
+    speaker->pfont->draw_spd = 20;
+    prev = speaker->pfont;
+    z = pinst->z;
+    for (; prev; prev = prev->prev)
+      prev->priority = z;
+      goto LABEL_118;
+    goto LABEL_69;
+  }
+  SwitchSpeaker(pfont != 0, pfont != 0);
+  SwitchSpeaker(speaker->pfont != 0, speaker->pfont != 0);
+    goto LABEL_118;
+LABEL_69:
+LABEL_118:
+  OpenCheckSpeakerWindow(pinst);
+  stat = pinst->stat;
+  if ((stat & 0x200000) == 0)
+    goto LABEL_119;
+LABEL_71:
+  if ((stat & 0x300) == 0x300 || (stat & 0x300) == 0)
+  {
+    OpenMessageWindow(pinst);
+    stat = pinst->stat;
+    v65 = 2;
+    goto LABEL_120;
+  }
+LABEL_119:
+  v65 = 3;
+LABEL_120:
+  result = 1;
+  pinst->stat = stat & 0xFFFFFFF8 | v65;
+  v49->phase = 1;
+  return result;
 }
 
 // 0x13a8a10
@@ -3694,7 +5858,7 @@ void itfMesMngRequestMessageRelease(s32 id, s32 cls_speaker) {
         SwitchSpeaker(0, 0);
       }
       v17 = Empty_string_();
-      Log(StringLiteral_17026, v17, 0);
+      Log("@@@@@ SelectMessageRelease @@@@@", v17, 0);
       v19 = pinst->speaker;
       v19->pfont = 0;
       v19->num = -1;
@@ -3704,15 +5868,168 @@ void itfMesMngRequestMessageRelease(s32 id, s32 cls_speaker) {
 
 // 0x13af9e0
 void itfMesMngRequestSelect(s32 id, s32 select) {
-    GetTypeHeader(0, 0);
-    frDestroyFontRequestAfter(0);
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  Il2CppObject *pdata;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  itfMesBinTypeHeader_t_o *TypeHeader;
+  struct select_tag_o *v16;
+  _FRQ_o *pfont;
+  itfMesBinTypeHeader_t_o *v18;
+  s32 ptr;
+  System_Array_o *v22;
+  s16 v24;
+  u64 v25;
+  u64 *v26;
+  u64 *v28;
+  u64 v29;
+  s32 v30;
+  u32 v31;
+  s32 v34;
+  s32 v35;
+  s64 v37;
+  u64 v38;
+  s32 v39;
+  u64 v40;
+  u64 v41;
+  s32 v44;
+  s32 v46;
+  u32 mask;
+  s32 v49;
+  s32 v50;
+  char v51;
+  struct System_Int32_array *pm;
+  s32 v54;
+  s32 v55;
+  s64 pext;
+  struct System_Int32_array *v59;
+  u32 v60;
+  s32 v61;
+  s32 v63;
+  u32 z;
+  System_Object_array *v68;
+  System_Byte_array *dat;
+  struct select_tag_o *v71;
+  u64 v72[3];
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  pdata = pinst->pdata;
+  if (pdata)
+  {
+    Interface = QueryInterface(pinst->pdata, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(pdata->klass->_1.element_class, v10, v72);
+      if ((v72[0] & 1) != 0)
+        v12 = v72[2];
+      else
+        v12 = v72 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  TypeHeader = GetTypeHeader(pinst, select);
+  v16 = pinst->select;
+  pfont = v16->pfont;
+  v18 = TypeHeader;
+  if (pfont)
+  {
+    frDestroyFontRequestAfter(pfont);
+    v16->pfont = 0;
     ClearMessage();
-    CMP_YM(0);
-    CommitVarTable(0);
-    GetFontHandleUnit(0, 0, 0, 0, 0, 0, 0, 0);
-    WindowDispOn_20618496(0);
-    SelectWindowDispOn(0);
-    Log(0, 0);
+  }
+  v71 = v16;
+  ptr = v18->ptr;
+  v22 = NewSpecific(byte, 0x18u);
+  Copy_3880080(Interface, ptr + 32, v22, 0, 24);
+  ToInt16(Interface, ptr + 56, 0);
+  v24 = ToInt16(Interface, ptr + 58, 0);
+  ToInt16(Interface, ptr + 60, 0);
+  ToUInt16(Interface, ptr + 62);
+  v25 = v24;
+  v26 = NewSpecific(uint, v25);
+  v28 = NewSpecific(s32, v25);
+  if (v25 >= 1)
+  {
+    v29 = 0;
+    v30 = ptr + 64;
+    do
+    {
+      v31 = ToUInt32(Interface, v30, 0) + 32;
+      *(v26 + v29++ + 8) = v31;
+      v30 += 4;
+    }
+    while (v25 != v29);
+  }
+  v34 = *(v26 + 8) - 4;
+  v35 = ToInt32(Interface, v34, 0);
+  v37 = v25 - 1LL;
+  dat = Interface;
+  if (v37 < 1)
+  {
+    v46 = -1;
+  }
+  else
+  {
+    v38 = 0;
+    v39 = 0;
+    do
+    {
+      v40 = *(v26 + 6);
+      v41 = v38 + 1;
+      v44 = *(v26 + v38 + 9) - *(v26 + v38 + 8);
+      *(v28 + v38 + 8) = v44;
+      v39 += v44;
+      ++v38;
+    }
+    while (v37 != v41);
+    v46 = ~v39;
+  }
+  *(v28 + v37 + 8) = v35 + v46;
+  mask = v71->mask;
+  if (v25 < 1)
+    goto LABEL_59;
+LABEL_55:
+  v49 = 0;
+  v50 = v25 + 1;
+  do
+  {
+    v51 = ~mask;
+    mask >>= 1;
+    --v50;
+    v49 += v51 & 1;
+  }
+  while (v50 > 1);
+LABEL_60:
+  pm = v71->pos->pm;
+  v54 = pm->m_Items[1];
+  v55 = CMP_YM(33 * v49 - 33);
+  CommitVarTable(pinst->variable);
+  pext = pinst->pext;
+  if (pext)
+  {
+    il2cp::SizeOf(pext, qword_3F088F8);
+  }
+  v59 = v71->pos->pm;
+  v60 = v71->mask;
+  v61 = v54 - v55;
+  v63 = v59->m_Items[0];
+  z = pinst->z;
+  v71->pfont = GetFontHandleUnit(dat, v26, v28, v25, v60, v63, v61, z);
+  v71->lines = v49;
+  pinst->stat = pinst->stat & 0xFFFFFFC7 | 0x10;
+  WindowDispOn_20618496(pinst);
+  SelectWindowDispOn(pinst);
+  v71->phase = 1;
+  v68 = Empty_string_();
+  Log("@@@@@ SelectRequest @@@@@", v68, 0);
 }
 
 // 0x13a8c20
@@ -3741,7 +6058,7 @@ void itfMesMngRequestSelectRelease(s32 id) {
     pinst->stat = stat & 0xFFFBFFC7;
     SelectWindowDispOff(pinst);
     v11 = Empty_string_();
-    Log(StringLiteral_17028, v11, 0);
+    Log("@@@@@ SelectRelease @@@@@", v11, 0);
   }
 }
 
@@ -3759,6 +6076,7 @@ s32 itfMesMngSelect(void) {
   MessageHandle = scrGetMessageHandle();
   if (MessageHandle < 0)
     return 1;
+LABEL_6:
   v4 = MessageHandle;
   pmesflow = g_manager->pmesflow;
   pinst = pmesflow->m_Items[v4]->pinst;
@@ -3842,6 +6160,65 @@ s32 itfMesMngSetMesPosDefault(void) {
 
 // 0x13b2e50
 void itfMesMngSetMesPosition(s32 id, s32 x, s32 y) {
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  sdfIVector2_t_o *v11;
+  struct message_tag_o *message;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v15;
+  s32 v16;
+  struct System_Int32_array *v18;
+  struct System_Int32_array *v19;
+  s32 v21;
+  struct System_Int32_array *v22;
+  struct System_Int32_array *v23;
+  struct System_Int32_array *v27;
+  struct _FRQ_o *pfont;
+  u32 max_length;
+  s32 v30;
+  s32 v31;
+  s32 v35;
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  v11 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v11);
+  message = pinst->message;
+  pm = message->pos->pm;
+  v15 = v11->pm;
+  v16 = x - pm->m_Items[0];
+  v15->m_Items[0] = v16;
+  v18 = message->pos->pm;
+  v19 = v11->pm;
+  v21 = y - v18->m_Items[1];
+  v19->m_Items[1] = v21;
+  v22 = v11->pm;
+  if (v22->m_Items[0])
+    goto LABEL_22;
+  v23 = v11->pm;
+  if (v23->m_Items[1])
+  {
+LABEL_22:
+    v27 = v11->pm;
+    pfont = message->pfont;
+    max_length = v27->max_length;
+    v30 = v27->m_Items[0];
+    v31 = v27->m_Items[1];
+    else
+    {
+      if (!pfont)
+        goto LABEL_33;
+    }
+    do
+    {
+      v35 = pfont->y;
+      pfont->x += v30;
+      pfont->y = v35 + v31;
+      pfont = pfont->prev;
+    }
+    while (pfont);
+    goto LABEL_33;
+  }
 }
 
 // 0x13b3140
@@ -3926,7 +6303,50 @@ void itfMesMngSetPriority(s32 id, u32 z_buf) {
 
 // 0x13b2570
 void *itfMesMngSetResourcePtr(s32 id, void *presource) {
-    return 0;
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  Il2CppObject *pdata;
+  Il2CppClass *v10;
+  s64 *Interface;
+  char *v12;
+  s64 *v13;
+  u64 *v14;
+  u64 v17[2];
+  char *v18;
+  s64 v19;
+  s32 pos;
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  pdata = pinst->pdata;
+  pinst->pdata = presource;
+  if (presource)
+  {
+    Interface = QueryInterface(presource, byte);
+    if (!Interface)
+    {
+      sub_8FC2C0(presource->klass->_1.element_class, v10, v17);
+      if ((v17[0] & 1) != 0)
+        v12 = v18;
+      else
+        v12 = v17 + 1;
+      v13 = sub_8C4940(v12);
+    }
+  }
+  else
+  {
+    Interface = 0;
+  }
+  pos = 0;
+  v18 = 0;
+  v19 = 0;
+  v17[0] = 0;
+  v17[1] = 0;
+  sub_13A7EC0(v17, Interface, &pos);
+  pos += 8 * v19;
+  v14 = Allocate(itfMesBinTypeHeader2_t);
+  itfMesBinTypeHeader2_t___ctor(v14, Interface, &pos);
+  return pdata;
 }
 
 // 0x13b0100
@@ -3941,6 +6361,65 @@ void itfMesMngSetSelPhase(s32 msgid, s32 phase) {
 
 // 0x13b32d0
 void itfMesMngSetSelPosition(s32 id, s32 x, s32 y) {
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  sdfIVector2_t_o *v11;
+  struct select_tag_o *select;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v15;
+  s32 v16;
+  struct System_Int32_array *v18;
+  struct System_Int32_array *v19;
+  s32 v21;
+  struct System_Int32_array *v22;
+  struct System_Int32_array *v23;
+  struct System_Int32_array *v27;
+  struct _FRQ_o *pfont;
+  u32 max_length;
+  s32 v30;
+  s32 v31;
+  s32 v35;
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  v11 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v11);
+  select = pinst->select;
+  pm = select->pos->pm;
+  v15 = v11->pm;
+  v16 = x - pm->m_Items[0];
+  v15->m_Items[0] = v16;
+  v18 = select->pos->pm;
+  v19 = v11->pm;
+  v21 = y - v18->m_Items[1];
+  v19->m_Items[1] = v21;
+  v22 = v11->pm;
+  if (v22->m_Items[0])
+    goto LABEL_22;
+  v23 = v11->pm;
+  if (v23->m_Items[1])
+  {
+LABEL_22:
+    v27 = v11->pm;
+    pfont = select->pfont;
+    max_length = v27->max_length;
+    v30 = v27->m_Items[0];
+    v31 = v27->m_Items[1];
+    else
+    {
+      if (!pfont)
+        goto LABEL_33;
+    }
+    do
+    {
+      v35 = pfont->y;
+      pfont->x += v30;
+      pfont->y = v35 + v31;
+      pfont = pfont->prev;
+    }
+    while (pfont);
+    goto LABEL_33;
+  }
 }
 
 // 0x13b35c0
@@ -4060,18 +6539,23 @@ s32 itfMesMngSetSelectDefKey(s32 id, s32 key, s32 index) {
         {
           if (numdef > 14)
             return 0;
+          goto LABEL_21;
         }
       }
       v21 = select->defkey;
       v20 = *(&v21->obj.klass + v14);
       if (v20)
+        goto LABEL_27;
       LOWORD(numdef) = select->numdef;
       if (numdef <= 14)
+        goto LABEL_21;
       return 0;
     }
+LABEL_21:
     v18 = select->defkey;
     v20 = v18->m_Items[numdef];
     select->numdef = numdef + 1;
+LABEL_27:
     v12 = 1;
     v20->key = key;
     v20->index = v4;
@@ -4081,6 +6565,65 @@ s32 itfMesMngSetSelectDefKey(s32 id, s32 key, s32 index) {
 
 // 0x13b29d0
 void itfMesMngSetSpeakerPosition(s32 id, s32 x, s32 y) {
+  struct mesflow_tag_array *pmesflow;
+  struct instanceMes_tag_o *pinst;
+  sdfIVector2_t_o *v11;
+  struct Speaker_tag_o *speaker;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v15;
+  s32 v16;
+  struct System_Int32_array *v18;
+  struct System_Int32_array *v19;
+  s32 v21;
+  struct System_Int32_array *v22;
+  struct System_Int32_array *v23;
+  struct System_Int32_array *v27;
+  struct _FRQ_o *pfont;
+  u32 max_length;
+  s32 v30;
+  s32 v31;
+  s32 v35;
+
+  pmesflow = g_manager->pmesflow;
+  pinst = pmesflow->m_Items[id]->pinst;
+  v11 = Allocate(sdfIVector2_t);
+  sdfIVector2_t___ctor(v11);
+  speaker = pinst->speaker;
+  pm = speaker->pos->pm;
+  v15 = v11->pm;
+  v16 = x - pm->m_Items[0];
+  v15->m_Items[0] = v16;
+  v18 = speaker->pos->pm;
+  v19 = v11->pm;
+  v21 = y - v18->m_Items[1];
+  v19->m_Items[1] = v21;
+  v22 = v11->pm;
+  if (v22->m_Items[0])
+    goto LABEL_22;
+  v23 = v11->pm;
+  if (v23->m_Items[1])
+  {
+LABEL_22:
+    v27 = v11->pm;
+    pfont = speaker->pfont;
+    max_length = v27->max_length;
+    v30 = v27->m_Items[0];
+    v31 = v27->m_Items[1];
+    else
+    {
+      if (!pfont)
+        goto LABEL_33;
+    }
+    do
+    {
+      v35 = pfont->y;
+      pfont->x += v30;
+      pfont->y = v35 + v31;
+      pfont = pfont->prev;
+    }
+    while (pfont);
+    goto LABEL_33;
+  }
 }
 
 // 0x13b2cc0
@@ -4122,18 +6665,101 @@ void itfMesMngSetStat(s32 id, u32 flag) {
 
 // 0x13b0c50
 void itfMesMngSetVar(s32 id, s32 index, s32 num, s32 type) {
-    GetTag(0);
-    GetLocalizeText(0);
-    Get(0);
-    ConvertZenkakuNumber(0, 0);
-    Get(0);
-    GetSaveNmlName(0, 0);
-    GetSaveSmlName(0, 0);
-    Get(0);
-    Get(0);
-    itfMesMngSetVarImmediate(0, 0, 0);
-    frGetCNameString(0);
-    itfMesMngSetVarImmediate2(0, 0, 0, 0);
+  s32 v6;
+  u64 *v9;
+  System_String_o *v10;
+  System_String_o *Tag;
+  System_String_o *LocalizeText;
+  System_String_o *v16;
+  s64 *v17;
+  System_String_o *SaveNmlName;
+  System_String_o *v21;
+  System_String_o *v23;
+  s32 v24;
+  s32 v25;
+  System_String_o *CNameString;
+  s32 v28;
+  s32 v30;
+  System_String_o *buf;
+
+  v6 = num;
+  buf = 0;
+  switch (type)
+  {
+    case 0:
+      v30 = v6;
+      v9 = sub_8D3950(s32, &v30);
+      v10 = Format("{0:D}", v9, 0);
+      goto LABEL_81;
+    case 1:
+      Tag = GetTag(v6, 0);
+      LocalizeText = GetLocalizeText(Tag);
+      goto LABEL_71;
+    case 3:
+      LocalizeText = Get(v6, 0);
+      goto LABEL_71;
+    case 4:
+      v16 = "";
+      buf = "";
+      if (v6 > 1000)
+      {
+        v17 = &"Ｒ";
+      }
+      else
+      {
+        if (v6 < 0)
+        {
+          v6 = -v6;
+          buf = Concat_5224608("", "Ｂ");
+        }
+        ConvertZenkakuNumber(&buf, v6, *&num);
+        v17 = &"Ｆ";
+        v16 = buf;
+      }
+      v10 = Concat_5224608(v16, *v17);
+LABEL_81:
+      v21 = v10;
+      buf = v10;
+        goto LABEL_82;
+      goto LABEL_51;
+    case 5:
+      LocalizeText = Get(v6, 0, 0);
+      goto LABEL_71;
+    case 6:
+      SaveNmlName = GetSaveNmlName(fldNameData, v6);
+      goto LABEL_50;
+    case 7:
+      SaveNmlName = GetSaveSmlName(fldNameData, v6);
+LABEL_50:
+      v21 = SaveNmlName;
+      {
+LABEL_51:
+      }
+LABEL_82:
+      v24 = id;
+      v25 = index;
+      v23 = v21;
+      goto LABEL_83;
+    case 8:
+      LocalizeText = Get(v6, 0, 0);
+      goto LABEL_71;
+    case 9:
+      LocalizeText = Get(v6, 0);
+LABEL_71:
+      v23 = LocalizeText;
+      v24 = id;
+      v25 = index;
+LABEL_83:
+      itfMesMngSetVarImmediate(v24, v25, v23);
+      break;
+    case 10:
+      CNameString = frGetCNameString(0, *&index);
+      get_Length(CNameString);
+      itfMesMngSetVarImmediate2(id, index, CNameString, v28);
+      break;
+    default:
+      return;
+  }
 }
 
 // 0x13b3d40

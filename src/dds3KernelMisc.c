@@ -29,17 +29,26 @@ void SelectSub(s32 *pbase, s32 *pm, s32 list, s32 win, s32 pad, s32 pluskey, s32
   if (list < 2)
     return;
   if (!LODWORD(dds3PadMap->max_length))
+    goto LABEL_24;
+LABEL_10:
   v17 = dds3PadMap->m_Items[0];
   v18 = v17->m_Items[0];
+  if ((v18->m_Items[minuskey] & 2) == 0)
+  {
+      goto LABEL_32;
+    goto LABEL_14;
+  }
   v22 = *pm;
   v23 = pm;
   if (!*pbase)
   {
     if (v22 > 0)
+      goto LABEL_31;
     if (list >= win)
       v22 = win;
     else
       v22 = list;
+    goto LABEL_30;
   }
   if (v22 <= 0)
   {
@@ -53,16 +62,28 @@ void SelectSub(s32 *pbase, s32 *pm, s32 list, s32 win, s32 pad, s32 pluskey, s32
       {
         v22 = win;
         *pbase = list - win;
+LABEL_30:
         v23 = pm;
       }
     }
   }
+LABEL_31:
   *v23 = v22 - 1;
   {
+LABEL_32:
     v20 = dds3PadMap;
     if (!LODWORD(v20->max_length))
+      goto LABEL_41;
+    goto LABEL_33;
   }
+LABEL_14:
+    goto LABEL_32;
   v20 = dds3PadMap;
+  if (!LODWORD(v20->max_length))
+  {
+LABEL_41:
+  }
+LABEL_33:
   v26 = v20->m_Items[0];
   v27 = v26->m_Items[0];
   if ((v27->m_Items[pluskey] & 2) != 0)
@@ -80,10 +101,12 @@ void SelectSub(s32 *pbase, s32 *pm, s32 list, s32 win, s32 pad, s32 pluskey, s32
           return;
         }
         *pbase = 0;
+        goto LABEL_46;
       }
     }
     else if (v29 >= v31)
     {
+LABEL_46:
       *pm = 0;
       return;
     }
@@ -112,12 +135,14 @@ s32 dds3SelectMenu(s32 pad, s32 listsx, s32 listsy, s32 winsx, s32 winsy, s32 *b
   {
     v21 = 1;
     if (!DDS3_PADCHECK_TRIG2(1))
+      goto LABEL_10;
   }
   else
   {
     v21 = 1;
     if (!DDS3_PADCHECK_TRIG2(1))
     {
+LABEL_20:
       if (!DDS3_PADCHECK_TRIG2(3))
         return 0;
       return -1;
@@ -135,7 +160,7 @@ void *dds3VibrationTestProcess(dds3ProcessID_t *id) {
   if (dds3GetProcessRunTime(&ida) % 0x4650)
     return 0;
   dds3PadAct(0, 1u, 0xFu);
-  RandIntA = dds3GetRandIntA(0x96u, StringLiteral_416);
+  RandIntA = dds3GetRandIntA(0x96u, "");
   dds3PadAct(1u, RandIntA + 100, 0x1Eu);
   return 0;
 }

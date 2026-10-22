@@ -82,6 +82,7 @@ s32 ToSpeed(s32 speed) {
     return speed;
   if (fldGb->areaID != 9)
     return speed;
+LABEL_15:
   if (!evtBitCheck(1381))
     return speed;
   v6 = 1;

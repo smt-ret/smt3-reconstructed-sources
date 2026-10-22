@@ -125,7 +125,7 @@ void SetLightAll(UiHD *this, void *rootobj) {
       Item = _get_Item(
                this->mat_list,
                v5);
-      if (HasProperty_27243776(Item, StringLiteral_5226))
+      if (HasProperty_27243776(Item, "_Config_Bright"))
         SetFloat_27246832(Item, this->id_Config_Bright, ConfigBright);
       ++v5;
     }
@@ -139,12 +139,12 @@ void SetLightAll(UiHD *this, void *rootobj) {
       v8 = _get_Item(
              this->tmp_list,
              v7);
-      if (HasProperty_27243776(v8, StringLiteral_5226))
+      if (HasProperty_27243776(v8, "_Config_Bright"))
       {
         id_Config_Bright = this->id_Config_Bright;
         if (id_Config_Bright == -1)
         {
-          id_Config_Bright = PropertyToID(StringLiteral_5226);
+          id_Config_Bright = PropertyToID("_Config_Bright");
           this->id_Config_Bright = id_Config_Bright;
         }
         SetFloat_27246832(v8, id_Config_Bright, ConfigBright);
@@ -233,7 +233,7 @@ void SetMatInit2(UiHD *this, void *childobj) {
                   Component_GUILayer,
                   Component_GUILayer->klass[2]._1.generic_class),
           name = get_name(v11),
-          Contains(name, StringLiteral_12221, 0)))
+          Contains(name, "Default UI Material", 0)))
     {
       {
       }
@@ -256,7 +256,7 @@ void SetMatInit2(UiHD *this, void *childobj) {
     if (op_Equality(v21, 0, 0)
       || (v23 = (v19->klass[2]._1.parent)(v19, v19->klass[2]._1.generic_class),
           v24 = get_name(v23),
-          Contains(v24, StringLiteral_12221, 0)))
+          Contains(v24, "Default UI Material", 0)))
     {
       {
       }
@@ -300,7 +300,7 @@ void SetMatInit2(UiHD *this, void *childobj) {
     {
       v42 = get_gameObject(this);
       v43 = get_name(v42);
-      if (Contains(v43, StringLiteral_12222, 0))
+      if (Contains(v43, "MblkAutLine", 0))
       {
         {
         }
@@ -315,7 +315,7 @@ void SetMatInit2(UiHD *this, void *childobj) {
     {
       v47 = get_gameObject(this);
       v48 = get_name(v47);
-      if (Contains(v48, StringLiteral_12223, 0))
+      if (Contains(v48, "RblkAutLine", 0))
       {
         {
         }

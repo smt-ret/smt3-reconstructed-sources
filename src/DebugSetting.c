@@ -18,37 +18,39 @@ DebugSetting *Get(void) {
   System_String_o *v7;
   UnityEngine_Object_o *File_16626736;
   DebugSetting_c *v11;
-  struct DebugSetting_StaticFields *static_fields;
   s64 typeHierarchyDepth;
   UnityEngine_Object_o *v14;
   UnityEngine_Object_o *setting;
 
   asset_bc = get_asset_bc();
-  v3 = StringLiteral_2012;
-  v4 = StringLiteral_4663;
+  v3 = "debug";
+  v4 = "DebugSetting";
   v5 = asset_bc;
-  v6 = StringLiteral_4586;
-  v7 = Concat_5271136(v3, StringLiteral_74, v4, v6);
+  v6 = ".asset";
+  v7 = Concat_5271136(v3, "/", v4, v6);
   File_16626736 = LoadFile_16626736(v5, v3, v7);
   else
   {
-    static_fields = DebugSetting->static_fields;
     if (!File_16626736)
     {
+LABEL_14:
       v14 = 0;
+      goto LABEL_18;
     }
   }
   typeHierarchyDepth = v11->_2.typeHierarchyDepth;
   if (File_16626736->klass->_2.typeHierarchyDepth < typeHierarchyDepth)
+    goto LABEL_14;
   if (File_16626736->klass->_2.typeHierarchy[typeHierarchyDepth - 1] == v11)
     v14 = File_16626736;
   else
     v14 = 0;
-  static_fields->_setting = v14;
+LABEL_18:
+  _setting = v14;
   setting = _setting;
   if (op_Equality(setting, 0, 0))
   {
-    Log(StringLiteral_4664, 0);
+    Log("_setting Is Null ", 0);
   }
   return _setting;
 }
@@ -124,24 +126,24 @@ char *GetLanguage(DebugSetting *this) {
 
   v4 = Get();
   if (op_Equality(v4, 0, 0))
-    return StringLiteral_48;
-  v6 = &StringLiteral_48;
+    return "ja";
+  v6 = &"ja";
   if (v4->_DBG_LANG_JA)
-    return StringLiteral_48;
+    return "ja";
   if (v4->_DBG_LANG_ENUS)
-    return StringLiteral_840;
+    return "en-US";
   if (v4->_DBG_LANG_FR)
-    return StringLiteral_914;
+    return "fr";
   if (v4->_DBG_LANG_IT)
-    return StringLiteral_932;
+    return "it";
   if (v4->_DBG_LANG_DE)
-    return StringLiteral_902;
+    return "de";
   if (v4->_DBG_LANG_ES)
-    return StringLiteral_907;
+    return "es";
   if (v4->_DBG_LANG_ZHHANT)
-    return StringLiteral_872;
+    return "zh-Hant";
   if (v4->_DBG_LANG_KO)
-    v6 = &StringLiteral_49;
+    v6 = &"ko";
   return *v6;
 }
 

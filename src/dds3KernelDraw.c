@@ -376,17 +376,13 @@ void AllClrDrawFlag(void) {
 
 // 0x17bbfe0
 void ClrDrawFlag(u32 flag) {
-  dds3KernelDraw_c *v3;
   struct dds3KernelDraw_StaticFields **p_static_fields;
-  struct dds3KernelDraw_StaticFields *static_fields;
 
   if (flag == 0x2000000)
   {
-    p_static_fields = &v3->static_fields;
-    static_fields = v3->static_fields;
-    if ((static_fields->dds3DrawStopCount & 0x8000) == 0)
+    if ((dds3DrawStopCount & 0x8000) == 0)
     {
-      static_fields->dds3DrawFlag &= ~0x2000000u;
+      dds3DrawFlag &= ~0x2000000u;
       (*p_static_fields)->dds3DrawStopCount = 0;
     }
   }
@@ -419,26 +415,19 @@ void DofSet(f32 dof1, f32 dof2, f32 dof3) {
 
 // 0x17bc130
 void DrawStopExec(void) {
-  dds3KernelDraw_c *v2;
   struct dds3KernelDraw_StaticFields **p_static_fields;
-  struct dds3KernelDraw_StaticFields *static_fields;
   u32 dds3DrawStopCount;
-  struct dds3KernelDraw_StaticFields *v6;
   u32 v7;
 
-  p_static_fields = &v2->static_fields;
-  static_fields = v2->static_fields;
-  dds3DrawStopCount = static_fields->dds3DrawStopCount;
   if (dds3DrawStopCount)
   {
-    static_fields->dds3DrawStopCount = dds3DrawStopCount - 1;
-    v6 = v2->static_fields;
-    v7 = v6->dds3DrawStopCount;
+    dds3DrawStopCount = dds3DrawStopCount - 1;
+    v7 = dds3DrawStopCount;
     if ((v7 & 0x8000) != 0)
     {
       if ((v7 & 0x7FFF) == 0)
       {
-        v6->dds3DrawFlag &= ~0x2000000u;
+        dds3DrawFlag &= ~0x2000000u;
         (*p_static_fields)->dds3DrawStopCount = 0;
       }
     }
@@ -458,8 +447,10 @@ void ScreenStop1(void) {
 // 0x17bbed0
 void SetDrawFlag(u32 flag, u32 cnt) {
   if (flag != 0x2000000)
+    goto LABEL_22;
   if ((dds3DrawFlag & 0x40000000) == 0)
   {
+LABEL_22:
     dds3DrawFlag |= flag;
     if (flag == 0x2000000)
     {
@@ -479,17 +470,86 @@ s32 dds3AllocRenderTexture(u16 sx, u16 sy, f32 aspect) {
 
 // 0x17bd3a0
 void dds3Blackout(bool sw) {
-    Log(0, 0);
+  System_String_o *v2;
+  System_String_o *v3;
+  System_Object_array *v5;
+  struct System_Byte_array *fadergba;
+  struct System_Byte_array *v10;
+  struct System_Byte_array *v12;
+  struct System_Byte_array *v14;
+  bool v16[4];
+
+  v16[0] = sw;
+  v2 = sub_3C0020(v16);
+  v3 = Concat_5224608("dds3BlackOut1 : ", v2);
+  v5 = Empty_string_();
+  Log(v3, v5, 0);
+  else
+  {
+    if (!LODWORD(fadergba->max_length))
+      goto LABEL_9;
+  }
+  fadergba->m_Items[0] = 0;
+  v10 = fadergba;
+  v10->m_Items[1] = 0;
+  v12 = fadergba;
+  v12->m_Items[2] = 0;
+  v14 = fadergba;
+  v14->m_Items[3] = v16[0] << 7;
 }
 
 // 0x17bd550
 void dds3Blackout_24892752(s32 frame) {
-    Log(0, 0);
+  u64 *v3;
+  System_String_o *v4;
+  System_Object_array *v6;
+  struct System_Byte_array *fadergba;
+  struct System_Byte_array *v11;
+  struct System_Byte_array *v13;
+  struct System_Byte_array *v15;
+  s32 v17;
+
+  v17 = frame;
+  v3 = sub_8D3950(s32, &v17);
+  v4 = Concat("dds3BlackOut : ", v3);
+  v6 = Empty_string_();
+  Log(v4, v6, 0);
+  else
+  {
+    if (!LODWORD(fadergba->max_length))
+      goto LABEL_9;
+  }
+  fadergba->m_Items[0] = 0;
+  v11 = fadergba;
+  v11->m_Items[1] = 0;
+  v13 = fadergba;
+  v13->m_Items[2] = 0;
+  v15 = fadergba;
+  v15->m_Items[3] = 0x80;
+  fadenow = 0;
+  fademax = frame;
+  dds3DrawFlag |= 3u;
 }
 
 // 0x17c0f20
 void dds3Blur2Off(s32 frame) {
-    Eve_BlurOFF();
+  blur2abase = HIBYTE(blur2target->abgr);
+  blur2atarget = 0;
+  blur2now = 0;
+  blur2max = frame;
+  if (frame)
+  {
+    dds3DrawFlag |= 0x20000u;
+  }
+  else
+  {
+    dds3DrawFlag &= ~0x20000u;
+    dds3DrawFlag &= ~0x40000u;
+    else
+    {
+      Eve_BlurOFF();
+    }
+  }
 }
 
 // 0x17c0de0
@@ -597,31 +657,769 @@ void dds3Blur2Swap(s32 frame) {
 
 // 0x17c2a50
 void dds3BlurUpdate(void) {
-    evtHokanBlur2(0, 0, 0, 0, 0);
-    setdraw_xy(0);
-    Eve_BlurSetParam(0);
+  u32 v2;
+  u32 v3;
+  dds3KernelDraw_c *v4;
+  u32 blur2swapnow;
+  f32 v13;
+  dds3Effect_Blur_t_o *blur2base;
+  dds3Effect_Blur_t_o *blur2target;
+  dds3Effect_Blur_t_o *blur2;
+  u32 blur2now;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v25;
+  s32 v26;
+  struct System_Int32_array *v28;
+  struct System_Int32_array *v29;
+  s32 v31;
+  struct sdfIVector2_t_array *xy;
+  struct sdfIVector2_t_array *v36;
+  struct System_Int32_array *v37;
+  struct System_Int32_array *v38;
+  s32 v39;
+  struct sdfIVector2_t_array *v41;
+  struct sdfIVector2_t_array *v43;
+  struct System_Int32_array *v44;
+  struct System_Int32_array *v46;
+  s32 v48;
+  struct sdfIVector2_t_array *v51;
+  struct sdfIVector2_t_array *v53;
+  struct System_Int32_array *v54;
+  struct System_Int32_array *v55;
+  s32 v56;
+  struct sdfIVector2_t_array *v58;
+  struct sdfIVector2_t_array *v60;
+  struct System_Int32_array *v61;
+  struct System_Int32_array *v63;
+  s32 v65;
+  s32 blur2abase;
+  s32 v70;
+  s32 v71;
+  dds3Effect_Blur_t_o *v73;
+  u32 mulblurswapnow;
+  f32 v87;
+  dds3Effect_PartialMultiBlurParam_t_o *mulblurbase;
+  dds3Effect_PartialMultiBlurParam_t_o *mulblurtarget;
+  dds3Effect_PartialMultiBlurParam_t_o *mulblur;
+  u32 mulblurnow;
+  struct System_Int32_array *v97;
+  struct System_Int32_array *v98;
+  s32 v99;
+  struct System_Int32_array *v101;
+  struct System_Int32_array *v102;
+  s32 v104;
+  struct sdfIVector2_t_array *v107;
+  struct System_Int32_array *v109;
+  struct sdfIVector2_t_array *v110;
+  struct System_Int32_array *v111;
+  s32 v112;
+  struct sdfIVector2_t_array *v114;
+  struct System_Int32_array *v116;
+  struct sdfIVector2_t_array *v117;
+  struct System_Int32_array *v119;
+  s32 v121;
+  struct sdfIVector2_t_array *v124;
+  struct sdfIVector2_t_array *v126;
+  struct System_Int32_array *v127;
+  struct System_Int32_array *v128;
+  s32 v129;
+  struct sdfIVector2_t_array *v131;
+  struct sdfIVector2_t_array *v133;
+  struct System_Int32_array *v134;
+  struct System_Int32_array *v136;
+  s32 v138;
+  s32 mulblurabase;
+  s32 v143;
+  s32 v144;
+  dds3Effect_PartialMultiBlurParam_t_o *v145;
+  u32 distblurswapnow;
+  f32 v159;
+  dds3Effect_DistortionBlurParam_t_o *distblurbase;
+  dds3Effect_DistortionBlurParam_t_o *distblurtarget;
+  dds3Effect_DistortionBlurParam_t_o *distblur;
+  u32 distblurnow;
+  struct System_Int32_array *v169;
+  struct System_Int32_array *v170;
+  s32 v171;
+  struct System_Int32_array *v173;
+  struct System_Int32_array *v174;
+  s32 v176;
+  s32 distblurabase;
+  s32 v181;
+  s32 v182;
+  dds3Effect_DistortionBlurParam_t_o *v183;
+  u32 ripblurswapnow;
+  f32 v191;
+  dds3Effect_RippleBlurParam_t_o *ripblurbase;
+  dds3Effect_RippleBlurParam_t_o *ripblurtarget;
+  dds3Effect_RippleBlurParam_t_o *ripblur;
+  u32 ripblurnow;
+  struct System_Int32_array *v201;
+  struct System_Int32_array *v202;
+  s32 v203;
+  struct System_Int32_array *v205;
+  struct System_Int32_array *v206;
+  s32 v208;
+  s32 ripblurabase;
+  s32 v213;
+  s32 v214;
+  dds3Effect_RippleBlurParam_t_o *v215;
+  u32 filter2swapnow;
+  f32 v223;
+  dds3Effect_Filter_t_o *filter2base;
+  dds3Effect_Filter_t_o *filter2target;
+  dds3Effect_Filter_t_o *filter2;
+  u32 filter2now;
+  struct sdfIVector2_t_array *v234;
+  struct sdfIVector2_t_array *v236;
+  struct System_Int32_array *v237;
+  struct System_Int32_array *v238;
+  s32 v239;
+  struct sdfIVector2_t_array *v241;
+  struct sdfIVector2_t_array *v243;
+  struct System_Int32_array *v244;
+  struct System_Int32_array *v246;
+  s32 v248;
+  struct sdfIVector2_t_array *v251;
+  struct sdfIVector2_t_array *v253;
+  struct System_Int32_array *v254;
+  struct System_Int32_array *v255;
+  s32 v256;
+  struct sdfIVector2_t_array *v258;
+  struct sdfIVector2_t_array *v260;
+  struct System_Int32_array *v261;
+  struct System_Int32_array *v263;
+  s32 v265;
+  s32 filter2abase;
+  s32 v270;
+  s32 v271;
+  dds3Effect_Filter_t_o *v273;
+  u32 mfilterswapnow;
+  f32 v285;
+  dds3Effect_PartialMultiFilterParam_t_o *mfilterbase;
+  dds3Effect_PartialMultiFilterParam_t_o *mfiltertarget;
+  dds3Effect_PartialMultiFilterParam_t_o *mfilter;
+  u32 mfilternow;
+  struct System_Int32_array *v295;
+  struct System_Int32_array *v296;
+  s32 v297;
+  struct System_Int32_array *v299;
+  struct System_Int32_array *v300;
+  s32 v302;
+  struct sdfIVector2_t_array *v306;
+  struct System_Int32_array *v308;
+  struct sdfIVector2_t_array *v309;
+  struct System_Int32_array *v310;
+  s32 v311;
+  struct sdfIVector2_t_array *v313;
+  struct System_Int32_array *v315;
+  struct sdfIVector2_t_array *v316;
+  struct System_Int32_array *v318;
+  s32 v320;
+  struct sdfIVector2_t_array *v323;
+  struct sdfIVector2_t_array *v325;
+  struct System_Int32_array *v326;
+  struct System_Int32_array *v327;
+  s32 v328;
+  struct sdfIVector2_t_array *v330;
+  struct sdfIVector2_t_array *v332;
+  struct System_Int32_array *v333;
+  struct System_Int32_array *v335;
+  s32 v337;
+  s32 mfilterabase;
+  s32 v342;
+  s32 v343;
+  dds3Effect_PartialMultiFilterParam_t_o *v344;
+
+  else
+  {
+    if ((dds3DrawFlag & 0x800) == 0)
+      goto LABEL_28;
+  }
+  ++blurnow;
+  dds3ScreenBlurAlpha = bluralphabase + (bluralphatarget - bluralphabase) * blurnow / blurmax;
+  dds3ScreenBlurScale = blurscalebase + (blurscaletarget - blurscalebase) * blurnow / blurmax;
+  if (!dds3ScreenBlurAlpha)
+  {
+    if (!dds3ScreenBlurScale)
+    {
+      else
+      {
+        dds3ScreenBlurFlag = 0;
+        if ((v4->_2.bitflags2 & 2) == 0)
+          goto LABEL_27;
+      }
+      goto LABEL_18;
+    }
+  }
+  dds3ScreenBlurFlag = 1;
+  if ((v4->_2.bitflags2 & 2) != 0)
+  {
+LABEL_18:
+  }
+LABEL_27:
+  if (blurnow >= blurmax)
+  {
+    dds3DrawFlag &= ~0x800u;
+    if ((v4->_2.bitflags2 & 2) == 0)
+      goto LABEL_59;
+    goto LABEL_29;
+  }
+LABEL_28:
+  if ((v4->_2.bitflags2 & 2) == 0)
+    goto LABEL_59;
+LABEL_29:
+LABEL_59:
+  if ((dds3DrawFlag & 0x40000) == 0)
+    goto LABEL_66;
+LABEL_31:
+  if (blur2swapnow < blur2swapmax)
+  {
+    blur2swapnow = blur2swapnow + 1;
+  }
+  LOWORD(v2) = blur2swapnow;
+  LOWORD(v3) = blur2swapmax;
+  v13 = v2 / v3;
+  evtHokanBlur2(1, v13, blur2base, blur2target, &blur2);
+  setdraw_xy(&blur2->xy);
+  Eve_BlurSetParam(blur2);
+  if (HIBYTE(blur2->abgr))
+  {
     Eve_BlurON();
+    {
+LABEL_53:
+    }
+  }
+  else
+  {
     Eve_BlurOFF();
-    evtHokanMultBlur(0, 0, 0, 0, 0);
-    Eve_PartialMultiBlurSetParam(0);
+      goto LABEL_53;
+  }
+  if (blur2swapnow < blur2swapmax)
+  {
+LABEL_66:
+    if ((v4->_2.bitflags2 & 2) == 0)
+      goto LABEL_126;
+    goto LABEL_67;
+  }
+  dds3DrawFlag &= ~0x40000u;
+  if ((v4->_2.bitflags2 & 2) == 0)
+  {
+LABEL_126:
+    if ((dds3DrawFlag & 0x20000) == 0)
+      goto LABEL_145;
+    goto LABEL_69;
+  }
+LABEL_67:
+    goto LABEL_126;
+  if ((dds3DrawFlag & 0x20000) == 0)
+    goto LABEL_145;
+LABEL_69:
+  if (blur2now < blur2max)
+  {
+    blur2now = blur2now + 1;
+  }
+  blur2->abgr = blur2target->abgr;
+  blur2->blend = blur2target->blend;
+  blur2->rotate = blur2target->rotate;
+  blur2->scale = blur2target->scale;
+  pm = blur2target->center->pm;
+  v25 = blur2->center->pm;
+  v26 = pm->m_Items[0];
+  v25->m_Items[0] = v26;
+  v28 = blur2target->center->pm;
+  v29 = blur2->center->pm;
+  v31 = v28->m_Items[1];
+  v29->m_Items[1] = v31;
+  xy = blur2->xy;
+  v36 = blur2target->xy;
+  v37 = xy->m_Items[0]->pm;
+  v38 = v36->m_Items[0]->pm;
+  v39 = v38->m_Items[0];
+  v37->m_Items[0] = v39;
+  v41 = blur2->xy;
+  v43 = blur2target->xy;
+  v44 = v41->m_Items[0]->pm;
+  v46 = v43->m_Items[0]->pm;
+  v48 = v46->m_Items[1];
+  v44->m_Items[1] = v48;
+  v51 = blur2->xy;
+  v53 = blur2target->xy;
+  v54 = v51->m_Items[1]->pm;
+  v55 = v53->m_Items[1]->pm;
+  v56 = v55->m_Items[0];
+  v54->m_Items[0] = v56;
+  v58 = blur2->xy;
+  v60 = blur2target->xy;
+  v61 = v58->m_Items[1]->pm;
+  v63 = v60->m_Items[1]->pm;
+  v65 = v63->m_Items[1];
+  v61->m_Items[1] = v65;
+  v70 = (blur2atarget - blur2abase) * blur2now / blur2max;
+  v71 = v70 + blur2abase;
+  HIBYTE(blur2->abgr) = v70 + blur2abase;
+  setdraw_xy(&blur2->xy);
+  v73 = blur2;
+  Eve_BlurSetParam(v73);
+  if (v71)
+  {
+    Eve_BlurON();
+      goto LABEL_140;
+  }
+  else
+  {
+    Eve_BlurOFF();
+      goto LABEL_140;
+  }
+LABEL_140:
+  if (blur2now >= blur2max)
+  {
+    dds3DrawFlag &= ~0x20000u;
+  }
+LABEL_145:
+  else
+  {
+    if ((dds3DrawFlag & 0x8000) == 0)
+      goto LABEL_240;
+  }
+  if (mulblurswapnow < mulblurswapmax)
+  {
+    mulblurswapnow = mulblurswapnow + 1;
+  }
+  LOWORD(v2) = mulblurswapnow;
+  LOWORD(v3) = mulblurswapmax;
+  v87 = v2 / v3;
+  evtHokanMultBlur(1, v87, mulblurbase, mulblurtarget, &mulblur);
+  Eve_PartialMultiBlurSetParam(mulblur);
+  if (HIBYTE(mulblur->Blur->abgr))
+  {
     Eve_PartialMultiBlurON();
+    {
+LABEL_170:
+    }
+  }
+  else
+  {
     Eve_PartialMultiBlurOFF();
-    evtHokanDistBlur(0, 0, 0, 0, 0);
-    Eve_DistortionBlurSetParam(0);
+      goto LABEL_170;
+  }
+  if (mulblurswapnow < mulblurswapmax)
+    goto LABEL_240;
+  dds3DrawFlag &= ~0x8000u;
+  if ((v4->_2.bitflags2 & 2) == 0)
+    goto LABEL_241;
+LABEL_181:
+    goto LABEL_241;
+  if ((dds3DrawFlag & 0x1000) == 0)
+    goto LABEL_257;
+LABEL_183:
+  if (mulblurnow < mulblurmax)
+  {
+    mulblurnow = mulblurnow + 1;
+  }
+  mulblur->area = mulblurtarget->area;
+  mulblur->Blur->abgr = mulblurtarget->Blur->abgr;
+  mulblur->Blur->blend = mulblurtarget->Blur->blend;
+  mulblur->Blur->rotate = mulblurtarget->Blur->rotate;
+  mulblur->Blur->scale = mulblurtarget->Blur->scale;
+  v97 = mulblurtarget->Blur->center->pm;
+  v98 = mulblur->Blur->center->pm;
+  v99 = v97->m_Items[0];
+  v98->m_Items[0] = v99;
+  v101 = mulblurtarget->Blur->center->pm;
+  v102 = mulblur->Blur->center->pm;
+  v104 = v101->m_Items[1];
+  v102->m_Items[1] = v104;
+  v107 = mulblur->Blur->xy;
+  v109 = v107->m_Items[0]->pm;
+  v110 = mulblurtarget->Blur->xy;
+  v111 = v110->m_Items[0]->pm;
+  v112 = v111->m_Items[0];
+  v109->m_Items[0] = v112;
+  v114 = mulblur->Blur->xy;
+  v116 = v114->m_Items[0]->pm;
+  v117 = mulblurtarget->Blur->xy;
+  v119 = v117->m_Items[0]->pm;
+  v121 = v119->m_Items[1];
+  v116->m_Items[1] = v121;
+  v124 = mulblur->Blur->xy;
+  v126 = mulblurtarget->Blur->xy;
+  v127 = v124->m_Items[1]->pm;
+  v128 = v126->m_Items[1]->pm;
+  v129 = v128->m_Items[0];
+  v127->m_Items[0] = v129;
+  v131 = mulblur->Blur->xy;
+  v133 = mulblurtarget->Blur->xy;
+  v134 = v131->m_Items[1]->pm;
+  v136 = v133->m_Items[1]->pm;
+  v138 = v136->m_Items[1];
+  v134->m_Items[1] = v138;
+  v143 = (mulbluratarget - mulblurabase) * mulblurnow / mulblurmax;
+  v144 = v143 + mulblurabase;
+  HIBYTE(mulblur->Blur->abgr) = v143 + mulblurabase;
+  v145 = mulblur;
+  Eve_PartialMultiBlurSetParam(v145);
+  if (v144)
+  {
+    Eve_PartialMultiBlurON();
+      goto LABEL_252;
+  }
+  else
+  {
+    Eve_PartialMultiBlurOFF();
+      goto LABEL_252;
+  }
+LABEL_252:
+  if (mulblurnow >= mulblurmax)
+  {
+    dds3DrawFlag &= ~0x1000u;
+  }
+LABEL_257:
+  else
+  {
+    if ((dds3DrawFlag & 0x10000) == 0)
+      goto LABEL_323;
+  }
+  if (distblurswapnow < distblurswapmax)
+  {
+    distblurswapnow = distblurswapnow + 1;
+  }
+  LOWORD(v2) = distblurswapnow;
+  LOWORD(v3) = distblurswapmax;
+  v159 = v2 / v3;
+  evtHokanDistBlur(1, v159, distblurbase, distblurtarget, &distblur);
+  Eve_DistortionBlurSetParam(distblur);
+  if (HIBYTE(distblur->abgr))
+  {
     Eve_DistortionBlurON();
+    {
+LABEL_282:
+    }
+  }
+  else
+  {
     Eve_DistortionBlurOFF();
-    evtHokanRipBlur(0, 0, 0, 0, 0);
-    Eve_RippleBlurSetParam(0);
+      goto LABEL_282;
+  }
+  if (distblurswapnow < distblurswapmax)
+    goto LABEL_323;
+  dds3DrawFlag &= ~0x10000u;
+  if ((v4->_2.bitflags2 & 2) == 0)
+    goto LABEL_324;
+LABEL_293:
+    goto LABEL_324;
+  if ((dds3DrawFlag & 0x2000) == 0)
+    goto LABEL_337;
+LABEL_295:
+  if (distblurnow < distblurmax)
+  {
+    distblurnow = distblurnow + 1;
+  }
+  distblur->number = distblurtarget->number;
+  distblur->interval = distblurtarget->interval;
+  distblur->speed = distblurtarget->speed;
+  distblur->abgr = distblurtarget->abgr;
+  distblur->blend = distblurtarget->blend;
+  distblur->rotate = distblurtarget->rotate;
+  distblur->distortion = distblurtarget->distortion;
+  v169 = distblurtarget->center->pm;
+  v170 = distblur->center->pm;
+  v171 = v169->m_Items[0];
+  v170->m_Items[0] = v171;
+  v173 = distblurtarget->center->pm;
+  v174 = distblur->center->pm;
+  v176 = v173->m_Items[1];
+  v174->m_Items[1] = v176;
+  distblur->area = distblurtarget->area;
+  distblur->width = distblurtarget->width;
+  v181 = (distbluratarget - distblurabase) * distblurnow / distblurmax;
+  v182 = v181 + distblurabase;
+  HIBYTE(distblur->abgr) = v181 + distblurabase;
+  v183 = distblur;
+  Eve_DistortionBlurSetParam(v183);
+  if (v182)
+  {
+    Eve_DistortionBlurON();
+      goto LABEL_332;
+  }
+  else
+  {
+    Eve_DistortionBlurOFF();
+      goto LABEL_332;
+  }
+LABEL_332:
+  if (distblurnow >= distblurmax)
+  {
+    dds3DrawFlag &= ~0x2000u;
+  }
+LABEL_337:
+  else
+  {
+    if ((dds3DrawFlag & 0x1000000) == 0)
+      goto LABEL_403;
+  }
+  if (ripblurswapnow < ripblurswapmax)
+  {
+    ripblurswapnow = ripblurswapnow + 1;
+  }
+  LOWORD(v2) = ripblurswapnow;
+  LOWORD(v3) = ripblurswapmax;
+  v191 = v2 / v3;
+  evtHokanRipBlur(1, v191, ripblurbase, ripblurtarget, &ripblur);
+  Eve_RippleBlurSetParam(ripblur);
+  if (HIBYTE(ripblur->abgr))
+  {
     Eve_RippleBlurON();
+    {
+LABEL_362:
+    }
+  }
+  else
+  {
     Eve_RippleBlurOFF();
-    evtHokanFilter(0, 0, 0, 0, 0);
-    Eve_FilterSetParam(0);
+      goto LABEL_362;
+  }
+  if (ripblurswapnow < ripblurswapmax)
+    goto LABEL_403;
+  dds3DrawFlag &= ~0x1000000u;
+  if ((v4->_2.bitflags2 & 2) == 0)
+    goto LABEL_404;
+LABEL_373:
+    goto LABEL_404;
+  if ((dds3DrawFlag & 0x800000) == 0)
+    goto LABEL_417;
+LABEL_375:
+  if (ripblurnow < ripblurmax)
+  {
+    ripblurnow = ripblurnow + 1;
+  }
+  ripblur->number = ripblurtarget->number;
+  ripblur->speed = ripblurtarget->speed;
+  ripblur->interval = ripblurtarget->interval;
+  ripblur->abgr = ripblurtarget->abgr;
+  ripblur->blend = ripblurtarget->blend;
+  ripblur->rotate = ripblurtarget->rotate;
+  ripblur->power = ripblurtarget->power;
+  ripblur->frequency = ripblurtarget->frequency;
+  v201 = ripblurtarget->center->pm;
+  v202 = ripblur->center->pm;
+  v203 = v201->m_Items[0];
+  v202->m_Items[0] = v203;
+  v205 = ripblurtarget->center->pm;
+  v206 = ripblur->center->pm;
+  v208 = v205->m_Items[1];
+  v206->m_Items[1] = v208;
+  ripblur->area = ripblurtarget->area;
+  v213 = (ripbluratarget - ripblurabase) * ripblurnow / ripblurmax;
+  v214 = v213 + ripblurabase;
+  HIBYTE(ripblur->abgr) = v213 + ripblurabase;
+  v215 = ripblur;
+  Eve_RippleBlurSetParam(v215);
+  if (v214)
+  {
+    Eve_RippleBlurON();
+      goto LABEL_412;
+  }
+  else
+  {
+    Eve_RippleBlurOFF();
+      goto LABEL_412;
+  }
+LABEL_412:
+  if (ripblurnow >= ripblurmax)
+  {
+    dds3DrawFlag &= ~0x800000u;
+  }
+LABEL_417:
+  else
+  {
+    if ((dds3DrawFlag & 0x100000) == 0)
+      goto LABEL_506;
+  }
+  if (filter2swapnow < filter2swapmax)
+  {
+    filter2swapnow = filter2swapnow + 1;
+  }
+  LOWORD(v2) = filter2swapnow;
+  LOWORD(v3) = filter2swapmax;
+  v223 = v2 / v3;
+  evtHokanFilter(1, v223, filter2base, filter2target, &filter2);
+  setdraw_xy(&filter2->xy);
+  Eve_FilterSetParam(filter2);
+  if (HIBYTE(filter2->abgr))
+  {
     Eve_FilterON();
+    {
+LABEL_442:
+    }
+  }
+  else
+  {
     Eve_FilterOFF();
-    evtHokanMultFilter(0, 0, 0, 0, 0);
-    Eve_PartialMultiFilterSetParam(0);
+      goto LABEL_442;
+  }
+  if (filter2swapnow < filter2swapmax)
+    goto LABEL_506;
+  dds3DrawFlag &= ~0x100000u;
+  if ((v4->_2.bitflags2 & 2) == 0)
+    goto LABEL_507;
+LABEL_453:
+    goto LABEL_507;
+  if ((dds3DrawFlag & 0x80000) == 0)
+    goto LABEL_521;
+LABEL_455:
+  if (filter2now < filter2max)
+  {
+    filter2now = filter2now + 1;
+  }
+  filter2->abgr = filter2target->abgr;
+  filter2->blend = filter2target->blend;
+  v234 = filter2->xy;
+  v236 = filter2target->xy;
+  v237 = v234->m_Items[0]->pm;
+  v238 = v236->m_Items[0]->pm;
+  v239 = v238->m_Items[0];
+  v237->m_Items[0] = v239;
+  v241 = filter2->xy;
+  v243 = filter2target->xy;
+  v244 = v241->m_Items[0]->pm;
+  v246 = v243->m_Items[0]->pm;
+  v248 = v246->m_Items[1];
+  v244->m_Items[1] = v248;
+  v251 = filter2->xy;
+  v253 = filter2target->xy;
+  v254 = v251->m_Items[1]->pm;
+  v255 = v253->m_Items[1]->pm;
+  v256 = v255->m_Items[0];
+  v254->m_Items[0] = v256;
+  v258 = filter2->xy;
+  v260 = filter2target->xy;
+  v261 = v258->m_Items[1]->pm;
+  v263 = v260->m_Items[1]->pm;
+  v265 = v263->m_Items[1];
+  v261->m_Items[1] = v265;
+  v270 = (filter2atarget - filter2abase) * filter2now / filter2max;
+  v271 = v270 + filter2abase;
+  HIBYTE(filter2->abgr) = v270 + filter2abase;
+  setdraw_xy(&filter2->xy);
+  v273 = filter2;
+  Eve_FilterSetParam(v273);
+  if (v271)
+  {
+    Eve_FilterON();
+      goto LABEL_516;
+  }
+  else
+  {
+    Eve_FilterOFF();
+      goto LABEL_516;
+  }
+LABEL_516:
+  if (filter2now >= filter2max)
+  {
+    dds3DrawFlag &= ~0x80000u;
+  }
+LABEL_521:
+  else
+  {
+    if ((dds3DrawFlag & 0x400000) == 0)
+      goto LABEL_616;
+  }
+  if (mfilterswapnow < mfilterswapmax)
+  {
+    mfilterswapnow = mfilterswapnow + 1;
+  }
+  LOWORD(v2) = mfilterswapnow;
+  LOWORD(v3) = mfilterswapmax;
+  v285 = v2 / v3;
+  evtHokanMultFilter(1, v285, mfilterbase, mfiltertarget, &mfilter);
+  Eve_PartialMultiFilterSetParam(mfilter);
+  if (HIBYTE(mfilter->Filter->abgr))
+  {
     Eve_PartialMultiFilterON();
+    {
+LABEL_546:
+    }
+  }
+  else
+  {
     Eve_PartialMultiFilterOFF();
+      goto LABEL_546;
+  }
+  if (mfilterswapnow >= mfilterswapmax)
+  {
+    dds3DrawFlag &= ~0x400000u;
+    if ((v4->_2.bitflags2 & 2) == 0)
+      goto LABEL_617;
+    goto LABEL_557;
+  }
+LABEL_616:
+  if ((v4->_2.bitflags2 & 2) == 0)
+    goto LABEL_617;
+LABEL_557:
+LABEL_617:
+  if ((dds3DrawFlag & 0x200000) == 0)
+    return;
+LABEL_559:
+  if (mfilternow < mfiltermax)
+  {
+    mfilternow = mfilternow + 1;
+  }
+  mfilter->area = mfiltertarget->area;
+  v295 = mfiltertarget->center->pm;
+  v296 = mfilter->center->pm;
+  v297 = v295->m_Items[0];
+  v296->m_Items[0] = v297;
+  v299 = mfiltertarget->center->pm;
+  v300 = mfilter->center->pm;
+  v302 = v299->m_Items[1];
+  v300->m_Items[1] = v302;
+  mfilter->Filter->abgr = mfiltertarget->Filter->abgr;
+  mfilter->Filter->blend = mfiltertarget->Filter->blend;
+  v306 = mfilter->Filter->xy;
+  v308 = v306->m_Items[0]->pm;
+  v309 = mfiltertarget->Filter->xy;
+  v310 = v309->m_Items[0]->pm;
+  v311 = v310->m_Items[0];
+  v308->m_Items[0] = v311;
+  v313 = mfilter->Filter->xy;
+  v315 = v313->m_Items[0]->pm;
+  v316 = mfiltertarget->Filter->xy;
+  v318 = v316->m_Items[0]->pm;
+  v320 = v318->m_Items[1];
+  v315->m_Items[1] = v320;
+  v323 = mfilter->Filter->xy;
+  v325 = mfiltertarget->Filter->xy;
+  v326 = v323->m_Items[1]->pm;
+  v327 = v325->m_Items[1]->pm;
+  v328 = v327->m_Items[0];
+  v326->m_Items[0] = v328;
+  v330 = mfilter->Filter->xy;
+  v332 = mfiltertarget->Filter->xy;
+  v333 = v330->m_Items[1]->pm;
+  v335 = v332->m_Items[1]->pm;
+  v337 = v335->m_Items[1];
+  v333->m_Items[1] = v337;
+  v342 = (mfilteratarget - mfilterabase) * mfilternow / mfiltermax;
+  v343 = v342 + mfilterabase;
+  HIBYTE(mfilter->Filter->abgr) = v342 + mfilterabase;
+  v344 = mfilter;
+  Eve_PartialMultiFilterSetParam(v344);
+  if (v343)
+  {
+    Eve_PartialMultiFilterON();
+      goto LABEL_628;
+  }
+  else
+  {
+    Eve_PartialMultiFilterOFF();
+      goto LABEL_628;
+  }
+LABEL_628:
+  if (mfilternow >= mfiltermax)
+  {
+    dds3DrawFlag &= ~0x200000u;
+  }
 }
 
 // 0x17bc9b0
@@ -631,29 +1429,42 @@ s32 dds3CheckRenderTexture(void) {
 
 // 0x17c2080
 void dds3DistBlurOff(s32 frame) {
-    Eve_DistortionBlurOFF();
+  distblurabase = HIBYTE(distblurtarget->abgr);
+  distbluratarget = 0;
+  distblurnow = 0;
+  distblurmax = frame;
+  if (frame)
+  {
+    dds3DrawFlag |= 0x2000u;
+  }
+  else
+  {
+    dds3DrawFlag &= ~0x2000u;
+    dds3DrawFlag &= ~0x10000u;
+    else
+    {
+      Eve_DistortionBlurOFF();
+    }
+  }
 }
 
 // 0x17c21b0
 f32 dds3DistBlurOffRaito(void) {
   u32 v2;
-  struct dds3KernelDraw_StaticFields *static_fields;
   u32 distblurmax;
   f32 result;
 
   else
   {
-    static_fields = dds3KernelDraw->static_fields;
-    if ((static_fields->dds3DrawFlag & 0x2000) == 0)
+    if ((dds3DrawFlag & 0x2000) == 0)
       return 0.0;
   }
-  static_fields = dds3KernelDraw->static_fields;
-  distblurmax = static_fields->distblurmax;
-  if (!static_fields->distblurmax)
+  if (!distblurmax)
     return 0.0;
-  LOWORD(v2) = static_fields->distblurnow;
+LABEL_9:
+  LOWORD(v2) = distblurnow;
   result = v2 / distblurmax;
-  if (static_fields->distbluratarget)
+  if (distbluratarget)
     return 1.0 - result;
   return result;
 }
@@ -731,18 +1542,87 @@ void dds3DrawDistRipOverError(void) {
 
 // 0x17beb50
 void dds3DrawFade(void) {
-    SDF_VIF_SET_DIRECT(0);
-    SDF_GS_SET_ALPHA(0, 0, 0, 0, 0);
-    SDF_GS_SET_TEST(0, 0, 0, 0, 0, 0, 0, 0);
-    SDF_GS_SET_RGBAQ(0, 0, 0, 0, 0);
-    SDF_GS_SET_XYZ2(0, 0, 0);
-    Draw(0, 0, 0, 0);
+  struct System_Byte_array *fadergba;
+  u8 v5;
+  struct sdfDmaTag_t_o *dmatag;
+  struct sdfDmaTag_t_o *v9;
+  struct sdfGrTagStdReg_t_o *alpha1;
+  struct sdfGrTagStdReg_t_o *test1;
+  s32 screen_wid;
+  s32 screen_hei;
+  struct System_Byte_array *v21;
+  struct sdfGrTagStdReg_t_o *col0;
+  u32 max_length;
+  struct System_Byte_array *v24;
+  u8 v25;
+  struct sdfGrTagStdReg_t_o *xyz0;
+  struct System_Byte_array *v31;
+  struct sdfGrTagStdReg_t_o *col1;
+  u32 v33;
+  struct System_Byte_array *v34;
+  u8 v35;
+  struct System_Byte_array *v36;
+  u8 v37;
+  struct sdfGrTagStdReg_t_o *xyz1;
+  s32 v45;
+
+  if ((fadergba->m_Items[3] & 0x80u) != 0)
+    v5 = 0x80;
+  else
+    v5 = fadergba->m_Items[3];
+  fadepkt->dmatag->qwc = 10;
+  fadepkt->dmatag->pad = 0;
+  dmatag = fadepkt->dmatag;
+  v45 = 0;
+  dmatag->addr = sub_8D3950(s32, &v45);
+  fadepkt->dmatag->dat0 = 0;
+  v9 = fadepkt->dmatag;
+  v9->dat1 = SDF_VIF_SET_DIRECT(0xAu);
+  fadepkt->alpha1->reg = 66;
+  alpha1 = fadepkt->alpha1;
+  alpha1->data = SDF_GS_SET_ALPHA(1u, 0, 0, 0, 0);
+  fadepkt->pabe->reg = 73;
+  fadepkt->pabe->data = 0;
+  fadepkt->fba1->reg = 74;
+  fadepkt->fba1->data = 0;
+  fadepkt->test1->reg = 71;
+  test1 = fadepkt->test1;
+  test1->data = SDF_GS_SET_TEST(1u, 1u, 0, 1u, 0, 0, 1u, 1u);
+  fadepkt->col0->reg = 1;
+  v21 = fadergba;
+  col0 = fadepkt->col0;
+  max_length = v21->max_length;
+  v24 = v21;
+  v25 = v21->m_Items[0];
+  col0->data = SDF_GS_SET_RGBAQ(v25, v24->m_Items[1], v24->m_Items[2], v5, 1065353216);
+  fadepkt->xyz0->reg = 5;
+  xyz0 = fadepkt->xyz0;
+  xyz0->data = SDF_GS_SET_XYZ2(0, 0, 0xFEFFFFu);
+  fadepkt->col1->reg = 1;
+  v31 = fadergba;
+  col1 = fadepkt->col1;
+  v33 = v31->max_length;
+  v34 = v31;
+  v35 = v31->m_Items[0];
+  v36 = v34;
+  v37 = v34->m_Items[1];
+  col1->data = SDF_GS_SET_RGBAQ(v35, v37, v36->m_Items[2], v5, 1065353216);
+  fadepkt->xyz1->reg = 5;
+  xyz1 = fadepkt->xyz1;
+  xyz1->data = SDF_GS_SET_XYZ2(screen_wid, screen_hei, 0xFEFFFFu);
+  Draw(
+    gfxMgr,
+    "GdxFade",
+    1u,
+    fadepkt,
+    0);
 }
 
 // 0x17be1f0
 s32 dds3FadeCheck(void) {
   if (!IsStartModelLoaded())
     return 0;
+LABEL_6:
   return (dds3DrawFlag & 3) != 0;
 }
 
@@ -765,26 +1645,62 @@ void dds3FadeClear(void) {
 
 // 0x17bda90
 void dds3FadeColorGet(u32 *r, u32 *g, u32 *b, u32 *a) {
+  struct System_Byte_array *fadergba;
+  struct System_Byte_array *v11;
+  struct System_Byte_array *v13;
+  struct System_Byte_array *v15;
+
+  else
+  {
+    if (!LODWORD(fadergba->max_length))
+      goto LABEL_6;
+  }
+  *r = fadergba->m_Items[0];
+  v11 = fadergba;
+  *g = v11->m_Items[1];
+  v13 = fadergba;
+  *b = v13->m_Items[2];
+  v15 = fadergba;
+  *a = v15->m_Items[3];
 }
 
 // 0x17bd980
 void dds3FadeColorSet(u32 r, u32 g, u32 b) {
+  u8 v4;
+  u8 v5;
+  u8 v6;
+  struct System_Byte_array *fadergba;
+  struct System_Byte_array *v10;
+  struct System_Byte_array *v12;
+
+  v4 = b;
+  v5 = g;
+  v6 = r;
+  else
+  {
+    if (!LODWORD(fadergba->max_length))
+      goto LABEL_6;
+  }
+  fadergba->m_Items[0] = v6;
+  v10 = fadergba;
+  v10->m_Items[1] = v5;
+  v12 = fadergba;
+  v12->m_Items[2] = v4;
 }
 
 // 0x17be720
 f32 dds3FadeGetAlphaF(void) {
   u32 v3;
-  struct dds3KernelDraw_StaticFields *static_fields;
   struct System_Byte_array *fadergba;
 
+LABEL_7:
   else if (!IsStartModelLoaded())
   {
     return 0.0;
   }
-  static_fields = dds3KernelDraw->static_fields;
-  if ((static_fields->dds3DrawFlag & 3) == 0)
+  if ((dds3DrawFlag & 3) == 0)
     return 0.0;
-  fadergba = static_fields->fadergba;
+LABEL_13:
   LOBYTE(v3) = fadergba->m_Items[3];
   return fminf(v3 * 0.0078125, 1.0);
 }
@@ -800,37 +1716,75 @@ f32 dds3FadeGetAlphaI(void) {
 
 // 0x17be920
 f32 dds3FadeGetColAverageF(void) {
-  struct dds3KernelDraw_StaticFields *static_fields;
   struct System_Byte_array *fadergba;
   u32 max_length;
   struct System_Byte_array *v7;
   s32 v8;
 
+LABEL_7:
   else if (!IsStartModelLoaded())
   {
     return 0.0;
   }
-  static_fields = dds3KernelDraw->static_fields;
-  if ((static_fields->dds3DrawFlag & 3) == 0)
+  if ((dds3DrawFlag & 3) == 0)
     return 0.0;
-  fadergba = static_fields->fadergba;
+LABEL_13:
   max_length = fadergba->max_length;
   v7 = fadergba;
   if (!max_length)
+    goto LABEL_27;
+LABEL_16:
   v8 = fadergba->m_Items[0];
   return fminf(fmaxf(((v7->m_Items[1] + v8 + v7->m_Items[2]) / 3.0) * 0.0078125, 0.0), 1.0);
 }
 
 // 0x17bdbe0
 void dds3FadeIn(u32 r, u32 g, u32 b, u32 frame) {
-    dds3FadeClear();
+  u8 v6;
+  u8 v7;
+  u8 v8;
+  dds3KernelDraw_c *v9;
+  struct System_Byte_array *fadergba;
+  struct System_Byte_array *v12;
+  struct System_Byte_array *v14;
+  struct System_Byte_array *v16;
+  struct System_Byte_array *v18;
+
+  v6 = b;
+  v7 = g;
+  v8 = r;
+  else
+  {
+    if (!LODWORD(fadergba->max_length))
+      goto LABEL_6;
+  }
+  fadergba->m_Items[0] = v8;
+  v12 = fadergba;
+  v12->m_Items[1] = v7;
+  v14 = fadergba;
+  v14->m_Items[2] = v6;
+  v16 = fadergba;
+  v16->m_Items[3] = 0x80;
+  fadenow = frame;
+  fademax = frame;
+  if (frame)
+  {
+    dds3DrawFlag |= 1u;
+    dds3DrawFlag &= ~2u;
+  }
+  else
+  {
+    fadenow = 0;
+    fademax = 0;
+    v18 = fadergba;
+    v18->m_Items[3] = 0;
+    dds3FadeClear(v9);
+  }
 }
 
 // 0x17bddd0
 void dds3FadeIn2(u32 frame) {
-  dds3KernelDraw_c *v3;
   struct dds3KernelDraw_StaticFields **p_static_fields;
-  struct dds3KernelDraw_StaticFields *static_fields;
   s32 v6;
   struct System_Byte_array *fadergba;
 
@@ -838,9 +1792,7 @@ void dds3FadeIn2(u32 frame) {
   fademax = frame;
   if (frame)
   {
-    static_fields = v3->static_fields;
-    p_static_fields = &v3->static_fields;
-    static_fields->dds3DrawFlag |= 1u;
+    dds3DrawFlag |= 1u;
     v6 = -3;
   }
   else
@@ -848,7 +1800,6 @@ void dds3FadeIn2(u32 frame) {
     fadenow = 0;
     fademax = 0;
     fadergba->m_Items[3] = 0;
-    p_static_fields = &v3->static_fields;
     v6 = -4;
   }
   (*p_static_fields)->dds3DrawFlag &= v6;
@@ -856,6 +1807,47 @@ void dds3FadeIn2(u32 frame) {
 
 // 0x17bdee0
 void dds3FadeOut(u32 r, u32 g, u32 b, u32 frame) {
+  u8 v6;
+  u8 v7;
+  u8 v8;
+  struct System_Byte_array *fadergba;
+  struct System_Byte_array *v12;
+  struct System_Byte_array *v14;
+  struct System_Byte_array *v16;
+  u32 v19;
+  struct System_Byte_array *v20;
+
+  v6 = b;
+  v7 = g;
+  v8 = r;
+  else
+  {
+    if (!LODWORD(fadergba->max_length))
+      goto LABEL_6;
+  }
+  fadergba->m_Items[0] = v8;
+  v12 = fadergba;
+  v12->m_Items[1] = v7;
+  v14 = fadergba;
+  v14->m_Items[2] = v6;
+  v16 = fadergba;
+  v16->m_Items[3] = 0;
+  fadenow = 0;
+  fademax = frame;
+  if (frame)
+  {
+    dds3DrawFlag &= ~1u;
+    v19 = dds3DrawFlag | 2;
+  }
+  else
+  {
+    fadenow = 0;
+    fademax = 0;
+    v20 = fadergba;
+    v20->m_Items[3] = 0x80;
+    v19 = dds3DrawFlag & 0xFFFFFFFC;
+  }
+  dds3DrawFlag = v19;
 }
 
 // 0x17be0d0
@@ -906,30 +1898,23 @@ void dds3FadeSet(u32 r, u32 g, u32 b, u32 a) {
 // 0x17be2b0
 void dds3FadeUpdate(void) {
   dds3KernelDraw_c *v3;
-  struct dds3KernelDraw_StaticFields *static_fields;
   u32 dds3DrawFlag;
   s32 v6;
   struct System_Byte_array *fadergba;
   struct dds3KernelDraw_StaticFields **p_static_fields;
-  struct dds3KernelDraw_StaticFields *v10;
   struct System_Byte_array *v11;
   s16 v13;
   s32 v14;
-  struct dds3KernelDraw_StaticFields *v15;
   s16 v16;
-  struct dds3KernelDraw_StaticFields *v17;
   struct System_Byte_array *v18;
-  struct dds3KernelDraw_StaticFields *v20;
-  struct dds3KernelDraw_StaticFields *v21;
 
+LABEL_7:
   else if (!IsStartModelLoaded())
   {
     return;
   }
   else
   {
-    static_fields = dds3KernelDraw->static_fields;
-    dds3DrawFlag = static_fields->dds3DrawFlag;
     if ((dds3DrawFlag & 3) == 0)
       return;
   }
@@ -937,19 +1922,18 @@ void dds3FadeUpdate(void) {
   {
     v6 = dds3DrawFlag & 3;
     if (!v6)
+      goto LABEL_57;
   }
   if (v6 == 2)
   {
-    if (static_fields->fademax - 1 == static_fields->fadenow)
+    if (fademax - 1 == fadenow)
     {
-      fadergba = static_fields->fadergba;
       fadergba->m_Items[3] = 0;
     }
-    p_static_fields = &v3->static_fields;
-    v10 = v3->static_fields;
-    if (v10->fadenow >= v10->fademax)
+    if (fadenow >= fademax)
     {
-      v10->dds3DrawFlag &= 0xFFFFFFFC;
+LABEL_31:
+      dds3DrawFlag &= 0xFFFFFFFC;
       (*p_static_fields)->fadenow = 0;
       (*p_static_fields)->fademax = 0;
       return;
@@ -957,41 +1941,44 @@ void dds3FadeUpdate(void) {
   }
   else
   {
-    if (static_fields->fadenow == 1)
+    if (fadenow == 1)
     {
-      v11 = static_fields->fadergba;
+      v11 = fadergba;
       v11->m_Items[3] = 0x80;
     }
-    p_static_fields = &v3->static_fields;
-    v10 = v3->static_fields;
-    if (!v10->fadenow)
+    if (!fadenow)
+      goto LABEL_31;
   }
+LABEL_57:
   v13 = *&v3->_2.bitflags1;
   if ((v13 & 0x200) != 0)
   {
     v14 = v13 & 0x200;
-    v15 = v3->static_fields;
-    if ((v15->dds3DrawFlag & 1) != 0)
+    if ((dds3DrawFlag & 1) != 0)
+      goto LABEL_59;
+LABEL_66:
     v16 = 1;
+    goto LABEL_70;
   }
   v14 = 0;
-  v15 = v3->static_fields;
-  if ((v15->dds3DrawFlag & 1) == 0)
+  if ((dds3DrawFlag & 1) == 0)
+    goto LABEL_66;
+LABEL_59:
   v16 = -1;
-  v15->fadenow += v16;
-  v17 = v3->static_fields;
-  v18 = v17->fadergba;
-  v18->m_Items[3] = (v17->fadenow << 7) / v17->fademax;
-  v20 = v3->static_fields;
-  if ((v20->dds3DrawFlag & 1) != 0)
+LABEL_70:
+  fadenow += v16;
+  v18 = fadergba;
+  v18->m_Items[3] = (fadenow << 7) / fademax;
+  if ((dds3DrawFlag & 1) != 0)
   {
-    if (!v20->fadenow)
+    if (!fadenow)
+      goto LABEL_94;
   }
-  v21 = v3->static_fields;
-  if ((v21->dds3DrawFlag & 2) != 0)
+  if ((dds3DrawFlag & 2) != 0)
   {
-    if (v21->fadenow == v21->fademax)
+    if (fadenow == fademax)
     {
+LABEL_94:
       fadenow = 0;
       fademax = 0;
       dds3DrawFlag &= 0xFFFFFFFC;
@@ -1001,7 +1988,23 @@ void dds3FadeUpdate(void) {
 
 // 0x17bfa40
 void dds3Filter2Off(s32 frame) {
-    Eve_FilterOFF();
+  filter2abase = HIBYTE(filter2target->abgr);
+  filter2atarget = 0;
+  filter2now = 0;
+  filter2max = frame;
+  if (frame)
+  {
+    dds3DrawFlag |= 0x80000u;
+  }
+  else
+  {
+    dds3DrawFlag &= ~0x80000u;
+    dds3DrawFlag &= ~0x100000u;
+    else
+    {
+      Eve_FilterOFF();
+    }
+  }
 }
 
 // 0x17bf900
@@ -1229,7 +2232,23 @@ void dds3InitZClearDrawTag(void) {
 
 // 0x17c0480
 void dds3MFilterOff(s32 frame) {
-    Eve_PartialMultiFilterOFF();
+  mfilterabase = HIBYTE(mfiltertarget->Filter->abgr);
+  mfilteratarget = 0;
+  mfilternow = 0;
+  mfiltermax = frame;
+  if (frame)
+  {
+    dds3DrawFlag |= 0x200000u;
+  }
+  else
+  {
+    dds3DrawFlag &= ~0x200000u;
+    dds3DrawFlag &= ~0x400000u;
+    else
+    {
+      Eve_PartialMultiFilterOFF();
+    }
+  }
 }
 
 // 0x17c0350
@@ -1478,7 +2497,23 @@ s32 dds3RenderTextureON(void) {
 
 // 0x17c2920
 void dds3RipBlurOff(s32 frame) {
-    Eve_RippleBlurOFF();
+  ripblurabase = HIBYTE(ripblurtarget->abgr);
+  ripbluratarget = 0;
+  ripblurnow = 0;
+  ripblurmax = frame;
+  if (frame)
+  {
+    dds3DrawFlag |= 0x800000u;
+  }
+  else
+  {
+    dds3DrawFlag &= ~0x800000u;
+    dds3DrawFlag &= ~0x1000000u;
+    else
+    {
+      Eve_RippleBlurOFF();
+    }
+  }
 }
 
 // 0x17c27c0
@@ -1549,54 +2584,334 @@ void dds3RipBlurSwap(s32 frame) {
 
 // 0x17c5430
 void dds3RotationArc(void) {
-    SDF_VU0__VECTOR_W_SET_ZERO();
-    SDF_VU0__NORMALIZE();
-    SDF_VU0__SWAPVECTOR_A_B();
-    SDF_VU0__INNERPRODUCT();
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    SDF_VU0__GETVECTOR_Y();
-    sdfFabs(0);
-    SDF_VU0__LOADIDENTITYVECTOR();
-    SDF_VU0__SETVECTOR_Z(0);
-    SDF_VU0__GETVECTOR_Z();
-    SDF_VU0__GETVECTOR_X();
+  f32 v1;
+  f32 v2;
+  f32 v4;
+  f32 v5;
+  UnityEngine_Vector4_o v6;
+  UnityEngine_Vector4_o v7;
+
+  *&v7.x = 0;
+  *&v7.z = 0;
+  *&v6.x = 0;
+  *&v6.z = 0;
+  sub_854690(&v7.x, 0.0, 0.0, 0.0, 1.0);
+  sub_854690(&v6.x, 0.0, 0.0, 0.0, 0.0);
+  SDF_VU0__VECTOR_W_SET_ZERO();
+  SDF_VU0__NORMALIZE();
+  SDF_VU0__SWAPVECTOR_A_B();
+  SDF_VU0__VECTOR_W_SET_ZERO();
+  SDF_VU0__NORMALIZE();
+  SDF_VU0__SWAPVECTOR_A_B();
+  v1 = SDF_VU0__INNERPRODUCT();
+  if (v1 >= 0.9999)
+  {
+    SDF_VU0__LOADVECTOR(v7);
+  }
+  else if (v1 <= -0.9999)
+  {
+    v4 = SDF_VU0__GETVECTOR_Y();
+    if (sdfFabs(v4) >= 0.9999)
+    {
+      SDF_VU0__LOADIDENTITYVECTOR();
+      SDF_VU0__VECTOR_W_SET_ZERO();
+      SDF_VU0__SETVECTOR_Z(-1.0);
+    }
+    else
+    {
+      SDF_VU0__GETVECTOR_Z();
+      sub_854930(&v6, 0);
+      sub_854930(&v6, 1u);
+      SDF_VU0__GETVECTOR_X();
+      sub_854930(&v6, 2u);
+      sub_854930(&v6, 3u);
+      SDF_VU0__LOADVECTOR(v6);
+      SDF_VU0__NORMALIZE();
+    }
+    v5 = SDF_VU0__INNERPRODUCT();
     SDF_VU0__OUTERPRODUCT();
-    SDF_VU0__SETVECTOR_W(0);
+    SDF_VU0__SETVECTOR_W(v5);
+  }
+  else
+  {
     SDF_VU0__COPYVECTOR_A_TO_C();
     SDF_VU0__ADDVECTOR();
+    SDF_VU0__NORMALIZE();
     SDF_VU0__COPYVECTOR_C_TO_B();
-    SDF_VU0__STOREVECTOR(0);
-    Normalize();
+    v2 = SDF_VU0__INNERPRODUCT();
+    SDF_VU0__OUTERPRODUCT();
+    SDF_VU0__STOREVECTOR(&v6);
+    SDF_VU0__SETVECTOR_W(v2);
+    Normalize(0);
+  }
 }
 
 // 0x17bca20
 void dds3RunQuake(void) {
-    dds3GetRandFloatA(0);
-    SDF_VU0__LOADIDENTITYVECTOR();
-    SDF_VU0__VECTOR_W_SET_ZERO();
-    SDF_VU0__STOREVECTOR(0);
+  u64 *v1;
+  u32 *v2;
+  u32 v5;
+  u32 *v6;
+
+  v1 = NewSpecific(f32, 2u);
+  v2 = NewSpecific(f32, 2u);
+  v5 = v2[6];
+  v6 = v2;
+  v2[8] = 1058642330;
+  v2[9] = 1058642330;
+  else
+  {
+    if (dds3QuakeFlag)
+      goto LABEL_10;
+  }
+  SDF_VU0__LOADIDENTITYVECTOR();
+  SDF_VU0__VECTOR_W_SET_ZERO();
+  SDF_VU0__STOREVECTOR(&dds3CameraOffset);
 }
 
 // 0x17c6090
 void dds3SceneLightUpdateFirst(void) {
-    SDF_VU0__dds3ColorItoF(0);
-    SDF_VU0__SCALEVECTOR(0);
-    SDF_VU0__COPYVECTOR_A_TO_B();
-    SDF_VU0__ADDVECTOR();
-    SDF_VU0__STOREVECTOR(0);
-    SDF_VU0__LOADIDENTITYVECTOR();
-    SDF_VU0__VECTOR_W_SET_ONE();
-    SDF_VU0__LOADVECTOR_B((sdfVector4_t){0});
-    Lerp(0);
-    ToMatrix();
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
-    SDF_VU0__APPLYMATRIX();
-    SDF_VU0__dds3ColorFtoI(0);
-    SDF_VU0__SCALEVECTOR_B(0);
-    SDF_VU0__GETVECTOR_X();
-    SDF_VU0__GETVECTOR_Y();
-    SDF_VU0__GETVECTOR_Z();
-    SDF_VU0__GETVECTOR_W();
+  u32 v2;
+  dds3KernelDraw_c *v3;
+  u64 v4;
+  s32 v5;
+  s64 v6;
+  s32 v7;
+  struct System_UInt16_array *lightdirnow;
+  struct sdf3DLight_t_array *dds3DirLights;
+  u32 v12;
+  struct System_UInt16_array *lightrgbnow;
+  struct System_UInt16_array *v17;
+  struct System_UInt16_array *lightrgbmax;
+  u32 v20;
+  f32 v22;
+  struct System_UInt32_array *lightrgbbase;
+  f32 v24;
+  struct System_UInt32_array *lightrgbtarget;
+  struct sdf3DLight_t_array *v28;
+  struct System_UInt16_array *v31;
+  struct System_UInt16_array *v33;
+  u32 v34;
+  struct System_UInt16_array *v39;
+  struct System_UInt16_array *lightdirmax;
+  u32 v42;
+  f32 v44;
+  struct UnityEngine_Vector4_array *lightdirquat;
+  struct UnityEngine_Vector4_array *lightdirbase;
+  struct sdf3DLight_t_array *v49;
+  struct System_UInt16_array *v52;
+  struct System_UInt16_array *v54;
+  u32 v55;
+  s32 v58;
+  u32 v59;
+  u32 v61;
+  u32 v62;
+  f32 v65;
+  u32 v68;
+  u32 v69;
+  f32 v72;
+  struct sdf3DFogParam_t_o *dds3FogParam;
+  u32 v76;
+  u32 v77;
+  f32 v80;
+  struct sdf3DFogParam_t_o *v81;
+  struct sdf3DFogParam_t_o *v82;
+  struct sdf3DFogParam_t_o *v83;
+  struct sdf3DFogParam_t_o *v84;
+  u32 v87;
+  u32 v88;
+  f32 v91;
+  f32 softenbase;
+  f32 softentarget;
+
+  v4 = 0;
+  v5 = 4;
+  v6 = 44;
+  do
+  {
+    if (!dds3DirLights->m_Items[v4])
+    {
+      Log("=============================dds3SceneLightUpdateFirst:xxxx", 0);
+      v58 = dds3DrawFlag & ~(v5 | (2 * v5));
+      goto LABEL_78;
+    }
+    else if ((dds3DrawFlag & v5) != 0)
+    {
+LABEL_17:
+      Log("=============================dds3SceneLightUpdateFirst:0001", 0);
+      ++lightrgbnow->m_Items[v4];
+      v17 = lightrgbnow;
+      v20 = v17->m_Items[v4];
+      LOWORD(v12) = lightrgbmax->m_Items[v4];
+      v22 = v20;
+      v24 = v22 / v12;
+      SDF_VU0__dds3ColorItoF(lightrgbbase->m_Items[v4]);
+      SDF_VU0__SCALEVECTOR(1.0 - v24);
+      SDF_VU0__COPYVECTOR_A_TO_B();
+      SDF_VU0__dds3ColorItoF(lightrgbtarget->m_Items[v4]);
+      SDF_VU0__SCALEVECTOR(v24);
+      SDF_VU0__ADDVECTOR();
+      v28 = dds3DirLights;
+      SDF_VU0__STOREVECTOR(&v28->m_Items[v4]->color);
+      v31 = lightrgbnow;
+      v33 = lightrgbmax;
+      v34 = v31->m_Items[v4];
+      if (v34 >= v33->m_Items[v4])
+      {
+        dds3DrawFlag &= ~v5;
+      }
+    }
+    if ((dds3DrawFlag & (2 * v5)) != 0)
+    {
+      else
+      {
+        if (v4 >= LODWORD(lightdirnow->max_length))
+        {
+LABEL_51:
+        }
+      }
+      ++lightdirnow->m_Items[v4];
+      v39 = lightdirnow;
+      v42 = v39->m_Items[v4];
+      LOWORD(v2) = lightdirmax->m_Items[v4];
+      v44 = v42 / v2;
+      SDF_VU0__LOADIDENTITYVECTOR();
+      SDF_VU0__VECTOR_W_SET_ONE();
+      SDF_VU0__LOADVECTOR_B(*(lightdirquat + v6 - 12), 0);
+      Lerp(v44, 0);
+      ToMatrix();
+      SDF_VU0__LOADVECTOR(*(lightdirbase + v6 - 12), 0);
+      SDF_VU0__APPLYMATRIX();
+      v49 = dds3DirLights;
+      SDF_VU0__STOREVECTOR(&v49->m_Items[v4]->v);
+      v52 = lightdirnow;
+      v54 = lightdirmax;
+      v55 = v52->m_Items[v4];
+      if (v55 >= v54->m_Items[v4])
+      {
+        v58 = dds3DrawFlag & ~(2 * v5);
+LABEL_78:
+        dds3DrawFlag = v58;
+      }
+    }
+    v59 = *&v3->_2.bitflags1;
+    ++v4;
+    v5 *= 4;
+    v6 += 16;
+    v7 = (v59 >> 9) & 1;
+  }
+  while (v4 != 3);
+  if ((dds3DrawFlag & 0x100) == 0)
+    goto LABEL_96;
+LABEL_83:
+  Log("=============================dds3SceneLightUpdateFirst:0002", 0);
+  ++ambientnow;
+  LOWORD(v61) = ambientnow;
+  LOWORD(v62) = ambientmax;
+  v65 = v61 / v62;
+  SDF_VU0__dds3ColorItoF(ambientbase);
+  SDF_VU0__SCALEVECTOR(1.0 - v65);
+  SDF_VU0__COPYVECTOR_A_TO_B();
+  SDF_VU0__dds3ColorItoF(ambienttarget);
+  SDF_VU0__SCALEVECTOR(v65);
+  SDF_VU0__ADDVECTOR();
+  SDF_VU0__VECTOR_W_SET_ONE();
+  SDF_VU0__STOREVECTOR(&dds3Ambient);
+  if (ambientnow < ambientmax)
+  {
+LABEL_96:
+    if ((v3->_2.bitflags2 & 2) == 0)
+      goto LABEL_98;
+    goto LABEL_97;
+  }
+  dds3DrawFlag &= ~0x100u;
+  if ((v3->_2.bitflags2 & 2) == 0)
+  {
+LABEL_98:
+    if ((dds3DrawFlag & 0x200) != 0)
+      goto LABEL_99;
+LABEL_112:
+    if ((v3->_2.bitflags2 & 2) != 0)
+      goto LABEL_113;
+LABEL_114:
+    if ((dds3DrawFlag & 0x400) != 0)
+      goto LABEL_115;
+LABEL_128:
+    if ((v3->_2.bitflags2 & 2) != 0)
+      goto LABEL_129;
+LABEL_130:
+    if ((dds3DrawFlag & 0x4000) != 0)
+      goto LABEL_131;
+    return;
+  }
+LABEL_97:
+    goto LABEL_98;
+  if ((dds3DrawFlag & 0x200) == 0)
+    goto LABEL_112;
+LABEL_99:
+  Log("=============================dds3SceneLightUpdateFirst:0003", 0);
+  ++fogrgbnow;
+  LOWORD(v68) = fogrgbnow;
+  LOWORD(v69) = fogrgbmax;
+  v72 = v68 / v69;
+  SDF_VU0__dds3ColorItoF(fogrgbbase);
+  SDF_VU0__SCALEVECTOR(1.0 - v72);
+  SDF_VU0__COPYVECTOR_A_TO_B();
+  SDF_VU0__dds3ColorItoF(fogrgbtarget);
+  SDF_VU0__SCALEVECTOR(v72);
+  SDF_VU0__ADDVECTOR();
+  dds3FogParam->color = SDF_VU0__dds3ColorFtoI(128.0);
+  if (fogrgbnow < fogrgbmax)
+    goto LABEL_112;
+  dds3DrawFlag &= ~0x200u;
+  if ((v3->_2.bitflags2 & 2) == 0)
+    goto LABEL_114;
+LABEL_113:
+    goto LABEL_114;
+  if ((dds3DrawFlag & 0x400) == 0)
+    goto LABEL_128;
+LABEL_115:
+  Log("=============================dds3SceneLightUpdateFirst:0004", 0);
+  ++fogparanow;
+  LOWORD(v76) = fogparanow;
+  LOWORD(v77) = fogparamax;
+  v80 = v76 / v77;
+  SDF_VU0__LOADVECTOR(fogparabase);
+  SDF_VU0__LOADVECTOR_B(fogparatarget);
+  SDF_VU0__SCALEVECTOR(1.0 - v80);
+  SDF_VU0__SCALEVECTOR_B(v80);
+  SDF_VU0__ADDVECTOR();
+  v81 = dds3FogParam;
+  v81->fogMax = SDF_VU0__GETVECTOR_X();
+  v82 = dds3FogParam;
+  v82->fogMin = SDF_VU0__GETVECTOR_Y();
+  v83 = dds3FogParam;
+  v83->fogNear = SDF_VU0__GETVECTOR_Z();
+  v84 = dds3FogParam;
+  v84->fogFar = SDF_VU0__GETVECTOR_W();
+  if (fogparanow < fogparamax)
+    goto LABEL_128;
+  dds3DrawFlag &= ~0x400u;
+  if ((v3->_2.bitflags2 & 2) == 0)
+    goto LABEL_130;
+LABEL_129:
+    goto LABEL_130;
+  if ((dds3DrawFlag & 0x4000) != 0)
+  {
+LABEL_131:
+    Log("=============================dds3SceneLightUpdateFirst:0005", 0);
+    ++sbnow;
+    LOWORD(v87) = sbnow;
+    LOWORD(v88) = sbmax;
+    v91 = v87 / v88;
+    sdfFaceDivSoften = (softentarget * v91) + (softenbase * (1.0 - v91));
+    sdfFaceDivBias = ((1.0 - v91) * biasbase)
+                                       + (v91 * biastarget);
+    if (sbnow >= sbmax)
+    {
+      dds3DrawFlag &= ~0x4000u;
+    }
+  }
 }
 
 // 0x17bf0c0
@@ -1664,7 +2979,6 @@ void dds3SetAmbientColor(u32 frame, sdfVector4_t col) {
 // 0x17c05b0
 void dds3SetBlur(u32 frame, s32 alpha, s32 scale) {
   dds3KernelDraw_c *v7;
-  struct dds3KernelDraw_StaticFields *static_fields;
   u32 v9;
 
   if (!frame)
@@ -1675,14 +2989,17 @@ void dds3SetBlur(u32 frame, s32 alpha, s32 scale) {
     {
       dds3ScreenBlurFlag = 1;
       if ((v7->_2.bitflags2 & 2) == 0)
+        goto LABEL_22;
     }
     else
     {
       dds3ScreenBlurFlag = 0;
       if ((v7->_2.bitflags2 & 2) == 0)
+        goto LABEL_22;
     }
-    static_fields = v7->static_fields;
-    v9 = static_fields->dds3DrawFlag & 0xFFFFF7FF;
+LABEL_22:
+    v9 = dds3DrawFlag & 0xFFFFF7FF;
+    goto LABEL_23;
   }
   bluralphabase = dds3ScreenBlurAlpha;
   blurscalebase = dds3ScreenBlurScale;
@@ -1690,9 +3007,9 @@ void dds3SetBlur(u32 frame, s32 alpha, s32 scale) {
   blurscaletarget = scale;
   blurnow = 0;
   blurmax = frame;
-  static_fields = v7->static_fields;
-  v9 = static_fields->dds3DrawFlag | 0x800;
-  static_fields->dds3DrawFlag = v9;
+  v9 = dds3DrawFlag | 0x800;
+LABEL_23:
+  dds3DrawFlag = v9;
 }
 
 // 0x17c0830
@@ -1837,7 +3154,9 @@ void dds3SetLight(sdf3DLight_t *light, u32 no) {
   else
   {
     if (!light)
+      goto LABEL_9;
   }
+LABEL_9:
   dds3DirLights->m_Items[no] = light;
 }
 
@@ -2022,10 +3341,17 @@ void dds3SetQuake(s32 frame, u32 range) {
       {
         dds3QuakeFrame = -1;
         if ((v5->_2.bitflags2 & 2) == 0)
+          goto LABEL_20;
+        goto LABEL_11;
       }
       LOWORD(frame) = -1;
     }
     dds3QuakeFrame = frame;
+    if ((v5->_2.bitflags2 & 2) != 0)
+    {
+LABEL_11:
+    }
+LABEL_20:
     dds3QuakeYRange = 10 * range;
     dds3QuakeXRange = (0x333333334LL * dds3QuakeYRange) >> 35;
     return;

@@ -24,15 +24,43 @@ char *Get(s32 id, s32 Devilid) {
 
 // 0x7c4ce0
 char *GetEncyc(s32 id) {
-    GetLocalizeText(0);
-    return 0;
+  u64 *v4;
+  System_String_o *v6;
+  s32 v7;
+
+  if (id == 40)
+    return "？？？";
+  v7 = id;
+  v4 = sub_8D3950(s32, &v7);
+  v6 = Format("<RACE_L{0:D4}>", v4, 0);
+  return GetLocalizeText(v6);
 }
 
 // 0x7c4a30
 char *GetTag(s32 id, s32 Devilid) {
-    IsZensyoMode();
-    evtBitCheck(0);
-    return 0;
+  u64 *v5;
+  System_String_o *result;
+  s32 v9;
+
+  v9 = id;
+  v5 = sub_8D3950(s32, &v9);
+  result = Format("<RACE_L{0:D4}>", v5, 0);
+  if (id == 40)
+  {
+    else if ((byte_3CF2FEF & 1) != 0)
+    {
+LABEL_8:
+      else if (IsZensyoMode())
+      {
+        goto LABEL_11;
+      }
+      if (evtBitCheck(3712))
+        goto LABEL_12;
+      goto LABEL_17;
+    }
+    goto LABEL_8;
+  }
+  return result;
 }
 
 // 0x7c4b70

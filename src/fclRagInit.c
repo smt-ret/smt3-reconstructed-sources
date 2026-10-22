@@ -15,7 +15,7 @@ static u8 LISTMAX;
 static fclDataRag_t *GBWK;
 static s8 gProcessStat;
 static char *gRagMenuStr[5];
-static u8 gCommandFlag[UNKNOWN_ARRAY_SIZE];
+static u8 *gCommandFlag;
 
 void ButtonGuideDispOff(void);
 s32 CMP_XM(s32 a);
@@ -74,16 +74,14 @@ void sdfTexFree(sdfTexHandle_t *aHandle);
 
 // 0x13d6cf0
 s8 fclChkRagProcess(void) {
-  struct fclRagInit_StaticFields *static_fields;
   s32 gProcessStat;
 
-  static_fields = fclRagInit->static_fields;
-  gProcessStat = static_fields->gProcessStat;
   if (gProcessStat == 1)
     return 1;
+LABEL_6:
   if (gProcessStat != 2)
     return 0;
-  static_fields->gProcessStat = 0;
+  gProcessStat = 0;
   return 0;
 }
 
@@ -102,7 +100,6 @@ void *fclDestroyRag(dds3ProcessID_t *PID) {
 
   if (*(*(v3 + 184) + 16LL))
   {
-    if ((*(v3 + 295) & 2) != 0 && !*(v3 + 216))
     fclRagTexFree(v3);
     ScriptPID = GBWK->ScriptPID;
     fclScriptForcedEnd(ScriptPID);
@@ -111,25 +108,25 @@ void *fclDestroyRag(dds3ProcessID_t *PID) {
     GBWK = 0;
     gProcessStat = 2;
     evtDisableMoonDraw();
-    Id = FindId(0, StringLiteral_11819);
+    Id = FindId(0, "SHOPSN10_BGM00");
     p2sdFadeOut(Id);
     FinalizeGameObject();
     WindowDispOff(0);
     FinalizeUI();
-    Remove(StringLiteral_16174, 0);
-    Remove(StringLiteral_12292, 0);
-    Remove(StringLiteral_16308, 0);
-    Remove(StringLiteral_5045, 0);
+    Remove("FACILITY", 0);
+    Remove("CAMP", 0);
+    Remove("RAG_MES_DATA", 0);
+    Remove("DATITEMHELP", 0);
     PlatformStr = GetPlatformStr();
-    v18 = Concat_5224608(StringLiteral_12292, PlatformStr);
+    v18 = Concat_5224608("CAMP", PlatformStr);
     Remove(v18, 0);
     asset_bc = get_asset_bc();
-    UnloadAB(asset_bc, StringLiteral_16306);
+    UnloadAB(asset_bc, "f803");
     v21 = get_asset_bc();
-    UnloadAB(v21, StringLiteral_16305);
+    UnloadAB(v21, "e803");
     v22 = get_asset_bc();
     Appendix = GetAppendix();
-    v24 = Concat_5224608(StringLiteral_16305, Appendix);
+    v24 = Concat_5224608("e803", Appendix);
     UnloadAB(v22, v24);
   }
   PID->func_ans = -1;
@@ -229,15 +226,16 @@ fclDataRag_t *fclInitRag(s8 Place, cmpSeqInfo_t *pParentSeqInfo) {
   evtDisableMoonCalc();
   asset_bc = get_asset_bc();
   Appendix = GetAppendix();
-  v35 = Concat_5224608(StringLiteral_16305, Appendix);
+  v35 = Concat_5224608("e803", Appendix);
   v36 = GetAppendix();
-  v37 = Concat_5224608(StringLiteral_16305, v36);
+  v37 = Concat_5224608("e803", v36);
   Load(asset_bc, v35, v37, 0);
   v38 = get_asset_bc();
-  Load(v38, StringLiteral_16305, StringLiteral_16305, 0);
+  Load(v38, "e803", "e803", 0);
   v39 = get_asset_bc();
-  Load(v39, StringLiteral_16306, StringLiteral_16306, 0);
+  Load(v39, "f803", "f803", 0);
   v5->Initialized = 0;
+LABEL_34:
   CampCameraObj = GetCampCameraObj(kernelObject);
   campCameraObj = CampCameraObj;
   return v5;
@@ -245,13 +243,94 @@ fclDataRag_t *fclInitRag(s8 Place, cmpSeqInfo_t *pParentSeqInfo) {
 
 // 0x13d3d40
 void fclInitRagCore(s8 Place, fclDataRag_t *pData, bool flg) {
-    ragCreateAllList(0, 0, 0);
-    SetRootMenuText(0, 0);
+  System_String_array *gRagMenuStr;
+  s64 v10;
+  u64 v12;
+  struct System_Byte_array *gCommandFlag;
+  u64 max_length_low;
+  u64 i;
+  struct System_SByte_array *ItemList;
+  u64 *v20;
+  u64 v23;
+  struct System_SByte_array *SeireiList;
+  u64 *v27;
+  u64 v29;
+  struct System_SByte_array *MitamaList;
+  u64 *v33;
+  s8 v34[4];
+  s8 v35[4];
+  s8 v36[4];
+
+  ragCreateAllList(0, Place, pData);
+  if (flg)
+  {
+    SetRootMenuText(&pData->CmdSelInfo, gRagMenuStr);
+  }
+  v10 = 32;
+  v12 = 0;
+  {
+LABEL_17:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(gCommandFlag->max_length);
+    if (v12 >= max_length_low)
+      break;
+    else if (v12 >= max_length_low)
+    {
+      goto LABEL_23;
+    }
+    *(&gCommandFlag->obj.klass + v10++) = 0;
+    v12 = v10 - 32;
+      goto LABEL_17;
+  }
+  Write("\n", 0);
+  Write("ITEM   : ", 0);
+  for (i = 0; i != 32; ++i)
+  {
+    ItemList = pData->ItemList;
+    v36[0] = ItemList->m_Items[i];
+    v20 = sub_8D3950(sbyte, v36);
+    Write_2930400("{0:x2} ", v20);
+  }
+  Write("\n", 0);
+  Write("SEIREI : ", 0);
+  if (pData->SeireiListCnt >= 1)
+  {
+    v23 = 0;
+    do
+    {
+      SeireiList = pData->SeireiList;
+      v35[0] = SeireiList->m_Items[v23];
+      v27 = sub_8D3950(sbyte, v35);
+      Write_2930400("{0:x2} ", v27);
+      ++v23;
+    }
+    while (v23 < pData->SeireiListCnt);
+  }
+  Write("\n", 0);
+  Write("MITAMA : ", 0);
+  if (pData->MitamaListCnt >= 1)
+  {
+    v29 = 0;
+    do
+    {
+      MitamaList = pData->MitamaList;
+      v34[0] = MitamaList->m_Items[v29];
+      v33 = sub_8D3950(sbyte, v34);
+      Write_2930400("{0:x2} ", v33);
+      ++v29;
+    }
+    while (v29 < pData->MitamaListCnt);
+  }
+  Write("\n", 0);
+  Write("\n", 0);
 }
 
 // 0x13d4580
 void fclRagEventEnd(void) {
-  dds3KillProcessName(StringLiteral_16309, 1);
+  dds3KillProcessName("e803_main", 1);
+LABEL_10:
   evtFreeStage();
   fclFilterOFF();
 }
@@ -261,13 +340,20 @@ void fclRagEventStart(s8 Signal) {
   struct System_Int32_array *gFclVal;
   struct System_SByte_array *gFclSignal;
 
+LABEL_7:
   gFclVal->m_Items[1] = Signal;
-
+  if ((byte_3F59719 & 1) != 0)
   {
+      goto LABEL_17;
   }
+  else
+  {
+      goto LABEL_17;
+  }
+LABEL_17:
   gFclSignal->m_Items[1] = 0;
   evtStartEvent(803);
-  PlaySE(StringLiteral_9025);
+  PlaySE("SHOPSN10_SE00");
 }
 
 // 0x13d3c40
@@ -306,10 +392,11 @@ void fclRagInitPanelMover(fclDataRag_t *pData) {
 s32 fclRagProcessEnd(void) {
   if (!fldProc_CallSisetuReturn())
     return 0;
+LABEL_6:
   FadeOutWindow();
-  dds3KillProcessName(StringLiteral_16315, 1);
-  dds3KillProcessName(StringLiteral_16316, 1);
-  dds3KillProcessName(StringLiteral_16317, 1);
+  dds3KillProcessName("rag", 1);
+  dds3KillProcessName("rag_draw", 1);
+  dds3KillProcessName("rag_update", 1);
   return 1;
 }
 
@@ -336,14 +423,14 @@ void fclRagProcessStart(s8 Place) {
     0,
     Method_fclRagCalc_ragCalc__);
   data = GBWK;
-  dds3StartProcess(StringLiteral_16315, 0x403u, 1, 1, v9, 0, 0, 0, data, 0);
+  dds3StartProcess("rag", 0x403u, 1, 1, v9, 0, 0, 0, data, 0);
   v12 = Allocate(System_Func_dds3ProcessID_t__object_);
   object____ctor(
     v12,
     0,
     Method_fclRagDraw_ragDraw__);
   dds3StartProcess(
-    StringLiteral_16316,
+    "rag_draw",
     0x2B13u,
     1,
     1,
@@ -364,7 +451,7 @@ void fclRagProcessStart(s8 Place) {
     0,
     Method_fclRagInit_fclDestroyRag__);
   dds3StartProcess(
-    StringLiteral_16317,
+    "rag_update",
     0x520Fu,
     1,
     1,
@@ -379,22 +466,19 @@ void fclRagProcessStart(s8 Place) {
 
 // 0x13d4480
 void fclRagTexFree(fclDataRag_t *pData) {
-  fclRagInit_c *v2;
   char v3;
-  struct fclRagInit_StaticFields *static_fields;
   s32 v5;
   sdfTexHandle_t_o *TexHandleBG;
 
   v3 = 0;
   do
   {
-    static_fields = v2->static_fields;
     v5 = v3++;
   }
-  while (v5 < SLODWORD(static_fields->gFclRagTexFile->max_length));
-  TexHandleBG = static_fields->GBWK->TexHandleBG;
+  while (v5 < SLODWORD(gFclRagTexFile->max_length));
+  TexHandleBG = GBWK->TexHandleBG;
   sdfTexFree(TexHandleBG);
-  Write(StringLiteral_16310, 0);
+  Write("RAG : Tex free.\n", 0);
 }
 
 // 0x13d3c30
@@ -412,24 +496,25 @@ void fclRagUpdateInit(fclDataRag_t *data) {
   System_String_o *v16;
   System_String_o *v17;
 
-  LoadKeys(1, StringLiteral_16305, 0);
-  LoadKeys(3, StringLiteral_16305, 0);
+  LoadKeys(1, "e803", 0);
+  LoadKeys(3, "e803", 0);
   cmpModelInit();
   cmpModelEnd();
   fclRagInitPanelMover(data);
   asset_bc = get_asset_bc();
-  data->pScriptData = LoadFileByte(asset_bc, StringLiteral_16305, StringLiteral_16307);
-  Id = FindId(0, StringLiteral_11819);
+  data->pScriptData = LoadFileByte(asset_bc, "e803", "dds3data/facility/scr/rag/message.bf.bytes");
+  Id = FindId(0, "SHOPSN10_BGM00");
   p2sdPlayBGM(Id);
+LABEL_25:
   gFclVal->m_Items[2] = 0;
-  LoadLocalizeText(StringLiteral_16305, StringLiteral_16308);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_16174);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_12292);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_5045);
+  LoadLocalizeText("e803", "RAG_MES_DATA");
+  LoadLocalizeText("common", "FACILITY");
+  LoadLocalizeText("common", "CAMP");
+  LoadLocalizeText("common", "DATITEMHELP");
   PlatformStr = GetPlatformStr();
-  v15 = Concat_5224608(StringLiteral_4611, PlatformStr);
+  v15 = Concat_5224608("common", PlatformStr);
   v16 = GetPlatformStr();
-  v17 = Concat_5224608(StringLiteral_12292, v16);
+  v17 = Concat_5224608("CAMP", v16);
   LoadLocalizeText(v15, v17);
   InitializeUI(803);
   SetButtonGuide(0, 0);
@@ -487,11 +572,14 @@ void ragCreateAllList(s32 Mode, s32 Place, fclDataRag_t *pData) {
   if (v11 < 0)
   {
     v12 = 0;
+      goto LABEL_15;
   }
   else
   {
     v12 = evtBitCheck(v11);
+      goto LABEL_15;
   }
+LABEL_15:
   v15 = fclRagTbl;
   ItemPackID = v15->m_Items[Place]->ItemPackID;
   v19 = ItemPackID->m_Items[v12];
@@ -578,22 +666,29 @@ s8 ragCreateItemList(u8 PackID, fclDataRag_t *pData) {
     v14 = v12->m_Items[v5];
     ItemID = fclRagItemTbl->m_Items[v14]->ItemID;
     if ((byte_3F59715 & 1) == 0)
+      goto LABEL_18;
+LABEL_19:
     v18 = NewSpecific(sbyte, 0x19u);
     InitializeArray_1543888(v18, Field__PrivateImplementationDetails__1611B884F9514B730E1DFD40ABEFFAC12FD56E0F);
     if ((ItemID - 64) > 0x18)
     {
       if (!ItemID)
+        goto LABEL_32;
+      goto LABEL_29;
     }
     v19 = ItemID - 64;
     v21 = *(&v18[2].klass + v19);
     if (!v21)
+      goto LABEL_29;
     if (!cmbChkGetHearts(v21))
     {
       pData->HeartsFlag = 1;
+LABEL_29:
       v22 = v6;
       ++v6;
       ItemList->m_Items[v22] = v14;
     }
+LABEL_32:
     ++v5;
   }
   while (v5 != 32);
@@ -601,7 +696,11 @@ s8 ragCreateItemList(u8 PackID, fclDataRag_t *pData) {
   _ctor(v24, 0);
   Sort_3899472(ItemList, v24);
   HeartsFlag = pData->HeartsFlag;
-  else  gFclVal->m_Items[4] = HeartsFlag;
+  else if ((byte_3F5971B & 1) == 0)
+  {
+    goto LABEL_36;
+  }
+  gFclVal->m_Items[4] = HeartsFlag;
   return v6;
 }
 
@@ -633,8 +732,9 @@ s8 ragCreateMitamaList(u8 PackID, fclDataRag_t *pData) {
 
   max_length = fclRagDefaultMitamaTbl->max_length;
   v6 = 8 - max_length;
+LABEL_10:
   v38 = max_length;
-  RandA = dds3GetRandA(StringLiteral_416);
+  RandA = dds3GetRandA("");
   v8 = v6;
   v9 = v6;
   v10 = v6 << 24;
@@ -659,6 +759,8 @@ s8 ragCreateMitamaList(u8 PackID, fclDataRag_t *pData) {
     LOBYTE(v26) = 0;
     v37 = RandA - v36 * v8;
     if (v18 << 24 < 1)
+      goto LABEL_43;
+    goto LABEL_34;
   }
   v21 = 0;
   do
@@ -671,6 +773,7 @@ s8 ragCreateMitamaList(u8 PackID, fclDataRag_t *pData) {
   v37 = v18;
   if (v18 << 24 >= 1)
   {
+LABEL_34:
     v28 = 0;
     do
     {
@@ -683,6 +786,7 @@ s8 ragCreateMitamaList(u8 PackID, fclDataRag_t *pData) {
     }
     while (v28 < v37);
   }
+LABEL_43:
   v34 = Allocate(fclMisc_fclSort8uNonZero);
   _ctor(v34, 0);
   Sort_3899472(MitamaList, v34);
@@ -717,8 +821,9 @@ s8 ragCreateSeireiList(u8 PackID, fclDataRag_t *pData) {
 
   max_length = fclRagDefaultSeireiTbl->max_length;
   v6 = 8 - max_length;
+LABEL_10:
   v38 = max_length;
-  RandA = dds3GetRandA(StringLiteral_416);
+  RandA = dds3GetRandA("");
   v8 = v6;
   v9 = v6;
   v10 = v6 << 24;
@@ -743,6 +848,8 @@ s8 ragCreateSeireiList(u8 PackID, fclDataRag_t *pData) {
     LOBYTE(v26) = 0;
     v37 = RandA - v36 * v8;
     if (v18 << 24 < 1)
+      goto LABEL_43;
+    goto LABEL_34;
   }
   v21 = 0;
   do
@@ -755,6 +862,7 @@ s8 ragCreateSeireiList(u8 PackID, fclDataRag_t *pData) {
   v37 = v18;
   if (v18 << 24 >= 1)
   {
+LABEL_34:
     v28 = 0;
     do
     {
@@ -767,6 +875,7 @@ s8 ragCreateSeireiList(u8 PackID, fclDataRag_t *pData) {
     }
     while (v28 < v37);
   }
+LABEL_43:
   v34 = Allocate(fclMisc_fclSort8uNonZero);
   _ctor(v34, 0);
   Sort_3899472(SeireiList, v34);
@@ -775,17 +884,86 @@ s8 ragCreateSeireiList(u8 PackID, fclDataRag_t *pData) {
 
 // 0x13d48a0
 u8 ragGetItemTblIndex(u16 ItemID) {
-    return 0;
+  u64 v3;
+  struct fclRagItem_t_array *fclRagItemTbl;
+  u64 max_length_low;
+
+  v3 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(fclRagItemTbl->max_length);
+    if (v3 >= max_length_low)
+      break;
+    else if (v3 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    if (fclRagItemTbl->m_Items[v3]->ItemID == ItemID)
+      return v3;
+    ++v3;
+      goto LABEL_6;
+  }
+  LOBYTE(v3) = 0;
+  return v3;
 }
 
 // 0x13d47a0
 u8 ragGetMitamaTblIndex(u16 MitamaID) {
-    return 0;
+  u64 v3;
+  struct fclRagDevil_t_array *fclRagMitamaTbl;
+  u64 max_length_low;
+
+  v3 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(fclRagMitamaTbl->max_length);
+    if (v3 >= max_length_low)
+      break;
+    else if (v3 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    if (fclRagMitamaTbl->m_Items[v3]->DevilID == MitamaID)
+      return v3;
+    ++v3;
+      goto LABEL_6;
+  }
+  LOBYTE(v3) = 0;
+  return v3;
 }
 
 // 0x13d46a0
 u8 ragGetSeireiTblIndex(u16 SeireiID) {
-    return 0;
+  u64 v3;
+  struct fclRagDevil_t_array *fclRagSeireiTbl;
+  u64 max_length_low;
+
+  v3 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(fclRagSeireiTbl->max_length);
+    if (v3 >= max_length_low)
+      break;
+    else if (v3 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    if (fclRagSeireiTbl->m_Items[v3]->DevilID == SeireiID)
+      return v3;
+    ++v3;
+      goto LABEL_6;
+  }
+  LOBYTE(v3) = 0;
+  return v3;
 }
 
 // 0x13d5560
@@ -875,50 +1053,66 @@ s32 ragRandGetMitama(u8 PackID, s8 MitamaIndex) {
   v8 = PackID;
   Per = fclRagMitamaPackTbl->m_Items[PackID]->Per;
   v12 = Per->m_Items[6];
+LABEL_14:
   v13 = v12 + 1;
-  RandA = dds3GetRandA(StringLiteral_416);
+  RandA = dds3GetRandA("");
   v17 = fclRagMitamaPackTbl;
   v19 = RandA % v13;
   v20 = v17->m_Items[v8]->Per;
   if (v19 <= v20->m_Items[0])
   {
     v51 = 0;
+      goto LABEL_90;
+LABEL_73:
+    goto LABEL_90;
   }
   v22 = fclRagMitamaPackTbl;
   v24 = v22->m_Items[v8]->Per;
   if (v19 <= v24->m_Items[1])
   {
     v51 = 1;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v26 = fclRagMitamaPackTbl;
   v28 = v26->m_Items[v8]->Per;
   if (v19 <= v28->m_Items[2])
   {
     v51 = 2;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v31 = fclRagMitamaPackTbl;
   v33 = v31->m_Items[v8]->Per;
   if (v19 <= v33->m_Items[3])
   {
     v51 = 3;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v35 = fclRagMitamaPackTbl;
   v37 = v35->m_Items[v8]->Per;
   if (v19 <= v37->m_Items[4])
   {
     v51 = 4;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v40 = fclRagMitamaPackTbl;
   v42 = v40->m_Items[v8]->Per;
   if (v19 <= v42->m_Items[5])
   {
     v51 = 5;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v45 = fclRagMitamaPackTbl;
   v47 = v45->m_Items[v8]->Per;
   if (v19 > v47->m_Items[6])
     return 0;
   v51 = 6;
+    goto LABEL_73;
+LABEL_90:
   v55 = fclRagMitamaPackTbl;
   Index = v55->m_Items[v8]->Index;
   v59 = Index->m_Items[MitamaIndex];
@@ -958,50 +1152,66 @@ s32 ragRandGetSeirei(u8 PackID, s8 SeireiIndex) {
   v8 = PackID;
   Per = fclRagSeireiPackTbl->m_Items[PackID]->Per;
   v12 = Per->m_Items[6];
+LABEL_14:
   v13 = v12 + 1;
-  RandA = dds3GetRandA(StringLiteral_416);
+  RandA = dds3GetRandA("");
   v17 = fclRagSeireiPackTbl;
   v19 = RandA % v13;
   v20 = v17->m_Items[v8]->Per;
   if (v19 <= v20->m_Items[0])
   {
     v51 = 0;
+      goto LABEL_90;
+LABEL_73:
+    goto LABEL_90;
   }
   v22 = fclRagSeireiPackTbl;
   v24 = v22->m_Items[v8]->Per;
   if (v19 <= v24->m_Items[1])
   {
     v51 = 1;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v26 = fclRagSeireiPackTbl;
   v28 = v26->m_Items[v8]->Per;
   if (v19 <= v28->m_Items[2])
   {
     v51 = 2;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v31 = fclRagSeireiPackTbl;
   v33 = v31->m_Items[v8]->Per;
   if (v19 <= v33->m_Items[3])
   {
     v51 = 3;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v35 = fclRagSeireiPackTbl;
   v37 = v35->m_Items[v8]->Per;
   if (v19 <= v37->m_Items[4])
   {
     v51 = 4;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v40 = fclRagSeireiPackTbl;
   v42 = v40->m_Items[v8]->Per;
   if (v19 <= v42->m_Items[5])
   {
     v51 = 5;
+      goto LABEL_90;
+    goto LABEL_73;
   }
   v45 = fclRagSeireiPackTbl;
   v47 = v45->m_Items[v8]->Per;
   if (v19 > v47->m_Items[6])
     return 0;
   v51 = 6;
+    goto LABEL_73;
+LABEL_90:
   v55 = fclRagSeireiPackTbl;
   Index = v55->m_Items[v8]->Index;
   v59 = Index->m_Items[SeireiIndex];

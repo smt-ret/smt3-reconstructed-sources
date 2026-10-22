@@ -53,17 +53,11 @@ void Restore(fldRunSuspendData *this, fldTest_FLDRUN_DANTE_t **d, fldTest_FLDRUN
 
 // 0x16026a0
 void BackupFldRunWork(void) {
-  fldTest_c *v2;
-  struct fldTest_StaticFields *static_fields;
   struct fldRunSuspendData_o *SuspendData;
   struct fldTest_FLDRUN_DANTE_t_o *fldRun_Dante;
   struct fldTest_FLDRUN_PLAYER_t_o *fldRun_Player;
   struct fldTest_FLDRUN_DOOR_t_o *pDoor;
 
-  static_fields = v2->static_fields;
-  SuspendData = static_fields->SuspendData;
-  fldRun_Dante = static_fields->fldRun_Dante;
-  fldRun_Player = static_fields->fldRun_Player;
   SuspendData->bgm_mode = fldRun_Dante->bgm_mode;
   SuspendData->motion = fldRun_Dante->motion;
   SuspendData->old_status = fldRun_Dante->old_status;
@@ -207,7 +201,60 @@ void Restore(fldRunSuspendData *this, fldTest_FLDRUN_DANTE_t **d, fldTest_FLDRUN
 
 // 0x16028a0
 void RestoreFldRunWork(u8 **data) {
-    Restore(0, 0, 0);
+  struct fldRunSuspendData_o *SuspendDataCopy;
+  s32 v13;
+  s32 v16;
+  s32 oldAreaID;
+
+  else
+  {
+    if (!LODWORD(data->max_length))
+      goto LABEL_6;
+  }
+  SuspendDataCopy->bgm_mode = data->m_Items[0];
+  SuspendDataCopy->motion = data->m_Items[1];
+  SuspendDataCopy->old_status = data->m_Items[2];
+  SuspendDataCopy->stance = data->m_Items[3];
+  SuspendDataCopy->status = data->m_Items[4];
+  SuspendDataCopy->tikamiti = data->m_Items[5];
+  SuspendDataCopy->backup_ix = ToInt16(data, 6, 0);
+  SuspendDataCopy->backup_iz = ToInt16(data, 8, 0);
+  SuspendDataCopy->door_ix = ToInt16(data, 10, 0);
+  SuspendDataCopy->door_iz = ToInt16(data, 12, 0);
+  SuspendDataCopy->goal_ix = ToInt16(data, 14, 0);
+  SuspendDataCopy->goal_iz = ToInt16(data, 16, 0);
+  SuspendDataCopy->ix = ToInt16(data, 18, 0);
+  SuspendDataCopy->iz = ToInt16(data, 20, 0);
+  SuspendDataCopy->player_ix = ToInt16(data, 22, 0);
+  SuspendDataCopy->player_iz = ToInt16(data, 24, 0);
+  SuspendDataCopy->wkmode = ToInt16(data, 26, 0);
+  SuspendDataCopy->cnt_ex = ToInt32(data, 28, 0);
+  SuspendDataCopy->goal = ToInt32(data, 32, 0);
+  SuspendDataCopy->nextframe = ToInt32(data, 36, 0);
+  SuspendDataCopy->now = ToInt32(data, 40, 0);
+  SuspendDataCopy->routeidx = ToInt32(data, 44, 0);
+  SuspendDataCopy->routedatatop = ToInt32(data, 48, 0);
+  SuspendDataCopy->update_flag = ToInt32(data, 52, 0);
+  SuspendDataCopy->d_p_len = ToSingle(data, 56, 0);
+  SuspendDataCopy->d_c_dir = ToSingle(data, 60, 0);
+  SuspendDataCopy->d_p_dir = ToSingle(data, 64, 0);
+  SuspendDataCopy->dir = ToSingle(data, 68, 0);
+  SuspendDataCopy->door_dir = ToSingle(data, 72, 0);
+  SuspendDataCopy->speed = ToSingle(data, 84, 0);
+  SuspendDataCopy->x = ToSingle(data, 88, 0);
+  SuspendDataCopy->y = ToSingle(data, 92, 0);
+  SuspendDataCopy->z = ToSingle(data, 96, 0);
+  SuspendDataCopy->r = ToSingle(data, 100, 0);
+  v13 = data->m_Items[104];
+  SuspendDataCopy->kagpuz_pos = v13;
+  KagPuzPos = v13;
+  v16 = data->m_Items[105];
+  SuspendDataCopy->kagpuz_now = v16;
+  KagPuzNow = v16;
+  oldAreaID = data->m_Items[106];
+  SuspendDataCopy->oldAreaID = oldAreaID;
+  fldGb->areaOldID = oldAreaID;
+  Restore(SuspendDataCopy, &fldRun_Dante, &fldRun_Player);
 }
 
 // 0x1601da0

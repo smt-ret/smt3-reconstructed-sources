@@ -24,6 +24,7 @@ void Update(FpsDisp *this) {
   }
   if (DDS3_PADCHECK_TRIG(11))
   {
+LABEL_9:
     activeSelf = get_activeSelf(this->fpsObj);
     SetActive(this->fpsObj, !activeSelf, 0);
   }

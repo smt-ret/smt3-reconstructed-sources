@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 struct effMagaCylinder_tag {
     sdfMatrix4_t matrix;
     effMagaCylinderParam_t *param;
-    effMagaCylinderPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effMagaCylinderPart_tag *pPart;
     effMagatuhi_tag *pMagatuhi;
     u32 abgr;
     sdfMemHandle_t *hMem;

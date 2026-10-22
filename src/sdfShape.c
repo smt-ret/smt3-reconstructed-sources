@@ -132,7 +132,10 @@ void sdfShapeFreeVertex(sdfShape_t *aShape) {
 
 // 0x17ab9a0
 void *sdfShapeMakePacket(sdfShape_t *aShape) {
-    return 0;
+  s32 v3;
+
+  v3 = 0;
+  return sub_8D3950(s32, &v3);
 }
 
 // 0x17ab860
@@ -142,6 +145,30 @@ void sdfShapeMakePacketAlign16(sdfShape_t *aShape, sdfShapeFacePacketIF_t *aIF) 
 
 // 0x17ab870
 void sdfShapeMakePacketClose(sdfShape_t *aShape, sdfShapeFacePacketIF_t *aIF) {
+  Il2CppObject *packetTop;
+  s32 v6;
+  u32 *v7;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  u64 v12[3];
+
+  packetTop = aIF->packetTop;
+  v6 = *il2cp::SizeOf(aShape->packetPtr, s32);
+  v7 = il2cp::SizeOf(packetTop, s32);
+  klass = packetTop->klass;
+  if (packetTop->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfDmaTag_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, sdfDmaTag_t, v12);
+    if ((v12[0] & 1) != 0)
+      v10 = v12[2];
+    else
+      v10 = v12 + 1;
+    v11 = sub_8C4940(v10);
+  }
+  LOWORD(packetTop[1].klass) = (v6 + 1048560 - *v7) >> 4;
 }
 
 // 0x17abc30
@@ -238,6 +265,7 @@ s32 sdfShapeRegistLocalIndex(sdfShapeFacePacketIF_t *aIF, s32 aVertNum) {
   if (indexCount < 1)
   {
     v6 = -1;
+LABEL_17:
     index = aIF->index;
     v6 = ~v6;
     index->m_Items[v6] = aVertNum;
@@ -267,6 +295,7 @@ s32 sdfShapeRegistLocalIndex(sdfShapeFacePacketIF_t *aIF, s32 aVertNum) {
     }
   }
   if ((v6 & 0x80000000) != 0)
+    goto LABEL_17;
   return v6;
 }
 

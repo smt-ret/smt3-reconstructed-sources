@@ -38,12 +38,12 @@ void SetLightAll(UiHDMesh *this, void *rootobj) {
       Item = _get_Item(
                this->mat_list,
                v5);
-      if (HasProperty_27243776(Item, StringLiteral_5226))
+      if (HasProperty_27243776(Item, "_Config_Bright"))
       {
         id_Config_Bright = this->id_Config_Bright;
         if (id_Config_Bright == -1)
         {
-          id_Config_Bright = PropertyToID(StringLiteral_5226);
+          id_Config_Bright = PropertyToID("_Config_Bright");
           this->id_Config_Bright = id_Config_Bright;
         }
         SetFloat_27246832(Item, id_Config_Bright, ConfigBright);

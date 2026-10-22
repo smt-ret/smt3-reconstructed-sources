@@ -24,7 +24,7 @@ struct sdfCorePacketCb_t {
     s32 freePointCount;
     s32 extPointCount;
     sdfCorePacketPointBuff_tag *extPointTop;
-    sdfCorePacketPointBuff_tag extPointLink[UNKNOWN_ARRAY_SIZE];
+    sdfCorePacketPointBuff_tag *extPointLink;
     void *packetOpenPtr;
     void *packetTopPtr;
     void *packetStartPtr;

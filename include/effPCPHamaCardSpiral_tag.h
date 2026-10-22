@@ -10,12 +10,12 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effPCPHamaCardSpiral_tag {
     effPCPHamaCardSpiralParam_t *param;
-    effPCPHamaCardSpiralPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPHamaCardSpiralPart_tag *pPart;
     f32 scale;
     u32 abgr;
     dds3ScatterPolyList_tag *hPoly;
     sdfMemHandle_t *hMem;
     u32 AttachNum;
-    effPartHandle_t pAttach[UNKNOWN_ARRAY_SIZE];
+    effPartHandle_t *pAttach;
     sdfMemHandle_t *hAttachMem;
 };

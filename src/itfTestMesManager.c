@@ -53,16 +53,64 @@ void SwitchTexture(void) {
 
 // 0x15a6b80
 void functest(void) {
-  Write(StringLiteral_17062, 0);
+  Write("********* AAAA ********\n", 0);
 }
 
 // 0x15a6bf0
 void itfDebugMesMngInitialize(void) {
-    SwitchTexture();
-    scrStartScript2(0, 0, 0);
-    dds3GetProcessData(0);
-    itfMesMngSetKutiCallback(0, 0);
-    dds3StartProcess(0, 0, 0, 0, 0, 0, 0);
+  Il2CppObject *v1;
+  u64 *v2;
+  System_Byte_array *script_scr;
+  Il2CppObject *ProcessData;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  s32 monitor_high;
+  u64 *v13;
+  u64 *v15;
+  u64 *v16;
+  char *v17;
+  s64 *v18;
+  dds3ProcessID_t_o *v19[3];
+  dds3ProcessID_t_o *id;
+
+  id = 0;
+  v1 = Allocate(dds3ProcessID_t);
+  v1[1].klass = NewSpecific(byte, 0x18u);
+  _ctor(v1, 0);
+  id = v1;
+  v2 = Allocate(scrHandle_t);
+  scrHandle_t___ctor(v2);
+  dds3BackColor = -2130706433;
+  SwitchTexture();
+  id = scrStartScript2(1000, script_scr, 0);
+  ProcessData = dds3GetProcessData(&id);
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != scrHandle_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, scrHandle_t, v19);
+    if ((v19[0] & 1) != 0)
+      v17 = v19[2];
+    else
+      v17 = v19 + 1;
+    v18 = sub_8C4940(v17);
+  }
+  monitor_high = HIDWORD(ProcessData[8].monitor);
+  v13 = Allocate(instanceMes_tag_func_kutiDelegate);
+  _ctor(v13, 0, Method_itfTestMesManager_functest__, 0);
+  itfMesMngSetKutiCallback(monitor_high, v13);
+  v15 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v15,
+    0,
+    Method_itfTestMesManager_itfMesMngTestCalc__);
+  dds3StartProcess("TestMsgMngC", 0x3EFu, 0, 0, v15, 0, 0, 0, 0, 0);
+  v16 = Allocate(System_Func_dds3ProcessID_t__object_);
+  object____ctor(
+    v16,
+    0,
+    Method_itfTestMesManager_itfMesMngTestDraw__);
+  dds3StartProcess("TestMsgMngD", 0x2AFEu, 0, 0, v16, 0, 0, 0, 0, 0);
 }
 
 // 0x15a67b0
@@ -77,11 +125,62 @@ dds3ProcessFunc_t *itfMesMngTestCalc(dds3ProcessID_t *proc_id) {
 
 // 0x15a6860
 dds3ProcessFunc_t *itfMesMngTestDraw(dds3ProcessID_t *proc_id) {
-    sdfGrAllocPacketBuff(0);
-    sdfDrawTagInit(0);
-    itfMiscDrawAlphaPrim(0, 0, 0);
-    itfMiscDrawSpritePrim(0, 0, 0, 0, 0, 0, 0);
+  Il2CppObject *v4;
+  Il2CppClass *element_class;
+  s32 *v7;
+  Il2CppObject *v8;
+  sdfDrawTag_t_o *v10;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v13;
+  s64 *v14;
+  char *v22;
+  s64 *v23;
+  u64 v24[2];
+  char *v25;
+
+  else
+  {
+    if (!g_texhandle)
+      return 0;
+  }
+  else if (g_pic == 3)
+  {
     return 0;
+  }
+  v4 = Allocate(sdfDrawTag_t);
+  v4[4].klass = NewSpecific(object, 2u);
+  _ctor(v4, 0);
+  element_class = v4->klass->_1.element_class;
+  {
+    sub_8FC2C0(element_class, s32, v24);
+    if ((v24[0] & 1) != 0)
+      v22 = v25;
+    else
+      v22 = v24 + 1;
+    v23 = sub_8C4940(v22);
+  }
+  v7 = sub_8D3F90(v4);
+  v8 = sdfGrAllocPacketBuff(*v7);
+  v10 = v8;
+  if (v8)
+  {
+    klass = v8->klass;
+    if (v8->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfDrawTag_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, sdfDrawTag_t, v24);
+      if ((v24[0] & 1) != 0)
+        v13 = v25;
+      else
+        v13 = v24 + 1;
+      v14 = sub_8C4940(v13);
+    }
+  }
+  sdfDrawTagInit(v10);
+  itfMiscDrawAlphaPrim(v10, 0, 0);
+  itfMiscDrawSpritePrim(itfMesMngTestDraw_pos, itfMesMngTestDraw_uv, itfMesMngTestDraw_color, 0xFFFu, g_texhandle, 0, v10);
+  return 0;
 }
 
 // 0x15a66a0

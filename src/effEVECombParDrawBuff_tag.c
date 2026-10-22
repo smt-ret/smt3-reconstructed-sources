@@ -63,6 +63,10 @@ void Clear(effEVECombParDrawBuff_tag *this) {
   pos = NewSpecific(UnityEngine_Vector4, 0x20u);
   v5 = 0;
   this->pos = pos;
+  if (!LODWORD(pos->max_length))
+  {
+LABEL_6:
+  }
   while (1)
   {
     v7 = (&pos->obj.klass + v3);
@@ -74,6 +78,7 @@ void Clear(effEVECombParDrawBuff_tag *this) {
     ++v5;
     v3 += 16;
     if (v5 >= LODWORD(pos->max_length))
+      goto LABEL_6;
   }
   this->abgr = NewSpecific(uint, 0x20u);
   v8 = NewSpecific(ushort____, 0x20u);

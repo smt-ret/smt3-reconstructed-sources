@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effMagaSmokeConv_tag {
     effMagaSmokeConvParam_t *param;
-    effMagaSmokeConvPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effMagaSmokeConvPart_tag *pPart;
     effBezier4P_t *pBezier4P;
     f32 scale;
     u32 abgr;

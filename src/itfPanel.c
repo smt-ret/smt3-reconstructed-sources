@@ -149,10 +149,14 @@ void CreateColorMesWin(itfPanelTypeWork_t *pwork, s32 red, s32 green, s32 blue, 
     pcolor = pwork->pcolor;
     pout = pcolor;
     if (LODWORD(pcolor->max_length))
+      goto LABEL_3;
+LABEL_37:
   }
   pcolor = pwork->pcolor;
   pout = pcolor;
   if (!LODWORD(pcolor->max_length))
+    goto LABEL_37;
+LABEL_3:
   pm = pcolor->m_Items[0]->pm;
   pm->m_Items[0] = red;
   v13 = pcolor->m_Items[0]->pm;
@@ -239,10 +243,14 @@ void CreateColorPlain(itfPanelTypeWork_t *pwork, s32 red, s32 green, s32 blue, s
     pcolor = pwork->pcolor;
     pout = pcolor;
     if (LODWORD(pcolor->max_length))
+      goto LABEL_3;
+LABEL_23:
   }
   pcolor = pwork->pcolor;
   pout = pcolor;
   if (!LODWORD(pcolor->max_length))
+    goto LABEL_23;
+LABEL_3:
   pm = pcolor->m_Items[0]->pm;
   pm->m_Items[0] = red;
   v13 = pcolor->m_Items[0]->pm;
@@ -274,10 +282,14 @@ void CreateColorSelWin(itfPanelTypeWork_t *pwork, s32 red, s32 green, s32 blue, 
     pcolor = pwork->pcolor;
     pout = pcolor;
     if (LODWORD(pcolor->max_length))
+      goto LABEL_3;
+LABEL_37:
   }
   pcolor = pwork->pcolor;
   pout = pcolor;
   if (!LODWORD(pcolor->max_length))
+    goto LABEL_37;
+LABEL_3:
   pm = pcolor->m_Items[0]->pm;
   pm->m_Items[0] = red;
   v13 = pcolor->m_Items[0]->pm;
@@ -413,6 +425,247 @@ void CreateVertexLeftFade(itfPanelTypeWork_t *pwork, s32 x0, s32 y0, s32 x1, s32
 
 // 0x159abd0
 void CreateVertexMesWin(itfPanelTypeWork_t *pwork, s32 x0, s32 y0, s32 x1, s32 y1) {
+  struct sdfIVector2_t_array *pvertex;
+  u32 *v12;
+  u32 *v13;
+  u32 v15;
+  u32 *v16;
+  s32 v17;
+  s32 v19;
+  u32 v21;
+  u64 v25;
+  u64 v26;
+  u32 *v27;
+  sdfIVector2_t_o **v28;
+  struct System_Int32_array *pm;
+  struct System_Int32_array *v40;
+  struct System_Int32_array *v44;
+  struct System_Int32_array *v46;
+  struct System_Int32_array *v50;
+  struct System_Int32_array *v52;
+  struct System_Int32_array *v56;
+  struct System_Int32_array *v58;
+  s32 v60;
+  bool v62;
+  u32 v63;
+  u64 v65;
+  u64 v66;
+  sdfIVector2_t_o **m_Items;
+  struct System_Int32_array *CreateVertexMesWin_plinestep;
+  struct System_Int32_array *v74;
+  struct System_Int32_array *v75;
+  s32 v76;
+  s32 v78;
+  u64 v80;
+  s64 v81;
+  s64 v83;
+  s64 v87;
+  s32 v89;
+  struct System_Int32_array *v91;
+  s32 v93;
+  u64 v95;
+  s64 v96;
+  sdfIVector2_t_o **v97;
+  struct System_Int32_array *v103;
+  struct System_Int32_array *v104;
+  s32 v105;
+  struct System_Int32_array *v107;
+  s32 v109;
+  u64 v112;
+  u64 v113;
+  sdfIVector2_t_o **v114;
+  struct System_Int32_array *v119;
+  struct System_Int32_array *v121;
+  struct System_Int32_array *v122;
+  s32 v123;
+  s32 v125;
+  u64 v127;
+  s64 v128;
+  s64 v130;
+  s64 v134;
+  s32 v136;
+  struct System_Int32_array *v138;
+  s32 v140;
+  u64 v142;
+  s64 v143;
+  sdfIVector2_t_o **v144;
+  struct System_Int32_array *v150;
+  struct System_Int32_array *v151;
+  s32 v152;
+  struct System_Int32_array *v154;
+  s32 v156;
+  s32 v165;
+  s32 v166;
+  s32 v167;
+  s32 v168;
+  s32 v169;
+  s32 v170;
+
+  pvertex = pwork->pvertex;
+  v12 = NewSpecific(s32, 4u);
+  v13 = NewSpecific(s32, 4u);
+  v15 = v12[6];
+  v16 = v13;
+  v17 = x0 - 256;
+  v167 = x0;
+  v19 = x0 + 512;
+  v165 = v17;
+  v12[8] = v17;
+  v12[9] = v19;
+  v12[10] = x1 - 512;
+  v12[11] = x1 + 256;
+  v21 = v13[6];
+  v13[8] = y0 - 128;
+  v169 = y0;
+  v13[9] = y0 + 128;
+  v166 = x1 + 256;
+  v168 = x1;
+  v170 = y1;
+  v13[10] = y1 - 128;
+  v25 = 0;
+  v26 = 0;
+  v27 = v13 + 8;
+  v28 = &pvertex->m_Items[3];
+  v13[11] = y1 + 128;
+  do
+  {
+    pm = (*(v28 - 3))->pm;
+    pm->m_Items[0] = v12[8];
+    v40 = (*(v28 - 3))->pm;
+    v40->m_Items[1] = v27[v25 / 4];
+    v44 = (*(v28 - 2))->pm;
+    v44->m_Items[0] = v12[9];
+    v46 = (*(v28 - 2))->pm;
+    v46->m_Items[1] = v27[v25 / 4];
+    v50 = (*(v28 - 1))->pm;
+    v50->m_Items[0] = v12[10];
+    v52 = (*(v28 - 1))->pm;
+    v52->m_Items[1] = v27[v25 / 4];
+    v56 = (*v28)->pm;
+    v56->m_Items[0] = v12[11];
+    v58 = (*v28)->pm;
+    v60 = v27[v25 / 4];
+    ++v26;
+    v28 += 4;
+    v62 = v25 == 12;
+    v25 += 4LL;
+    v58->m_Items[1] = v60;
+  }
+  while (!v62);
+  v63 = v12[6];
+  v12[8] = v165;
+  v12[9] = v167 + 1024;
+  v12[10] = v168 - 1024;
+  v12[11] = v166;
+  v65 = 0;
+  v66 = 0;
+  m_Items = pvertex->m_Items;
+  v13[8] = v169;
+  do
+  {
+    v74 = m_Items[v66]->pm;
+    v74->m_Items[0] = v12[v66 + 8];
+    v75 = m_Items[v66]->pm;
+    v76 = v16[8];
+    else
+    {
+      if (!LODWORD(CreateVertexMesWin_plinestep->max_length))
+      {
+LABEL_89:
+      }
+    }
+    v78 = CreateVertexMesWin_plinestep->m_Items[0] + v76;
+    ++v66;
+    v65 -= 8LL;
+    v75->m_Items[1] = v78;
+  }
+  while (v66 != 4);
+  v80 = 0;
+  v81 = &pvertex->m_Items[v65 / 0xFFFFFFFFFFFFFFF8LL];
+  do
+  {
+    v83 = *(*v81 + 16LL);
+    *(v83 + 32) = v12[v80 + 8];
+    v87 = *(*v81 + 16LL);
+    v89 = v16[8];
+    v91 = CreateVertexMesWin_plinestep;
+    v93 = v91->m_Items[1] + v89;
+    ++v80;
+    v81 += 8;
+    *(v87 + 36) = v93;
+  }
+  while (v80 != 4);
+  v95 = 0;
+  v96 = 8;
+  v97 = pvertex->m_Items;
+  do
+  {
+    v103 = v97[v96]->pm;
+    v103->m_Items[0] = v12[v95 + 8];
+    v104 = v97[v96]->pm;
+    v105 = v16[8];
+    v107 = CreateVertexMesWin_plinestep;
+    v109 = v107->m_Items[2] + v105;
+    ++v95;
+    ++v96;
+    v104->m_Items[1] = v109;
+  }
+  while (v95 != 4);
+  v112 = 0;
+  v113 = 0;
+  v114 = pvertex->m_Items;
+  v16[8] = v170;
+  do
+  {
+    v121 = v114[v113]->pm;
+    v121->m_Items[0] = v12[v113 + 8];
+    v122 = v114[v113]->pm;
+    v123 = v16[8];
+    else
+    {
+      v119 = CreateVertexMesWin_plinestep;
+      if (!LODWORD(v119->max_length))
+      {
+LABEL_149:
+      }
+    }
+    v125 = v123 - v119->m_Items[0];
+    ++v113;
+    v112 -= 8LL;
+    v122->m_Items[1] = v125;
+  }
+  while (v113 != 4);
+  v127 = 0;
+  v128 = &pvertex->m_Items[v112 / 0xFFFFFFFFFFFFFFF8LL];
+  do
+  {
+    v130 = *(*v128 + 16LL);
+    *(v130 + 32) = v12[v127 + 8];
+    v134 = *(*v128 + 16LL);
+    v136 = v16[8];
+    v138 = CreateVertexMesWin_plinestep;
+    v140 = v136 - v138->m_Items[1];
+    ++v127;
+    v128 += 8;
+    *(v134 + 36) = v140;
+  }
+  while (v127 != 4);
+  v142 = 0;
+  v143 = 8;
+  v144 = pvertex->m_Items;
+  do
+  {
+    v150 = v144[v143]->pm;
+    v150->m_Items[0] = v12[v142 + 8];
+    v151 = v144[v143]->pm;
+    v152 = v16[8];
+    v154 = CreateVertexMesWin_plinestep;
+    v156 = v152 - v154->m_Items[2];
+    ++v142;
+    ++v143;
+    v151->m_Items[1] = v156;
+  }
+  while (v142 != 4);
 }
 
 // 0x159a810
@@ -682,21 +935,16 @@ void DrawFacility(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   struct System_Int32_array *pm;
   struct System_Int32_array *v11;
   s32 v13;
-  struct itfPanel_StaticFields *static_fields;
   struct System_Byte_array_array *DrawFacility_ppindexlist;
   struct System_Byte_array_array *DrawFacility_ppcolorlist;
   System_Byte_array *v18;
   System_Byte_array *v19;
   u32 z;
-  itfPanel_c *v23;
-  struct itfPanel_StaticFields *v24;
   struct System_Byte_array_array *v25;
   struct System_Byte_array_array *v27;
   System_Byte_array *v28;
   System_Byte_array *v30;
   u32 v31;
-  itfPanel_c *v34;
-  struct itfPanel_StaticFields *v35;
   struct System_Byte_array_array *v36;
   struct System_Byte_array_array *v38;
   System_Byte_array *v39;
@@ -745,24 +993,21 @@ void DrawFacility(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   v11 = handle->color->pm;
   v13 = v11->m_Items[3] >> 2;
   pm->m_Items[3] = v13;
-  static_fields = itfPanel->static_fields;
-  DrawFacility_ppindexlist = static_fields->DrawFacility_ppindexlist;
   if (!LODWORD(DrawFacility_ppindexlist->max_length))
-  DrawFacility_ppcolorlist = static_fields->DrawFacility_ppcolorlist;
+    goto LABEL_84;
+LABEL_12:
   v18 = DrawFacility_ppindexlist->m_Items[0];
   v19 = DrawFacility_ppcolorlist->m_Items[0];
   z = handle->z;
   itfMiscDrawRectanglePrim(pvertex, 0, pcolor, v18, v19, z >> 4, pdrawtag);
-  v24 = v23->static_fields;
-  v25 = v24->DrawFacility_ppindexlist;
-  v27 = v24->DrawFacility_ppcolorlist;
+  v25 = DrawFacility_ppindexlist;
+  v27 = DrawFacility_ppcolorlist;
   v28 = v25->m_Items[1];
   v30 = v27->m_Items[1];
   v31 = handle->z;
   itfMiscDrawRectanglePrim(pvertex, 0, pcolor, v28, v30, v31 >> 4, pdrawtag);
-  v35 = v34->static_fields;
-  v36 = v35->DrawFacility_ppindexlist;
-  v38 = v35->DrawFacility_ppcolorlist;
+  v36 = DrawFacility_ppindexlist;
+  v38 = DrawFacility_ppcolorlist;
   v39 = v36->m_Items[2];
   v41 = v38->m_Items[2];
   v42 = handle->z;
@@ -857,21 +1102,16 @@ void DrawMesWin(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   struct System_Int32_array *v24;
   struct System_Int32_array *v27;
   sdfIVector2_t_array *pvertex;
-  struct itfPanel_StaticFields *static_fields;
   struct System_Byte_array_array *DrawMesWin_s_ppindexlist;
   System_Byte_array *v32;
   struct System_Byte_array_array *DrawMesWin_s_ppcolorlist;
   System_Byte_array *v34;
   u32 z;
-  itfPanel_c *v37;
-  struct itfPanel_StaticFields *v38;
   struct System_Byte_array_array *v39;
   System_Byte_array *v41;
   struct System_Byte_array_array *v42;
   System_Byte_array *v44;
   u32 v45;
-  itfPanel_c *v47;
-  struct itfPanel_StaticFields *v48;
   struct System_Byte_array_array *v49;
   System_Byte_array *v51;
   struct System_Byte_array_array *v52;
@@ -879,8 +1119,6 @@ void DrawMesWin(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   u32 v55;
   u64 v57;
   s32 v58;
-  itfPanel_c *v59;
-  struct itfPanel_StaticFields *v60;
   System_Byte_array *DrawMesWin_s_plinevertlist;
   struct System_Byte_array_array *DrawMesWin_s_pplinecollist;
   System_Byte_array *v64;
@@ -904,25 +1142,22 @@ void DrawMesWin(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   v27 = pcolor->m_Items[7]->pm;
   v27->m_Items[3] = v7;
   pvertex = handle->pwork->pvertex;
-  static_fields = itfPanel->static_fields;
-  DrawMesWin_s_ppindexlist = static_fields->DrawMesWin_s_ppindexlist;
   if (!LODWORD(DrawMesWin_s_ppindexlist->max_length))
+    goto LABEL_72;
+LABEL_36:
   v32 = DrawMesWin_s_ppindexlist->m_Items[0];
-  DrawMesWin_s_ppcolorlist = static_fields->DrawMesWin_s_ppcolorlist;
   v34 = DrawMesWin_s_ppcolorlist->m_Items[0];
   z = handle->z;
   itfMiscDrawTriangleStripPrim(pvertex, 0, pcolor, v32, v34, 8, z, pdrawtag);
-  v38 = v37->static_fields;
-  v39 = v38->DrawMesWin_s_ppindexlist;
+  v39 = DrawMesWin_s_ppindexlist;
   v41 = v39->m_Items[1];
-  v42 = v38->DrawMesWin_s_ppcolorlist;
+  v42 = DrawMesWin_s_ppcolorlist;
   v44 = v42->m_Items[1];
   v45 = handle->z;
   itfMiscDrawTriangleStripPrim(pvertex, 0, pcolor, v41, v44, 8, v45, pdrawtag);
-  v48 = v47->static_fields;
-  v49 = v48->DrawMesWin_s_ppindexlist;
+  v49 = DrawMesWin_s_ppindexlist;
   v51 = v49->m_Items[2];
-  v52 = v48->DrawMesWin_s_ppcolorlist;
+  v52 = DrawMesWin_s_ppcolorlist;
   v54 = v52->m_Items[2];
   v55 = handle->z;
   itfMiscDrawTriangleStripPrim(pvertex, 0, pcolor, v51, v54, 8, v55, pdrawtag);
@@ -930,9 +1165,6 @@ void DrawMesWin(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   v58 = 16;
   do
   {
-    v60 = v59->static_fields;
-    DrawMesWin_s_plinevertlist = v60->DrawMesWin_s_plinevertlist;
-    DrawMesWin_s_pplinecollist = v60->DrawMesWin_s_pplinecollist;
     v64 = DrawMesWin_s_pplinecollist->m_Items[v57];
     v65 = handle->z;
     itfMiscDrawLineStripPrim(pvertex, v58, pcolor, DrawMesWin_s_plinevertlist, v64, 4, v65, pdrawtag);
@@ -944,10 +1176,135 @@ void DrawMesWin(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
 
 // 0x159ffa0
 void DrawMesWin2(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
-    sdfDrawTagInit(0);
-    DrawTestAlphaPrim(0);
-    itfMiscDrawSpritePrim(0, 0, 0, 0, 0, 0, 0);
-    Draw(0, 0, 0, 0);
+  struct itfPanelTypeWork_t_o *pwork;
+  Il2CppObject *v5;
+  struct System_Int32_array *pm;
+  sdfDrawTag_t_o *v10;
+  sdfIVector4_t_o *g_uv_all;
+  sdfIVector4_t_o *v14;
+  sdfIVector4_t_o *pos;
+  u32 v16;
+  sdfTexHandle_t_o *v17;
+  GfxManager_o *v20;
+  u64 *v21;
+  s64 *v22;
+  Il2CppObject *v23;
+  struct System_Int32_array *v25;
+  il2cpp_array_size_t max_length;
+  s32 v27;
+  Il2CppClass *klass;
+  struct System_Int32_array *v29;
+  Il2CppClass *v30;
+  s32 v32;
+  struct System_Int32_array *v34;
+  Il2CppClass *v35;
+  s32 v37;
+  Il2CppClass *v39;
+  sdfDrawTag_t_o *v42;
+  sdfIVector4_t_o *g_uv_top;
+  sdfIVector4_t_o *color;
+  u32 z;
+  sdfTexHandle_t_o *texhandle;
+  GfxManager_o *gfxMgr;
+  u64 *v52;
+  System_String_o *v53;
+  Il2CppClass *v54;
+  Il2CppClass *v56;
+  s32 v57;
+  sdfDrawTag_t_o *v59;
+  GfxManager_o *v62;
+  u64 *v63;
+  System_String_o *v64;
+  Il2CppClass *v65;
+  struct System_Int32_array *v67;
+  Il2CppClass *v68;
+  s32 v70;
+  sdfDrawTag_t_o *v72;
+  System_String_o *v75;
+  s32 v79;
+  s32 v80;
+  s32 v81;
+  s32 type;
+
+  pwork = handle->pwork;
+  v5 = Allocate(sdfDrawTag_t);
+  v5[4].klass = NewSpecific(object, 2u);
+  _ctor(v5, 0);
+  pm = handle->pos->pm;
+  if (pm->m_Items[3] - pm->m_Items[1] >= 5005)
+  {
+    v23 = Allocate(sdfIVector4_t);
+    v23[1].klass = NewSpecific(s32, 4u);
+    _ctor(v23, 0);
+    v25 = handle->pos->pm;
+    max_length = v25->max_length;
+    v27 = v25->m_Items[1];
+    klass = v23[1].klass;
+    v79 = handle->pos->pm->m_Items[3];
+    LODWORD(klass->_1.byval_arg.data) = handle->pos->pm->m_Items[0];
+    v29 = handle->pos->pm;
+    v30 = v23[1].klass;
+    v32 = v29->m_Items[1];
+    HIDWORD(v30->_1.byval_arg.data) = v32;
+    v34 = handle->pos->pm;
+    v35 = v23[1].klass;
+    v37 = v27 + 2502;
+    v35->_1.byval_arg.bits = v34->m_Items[2];
+    v39 = v23[1].klass;
+    *(&v39->_1.byval_arg.bits + 1) = v37;
+    sdfDrawTagInit(v5);
+    DrawTestAlphaPrim(v42);
+    color = handle->color;
+    z = handle->z;
+    texhandle = pwork->texhandle;
+    itfMiscDrawSpritePrim(v23, g_uv_top, color, z >> 4, texhandle, 0, v5);
+    type = handle->type;
+    v52 = sub_8D3950(s32, &type);
+    v53 = Format("Window{0:D1}_0", v52, 0);
+    Draw(gfxMgr, v53, 0x4000000u, v5, 0);
+    v54 = v23[1].klass;
+    HIDWORD(v54->_1.byval_arg.data) = v37;
+    v56 = v23[1].klass;
+    v57 = v79 - 2502;
+    *(&v56->_1.byval_arg.bits + 1) = v57;
+    sdfDrawTagInit(v5);
+    DrawTestAlphaPrim(v59);
+    itfMiscDrawSpritePrim(v23, g_uv_mid, handle->color, handle->z >> 4, pwork->texhandle, 0, v5);
+    v62 = gfxMgr;
+    v81 = handle->type;
+    v63 = sub_8D3950(s32, &v81);
+    v64 = Format("Window{0:D1}_1", v63, 0);
+    Draw(v62, v64, 0x4000000u, v5, 0);
+    v65 = v23[1].klass;
+    HIDWORD(v65->_1.byval_arg.data) = v57;
+    v67 = handle->pos->pm;
+    v68 = v23[1].klass;
+    v70 = v67->m_Items[3];
+    *(&v68->_1.byval_arg.bits + 1) = v70;
+    sdfDrawTagInit(v5);
+    DrawTestAlphaPrim(v72);
+    itfMiscDrawSpritePrim(v23, g_uv_btm, handle->color, handle->z >> 4, pwork->texhandle, 0, v5);
+    v20 = gfxMgr;
+    v80 = handle->type;
+    v21 = sub_8D3950(s32, &v80);
+    v22 = &"Window{0:D1}_2";
+  }
+  else
+  {
+    sdfDrawTagInit(v5);
+    DrawTestAlphaPrim(v10);
+    pos = handle->pos;
+    v14 = handle->color;
+    v16 = handle->z;
+    v17 = pwork->texhandle;
+    itfMiscDrawSpritePrim(pos, g_uv_all, v14, v16 >> 4, v17, 0, v5);
+    v20 = gfxMgr;
+    type = handle->type;
+    v21 = sub_8D3950(s32, &type);
+    v22 = &"Window{0:D1}_0";
+  }
+  v75 = Format(*v22, v21, 0);
+  Draw(v20, v75, 0x4000000u, v5, 0);
 }
 
 // 0x159e6b0
@@ -958,21 +1315,16 @@ void DrawNormal(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   struct System_Int32_array *pm;
   struct System_Int32_array *v11;
   s32 v13;
-  struct itfPanel_StaticFields *static_fields;
   struct System_Byte_array_array *DrawNormal_s_ppindexlist;
   struct System_Byte_array_array *DrawNormal_s_ppcolorlist;
   System_Byte_array *v18;
   System_Byte_array *v19;
   u32 z;
-  itfPanel_c *v23;
-  struct itfPanel_StaticFields *v24;
   struct System_Byte_array_array *v25;
   struct System_Byte_array_array *v27;
   System_Byte_array *v28;
   System_Byte_array *v30;
   u32 v31;
-  itfPanel_c *v34;
-  struct itfPanel_StaticFields *v35;
   struct System_Byte_array_array *v36;
   struct System_Byte_array_array *v38;
   System_Byte_array *v39;
@@ -986,24 +1338,21 @@ void DrawNormal(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   v11 = handle->color->pm;
   v13 = v11->m_Items[3];
   pm->m_Items[3] = v13;
-  static_fields = itfPanel->static_fields;
-  DrawNormal_s_ppindexlist = static_fields->DrawNormal_s_ppindexlist;
   if (!LODWORD(DrawNormal_s_ppindexlist->max_length))
-  DrawNormal_s_ppcolorlist = static_fields->DrawNormal_s_ppcolorlist;
+    goto LABEL_38;
+LABEL_12:
   v18 = DrawNormal_s_ppindexlist->m_Items[0];
   v19 = DrawNormal_s_ppcolorlist->m_Items[0];
   z = handle->z;
   itfMiscDrawRectanglePrim(pvertex, 0, pcolor, v18, v19, z >> 4, pdrawtag);
-  v24 = v23->static_fields;
-  v25 = v24->DrawNormal_s_ppindexlist;
-  v27 = v24->DrawNormal_s_ppcolorlist;
+  v25 = DrawNormal_s_ppindexlist;
+  v27 = DrawNormal_s_ppcolorlist;
   v28 = v25->m_Items[1];
   v30 = v27->m_Items[1];
   v31 = handle->z;
   itfMiscDrawRectanglePrim(pvertex, 0, pcolor, v28, v30, v31 >> 4, pdrawtag);
-  v35 = v34->static_fields;
-  v36 = v35->DrawNormal_s_ppindexlist;
-  v38 = v35->DrawNormal_s_ppcolorlist;
+  v36 = DrawNormal_s_ppindexlist;
+  v38 = DrawNormal_s_ppcolorlist;
   v39 = v36->m_Items[2];
   v41 = v38->m_Items[2];
   v42 = handle->z;
@@ -1018,8 +1367,6 @@ void DrawPera1(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   struct System_Int32_array *pm;
   struct System_Int32_array *v11;
   s32 v13;
-  itfPanel_c *v15;
-  struct itfPanel_StaticFields *static_fields;
   System_Byte_array *DrawPera1_s_pindexlist;
   System_Byte_array *DrawPera1_s_pcolorlist;
   u32 z;
@@ -1031,9 +1378,6 @@ void DrawPera1(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   v11 = handle->color->pm;
   v13 = v11->m_Items[3];
   pm->m_Items[3] = v13;
-  static_fields = v15->static_fields;
-  DrawPera1_s_pindexlist = static_fields->DrawPera1_s_pindexlist;
-  DrawPera1_s_pcolorlist = static_fields->DrawPera1_s_pcolorlist;
   z = handle->z;
   itfMiscDrawRectanglePrim(pvertex, 0, pcolor, DrawPera1_s_pindexlist, DrawPera1_s_pcolorlist, z >> 4, pdrawtag);
 }
@@ -1072,29 +1416,22 @@ void DrawPlain(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
   struct System_Int32_array *v63;
   struct System_Int32_array *v65;
   s32 v67;
-  itfPanel_c *v69;
   sdfDrawTag_t_o *v70;
   itfpanel_t_o *v71;
   sdfIVector4_t_array *v72;
-  struct itfPanel_StaticFields *static_fields;
   System_Byte_array *DrawPlain_s_pindexlist;
   System_Byte_array *DrawPlain_s_pcolorlist;
   u32 z;
-  struct itfPanel_StaticFields *v78;
   struct System_Byte_array_array *DrawPlain_s_ppindexlistframe;
   System_Byte_array *v80;
   struct System_Byte_array_array *DrawPlain_s_ppcolorlistframe;
   System_Byte_array *v82;
   u32 v83;
-  itfPanel_c *v85;
-  struct itfPanel_StaticFields *v86;
   struct System_Byte_array_array *v87;
   System_Byte_array *v89;
   struct System_Byte_array_array *v90;
   System_Byte_array *v92;
   u32 v93;
-  itfPanel_c *v95;
-  struct itfPanel_StaticFields *v96;
   struct System_Byte_array_array *v97;
   System_Byte_array *v99;
   struct System_Byte_array_array *v100;
@@ -1166,30 +1503,24 @@ void DrawPlain(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
     v71 = handle;
     v72 = pcolor_top;
   }
-  static_fields = v69->static_fields;
-  DrawPlain_s_pindexlist = static_fields->DrawPlain_s_pindexlist;
-  DrawPlain_s_pcolorlist = static_fields->DrawPlain_s_pcolorlist;
   z = v71->z;
   itfMiscDrawRectanglePrim(pvertex, 0, v72, DrawPlain_s_pindexlist, DrawPlain_s_pcolorlist, z >> 4, v70);
-  v78 = itfPanel->static_fields;
-  DrawPlain_s_ppindexlistframe = v78->DrawPlain_s_ppindexlistframe;
   if (!LODWORD(DrawPlain_s_ppindexlistframe->max_length))
+    goto LABEL_105;
+LABEL_79:
   v80 = DrawPlain_s_ppindexlistframe->m_Items[0];
-  DrawPlain_s_ppcolorlistframe = v78->DrawPlain_s_ppcolorlistframe;
   v82 = DrawPlain_s_ppcolorlistframe->m_Items[0];
   v83 = v71->z;
   itfMiscDrawLineStripPrim(pvertex_top, 0, v72, v80, v82, 5, v83, v70);
-  v86 = v85->static_fields;
-  v87 = v86->DrawPlain_s_ppindexlistframe;
+  v87 = DrawPlain_s_ppindexlistframe;
   v89 = v87->m_Items[1];
-  v90 = v86->DrawPlain_s_ppcolorlistframe;
+  v90 = DrawPlain_s_ppcolorlistframe;
   v92 = v90->m_Items[1];
   v93 = v71->z;
   itfMiscDrawLineStripPrim(pvertex_top, 0, v72, v89, v92, 5, v93, v70);
-  v96 = v95->static_fields;
-  v97 = v96->DrawPlain_s_ppindexlistframe;
+  v97 = DrawPlain_s_ppindexlistframe;
   v99 = v97->m_Items[2];
-  v100 = v96->DrawPlain_s_ppcolorlistframe;
+  v100 = DrawPlain_s_ppcolorlistframe;
   v102 = v100->m_Items[2];
   v103 = v71->z;
   itfMiscDrawLineStripPrim(pvertex_top, 0, v72, v99, v102, 5, v103, v70);
@@ -1197,18 +1528,262 @@ void DrawPlain(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
 
 // 0x159ef20
 void DrawSelWin(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
-    itfMiscDrawTriangleStripPrim(0, 0, 0, 0, 0, 0, 0, 0);
-    itfMiscDrawLineStripPrim(0, 0, 0, 0, 0, 0, 0, 0);
+  struct System_Int32_array *pm;
+  s32 v7;
+  sdfIVector4_t_array *v8;
+  sdfIVector4_t_array *v10;
+  struct System_Int32_array *v12;
+  struct System_Int32_array *v15;
+  struct System_Int32_array *v18;
+  struct System_Int32_array *v21;
+  struct System_Int32_array *v24;
+  sdfIVector2_t_array *pvertex;
+  struct System_Byte_array_array *DrawSelWin_s_ppindexlist;
+  struct System_Byte_array_array *DrawSelWin_s_ppcolorlist;
+  System_Byte_array *v30;
+  System_Byte_array *v31;
+  u32 z;
+  struct System_Byte_array_array *v36;
+  struct System_Byte_array_array *v38;
+  System_Byte_array *v39;
+  System_Byte_array *v41;
+  u32 v42;
+  struct System_Byte_array_array *v46;
+  struct System_Byte_array_array *v48;
+  System_Byte_array *v49;
+  System_Byte_array *v51;
+  u32 v52;
+  System_Byte_array *DrawSelWin_s_plinevertlist;
+  struct System_Byte_array_array *DrawSelWin_s_pplinecollist;
+  System_Byte_array *v58;
+  u32 v59;
+  System_Byte_array *v63;
+  struct System_Byte_array_array *v64;
+  System_Byte_array *v66;
+  u32 v67;
+
+  pm = handle->color->pm;
+  v7 = pm->m_Items[3];
+  v8 = NewSpecific(sdfIVector4_t, 4u);
+  v10 = v8;
+  v12 = v8->m_Items[1]->pm;
+  v12->m_Items[3] = v7;
+  v15 = v8->m_Items[2]->pm;
+  v15->m_Items[3] = v7;
+  v18 = v8->m_Items[3]->pm;
+  v18->m_Items[3] = v7;
+  v21 = v8->m_Items[4]->pm;
+  v21->m_Items[3] = v7;
+  v24 = v8->m_Items[5]->pm;
+  v24->m_Items[3] = v7;
+  pvertex = handle->pwork->pvertex;
+  if (!LODWORD(DrawSelWin_s_ppindexlist->max_length))
+    goto LABEL_69;
+LABEL_28:
+  v30 = DrawSelWin_s_ppindexlist->m_Items[0];
+  v31 = DrawSelWin_s_ppcolorlist->m_Items[0];
+  z = handle->z;
+  itfMiscDrawTriangleStripPrim(pvertex, 0, v10, v30, v31, 8, z, pdrawtag);
+  v36 = DrawSelWin_s_ppindexlist;
+  v38 = DrawSelWin_s_ppcolorlist;
+  v39 = v36->m_Items[1];
+  v41 = v38->m_Items[1];
+  v42 = handle->z;
+  itfMiscDrawTriangleStripPrim(pvertex, 0, v10, v39, v41, 8, v42, pdrawtag);
+  v46 = DrawSelWin_s_ppindexlist;
+  v48 = DrawSelWin_s_ppcolorlist;
+  v49 = v46->m_Items[2];
+  v51 = v48->m_Items[2];
+  v52 = handle->z;
+  itfMiscDrawTriangleStripPrim(pvertex, 0, v10, v49, v51, 8, v52, pdrawtag);
+  else
+  {
+    if (!LODWORD(DrawSelWin_s_pplinecollist->max_length))
+      goto LABEL_55;
+  }
+  v58 = DrawSelWin_s_pplinecollist->m_Items[0];
+  v59 = handle->z;
+  itfMiscDrawLineStripPrim(pvertex, 16, v10, DrawSelWin_s_plinevertlist, v58, 4, v59, pdrawtag);
+  v63 = DrawSelWin_s_plinevertlist;
+  v64 = DrawSelWin_s_pplinecollist;
+  v66 = v64->m_Items[1];
+  v67 = handle->z;
+  itfMiscDrawLineStripPrim(pvertex, 20, v10, v63, v66, 4, v67, pdrawtag);
 }
 
 // 0x15a0800
 void DrawSpkWin2(itfpanel_t *handle, sdfDrawTag_t *pdrawtag) {
-    CMP_XM(0);
-    CMP_X(0);
-    sdfDrawTagInit(0);
-    DrawTestAlphaPrim(0);
-    itfMiscDrawSpritePrim(0, 0, 0, 0, 0, 0, 0);
-    Draw(0, 0, 0, 0);
+  Il2CppObject *v4;
+  Il2CppClass *v6;
+  s32 v7;
+  s32 v9;
+  s32 v11;
+  s32 v13;
+  Il2CppObject *v15;
+  Il2CppClass *v16;
+  s32 v17;
+  s32 v19;
+  s32 v21;
+  s32 v23;
+  Il2CppObject *v25;
+  Il2CppObject *v26;
+  struct System_Int32_array *pm;
+  s32 v29;
+  s32 v30;
+  struct System_Int32_array *v31;
+  s32 v32;
+  s32 v34;
+  struct System_Int32_array *v36;
+  Il2CppClass *klass;
+  s32 v38;
+  s32 v39;
+  struct System_Int32_array *v40;
+  Il2CppClass *v41;
+  u32 v44;
+  Il2CppClass *v45;
+  struct System_Int32_array *v47;
+  Il2CppClass *v48;
+  s32 v50;
+  sdfDrawTag_t_o *v53;
+  sdfIVector4_t_o *color;
+  u32 z;
+  sdfTexHandle_t_o *texhandle;
+  GfxManager_o *gfxMgr;
+  u64 *v62;
+  System_String_o *v63;
+  Il2CppClass *v64;
+  struct System_Int32_array *v66;
+  Il2CppClass *v67;
+  Il2CppClass *v70;
+  u32 v71;
+  struct System_Int32_array *v73;
+  Il2CppClass *v74;
+  sdfDrawTag_t_o *v77;
+  GfxManager_o *v80;
+  u64 *v81;
+  System_String_o *v82;
+  struct System_Int32_array *v83;
+  Il2CppClass *v84;
+  struct System_Int32_array *v87;
+  Il2CppClass *v88;
+  Il2CppClass *v91;
+  struct System_Int32_array *v93;
+  Il2CppClass *v94;
+  sdfDrawTag_t_o *v97;
+  GfxManager_o *v100;
+  u64 *v101;
+  System_String_o *v102;
+  s32 v105;
+  sdfIVector4_t_o *v106;
+  struct itfPanelTypeWork_t_o *pwork;
+  s32 v108;
+  s32 v109;
+  s32 type;
+
+  v4 = Allocate(sdfIVector4_t);
+  v4[1].klass = NewSpecific(s32, 4u);
+  _ctor(v4, 0);
+  v6 = NewSpecific(s32, 4u);
+  v7 = CMP_XM(63);
+  LODWORD(v6->_1.byval_arg.data) = v7;
+  v9 = CMP_XM(46);
+  HIDWORD(v6->_1.byval_arg.data) = v9;
+  v11 = CMP_XM(124);
+  v6->_1.byval_arg.bits = v11;
+  v13 = CMP_XM(63);
+  *(&v6->_1.byval_arg.bits + 1) = v13;
+  v4[1].klass = v6;
+  v15 = Allocate(sdfIVector4_t);
+  v15[1].klass = NewSpecific(s32, 4u);
+  _ctor(v15, 0);
+  v16 = NewSpecific(s32, 4u);
+  v17 = CMP_XM(123);
+  LODWORD(v16->_1.byval_arg.data) = v17;
+  v19 = CMP_XM(46);
+  HIDWORD(v16->_1.byval_arg.data) = v19;
+  v21 = CMP_XM(124);
+  v106 = v4;
+  v16->_1.byval_arg.bits = v21;
+  v23 = CMP_XM(63);
+  *(&v16->_1.byval_arg.bits + 1) = v23;
+  v15[1].klass = v16;
+  pwork = handle->pwork;
+  v25 = Allocate(sdfDrawTag_t);
+  v25[4].klass = NewSpecific(object, 2u);
+  _ctor(v25, 0);
+  v26 = Allocate(sdfIVector4_t);
+  v26[1].klass = NewSpecific(s32, 4u);
+  _ctor(v26, 0);
+  pm = handle->pos->pm;
+  v29 = pm->m_Items[0];
+  v30 = CMP_X(62);
+  v31 = handle->pos->pm;
+  v32 = v30;
+  v105 = v31->m_Items[2];
+  v34 = CMP_X(62);
+  v36 = handle->pos->pm;
+  klass = v26[1].klass;
+  v38 = v34;
+  v39 = v36->m_Items[0];
+  LODWORD(klass->_1.byval_arg.data) = v39;
+  v40 = handle->pos->pm;
+  v41 = v26[1].klass;
+  HIDWORD(v41->_1.byval_arg.data) = v40->m_Items[1];
+  v44 = v32 + v29;
+  v45 = v26[1].klass;
+  v45->_1.byval_arg.bits = v44;
+  v47 = handle->pos->pm;
+  v48 = v26[1].klass;
+  v50 = v47->m_Items[3];
+  *(&v48->_1.byval_arg.bits + 1) = v50;
+  sdfDrawTagInit(v25);
+  DrawTestAlphaPrim(v53);
+  color = handle->color;
+  z = handle->z;
+  texhandle = pwork->texhandle;
+  itfMiscDrawSpritePrim(v26, v106, color, z, texhandle, 0, v25);
+  type = handle->type;
+  v62 = sub_8D3950(s32, &type);
+  v63 = Format("SpkWnd{0:D1}_L", v62, 0);
+  Draw(gfxMgr, v63, 0x4000000u, v25, 0);
+  v64 = v26[1].klass;
+  LODWORD(v64->_1.byval_arg.data) = v44;
+  v66 = handle->pos->pm;
+  v67 = v26[1].klass;
+  HIDWORD(v67->_1.byval_arg.data) = v66->m_Items[1];
+  v70 = v26[1].klass;
+  v71 = v105 - v38;
+  v70->_1.byval_arg.bits = v71;
+  v73 = handle->pos->pm;
+  v74 = v26[1].klass;
+  *(&v74->_1.byval_arg.bits + 1) = v73->m_Items[3];
+  sdfDrawTagInit(v25);
+  DrawTestAlphaPrim(v77);
+  itfMiscDrawSpritePrim(v26, v15, handle->color, handle->z, pwork->texhandle, 0, v25);
+  v80 = gfxMgr;
+  v109 = handle->type;
+  v81 = sub_8D3950(s32, &v109);
+  v82 = Format("SpkWnd{0:D1}_C", v81, 0);
+  Draw(v80, v82, 0x4000000u, v25, 0);
+  v83 = handle->pos->pm;
+  v84 = v26[1].klass;
+  LODWORD(v84->_1.byval_arg.data) = v83->m_Items[2];
+  v87 = handle->pos->pm;
+  v88 = v26[1].klass;
+  HIDWORD(v88->_1.byval_arg.data) = v87->m_Items[1];
+  v91 = v26[1].klass;
+  v91->_1.byval_arg.bits = v71;
+  v93 = handle->pos->pm;
+  v94 = v26[1].klass;
+  *(&v94->_1.byval_arg.bits + 1) = v93->m_Items[3];
+  sdfDrawTagInit(v25);
+  DrawTestAlphaPrim(v97);
+  itfMiscDrawSpritePrim(v26, v106, handle->color, handle->z, pwork->texhandle, 0, v25);
+  v100 = gfxMgr;
+  v108 = handle->type;
+  v101 = sub_8D3950(s32, &v108);
+  v102 = Format("SpkWnd{0:D1}_R", v101, 0);
+  Draw(v100, v102, 0x4000000u, v25, 0);
 }
 
 // 0x15a0720

@@ -10,7 +10,7 @@ void Awake(dds3StartMenuDisp *this) {
 
   gameObject = get_gameObject(this);
   transform = get_transform(gameObject, 0);
-  v5 = Find(transform, StringLiteral_14973, 0);
+  v5 = Find(transform, "menu", 0);
   this->menutxt = GetComponent_GUILayer_(v5);
 }
 

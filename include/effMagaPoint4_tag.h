@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effMagaPoint4_tag {
     effMagaPoint4Param_t *param;
-    effMagaPoint4Part_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effMagaPoint4Part_tag *pPart;
     effBezier4P_t *pBezier4P;
     effMagatuhi_tag *pMagatuhi;
     sdfMemHandle_t *hMem;

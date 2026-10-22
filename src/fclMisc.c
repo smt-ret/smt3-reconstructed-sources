@@ -79,6 +79,7 @@ bool CheckLevelLimit(s32 lv1, s32 lv2) {
     return v6;
   if (!fclChkStartMenu())
     return v6;
+LABEL_7:
   return CMB_GBWK->LevelLimit == 0;
 }
 
@@ -103,7 +104,7 @@ void DevilStatusMode(bool flag, bool stat) {
   SetActive(campCameraObj, 1, 0);
   if (flag)
   {
-    v7 = Find(StringLiteral_5605, 0);
+    v7 = Find("Main Camera", 0);
     Component_object = GetComponent_object_(v7);
     fieldOfView = get_fieldOfView(Component_object);
     v12 = fieldOfView;
@@ -112,7 +113,7 @@ void DevilStatusMode(bool flag, bool stat) {
     cmpModelInitFacility();
     cmpSetModelLoadFlag(1);
     cmpSetupObjUI(0x8000, 0);
-    v15 = Find(StringLiteral_16274, 0);
+    v15 = Find("Canvas_UI/campUIBase/camp_bg", 0);
     gameObject = get_gameObject(v15);
     if (op_Inequality(gameObject, 0, 0)
       && !get_activeInHierarchy(gameObject))
@@ -136,7 +137,7 @@ void DevilStatusMode(bool flag, bool stat) {
     {
       v26->bDrawStat = 0;
     }
-    v27 = Find(StringLiteral_16274, 0);
+    v27 = Find("Canvas_UI/campUIBase/camp_bg", 0);
     v29 = get_gameObject(v27);
     activeInHierarchy = op_Inequality(v29, 0, 0);
     if (activeInHierarchy && !stat)
@@ -146,7 +147,7 @@ void DevilStatusMode(bool flag, bool stat) {
     if (activeInHierarchy)
     {
       SetActive(v29, 0, 0);
-      v35 = Find(StringLiteral_5605, 0);
+      v35 = Find("Main Camera", 0);
       v37 = GetComponent_object_(v35);
       dds3ScreenParam->fovy = Fovy;
       set_fieldOfView(v37, (dds3ScreenParam->fovy * 360.0) / 6.2832, 0);
@@ -162,7 +163,7 @@ s32 FCL_MAKE_COL(s32 r, s32 g, s32 b, u32 a) {
 
 // 0x13c6620
 u32 FCL_RAND(void) {
-  return dds3GetRandA(StringLiteral_416);
+  return dds3GetRandA("");
 }
 
 // 0x13c66d0
@@ -175,7 +176,11 @@ void InitializeModelCameraForUnity(void) {
 
 // 0x13c6690
 sdfColor32_t ToColor32(u32 c) {
-    return (sdfColor32_t){0};
+  u32 v2;
+
+  v2 = 0;
+  sub_19ED4B0(&v2, SHIBYTE(c), SBYTE2(c), SBYTE1(c), c);
+  return v2;
 }
 
 // 0x13c6830
@@ -184,17 +189,26 @@ s32 fclAddItem(u16 ItemID, s32 Nums) {
   s64 v7;
   s32 v10;
 
+LABEL_7:
   v5 = NewSpecific(sbyte, 0x19u);
   InitializeArray_1543888(v5, Field__PrivateImplementationDetails__1611B884F9514B730E1DFD40ABEFFAC12FD56E0F);
   if ((ItemID - 64) >= 0x19u)
   {
     {
+LABEL_21:
       datAddItem(ItemID, Nums);
       return 1;
     }
+LABEL_16:
+    goto LABEL_21;
   }
   v7 = ItemID - 64LL;
   v10 = *(&v5[2].klass + v7);
+  if (!v10)
+  {
+      goto LABEL_21;
+    goto LABEL_16;
+  }
   datAddHearts(v10);
   return 1;
 }
@@ -214,14 +228,13 @@ s8 fclChkItemHearts(u16 ItemID) {
 
 // 0x13c7ee0
 s8 fclChkMessage(void) {
-  struct fclMisc_StaticFields *static_fields;
-
-  static_fields = fclMisc->static_fields;
-  if (static_fields->gMsgID < 0)
+  if (gMsgID < 0)
     return 0;
-  else if (static_fields->gMsgInvFlag)
+LABEL_6:
+  else if (gMsgInvFlag)
   {
-    else if (static_fields->gMsgFlag == 2)
+LABEL_9:
+    else if (gMsgFlag == 2)
     {
       return 0;
     }
@@ -252,6 +265,7 @@ s8 fclChkSelMessage(void) {
 
   if (gMsgID < 0)
     return 0;
+LABEL_6:
   return itfMesMngGetSelPhase(gMsgID) >= 0;
 }
 
@@ -333,6 +347,7 @@ s8 fclDestroyMessage(void) {
 
   if (gMsgID < 0)
     return 0;
+LABEL_6:
   itfMesMngRelease(gMsgID);
   gMsgID = -1;
   gMsgFlag = 0;
@@ -349,9 +364,13 @@ char *fclDrawDevilName(datUnitWork_t *pStock) {
   {
     namecode = pStock->namecode;
     if (LODWORD(namecode->max_length))
+      goto LABEL_3;
+LABEL_6:
   }
   namecode = pStock->namecode;
   if (!LODWORD(namecode->max_length))
+    goto LABEL_6;
+LABEL_3:
   if (namecode->m_Items[0])
     return CreateString_5280336(0, namecode);
   id = pStock->id;
@@ -372,6 +391,7 @@ s8 fclEndMessageEx(s8 Mode) {
 
   if (gMsgID < 0)
     return 0;
+LABEL_6:
   itfMesMngSetPhase(gMsgID, 0);
   if (Mode)
   {
@@ -436,6 +456,7 @@ s8 fclGetSelMessagePos(void) {
 
   if (gMsgID < 0)
     return -1;
+LABEL_6:
   return itfMesMngGetSelectNo(gMsgID);
 }
 
@@ -543,9 +564,29 @@ void fclScriptForcedEnd(dds3ProcessID_t *PID) {
 
 // 0x13c6cd0
 dds3ProcessID_t *fclScriptStart(u8 **pScriptData, s32 StartNo, dds3ProcessID_t **pPID) {
-    fclScriptForcedEnd(0);
-    scrStartScript2(0, 0, 0);
-    return 0;
+  u64 *v7;
+  dds3ProcessID_t_o *v9;
+  dds3ProcessID_t_o *started;
+  struct System_SByte_array *gFclSignal;
+
+  v7 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v7);
+  v9 = *pPID;
+  if (*pPID)
+  {
+    fclScriptForcedEnd(v9);
+  }
+  started = scrStartScript2(2000, pScriptData, StartNo);
+LABEL_15:
+  else
+  {
+    if (!LODWORD(gFclSignal->max_length))
+      goto LABEL_18;
+  }
+  gFclSignal->m_Items[0] = 0;
+  if (*pPID)
+    *pPID = started;
+  return started;
 }
 
 // 0x13c7c00
@@ -592,13 +633,9 @@ void fclSetMessageVar_20743088(s8 Index, char *pStr) {
 
 // 0x13c7880
 void fclSetSelMessagePos(s8 SelPos) {
-  fclMisc_c *v3;
-  struct fclMisc_StaticFields *static_fields;
-
-  static_fields = v3->static_fields;
-  if ((static_fields->gMsgID & 0x80000000) == 0)
+  if ((gMsgID & 0x80000000) == 0)
   {
-    static_fields->gSelMsgPos = SelPos;
+    gSelMsgPos = SelPos;
   }
 }
 
@@ -628,9 +665,9 @@ void fclShuffleBuf8u(u8 **pBuf, s32 BufSize, s32 ShuffleCount) {
   {
     do
     {
-      v7 = dds3GetRandA(StringLiteral_416) % BufSize;
+      v7 = dds3GetRandA("") % BufSize;
       v8 = v7;
-      v9 = dds3GetRandA(StringLiteral_416) % BufSize;
+      v9 = dds3GetRandA("") % BufSize;
       max_length = pBuf->max_length;
       v12 = pBuf->m_Items[v7];
       v13 = pBuf + v9;
@@ -662,6 +699,7 @@ s8 fclStartMessage(s32 MsgNo) {
 
   if (gMsgID < 0)
     return 0;
+LABEL_6:
   itfMesMngMarkBitStat(gMsgID, 0x200000u);
   itfMesMngRequestMessage(gMsgID, MsgNo, 0, 0);
   itfMesMngSetSelPhase(gMsgID, -1);
@@ -673,39 +711,27 @@ s8 fclStartMessage(s32 MsgNo) {
 
 // 0x13c77d0
 s8 fclStartSelMessage(s32 SelMsgNo) {
-  struct fclMisc_StaticFields *static_fields;
-
-  static_fields = fclMisc->static_fields;
-  if (static_fields->gMsgID < 0)
+  if (gMsgID < 0)
     return 0;
-  static_fields->gSelMsgNo = SelMsgNo;
+LABEL_6:
+  gSelMsgNo = SelMsgNo;
   return 1;
 }
 
 // 0x13c80e0
 void fclUpdateMessage(void) {
   u64 v2;
-  struct fclMisc_StaticFields *static_fields;
   s32 gMsgFlag;
   s32 v5;
-  fclMisc_c *v7;
-  struct fclMisc_StaticFields *v8;
   char v9;
   s32 gMsgID;
   System_Object_array *v12;
-  fclMisc_c *v14;
 
   else
   {
-    static_fields = fclMisc->static_fields;
-    if (static_fields->gMsgID < 0)
+    if (gMsgID < 0)
       return;
   }
-  if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
-  {
-    static_fields = fclMisc->static_fields;
-  }
-  gMsgFlag = static_fields->gMsgFlag;
   switch (gMsgFlag)
   {
     case 3:
@@ -713,17 +739,8 @@ void fclUpdateMessage(void) {
       fclEndMessageEx(1);
       break;
     case 2:
-      if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
+      if ((gSelMsgNo & 0x80000000) == 0)
       {
-        static_fields = fclMisc->static_fields;
-      }
-      if ((static_fields->gSelMsgNo & 0x80000000) == 0)
-      {
-        if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
-        {
-          static_fields = fclMisc->static_fields;
-        }
-        gMsgID = static_fields->gMsgID;
         itfMesMngSetSelectDefKey(gMsgID, 3, 1);
         itfMesMngSetSelect(gMsgID, gSelMsgPos);
         itfMesMngRequestSelect(gMsgID, gSelMsgNo);
@@ -731,27 +748,22 @@ void fclUpdateMessage(void) {
       }
       if (!*(*(v2 + 184) + 21LL))
       {
-        if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
         if (!fclChkSelMessage(v2))
         {
           v12 = Empty_string_();
-          Log(StringLiteral_16273, v12, 0);
-          v8 = v14->static_fields;
+          Log("@@@@@ FCL_MSGSTAT_END @@@@@", v12, 0);
           v9 = 3;
+          goto LABEL_55;
         }
       }
       break;
     case 1:
-      if ((*(v2 + 295) & 2) != 0 && !*(v2 + 216))
-      {
-        static_fields = fclMisc->static_fields;
-      }
-      v5 = static_fields->gMsgID;
+      v5 = gMsgID;
       if (itfMesMngGetPhase(v5) < 0)
       {
-        v8 = v7->static_fields;
         v9 = 2;
-        v8->gMsgFlag = v9;
+LABEL_55:
+        gMsgFlag = v9;
       }
       break;
   }

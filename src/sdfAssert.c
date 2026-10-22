@@ -60,4 +60,15 @@ sdfAssert_sdfAssertFunc_t *sdfSetAssertFunc(sdfAssert_sdfAssertFunc_t *func) {
 
 // 0x17dfa30
 void sdf_Assert(char *aFilename, s32 aLine, char *aCause) {
+  u64 *v8;
+  System_String_o *v11;
+  s32 v13;
+
+  if (sdfAssertFunc)
+  {
+    v13 = aLine;
+    v8 = sub_8D3950(s32, &v13);
+    v11 = Format_5268688("ASSERT: {0}:{1:D}:{2}", aFilename, v8, aCause);
+    Invoke(sdfAssertFunc, v11);
+  }
 }

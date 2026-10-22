@@ -279,6 +279,8 @@ void ragSetSelectDevil(s8 SeqNo) {
     LOBYTE(v6) = cmpGetCursorIndex(CursorInfo);
     MitamaList = GBWK->MitamaList;
     if (v6 < LODWORD(MitamaList->max_length))
+      goto LABEL_27;
+LABEL_26:
   }
   if (SeqNo != 2)
     return;
@@ -287,31 +289,167 @@ void ragSetSelectDevil(s8 SeqNo) {
   fclRagMitamaTbl = fclRagSeireiTbl;
   MitamaList = GBWK->SeireiList;
   if (v6 >= LODWORD(MitamaList->max_length))
+    goto LABEL_26;
+LABEL_27:
   v15 = MitamaList->m_Items[v6];
   ragCreateDevilData(fclRagMitamaTbl->m_Items[v15], GBWK->Devil);
 }
 
 // 0x198e550
 void *ragUpdate(dds3ProcessID_t *PID) {
-    fclChkDbgProcess();
-    dds3GetProcessData(0);
-    ragUpdatePanelMover();
-    fclChkSignal(0);
-    SetButtonGuide(0, 0);
-    GetCurrentParam();
-    ragUpdateSeqRoot();
-    ragUpdateSeqItem();
-    ragUpdateSeqSeirei();
-    ragUpdateSeqMitama();
-    ragUpdateSeqTalk();
-    fclClearSignal(0);
-    fclSetVal(0, 0);
-    ragUpdateSeqErr();
-    ragUpdateSeqStatus();
-    ragUpdateSeqConfirm();
-    IsLoad(0, 0);
-    fclRagUpdateInit(0);
+  Il2CppObject *ProcessData;
+  fclRagInit_c *v6;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  AssetBundleCtrl_o *asset_bc;
+  AssetBundleCtrl_o *v14;
+  s8 Current;
+  fclRagInit_c *v20;
+  struct fclRagInit_StaticFields **p_static_fields;
+  struct fclDataRag_t_o *GBWK;
+  s32 EventEnd;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  u8 Flag;
+  cmpSeqInfo_t_o *v27;
+  struct cmpSeqInfo_t_o *v29;
+  dds3ProcessID_t_o *v30;
+  u64 v31[3];
+
+  v30 = PID;
+  else if (fclChkDbgProcess())
+  {
     return 0;
+  }
+  ProcessData = dds3GetProcessData(&v30);
+  else
+  {
+    if (!ProcessData)
+      goto LABEL_20;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclDataRag_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclDataRag_t, v31);
+    if ((v31[0] & 1) != 0)
+      v10 = v31[2];
+    else
+      v10 = v31 + 1;
+    v11 = sub_8C4940(v10);
+  }
+LABEL_20:
+  GBWK = ProcessData;
+  if (GBWK->Initialized)
+  {
+    if ((v6->_2.bitflags2 & 2) == 0)
+    {
+LABEL_36:
+      Current = GBWK->SeqInfo->Current;
+      ragUpdatePanelMover(v6);
+      if (fclChkSignal(1))
+      {
+        if ((GBWK->SeqInfo->Flag & 0x40) != 0)
+        {
+          v30->func_ans = -1;
+        }
+        else
+        {
+          EventEnd = GBWK->EventEnd;
+          if (EventEnd <= 9)
+          {
+            GBWK->EventEnd = EventEnd + 1;
+            if ((*p_static_fields)->GBWK->EventEnd >= 5)
+            {
+              SetButtonGuide(0, 0);
+            }
+            if (GBWK->EventEnd == 10)
+            {
+              GetCurrentParam();
+            }
+          }
+          SeqInfo = GBWK->SeqInfo;
+          Flag = SeqInfo->Flag;
+          if ((Flag & 2) != 0)
+          {
+            if ((Flag & 1) != 0)
+            {
+              switch (SeqInfo->Current)
+              {
+                case 0:
+                  ragUpdateSeqRoot(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 1:
+                  ragUpdateSeqItem(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 2:
+                  ragUpdateSeqSeirei(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 3:
+                  ragUpdateSeqMitama(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 4:
+                  ragUpdateSeqTalk(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 5:
+                  if (cmpChkSeqInfo(SeqInfo) != 2)
+                    break;
+                  fclClearSignal(1);
+                  fclSetVal(1, 0);
+                  v29 = GBWK->SeqInfo;
+                  v29->Flag |= 0x10u;
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 6:
+                  ragUpdateSeqErr(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 7:
+                  ragUpdateSeqStatus(v20);
+                    goto LABEL_75;
+                  goto LABEL_73;
+                case 8:
+                  if (ragUpdateSeqConfirm(v20))
+                    break;
+                  return 0;
+                default:
+                  break;
+              }
+            }
+          }
+          {
+LABEL_73:
+          }
+LABEL_75:
+          v27 = GBWK->SeqInfo;
+          cmpUpdateSeqInfo(v27, Current);
+        }
+      }
+      return 0;
+    }
+LABEL_22:
+    goto LABEL_36;
+  }
+  asset_bc = get_asset_bc();
+  if (IsLoad(asset_bc, "e803"))
+  {
+    v14 = get_asset_bc();
+    if (IsLoad(v14, "f803"))
+    {
+      fclRagUpdateInit(GBWK);
+      GBWK->Initialized = 1;
+      if ((v6->_2.bitflags2 & 2) == 0)
+        goto LABEL_36;
+      goto LABEL_22;
+    }
+  }
+  return 0;
 }
 
 // 0x198d9d0
@@ -337,6 +475,7 @@ s8 ragUpdateCallSeq(s8 SeqNo) {
       GBWK->SeqInfo->Current = 1;
       GBWK->SeqInfo->Change = 1;
       v13 = 1;
+      goto LABEL_50;
     case 1:
       fclClearSignal(0);
       GBWK->ismsgend = 0;
@@ -345,6 +484,7 @@ s8 ragUpdateCallSeq(s8 SeqNo) {
       GBWK->SeqInfo->Current = 2;
       GBWK->SeqInfo->Change = 1;
       v13 = 2;
+      goto LABEL_50;
     case 2:
       fclClearSignal(0);
       GBWK->ismsgend = 0;
@@ -353,6 +493,7 @@ s8 ragUpdateCallSeq(s8 SeqNo) {
       GBWK->SeqInfo->Current = 3;
       GBWK->SeqInfo->Change = 1;
       v13 = 3;
+      goto LABEL_50;
     case 3:
       fclSetVal(2, 1);
       GBWK->ismsgend = 0;
@@ -365,6 +506,7 @@ s8 ragUpdateCallSeq(s8 SeqNo) {
       GBWK->SeqInfo->Change = -1;
       GBWK->SeqInfo->Next = 0;
       v13 = 4;
+LABEL_50:
       SetButtonGuide(v13, 0);
       break;
     case 4:
@@ -386,7 +528,6 @@ void ragUpdatePanelMover(void) {
 
 // 0x198c750
 void ragUpdateReturn(void) {
-  fclRagInit_c *v2;
   struct fclRagInit_StaticFields **p_static_fields;
   struct fclDataRag_t_o *GBWK;
   s32 Last;
@@ -401,7 +542,6 @@ void ragUpdateReturn(void) {
   System_Byte_array *v16;
   dds3ProcessID_t_o **v17;
 
-  p_static_fields = &v2->static_fields;
   Last = GBWK->SeqInfo->Last;
   switch (Last)
   {
@@ -413,6 +553,7 @@ void ragUpdateReturn(void) {
       *p_ScriptPID = fclScriptStart(pScriptData, 3, p_ScriptPID);
       GBWK->SeqInfo->Current = 3;
       v10 = 3;
+      goto LABEL_39;
     case 2:
       GBWK->ismsgend = 0;
       v15 = (*p_static_fields)->GBWK;
@@ -421,6 +562,7 @@ void ragUpdateReturn(void) {
       *v17 = fclScriptStart(v16, 2, v17);
       GBWK->SeqInfo->Current = 2;
       v10 = 2;
+      goto LABEL_39;
     case 1:
       GBWK->ismsgend = 0;
       v6 = (*p_static_fields)->GBWK;
@@ -429,6 +571,7 @@ void ragUpdateReturn(void) {
       *v8 = fclScriptStart(v7, 1, v8);
       GBWK->SeqInfo->Current = 1;
       v10 = 1;
+LABEL_39:
       SetButtonGuide(v10, 0);
       break;
   }
@@ -480,6 +623,7 @@ s8 ragUpdateSeqConfirm(void) {
       RemakeFldSky();
       Current = GBWK->SeqInfo->Current;
       UpdateList(Current);
+LABEL_24:
       LOBYTE() = 1;
       return v4;
     }
@@ -491,6 +635,7 @@ s8 ragUpdateSeqConfirm(void) {
     }
     v15 = fclChkSignal(2);
     if (v15 > 1)
+      goto LABEL_24;
     if (v15)
     {
       if (v15 == 1)
@@ -501,6 +646,7 @@ s8 ragUpdateSeqConfirm(void) {
         UpdateList(v19);
         ragUpdateReturn();
       }
+      goto LABEL_24;
     }
     Last = GBWK->SeqInfo->Last;
     if (Last == 3)
@@ -525,6 +671,7 @@ s8 ragUpdateSeqConfirm(void) {
           LOBYTE(Devil) = 0;
           ExchangeRate = 0;
         }
+        goto LABEL_76;
       }
       SelectIdx = ragGetSelectIdx(2);
       v29 = 1;
@@ -533,9 +680,11 @@ s8 ragUpdateSeqConfirm(void) {
     Devil = GBWK->Devil;
     unitwork = DDS3_GBWK->unitwork;
     LOBYTE(Devil) = cmbAddCustomDevilToStock(Devil, unitwork, 0xCu, 4);
-    Id = FindId(1, StringLiteral_16328);
+LABEL_76:
+    Id = FindId(1, "P2SDREQ_ITEMGET");
     p2sdPlaySE(Id);
     if (Devil < 0)
+      goto LABEL_128;
     if ((GBWK->SeqInfo->Last & 0xFE) == 2)
     {
       v42 = DDS3_GBWK->unitwork;
@@ -546,9 +695,11 @@ s8 ragUpdateSeqConfirm(void) {
       v48 = v46->m_Items[Devil];
       fclEncycRegist(v48, 0, 0);
       if (LODWORD(ExchangeRate->max_length))
+        goto LABEL_88;
     }
     else if (LODWORD(ExchangeRate->max_length))
     {
+LABEL_88:
       v39 = ExchangeRate->m_Items[0];
       ItemID = v39->ItemID;
       if (ItemID)
@@ -570,6 +721,7 @@ s8 ragUpdateSeqConfirm(void) {
         v61 = v58->Nums;
         fclAddItem(v59, -v61);
       }
+LABEL_128:
       GBWK->ismsgend = 0;
       GBWK->SeqInfo->MesFlag = 1;
       v63 = GBWK;
@@ -607,7 +759,6 @@ void ragUpdateSeqItem(void) {
   u16 v3;
   s8 SelectIdx;
   fclRagExchangeRate_t_array *ExchangeRate;
-  fclRagInit_c *v8;
   struct fclRagInit_StaticFields **p_static_fields;
   struct fclDataRag_t_o *GBWK;
   struct fclDataRag_t_o *v11;
@@ -634,7 +785,6 @@ void ragUpdateSeqItem(void) {
   v3 = cmpChkCommonInput(CMP_PE_NORMAL);
   SelectIdx = ragGetSelectIdx(1);
   ExchangeRate = ragGetExchangeRate(0, SelectIdx);
-  p_static_fields = &v8->static_fields;
   if (GBWK->ismsgend)
   {
     if (v3 > 2u)
@@ -647,10 +797,12 @@ void ragUpdateSeqItem(void) {
       else
       {
         if (v3 != 32)
+          goto LABEL_68;
         ItemWindow = GBWK->ItemWindow;
         v23 = 1;
       }
       lstMoveCursor(ItemWindow, v23);
+      goto LABEL_68;
     }
     if (v3 == 1)
     {
@@ -665,9 +817,14 @@ void ragUpdateSeqItem(void) {
         v35 = 0x8000;
         if (Hearts || !v25)
         {
+LABEL_69:
+            goto LABEL_72;
+LABEL_70:
+LABEL_72:
           if (cmpChkPadPressUpDown())
           {
             {
+LABEL_80:
               CursorInfo = GBWK->ItemWindow->CursorInfo;
               v41 = cmpDisablePadBitStop(CursorInfo, v35, 0x30u);
               cmpPlaySE(v41);
@@ -677,12 +834,16 @@ void ragUpdateSeqItem(void) {
           else
           {
             lstMoveCursor(GBWK->ItemWindow, 0);
+              goto LABEL_80;
           }
+          goto LABEL_80;
         }
       }
       else if (!v25)
       {
         v35 = 0x8000;
+          goto LABEL_72;
+        goto LABEL_70;
       }
       SelectID = ragGetSelectID(1);
       if (!ragChkItemErr(SelectID))
@@ -696,6 +857,7 @@ void ragUpdateSeqItem(void) {
         GBWK->SeqInfo->Current = 8;
         GBWK->SeqInfo->Change = 1;
         v18 = 8;
+        goto LABEL_26;
       }
     }
     else if (v3 == 2)
@@ -710,15 +872,18 @@ void ragUpdateSeqItem(void) {
       GBWK->SeqInfo->Current = 0;
       GBWK->SeqInfo->Change = 2;
       v18 = 0;
+LABEL_26:
       SetButtonGuide(v18, 0);
     }
+LABEL_68:
     v35 = v3;
+    goto LABEL_69;
   }
   if (fclChkSignal(0))
   {
     GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(StringLiteral_16325, 0, 0, 90);
+    ButtonGuideDispSet("RAG02", 0, 0, 90);
   }
 }
 
@@ -727,7 +892,6 @@ void ragUpdateSeqMitama(void) {
   u16 v3;
   s8 SelectIdx;
   fclRagExchangeRate_t_array *ExchangeRate;
-  fclRagInit_c *v8;
   struct fclRagInit_StaticFields **p_static_fields;
   struct fclDataRag_t_o *GBWK;
   struct fclDataRag_t_o *v11;
@@ -744,7 +908,6 @@ void ragUpdateSeqMitama(void) {
   v3 = cmpChkCommonInput(CMP_PE_NORMAL);
   SelectIdx = ragGetSelectIdx(3);
   ExchangeRate = ragGetExchangeRate(2, SelectIdx);
-  p_static_fields = &v8->static_fields;
   if (GBWK->ismsgend)
   {
     if (v3 > 2u)
@@ -757,6 +920,7 @@ void ragUpdateSeqMitama(void) {
       else
       {
         if (v3 != 32)
+          goto LABEL_72;
         MitamaWindow = GBWK->MitamaWindow;
         v23 = 1;
       }
@@ -767,6 +931,8 @@ void ragUpdateSeqMitama(void) {
       if (!fclRagChkExchange(ExchangeRate))
       {
         v3 = 0x8000;
+          goto LABEL_75;
+        goto LABEL_73;
       }
       ragSetSelectDevil(3);
       if (!ragChkDevilErr(GBWK->Devil->id))
@@ -781,9 +947,11 @@ void ragUpdateSeqMitama(void) {
         id = GBWK->Devil->id;
         cmpModelSetup(id, 0);
         {
+LABEL_75:
           if (cmpChkPadPressUpDown())
           {
             {
+LABEL_83:
               CursorInfo = GBWK->MitamaWindow->CursorInfo;
               v36 = cmpDisablePadBitStop(CursorInfo, v3, 0x30u);
               cmpPlaySE(v36);
@@ -793,8 +961,12 @@ void ragUpdateSeqMitama(void) {
           else
           {
             lstMoveCursor(GBWK->MitamaWindow, 0);
+              goto LABEL_83;
           }
+          goto LABEL_83;
         }
+LABEL_73:
+        goto LABEL_75;
       }
     }
     else if (v3 == 2)
@@ -809,22 +981,81 @@ void ragUpdateSeqMitama(void) {
       GBWK->SeqInfo->Current = 0;
       GBWK->SeqInfo->Change = 2;
       SetButtonGuide(0, 0);
+        goto LABEL_75;
+      goto LABEL_73;
     }
+LABEL_72:
+      goto LABEL_75;
+    goto LABEL_73;
   }
   if (fclChkSignal(0))
   {
     GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(StringLiteral_16327, 0, 0, 90);
+    ButtonGuideDispSet("RAG06", 0, 0, 90);
   }
 }
 
 // 0x198dec0
 void ragUpdateSeqRoot(void) {
-    fclSetVal(0, 0);
-    fclChkSignal(0);
-    ragUpdateCallSeq(0);
-    ragExit();
+  u16 v4;
+  u32 v7;
+  cmpCursorInfo_t_o *v10;
+  cmpCursorInfo_t_o *v11;
+  s8 v12;
+  cmpCursorInfo_t_o *v14;
+  s8 CursorIndex;
+  cmpCursorInfo_t_o *CursorInfo;
+
+  v4 = cmpChkCommonInput(CMP_PE_NORMAL);
+  fclSetVal(2, 0);
+  v5 = fclChkSignal(0);
+  if ()
+  {
+    v7 = v4;
+    if (v4 > 2u)
+    {
+      if (v4 == 16)
+      {
+        CursorInfo = GBWK->CmdSelInfo->CursorInfo;
+        v11 = CursorInfo;
+        v12 = -1;
+      }
+      else
+      {
+        if (v4 != 32)
+          goto LABEL_41;
+        v10 = GBWK->CmdSelInfo->CursorInfo;
+        v11 = v10;
+        v12 = 1;
+      }
+      cmpMoveCursor(v11, v12);
+    }
+    else
+    {
+      if (v4 == 1)
+      {
+        v14 = GBWK->CmdSelInfo->CursorInfo;
+        CursorIndex = cmpGetCursorIndex(v14);
+        ragUpdateCallSeq(CursorIndex);
+          goto LABEL_43;
+        goto LABEL_42;
+      }
+      if (v4 == 2)
+      {
+        ragExit();
+          goto LABEL_43;
+        goto LABEL_42;
+      }
+    }
+LABEL_41:
+      goto LABEL_43;
+LABEL_42:
+LABEL_43:
+    if (!cmpChkPadPressUpDown())
+      goto LABEL_44;
+    goto LABEL_52;
+  }
 }
 
 // 0x198b610
@@ -832,7 +1063,6 @@ void ragUpdateSeqSeirei(void) {
   u16 v3;
   s8 SelectIdx;
   fclRagExchangeRate_t_array *ExchangeRate;
-  fclRagInit_c *v8;
   struct fclRagInit_StaticFields **p_static_fields;
   struct fclDataRag_t_o *GBWK;
   struct fclDataRag_t_o *v11;
@@ -849,7 +1079,6 @@ void ragUpdateSeqSeirei(void) {
   v3 = cmpChkCommonInput(CMP_PE_NORMAL);
   SelectIdx = ragGetSelectIdx(2);
   ExchangeRate = ragGetExchangeRate(1, SelectIdx);
-  p_static_fields = &v8->static_fields;
   if (GBWK->ismsgend)
   {
     if (v3 > 2u)
@@ -862,6 +1091,7 @@ void ragUpdateSeqSeirei(void) {
       else
       {
         if (v3 != 32)
+          goto LABEL_72;
         SeireiWindow = GBWK->SeireiWindow;
         v23 = 1;
       }
@@ -872,6 +1102,8 @@ void ragUpdateSeqSeirei(void) {
       if (!fclRagChkExchange(ExchangeRate))
       {
         v3 = 0x8000;
+          goto LABEL_75;
+        goto LABEL_73;
       }
       ragSetSelectDevil(2);
       if (!ragChkDevilErr(GBWK->Devil->id))
@@ -886,9 +1118,11 @@ void ragUpdateSeqSeirei(void) {
         id = GBWK->Devil->id;
         cmpModelSetup(id, 0);
         {
+LABEL_75:
           if (cmpChkPadPressUpDown())
           {
             {
+LABEL_83:
               CursorInfo = GBWK->SeireiWindow->CursorInfo;
               v36 = cmpDisablePadBitStop(CursorInfo, v3, 0x30u);
               cmpPlaySE(v36);
@@ -898,8 +1132,12 @@ void ragUpdateSeqSeirei(void) {
           else
           {
             lstMoveCursor(GBWK->SeireiWindow, 0);
+              goto LABEL_83;
           }
+          goto LABEL_83;
         }
+LABEL_73:
+        goto LABEL_75;
       }
     }
     else if (v3 == 2)
@@ -914,13 +1152,18 @@ void ragUpdateSeqSeirei(void) {
       GBWK->SeqInfo->Current = 0;
       GBWK->SeqInfo->Change = 2;
       SetButtonGuide(0, 0);
+        goto LABEL_75;
+      goto LABEL_73;
     }
+LABEL_72:
+      goto LABEL_75;
+    goto LABEL_73;
   }
   if (fclChkSignal(0))
   {
     GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(StringLiteral_16326, 0, 0, 90);
+    ButtonGuideDispSet("RAG04", 0, 0, 90);
   }
 }
 
@@ -936,6 +1179,7 @@ void ragUpdateSeqStatus(void) {
   {
     Stat = cmpChkStatusModelLoadStat();
     if ()
+      goto LABEL_9;
   }
   if (v4 > 2u)
   {
@@ -943,10 +1187,15 @@ void ragUpdateSeqStatus(void) {
     {
       v4 = 0;
       {
+LABEL_10:
       }
+LABEL_33:
       cmpPlaySE(v4);
       return;
     }
+LABEL_9:
+      goto LABEL_10;
+    goto LABEL_33;
   }
   if (v4 != 1)
   {
@@ -957,7 +1206,10 @@ void ragUpdateSeqStatus(void) {
       RemakeFldSky();
       Current = GBWK->SeqInfo->Current;
       UpdateList(Current);
+        goto LABEL_33;
+      goto LABEL_10;
     }
+    goto LABEL_9;
   }
   if (!ragChkDevilLevelErr(GBWK->Devil))
   {
@@ -969,6 +1221,8 @@ void ragUpdateSeqStatus(void) {
     GBWK->SeqInfo->Current = 8;
     GBWK->SeqInfo->Change = -1;
     SetButtonGuide(8, 0);
+      goto LABEL_33;
+    goto LABEL_10;
   }
 }
 

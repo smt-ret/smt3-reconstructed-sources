@@ -18,8 +18,24 @@ void nbMakaProcessData_t__Clear(nbMakaProcessData_t *this);
 
 // 0x19845f0
 void DispMaka(nbMakaProcessData_t **d, s32 ox, s32 oy, u32 oc, s32 a) {
-    GetBattleUI(0);
-    Set(0, 0);
+  UnityEngine_GameObject_o *BattleUI;
+  UnityEngine_Transform_o *transform;
+  UnityEngine_Component_o *v8;
+  UnityEngine_GameObject_o *gameObject;
+  Il2CppObject *Component_object;
+  s32 maka;
+  UnityEngine_Color_o v14;
+
+  BattleUI = GetBattleUI(7, *&ox);
+  transform = get_transform(BattleUI, 0);
+  v8 = Find(transform, "num_money", 0);
+  gameObject = get_gameObject(v8);
+  Component_object = GetComponent_object_(gameObject);
+  maka = DDS3_GBWK->maka;
+  *&v14.r = 0;
+  *&v14.b = 0;
+  sub_19EC630(&v14.r, 1.0, 1.0, 1.0, 1.0);
+  Set(Component_object, maka, v14, 0, 0);
 }
 
 // 0x19847c0
@@ -40,6 +56,7 @@ s32 GetKetaSu(u32 n, s32 m) {
     v4 = 10;
     if ((m & 3) == 0)
       return n % v4 / (v4 / 0xAu);
+    goto LABEL_9;
   }
   v5 = v3 - m;
   v4 = 10;
@@ -51,6 +68,7 @@ s32 GetKetaSu(u32 n, s32 m) {
   while (v5);
   if ((m & 3) != 0)
   {
+LABEL_9:
     v6 = -v3;
     do
     {
@@ -64,9 +82,38 @@ s32 GetKetaSu(u32 n, s32 m) {
 
 // 0x1984390
 nbMakaProcessData_t *GetMakaProcessData(void) {
-    dds3SearchProcessName(0);
-    dds3GetProcessData(0);
-    return 0;
+  nbMakaProcessData_t_o *result;
+  nbMakaProcessData_t_c *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  dds3ProcessID_t_o *v8[3];
+  dds3ProcessID_t_o *id;
+
+  id = 0;
+  result = dds3SearchProcessName("nb_maka");
+  id = result;
+  if (result)
+  {
+    else
+    {
+      result = dds3GetProcessData(&id);
+      if (!result)
+        return result;
+    }
+    klass = result->klass;
+    if (result->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMakaProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMakaProcessData_t, v8);
+      if ((v8[0] & 1) != 0)
+        v6 = v8[2];
+      else
+        v6 = v8 + 1;
+      v7 = sub_8C4940(v6);
+    }
+  }
+  return result;
 }
 
 // 0x1984b40
@@ -108,6 +155,7 @@ void SetAnime(nbMakaProcessData_t **d) {
         (*d)->alpha = 128;
       return;
     }
+LABEL_19:
     v5->stat = 0;
     return;
   }
@@ -121,6 +169,7 @@ void SetAnime(nbMakaProcessData_t **d) {
     {
       v3->disp = 0;
       v5 = *d;
+      goto LABEL_19;
     }
     v3->alpha = v11 - 20;
     if ((*d)->alpha < 0)
@@ -163,7 +212,7 @@ dds3ProcessID_t *nbInitMakaProcess(dds3ProcessID_t *parent) {
     v7,
     0,
     Method_nbMakaProcess_nbMakaShutdown__);
-  result = dds3StartProcess(StringLiteral_21483, 0x2B0Eu, 1, 1, v6, 0, v7, 0, data, 0);
+  result = dds3StartProcess("nb_maka", 0x2B0Eu, 1, 1, v6, 0, v7, 0, data, 0);
   target = result;
   if (parent)
   {
@@ -233,10 +282,45 @@ void nbMakaDispOn(s32 type) {
 
 // 0x1984990
 void *nbMakaProcess1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    SetAnime(0);
-    DispMaka(0, 0, 0, 0, 0);
-    return 0;
+  Il2CppObject *ProcessData;
+  nbMakaProcessData_t_c *v3;
+  Il2CppObject *v4;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  nbMakaProcessData_t_o **v9;
+  s32 v10;
+  s32 v11;
+  u32 v12;
+  s32 v13;
+  Il2CppObject *v16;
+  dds3ProcessID_t_o *v17[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  v16 = 0;
+  ProcessData = dds3GetProcessData(&ida);
+  v4 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbMakaProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbMakaProcessData_t, v17);
+      if ((v17[0] & 1) != 0)
+        v7 = v17[2];
+      else
+        v7 = v17 + 1;
+      v8 = sub_8C4940(v7);
+    }
+  }
+  v16 = ProcessData;
+  SetAnime(&v16, v3);
+  if (LODWORD(v4[1].monitor))
+    DispMaka(v9, v10, v11, v12, v13);
+  return 0;
 }
 
 // 0x1984ad0

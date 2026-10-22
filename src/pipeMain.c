@@ -36,7 +36,7 @@ s32 pipe_Section(void);
 
 // 0x1534440
 s32 ChkPipe(void) {
-  return dds3SearchProcessName(StringLiteral_4613) != 0;
+  return dds3SearchProcessName("PipeMain") != 0;
 }
 
 // 0x15344c0
@@ -53,7 +53,7 @@ void EndPipe(void) {
   AssetBundleCtrl_o *v24;
 
   pipeEndSection();
-  dds3KillProcessName(StringLiteral_4613, 1);
+  dds3KillProcessName("PipeMain", 1);
   mymdlDelete(basicMy, basicMy->max_length);
   mymdlDelete(MyLine, MyLine->max_length);
   mymdlDelete(PipeMaka1, PipeMaka1->max_length);
@@ -68,14 +68,14 @@ void EndPipe(void) {
   mymdlDelete(PipeEML, PipeEML->max_length);
   basicMyAnm = 0;
   basicMyChk = 0;
-  v19 = StringLiteral_19042;
+  v19 = "pipe_common";
   Appendix = GetAppendix();
-  v22 = Concat_5224608(StringLiteral_19042, Appendix);
+  v22 = Concat_5224608("pipe_common", Appendix);
   asset_bc = get_asset_bc();
   UnloadAB(asset_bc, v19);
   v24 = get_asset_bc();
   UnloadAB(v24, v22);
-  Remove(StringLiteral_21893, 0);
+  Remove("PIPEMES", 0);
 }
 
 // 0x1533740
@@ -88,14 +88,12 @@ void InitPipe(s32 data, s32 prevData) {
   AssetBundleCtrl_o *v12;
   AssetBundleCtrl_o *v14;
   u64 *v15;
-  pipeMain_c *v20;
-  struct pipeMain_StaticFields *static_fields;
   s32 mapPrev;
   s32 mapIndex;
 
-  v5 = StringLiteral_19042;
+  v5 = "pipe_common";
   Appendix = GetAppendix();
-  v8 = Concat_5224608(StringLiteral_19042, Appendix);
+  v8 = Concat_5224608("pipe_common", Appendix);
   asset_bc = get_asset_bc();
   if (!IsLoad(asset_bc, v5))
   {
@@ -113,16 +111,13 @@ void InitPipe(s32 data, s32 prevData) {
     v15,
     0,
     Method_pipeMain_MainPipe__);
-  dds3StartProcess(StringLiteral_4613, 0x3E8u, 0, 0, v15, 0, 0, 0, 0, 0);
+  dds3StartProcess("PipeMain", 0x3E8u, 0, 0, v15, 0, 0, 0, 0, 0);
   if (data)
   {
     SectionIndex = 1;
     debugMode = 0;
     mapIndex = data;
     mapPrev = prevData;
-    static_fields = v20->static_fields;
-    mapIndex = static_fields->mapIndex;
-    mapPrev = static_fields->mapPrev;
     pipeFlow = pipeCamGetMode(mapIndex, mapPrev);
   }
   else
@@ -137,29 +132,25 @@ void InitPipe(s32 data, s32 prevData) {
 dds3ProcessFunc_t *MainPipe(dds3ProcessID_t *aProcId) {
   AssetBundleCtrl_o *asset_bc;
   pipeMain_c *v5;
-  struct pipeMain_StaticFields *static_fields;
   s32 SectionIndex;
   s16 v8;
   s32 v9;
   s32 debugMode;
-  pipeMain_c *v12;
   AssetBundleCtrl_o *v21;
   System_String_o *Appendix;
   System_String_o *v23;
   s32 mapIndex;
-  pipeMain_c *v29;
   dds3Basic_t_o *scene;
 
   scene = 0;
   asset_bc = get_asset_bc();
-  if (!IsLoad(asset_bc, StringLiteral_19042))
+  if (!IsLoad(asset_bc, "pipe_common"))
     return 0;
   else
   {
-    static_fields = pipeMain->static_fields;
-    SectionIndex = static_fields->SectionIndex;
-    if (static_fields->SectionIndex > 257)
+    if (SectionIndex > 257)
     {
+LABEL_10:
       if (SectionIndex == 258)
       {
         return 0;
@@ -178,20 +169,20 @@ dds3ProcessFunc_t *MainPipe(dds3ProcessID_t *aProcId) {
       if ((v8 & 0x200) != 0)
       {
         v9 = v8 & 0x200;
-        debugMode = static_fields->debugMode;
         if (debugMode != 2)
+          goto LABEL_15;
       }
       else
       {
         v9 = 0;
-        debugMode = static_fields->debugMode;
         if (debugMode != 2)
         {
+LABEL_15:
           if (debugMode == 1)
           {
             dds3FadeIn(0, 0, 0, 0);
-            static_fields = v12->static_fields;
-            static_fields->SectionIndex = 258;
+LABEL_85:
+            SectionIndex = 258;
             return 0;
           }
           scene = dds3GetControlScene();
@@ -200,7 +191,8 @@ dds3ProcessFunc_t *MainPipe(dds3ProcessID_t *aProcId) {
           return 0;
         }
       }
-      static_fields->SectionIndex = 257;
+LABEL_81:
+      SectionIndex = 257;
       return 0;
     }
   }
@@ -215,15 +207,19 @@ dds3ProcessFunc_t *MainPipe(dds3ProcessID_t *aProcId) {
     }
     return 0;
   }
+  if (!mapIndex)
+  {
+    goto LABEL_85;
+  }
   pipeEffLoad();
   v21 = get_asset_bc();
   Appendix = GetAppendix();
-  v23 = Concat_5224608(StringLiteral_19042, Appendix);
+  v23 = Concat_5224608("pipe_common", Appendix);
   if (IsLoad(v21, v23))
   {
-    LoadLocalizeText(StringLiteral_19042, StringLiteral_21893);
+    LoadLocalizeText("pipe_common", "PIPEMES");
     pipeLoadSection(mapIndex - 1);
-    static_fields = v29->static_fields;
+    goto LABEL_81;
   }
   return 0;
 }

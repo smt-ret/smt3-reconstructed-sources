@@ -34,9 +34,11 @@ s32 sdfGetTexelBitCount(s32 aFormat) {
           return result;
         case 2:
         case 10:
+LABEL_13:
           result = 16;
           break;
         default:
+LABEL_14:
           result = 0;
           break;
       }
@@ -72,7 +74,9 @@ s32 sdfGetTexelBitCount(s32 aFormat) {
         break;
       case '2':
       case ':':
+        goto LABEL_13;
       default:
+        goto LABEL_14;
     }
   }
   return result;
@@ -80,8 +84,64 @@ s32 sdfGetTexelBitCount(s32 aFormat) {
 
 // 0x1792c00
 sdfGsMemSlice_t *sdfGsAllocFrameBuff(s32 aW, s32 aH, s32 aPixelFormat) {
-    sdfGsMemAllocFromHead(0, 0);
-    return 0;
+  u64 *v7;
+  s32 v10;
+  sdfGsMemSlice_t_o *result;
+  sdfGsMemSlice_t_c *klass;
+  s64 typeHierarchyDepth;
+  sdfGsMemSlice_t_c *v14;
+  s64 v15;
+  char *v16;
+  s64 *v17;
+  char *v18;
+  s64 *v19;
+  u64 v20[2];
+  char *v21;
+
+  v7 = Allocate(sdfGsFrameBuff_t);
+  sdfGsFrameBuff_t___ctor(v7);
+  v10 = (aW + 63) & 0xFFFFFFC0;
+  if (aPixelFormat > 10)
+  {
+    if ((aPixelFormat & 0xFFFFFFFE) == 0x30 || (aPixelFormat | 8) != 0x3A)
+      goto LABEL_10;
+LABEL_9:
+    v10 >>= 1;
+    goto LABEL_10;
+  }
+  if (aPixelFormat >= 2 && (aPixelFormat | 8) == 0xA)
+    goto LABEL_9;
+LABEL_10:
+  result = sdfGsMemAllocFromHead((v10 * ((aH + 31) & 0xFFFFFFE0) + 2047) & 0xFFFFF800, 1);
+  klass = result->klass;
+  if (result->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfGsFrameBuff_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, sdfGsFrameBuff_t, v20);
+    if ((v20[0] & 1) != 0)
+      v18 = v21;
+    else
+      v18 = v20 + 1;
+    v19 = sub_8C4940(v18);
+  }
+  result->prev->w = aW;
+  result->prev->h = aH;
+  result->prev->pixelFormat = aPixelFormat;
+  if (result)
+  {
+    v14 = result->klass;
+    if (result->klass->_2.typeHierarchyDepth < v15
+      || v14->_2.typeHierarchy[v15 - 1] != sdfGsMemSlice_t)
+    {
+      sub_8FC2C0(v14->_1.element_class, sdfGsMemSlice_t, v20);
+      if ((v20[0] & 1) != 0)
+        v16 = v21;
+      else
+        v16 = v20 + 1;
+      v17 = sub_8C4940(v16);
+    }
+  }
+  return result;
 }
 
 // 0x1792220
@@ -101,12 +161,16 @@ void *sdfGsMemAllocFromHead(s32 aSize, s32 aType) {
   else
   {
     if (gsMemHandleLinkHead)
+      goto LABEL_17;
   }
+LABEL_10:
   else
   {
     if (!sdfGsErrorHandler)
+      goto LABEL_17;
   }
   Invoke(sdfGsErrorHandler, aSize, aType);
+LABEL_17:
   while (1)
   {
     if (!gsMemHandleLinkHead->type)
@@ -117,6 +181,7 @@ void *sdfGsMemAllocFromHead(s32 aSize, s32 aType) {
     }
     gsMemHandleLinkHead = gsMemHandleLinkHead->next;
     if (!gsMemHandleLinkHead)
+      goto LABEL_10;
   }
   if (size == aSize)
   {
@@ -157,12 +222,16 @@ sdfGsMemSlice_t *sdfGsMemAllocFromTail(s32 aSize, s32 aType) {
   else
   {
     if (gsMemHandleLinkTail)
+      goto LABEL_17;
   }
+LABEL_10:
   else
   {
     if (!sdfGsErrorHandler)
+      goto LABEL_17;
   }
   Invoke(sdfGsErrorHandler, aSize, aType);
+LABEL_17:
   while (1)
   {
     if (!gsMemHandleLinkTail->type)
@@ -173,6 +242,7 @@ sdfGsMemSlice_t *sdfGsMemAllocFromTail(s32 aSize, s32 aType) {
     }
     gsMemHandleLinkTail = gsMemHandleLinkTail->prev;
     if (!gsMemHandleLinkTail)
+      goto LABEL_10;
   }
   if (size == aSize)
   {
@@ -212,6 +282,7 @@ s32 sdfGsMemCheckHandle(sdfGsMemSlice_t *aHandle) {
   sdfGsMemSlice_t___ctor(v3);
   if (!gsMemHandleLinkHead)
     return 0;
+LABEL_6:
   while (gsMemHandleLinkHead != aHandle)
   {
     gsMemHandleLinkHead = gsMemHandleLinkHead->next;

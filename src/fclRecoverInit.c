@@ -19,7 +19,7 @@ typedef struct sdfModelTexList_t sdfModelTexList_t;
 static char *gFclRecoverTexFile[3];
 static char *gRecoverMenuStr[7];
 static u8 LISTMAX;
-static u8 gCommandFlag[UNKNOWN_ARRAY_SIZE];
+static u8 *gCommandFlag;
 static fclDataRecover_t *GBWK;
 static s32 gProcessStat;
 static fclDataRecover_t *rcv_data;
@@ -80,18 +80,14 @@ sdfModelRootNode_t *sdfModelMakeUnity(sdfModelTexList_t *aTexList, u8 **bData, s
 
 // 0x1995160
 s32 fclChkRecoverProcess(void) {
-  fclRecoverInit_c *v2;
-  struct fclRecoverInit_StaticFields *static_fields;
   s32 gProcessStat;
 
-  static_fields = v2->static_fields;
-  gProcessStat = static_fields->gProcessStat;
   if (gProcessStat == 1)
     return gProcessStat;
   if (gProcessStat == 2)
   {
     gProcessStat = 0;
-    static_fields->gProcessStat = 0;
+    gProcessStat = 0;
     return gProcessStat;
   }
   return 0;
@@ -99,20 +95,20 @@ s32 fclChkRecoverProcess(void) {
 
 // 0x1994a20
 void *fclDestroyRecover(dds3ProcessID_t *PID) {
-    dds3EffectObjectBasicDestructor(0);
-    dds3EffectDelete(0);
-    fclScriptForcedEnd(0);
-    fclRecoverEventEnd();
-    evtDisableMoonDraw();
-    FindId(0, 0);
-    p2sdFadeOut(0);
-    FinalizeGameObject();
-    WindowDispOff(0);
-    Remove(0);
-    FinalizeUI();
-    UnloadAB(0, 0);
-    GetAppendix();
-    return 0;
+  struct fclDataRecover_t_o *GBWK;
+
+  if (GBWK)
+  {
+    else if ((byte_3F5ABE8 & 1) != 0)
+    {
+      goto LABEL_11;
+    }
+    goto LABEL_11;
+  }
+LABEL_42:
+  FinalizeUI();
+  PID->func_ans = -1;
+  return 0;
 }
 
 // 0x1994440
@@ -151,14 +147,14 @@ fclDataRecover_t *fclInitRecover(s8 Place) {
   fclRecoverEventStart(1);
   asset_bc = get_asset_bc();
   Appendix = GetAppendix();
-  v19 = Concat_5224608(StringLiteral_16364, Appendix);
+  v19 = Concat_5224608("e801", Appendix);
   v20 = GetAppendix();
-  v21 = Concat_5224608(StringLiteral_16364, v20);
+  v21 = Concat_5224608("e801", v20);
   Load(asset_bc, v19, v21, 0);
   v22 = get_asset_bc();
-  Load(v22, StringLiteral_16364, StringLiteral_16364, 0);
+  Load(v22, "e801", "e801", 0);
   v23 = get_asset_bc();
-  Load(v23, StringLiteral_16367, StringLiteral_16367, 0);
+  Load(v23, "f801", "f801", 0);
   v3->Initialized = 0;
   evtDisableMoonCalc();
   return v3;
@@ -166,20 +162,106 @@ fclDataRecover_t *fclInitRecover(s8 Place) {
 
 // 0x1993c80
 void fclLoadPB(void) {
-    dds3GetActiveScene();
-    dds3SceneBasicSearchNameAndType(0, 0, 0);
-    dds3GetBaseControlWorkData(0);
-    sdfDevLoadFileUnity_25061072(0, 0, 0, 0);
-    sdfModelMakeUnity(0, 0, 0);
-    LoadFileByte(0, 0, 0);
-    mdlCreateEffectResrc_D3P(0, 0, 0);
-    mdlGenEffect(0, 0, 0);
+  dds3Basic_t_o *ActiveScene;
+  dds3Basic_t_o *v4;
+  dds3ObjectBaseControlWorkData_t_o *BaseControlWorkData;
+  Il2CppObject *pModel;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v9;
+  s64 *v10;
+  dds3ModelResrc_t_o *v11;
+  u64 *monitor;
+  u64 *v13;
+  u64 *v14;
+  System_Byte_array *v16;
+  dds3ModelHandle_t_o *v17;
+  AssetBundleCtrl_o *asset_bc;
+  System_Byte_array *FileByte;
+  AssetBundleCtrl_o *v22;
+  System_Byte_array *v23;
+  mdlEffectResrcList_t_o *listPtr;
+  System_Byte_array *aTopPtr;
+  dds3ModelHandle_t_o *aHandle;
+  dds3Basic_t_o *pObjectBasic;
+  u64 v30[3];
+
+  aTopPtr = 0;
+  aHandle = 0;
+  listPtr = 0;
+  pObjectBasic = 0;
+  else
+  {
+    ActiveScene = dds3GetActiveScene();
+    if (!ActiveScene)
+      return;
+  }
+  v4 = ActiveScene;
+  pObjectBasic = dds3SceneBasicSearchNameAndType(v4, 5u, "npc_kaihuku_e801");
+  if (pObjectBasic)
+  {
+    BaseControlWorkData = dds3GetBaseControlWorkData(&pObjectBasic);
+    pModel = BaseControlWorkData->pModel;
+    if (pModel)
+    {
+      klass = pModel->klass;
+      if (pModel->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+        || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3ModelHandle_t)
+      {
+        sub_8FC2C0(klass->_1.element_class, dds3ModelHandle_t, v30);
+        if ((v30[0] & 1) != 0)
+          v9 = v30[2];
+        else
+          v9 = v30 + 1;
+        v10 = sub_8C4940(v9);
+      }
+    }
+    aHandle = BaseControlWorkData->pModel;
+    v11 = Allocate(dds3ModelResrc_t);
+    dds3ModelResrc_t___ctor(v11);
+    pModel[2].monitor = v11;
+    v11->major = 1;
+    *(pModel[2].monitor + 17) = 1;
+    monitor = pModel[2].monitor;
+    pModel[3].monitor = 0;
+    monitor[12] = 0;
+    v13 = pModel[2].monitor;
+    v14 = Allocate(mdlEffectResrcList_t);
+    mdlEffectResrcList_t___ctor(v14);
+    v13[13] = v14;
+    aTopPtr = 0;
+    sdfDevLoadFileUnity_25061072("dds3data/event/e801/kaifuk.PB.bytes", &aTopPtr, 0, "e801");
+    v16 = aTopPtr;
+    v17 = pModel;
+    {
+      v17 = pModel;
+    }
+    pModel[4].klass = sdfModelMakeUnity(0, v16, 0);
+    v17->modelRoot->modelobj = pObjectBasic->gameObject;
+    v17->resrc->effectData = &aTopPtr->obj;
+    listPtr = v17->resrc->effectResrcList;
+    asset_bc = get_asset_bc();
+    FileByte = LoadFileByte(asset_bc, "e801", "dds3data/event/e801/KAI.D3P.bytes");
+    mdlCreateEffectResrc_D3P(&listPtr, &FileByte->obj, 0);
+    v22 = get_asset_bc();
+    v23 = LoadFileByte(v22, "e801", "dds3data/event/e801/KAI2.D3P.bytes");
+    mdlCreateEffectResrc_D3P(&listPtr, &v23->obj, 0);
+    aHandle->resrc->effectResrcList = listPtr;
+    if (!mdlGenEffect(&aHandle, -1, -1))
+    {
+      mdlGenEffect(&aHandle, 0, 0);
+    }
+    rcv_data->EffFlag = 1;
+  }
 }
 
 // 0x1993bd0
 void fclRecoverEventEnd(void) {
-    dds3KillProcessName(0, 0);
+  dds3KillProcessName("e801_main", 1);
+  else
+  {
     fclFreeStage();
+  }
 }
 
 // 0x1993b20
@@ -220,10 +302,11 @@ void fclRecoverInitPanelMover(fclDataRecover_t *pData) {
 s32 fclRecoverProcessEnd(void) {
   if (!fldProc_CallSisetuReturn())
     return 0;
+LABEL_6:
   FadeOutWindow();
-  dds3KillProcessName(StringLiteral_16370, 1);
-  dds3KillProcessName(StringLiteral_16371, 1);
-  dds3KillProcessName(StringLiteral_16372, 1);
+  dds3KillProcessName("recover", 1);
+  dds3KillProcessName("recover_draw", 1);
+  dds3KillProcessName("recover_update", 1);
   return 1;
 }
 
@@ -248,14 +331,14 @@ void fclRecoverProcessStart(s8 Place) {
       0,
       Method_fclRecoverCalc_rcvCalc__);
     data = GBWK;
-    dds3StartProcess(StringLiteral_16370, 0x401u, 1, 1, v5, 0, 0, 0, data, 0);
+    dds3StartProcess("recover", 0x401u, 1, 1, v5, 0, 0, 0, data, 0);
     v8 = Allocate(System_Func_dds3ProcessID_t__object_);
     object____ctor(
       v8,
       0,
       Method_fclRecoverDraw_rcvDraw__);
     dds3StartProcess(
-      StringLiteral_16371,
+      "recover_draw",
       0x2B11u,
       1,
       1,
@@ -276,7 +359,7 @@ void fclRecoverProcessStart(s8 Place) {
       0,
       Method_fclRecoverInit_fclDestroyRecover__);
     dds3StartProcess(
-      StringLiteral_16372,
+      "recover_update",
       0x520Du,
       1,
       1,
@@ -316,13 +399,13 @@ void fclRecoverUpdateInit(fclDataRecover_t *data) {
   cmpCursorInfo_t_o *CursorInfo;
   System_Byte_array *v16;
 
-  LoadKeys(1, StringLiteral_16364, 0);
-  LoadKeys(3, StringLiteral_16364, 0);
+  LoadKeys(1, "e801", 0);
+  LoadKeys(3, "e801", 0);
   rcv_data = data;
   asset_bc = get_asset_bc();
-  data->pScriptData = LoadFileByte(asset_bc, StringLiteral_16364, StringLiteral_16368);
-  LoadLocalizeText(StringLiteral_4611, StringLiteral_16174);
-  LoadLocalizeText(StringLiteral_16364, StringLiteral_16369);
+  data->pScriptData = LoadFileByte(asset_bc, "e801", "dds3data/facility/scr/recover/message.bf.bytes");
+  LoadLocalizeText("common", "FACILITY");
+  LoadLocalizeText("e801", "RECOVER_MES_DATA");
   InitializeUI(801);
   SetRootMenuText(&GBWK->CmdSelInfo, gRecoverMenuStr);
   SetButtonGuide(0, 0);
@@ -337,7 +420,7 @@ void fclRecoverUpdateInit(fclDataRecover_t *data) {
   cmpSetCursorFlag(CursorInfo, v16);
   InitializeGameObject();
   GBWK->EffFlag = 0;
-  p2sdPlayBGM_20175904(StringLiteral_11810);
+  p2sdPlayBGM_20175904("SHOPSND2_BGM00");
   fclSetVal(2, 0);
   InitializeModelCameraForUnity();
 }

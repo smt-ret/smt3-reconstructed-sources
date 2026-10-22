@@ -80,6 +80,7 @@ void UpdateOption(DarkZoneChk *this) {
             v11 = _get_Item(
                     this->alf_list,
                     v6);
+LABEL_24:
           SetFloat_27246832(v10, id_AlfPower, v11);
         }
         if (++v6 >= _get_Count(this->mat_list))
@@ -94,6 +95,7 @@ void UpdateOption(DarkZoneChk *this) {
       SetFloat_27246832(v10, id_Adj_ColorR, v11);
       SetFloat_27246832(v10, id_Adj_ColorG, v11);
       id_AlfPower = id_Adj_ColorB;
+      goto LABEL_24;
     }
   }
 }

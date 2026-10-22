@@ -30,28 +30,27 @@ s32 nbCameraPressProcessGetFrame(void) {
 // 0x167b0f0
 void nbCameraPressProcessInit(void) {
   s32 v3;
-  struct nbCameraPress_StaticFields *static_fields;
 
   {
     else
     {
-      static_fields = nbCameraPress->static_fields;
-      if (static_fields->nbCameraPressThrough)
+      if (nbCameraPressThrough)
+        goto LABEL_5;
     }
   }
   else
   {
     v3 = 0;
-    static_fields = nbCameraPress->static_fields;
-    if (static_fields->nbCameraPressThrough)
+    if (nbCameraPressThrough)
     {
-      static_fields->nbCameraPressRunFlag = 0;
+LABEL_5:
+      nbCameraPressRunFlag = 0;
       nbCameraPressFrame = 100;
       nbCameraPressThrough = 0;
       return;
     }
   }
-  static_fields->nbCameraPressRunFlag = 1;
+  nbCameraPressRunFlag = 1;
   nbCameraPressFrame = 0;
 }
 
@@ -60,14 +59,12 @@ void nbCameraPressProcessRun(void) {
   nbMainProcessData_t_o *MainProcessData;
   nbMainProcessData_t_o *v5;
   nbCameraPress_c *v6;
-  struct nbCameraPress_StaticFields *static_fields;
   s32 nbCameraPressFrame;
   struct dds3Effect_Blur_t_o *nbCameraPressBlur_Enemy;
   s16 v10;
   s32 v11;
   s32 v12;
   f32 v13;
-  struct nbCameraPress_StaticFields *v14;
 
   if (nbCameraPressRunFlag)
   {
@@ -75,42 +72,59 @@ void nbCameraPressProcessRun(void) {
     if (MainProcessData)
     {
       v5 = MainProcessData;
-      static_fields = v6->static_fields;
-      nbCameraPressFrame = static_fields->nbCameraPressFrame;
       if (nbCameraPressFrame > 9)
+        goto LABEL_48;
       if (nbCameraPressFrame < 0)
+        goto LABEL_48;
       if ((v5->stat & 8) != 0)
       {
-        nbCameraPressBlur_Enemy = static_fields->nbCameraPressBlur_Enemy;
         v10 = *&v6->_2.bitflags1;
         if ((v10 & 0x200) != 0)
         {
+LABEL_24:
           v11 = v10 & 0x200;
           v12 = nbCameraPressFrame;
           if (v12 <= 2)
+            goto LABEL_27;
+          goto LABEL_35;
         }
       }
       else
       {
-        nbCameraPressBlur_Enemy = static_fields->nbCameraPressBlur_Player;
+        nbCameraPressBlur_Enemy = nbCameraPressBlur_Player;
         v10 = *&v6->_2.bitflags1;
         if ((v10 & 0x200) != 0)
+          goto LABEL_24;
       }
       v11 = 0;
       v12 = nbCameraPressFrame;
+      if (v12 <= 2)
+      {
+LABEL_27:
+        goto LABEL_44;
+      }
+LABEL_35:
       v12 = 10 - v12;
       if (v12 > 3)
       {
         v13 = 1.0;
         if ((v6->_2.bitflags2 & 2) != 0)
+          goto LABEL_45;
+        goto LABEL_47;
       }
+LABEL_44:
       v13 = v12 / 3.0;
-      nbCameraPressBlur_Enemy->abgr = effColorBlend(0x808080u, 0x60808080u, v13);
-      ++nbCameraPressFrame;
-      v14 = nbCameraPress->static_fields;
-      if (v14->nbCameraPressFrame >= 21)
+      if ((v6->_2.bitflags2 & 2) != 0)
       {
-        v14->nbCameraPressRunFlag = 0;
+LABEL_45:
+      }
+LABEL_47:
+      nbCameraPressBlur_Enemy->abgr = effColorBlend(0x808080u, 0x60808080u, v13);
+LABEL_48:
+      ++nbCameraPressFrame;
+      if (nbCameraPressFrame >= 21)
+      {
+        nbCameraPressRunFlag = 0;
       }
     }
   }

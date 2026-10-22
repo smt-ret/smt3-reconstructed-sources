@@ -40,7 +40,7 @@ struct dds3GlobalWork_t {
     u8 hearts[64];
     u8 heartsskcnt[64];
     u8 heartscnt;
-    u8 **name_img[UNKNOWN_ARRAY_SIZE];
+    u8 ***name_img;
     u8 *name_nums[4];
     u8 *name_code[4];
     u8 *cname_code[4];

@@ -88,7 +88,7 @@ bool IsFileExists(AssetBundleCtrl *this, char *key, char *path_name) {
   }
   if (!op_Inequality(v8, 0, 0))
     return 0;
-  v9 = Concat_5224608(StringLiteral_4583, path_name);
+  v9 = Concat_5224608("Assets/AssetBundle/AssetData/", path_name);
   return Contains(v8, v9, 0);
 }
 
@@ -116,8 +116,8 @@ void *LoadAsset(AssetBundleCtrl *this, char *key, char *path, char *name) {
   System_String_o *v9;
   System_String_o *v10;
 
-  v9 = StringLiteral_4586;
-  v10 = Concat_5271136(path, StringLiteral_74, name, v9);
+  v9 = ".asset";
+  v10 = Concat_5271136(path, "/", name, v9);
   return LoadFile_16626736(this, key, v10);
 }
 
@@ -127,8 +127,8 @@ void *LoadAudioClip(AssetBundleCtrl *this, char *key, char *path, char *name) {
   System_String_o *v10;
   UnityEngine_AudioClip_o *result;
 
-  v9 = StringLiteral_4585;
-  v10 = Concat_5271136(path, StringLiteral_74, name, v9);
+  v9 = ".wav";
+  v10 = Concat_5271136(path, "/", name, v9);
   result = LoadFile_16626736(this, key, v10);
   if (result)
   {
@@ -153,13 +153,87 @@ void *LoadCoroutine(AssetBundleCtrl *this, char *key, s32 dlc_id) {
 
 // 0xfd9c80
 void LoadDirect(AssetBundleCtrl *this, char *key, char *aname, s32 dlc_id) {
+  void *Item;
+  System_Collections_Generic_Dictionary_ValueCollection_TKey__TValue__o *Values;
+  s64 v11;
+  Il2CppObject *v12;
+  u64 *v13;
+  System_String_array *v14;
+  s64 *v20;
+  s64 *v21;
+  s64 *v26;
+  s64 *v27;
+  Il2CppObject *v33;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v35;
+  System_Collections_Generic_Dictionary_ValueCollection_Enumerator_TKey__TValue__o v36;
+
+  memset(&v36, 0, sizeof(v36));
+  if (Animator___ContainsKey(this->assetbundle, key))
+  {
+    Item = object___get_Item(this->assetbundle, key);
+  }
+  else
+  {
+    Item = Allocate(AssetBundleCtrl_Data);
+    _ctor(Item, 0);
+    Values = Type___get_Values(this->assetbundle);
+    Type___GetEnumerator(&v35, Values);
+    v36 = v35;
+    while ((sub_4D4B20(&v36) & 1) != 0)
+    {
+      v11 = sub_4D4CB0(&v36);
+      if (Equals_5234480(aname, *(*(v11 + 24) + 24LL), 0))
+      {
+        *(Item + 3) = *(v11 + 24);
+        break;
+      }
+    }
+    nullsub_48(&v36);
+    if (!*(Item + 3))
+    {
+      v12 = Allocate(AssetBundleCtrl_LoadData);
+      v12[1].monitor = Empty;
+      _ctor(v12, 0);
+      *(Item + 3) = v12;
+      v12[1].monitor = aname;
+    }
+    PropertySheet___Add(this->assetbundle, key, Item);
+  }
+  ++*(Item + 4);
+  if (++*(*(Item + 3) + 16LL) >= 2)
+  {
+    v14 = NewSpecific(string, 7u);
+    v14->m_Items[0] = "AssetBundleCtrl:Loaded:";
+    v14->m_Items[1] = key;
+    v14->m_Items[2] = ":";
+    v20 = sub_232970(Item + 4);
+    v21 = v20;
+    v14->m_Items[3] = v21;
+    v14->m_Items[4] = "(";
+    v26 = sub_232970((*(Item + 3) + 16LL));
+    v27 = v26;
+    v14->m_Items[5] = v27;
+    v14->m_Items[6] = ")";
+    v33 = Concat_5271600(v14);
+    Log(v33, 0);
+  }
+  else
+  {
+    v13 = Allocate(AssetBundleCtrl__LoadCoroutine_d__11);
+    _ctor(v13, 0);
+    *(v13 + 4) = 0;
+    v13[4] = this;
+    v13[6] = key;
+    *(v13 + 10) = dlc_id;
+    StartCoroutine_27343696(this, v13);
+  }
 }
 
 // 0xfdacf0
 void *LoadFile(AssetBundleCtrl *this, char *key, char *path, char *name, char *extension) {
   System_String_o *v11;
 
-  v11 = Concat_5271136(path, StringLiteral_74, name, extension);
+  v11 = Concat_5271136(path, "/", name, extension);
   return LoadFile_16626736(this, key, v11);
 }
 
@@ -167,7 +241,7 @@ void *LoadFile(AssetBundleCtrl *this, char *key, char *path, char *name, char *e
 void *LoadFileAsync(AssetBundleCtrl *this, char *key, char *path, char *name, char *extension) {
   System_String_o *v11;
 
-  v11 = Concat_5271136(path, StringLiteral_74, name, extension);
+  v11 = Concat_5271136(path, "/", name, extension);
   return LoadFileAsync_16626960(this, key, v11);
 }
 
@@ -185,7 +259,7 @@ void *LoadFileAsync_16626960(AssetBundleCtrl *this, char *key, char *path_name) 
   {
     v7 = 0;
   }
-  v8 = Concat_5224608(StringLiteral_4583, path_name);
+  v8 = Concat_5224608("Assets/AssetBundle/AssetData/", path_name);
   return LoadAssetAsync(v7, v8);
 }
 
@@ -229,7 +303,7 @@ void *LoadFile_16626736(AssetBundleCtrl *this, char *key, char *path_name) {
   {
     v7 = 0;
   }
-  v8 = Concat_5224608(StringLiteral_4583, path_name);
+  v8 = Concat_5224608("Assets/AssetBundle/AssetData/", path_name);
   return LoadAsset(v7, v8, 0);
 }
 
@@ -246,8 +320,8 @@ void *LoadPrefabAsync(AssetBundleCtrl *this, char *key, char *path, char *name) 
   System_String_o *v9;
   System_String_o *v10;
 
-  v9 = StringLiteral_4582;
-  v10 = Concat_5271136(path, StringLiteral_74, name, v9);
+  v9 = ".prefab";
+  v10 = Concat_5271136(path, "/", name, v9);
   return LoadFileAsync_16626960(this, key, v10);
 }
 
@@ -262,8 +336,8 @@ void *LoadPrefab_16624272(AssetBundleCtrl *this, char *key, char *path, char *na
   UnityEngine_GameObject_o *v21;
   System_String_o *v22;
 
-  v13 = StringLiteral_4582;
-  v14 = Concat_5271136(path, StringLiteral_74, name, v13);
+  v13 = ".prefab";
+  v14 = Concat_5271136(path, "/", name, v13);
   File_16626736 = LoadFile_16626736(this, key, v14);
   if (File_16626736)
   {
@@ -293,8 +367,8 @@ void *LoadPrefab_16624656(AssetBundleCtrl *this, char *key, char *path, char *na
   System_String_o *v10;
   UnityEngine_GameObject_o *result;
 
-  v9 = StringLiteral_4582;
-  v10 = Concat_5271136(path, StringLiteral_74, name, v9);
+  v9 = ".prefab";
+  v10 = Concat_5271136(path, "/", name, v9);
   result = LoadFile_16626736(this, key, v10);
   if (result)
   {
@@ -320,11 +394,11 @@ void **LoadSprite(AssetBundleCtrl *this, char *key, char *path, char *name) {
     v9 = 0;
   }
   v10 = NewSpecific(string, 5u);
-  v10->m_Items[0] = StringLiteral_4583;
+  v10->m_Items[0] = "Assets/AssetBundle/AssetData/";
   v10->m_Items[1] = path;
-  v10->m_Items[2] = StringLiteral_74;
+  v10->m_Items[2] = "/";
   v10->m_Items[3] = name;
-  v10->m_Items[4] = StringLiteral_4584;
+  v10->m_Items[4] = ".png";
   v17 = Concat_5271600(v10);
   return LoadAssetWithSubAssets_object_(v9, v17);
 }
@@ -347,6 +421,60 @@ void **LoadSprite_16626112(AssetBundleCtrl *this, char *key, char *fullPath) {
 
 // 0xfda550
 void UnloadAB(AssetBundleCtrl *this, char *key) {
+  Il2CppObject *Item;
+  s32 *v6;
+  Il2CppObject *v7;
+  System_String_array *v8;
+  s64 *v12;
+  s64 *v13;
+  s64 *v16;
+  s64 *v17;
+  Il2CppObject *v21;
+  s32 *monitor;
+  UnityEngine_Object_o *v24;
+
+  if (Animator___ContainsKey(this->assetbundle, key))
+  {
+    Item = object___get_Item(this->assetbundle, key);
+    v6 = &Item[1];
+    --LODWORD(Item[1].klass);
+    --*(Item[1].monitor + 4);
+    v7 = Item;
+    v8 = NewSpecific(string, 7u);
+    v8->m_Items[0] = "AssetBundleCtrl:Unload:";
+    v8->m_Items[1] = key;
+    v8->m_Items[2] = "-";
+    v12 = sub_232970(v6);
+    v13 = v12;
+    v8->m_Items[3] = v13;
+    v8->m_Items[4] = "(";
+    v16 = sub_232970(v7[1].monitor + 4);
+    v17 = v16;
+    v8->m_Items[5] = v17;
+    v8->m_Items[6] = ")";
+    v21 = Concat_5271600(v8);
+    Log(v21, 0);
+    if (*v6 <= 0)
+    {
+      HashSet_Text____Remove(this->assetbundle, key);
+      monitor = v7[1].monitor;
+      if (monitor[4] > 0)
+        return;
+    }
+    else
+    {
+      monitor = v7[1].monitor;
+      if (monitor[4] > 0)
+        return;
+    }
+    monitor[4] = 0;
+    v24 = *(v7[1].monitor + 4);
+    if (op_Inequality(v24, 0, 0))
+    {
+      Unload(*(v7[1].monitor + 4), 0, 0);
+      *(v7[1].monitor + 4) = 0;
+    }
+  }
 }
 
 // 0xfda9c0

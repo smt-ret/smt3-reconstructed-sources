@@ -25,7 +25,10 @@ s32 sdf2DGetPrimPacketSize(s32 aNumOfRegs, s32 aNumOfPrim) {
 
 // 0x17c9af0
 void *sdf2DGetPrimPtr(void *aPacketPtr) {
-    return 0;
+  s32 v4;
+
+  v4 = *il2cp::SizeOf(aPacketPtr, s32) + 32;
+  return sub_8D3950(s32, &v4);
 }
 
 // 0x17c9470
@@ -77,12 +80,66 @@ void *sdf2DMakePrimPacketHeader_24943632(void *aPacketPtr, s32 aPrimReg, s32 aNu
 
 // 0x17c99c0
 void *sdf2DMakeStdPacket(void *aPacket, s32 aLeng) {
-    return 0;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v6;
+  s64 *v7;
+  u64 v9[3];
+
+  else if (!aPacket)
+  {
+    return aPacket;
+  }
+  klass = aPacket->klass;
+  if (aPacket->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfGrPacketHeader_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, sdfGrPacketHeader_t, v9);
+    if ((v9[0] & 1) != 0)
+      v6 = v9[2];
+    else
+      v6 = v9 + 1;
+    v7 = sub_8C4940(v6);
+  }
+  return aPacket;
 }
 
 // 0x17c9480
 void *sdf2DMakeTexPacket(void *aPacket, sdfTexHandle_t *aTexHndl, s32 aCtx) {
-    SDF_VIF_SET_DIRECT(0);
-    SDF_GIFTAG_PARM(0, 0, 0, 0, 0, 0);
-    return 0;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v9;
+  s64 *v10;
+  Il2CppClass *v11;
+  u64 *monitor;
+  u64 v14[3];
+
+  if (aPacket)
+  {
+    klass = aPacket->klass;
+    if (aPacket->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdf2DTexPacket_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, sdf2DTexPacket_t, v14);
+      if ((v14[0] & 1) != 0)
+        v9 = v14[2];
+      else
+        v9 = v14 + 1;
+      v10 = sub_8C4940(v9);
+    }
+  }
+  LOWORD(aPacket[1].klass->_1.name) = 4;
+  LODWORD(aPacket[1].klass->_1.byval_arg.data) = 0;
+  v11 = aPacket[1].klass;
+  HIDWORD(v11->_1.byval_arg.data) = SDF_VIF_SET_DIRECT(4u);
+  monitor = aPacket[1].monitor;
+  monitor[2] = SDF_GIFTAG_PARM(3u, 1u, 0, 0, 0, 1u);
+  *(aPacket[1].monitor + 3) = 14;
+  aPacket[3].klass->_1.name = aTexHndl;
+  aPacket[3].klass->_1.byval_arg.data = (aCtx + 20);
+  *(aPacket[2].monitor + 2) = aTexHndl;
+  *(aPacket[2].monitor + 4) = aCtx + 6;
+  *(aPacket[3].monitor + 2) = aTexHndl;
+  *(aPacket[3].monitor + 4) = aCtx + 8;
+  return aPacket;
 }

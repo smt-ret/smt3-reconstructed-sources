@@ -18,7 +18,6 @@ void AddFadeCoroutineStartSE(void *routine) {
   UnityEngine_MonoBehaviour_o *v4;
   UnityEngine_Coroutine_o *klass;
 
-  static_fields = SoundCoroutine->static_fields;
   v4 = *static_fields;
   klass = (*static_fields)[2].klass;
   if (klass)
@@ -40,7 +39,6 @@ void AddVoiceCoroutineListAndStart(void *routine) {
   UnityEngine_MonoBehaviour_o *v4;
   UnityEngine_Coroutine_o *monitor;
 
-  static_fields = SoundCoroutine->static_fields;
   v4 = *static_fields;
   monitor = (*static_fields)[1].monitor;
   if (monitor)
@@ -79,7 +77,6 @@ void StopVoiceCoroutine(void) {
   UnityEngine_MonoBehaviour_o **static_fields;
   UnityEngine_Coroutine_o *monitor;
 
-  static_fields = SoundCoroutine->static_fields;
   monitor = (*static_fields)[1].monitor;
   if (monitor)
     StopCoroutine_27344864(*static_fields, monitor);

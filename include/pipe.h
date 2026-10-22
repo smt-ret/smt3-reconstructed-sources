@@ -77,20 +77,20 @@ struct PIPE_EFF_t {
     sdfVector2_t pos2;
     s32 offset;
     s32 count;
-    void tex[UNKNOWN_ARRAY_SIZE];
+    void *tex;
 };
 
 struct tagPipePosTable {
     sdfMemHandle_t *aHandle;
     s32 tSize;
-    tagPipePosData pData[UNKNOWN_ARRAY_SIZE];
+    tagPipePosData *pData;
 };
 
 struct tagPipeTable {
     s32 tabMax;
     sdfMemHandle_t *aHandle;
     tagPipeEnemyTable *tabPtr[1];
-    s8 data[UNKNOWN_ARRAY_SIZE];
+    s8 *data;
 };
 
 struct tagPipePosData {

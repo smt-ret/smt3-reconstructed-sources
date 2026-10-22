@@ -5,7 +5,7 @@ typedef struct SOBED_PB_LIST SOBED_PB_LIST;
 typedef struct evtPBManager_EvtPBData evtPBManager_EvtPBData;
 
 struct evtPBManager_EvtPBData {
-    u8 pb[UNKNOWN_ARRAY_SIZE];
+    u8 *pb;
     SOBED_PB_LIST *bed;
 };
 
@@ -75,7 +75,13 @@ void DeletePB(bool unload) {
 
 // 0x10f1ce0
 void Destroy(bool unload) {
-    DeletePB(0);
+  bool v3;
+
+  else
+  {
+    v3 = unload;
+  }
+  DeletePB(v3);
 }
 
 // 0x10f1610
@@ -87,8 +93,8 @@ void Initialize(char *key, char *path) {
     DeletePB(1);
   }
   evtPBManager_EvtPBData___Clear(PBs);
-  v8 = Concat_5271136(StringLiteral_15919, key, StringLiteral_74, path);
-  LoadPB(key, v8, StringLiteral_15937);
+  v8 = Concat_5271136("dds3data/event/", key, "/", path);
+  LoadPB(key, v8, "PBList.bytes");
 }
 
 // 0x10f1910
@@ -119,7 +125,7 @@ void LoadPB(char *key, char *path, char *name) {
   v6 = Allocate(System_Collections_Generic_List_string_);
   __ctor(v6);
   asset_bc = get_asset_bc();
-  v9 = Concat_5221536(path, StringLiteral_74, name);
+  v9 = Concat_5221536(path, "/", name);
   FileObject = LoadFileObject(asset_bc, key, v9);
   if (FileObject)
   {
@@ -136,7 +142,7 @@ void LoadPB(char *key, char *path, char *name) {
     Unicode = get_Unicode();
     v14 = (Unicode->klass[1]._1.byval_arg.data)(Unicode, bytes, *&Unicode->klass[1]._1.byval_arg.bits);
     v15 = NewSpecific(string, 1u);
-    v15->m_Items[0] = StringLiteral_489;
+    v15->m_Items[0] = "\r\n";
     v17 = Split_5246672(v14, v15, 0);
     v18 = LODWORD(v17->max_length) - 1;
     if (v18 >= 2)
@@ -151,9 +157,9 @@ void LoadPB(char *key, char *path, char *name) {
         SOBED_PB_LIST___ctor(v22);
         v24 = get_asset_bc();
         v26 = (&v19->obj.klass + v20);
-        v27 = Concat_5271136(path, StringLiteral_74, v26[4], StringLiteral_15938);
+        v27 = Concat_5271136(path, "/", v26[4], ".pb.bytes");
         FileByte = LoadFileByte(v24, key, v27);
-        if (!Equals_5234480(v26[5], StringLiteral_3674))
+        if (!Equals_5234480(v26[5], "NULL"))
         {
           v31 = get_asset_bc();
           v22->gobj = LoadPrefab_16624656(v31, key, path, v26[5]);

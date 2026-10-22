@@ -63,7 +63,7 @@ struct dds3ModelHandle_t {
     dds3ModelBlurCb_t *blur;
     dds3Basic_t *Owner;
     f32 radius;
-    sdf3DLight_t uLight[UNKNOWN_ARRAY_SIZE];
+    sdf3DLight_t *uLight;
     sdfVector4_t uAmbient;
 };
 
@@ -73,7 +73,7 @@ struct dds3ModelResrc_t {
     u16 major;
     u16 minor;
     u8 autoFreeFlag;
-    u8 pad[UNKNOWN_ARRAY_SIZE];
+    u8 *pad;
     dds3ModelHandle_t *models;
     sdfModelTexList_t *texList;
     sdfModelDef_t *modelDefPtr;
@@ -91,9 +91,9 @@ struct dds3ModelEffectCtrlr_t {
     u16 type;
     s16 playGroup;
     void *handle;
-    void work[UNKNOWN_ARRAY_SIZE];
+    void *work;
     s32 mark_id;
-    void pTexture[UNKNOWN_ARRAY_SIZE];
+    void *pTexture;
 };
 
 struct dds3ModelBlurCb_t {
@@ -135,17 +135,17 @@ struct mdlEffectResrcItem_t {
     s32 count;
     void *handle;
     sdfMemHandle_t *memHandle;
-    void pTexture[UNKNOWN_ARRAY_SIZE];
+    void *pTexture;
 };
 
 struct dds3LightEditorWork_t {
-    sdf3DLight_t lightSrc[UNKNOWN_ARRAY_SIZE];
+    sdf3DLight_t *lightSrc;
     sdfVector4_t ambientSrc;
-    u8 padSrc[UNKNOWN_ARRAY_SIZE];
+    u8 *padSrc;
     u8 mode;
     u8 cursorTimer;
     s16 cursor;
-    sdfDrawTag_t drawTag[UNKNOWN_ARRAY_SIZE];
+    sdfDrawTag_t *drawTag;
 };
 
 struct dds3ModelFileTable_t {
@@ -157,7 +157,7 @@ struct dds3ModelFileTable_t {
 };
 
 struct dds3ModelFileTableDef_t {
-    dds3ModelFileTable_t fileTable[UNKNOWN_ARRAY_SIZE];
+    dds3ModelFileTable_t *fileTable;
     s32 numOfFile;
 };
 
@@ -169,7 +169,7 @@ struct dds3ModelFileIndex_t {
 };
 
 struct dds3ModelFileKindTable_t {
-    dds3ModelFileIndex_t indexTable[UNKNOWN_ARRAY_SIZE];
+    dds3ModelFileIndex_t *indexTable;
     s32 numOfIndex;
 };
 

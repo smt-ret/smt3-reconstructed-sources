@@ -113,29 +113,112 @@ _RING_BUF *rbInitRingBuf(s32 index, s32 Nums) {
 
 // 0x69380
 _TEXT *rbRentFromRingBuf__TEXT_(_RING_BUF *pRingBuf) {
+  struct _RING_BUF_o *Next;
+  s64 *obj;
+  s64 rgctxDataDummy;
+  _TEXT_o *result;
+  char *v7;
+  s64 *v8;
+  u64 v9[3];
+
+  Next = pRingBuf->Next;
+  if (!Next->ID)
     return 0;
+  pRingBuf->Next = Next->Next;
+  obj = Next->obj;
+  Next->Next = 0;
+  if (obj)
+  {
+    rgctxDataDummy = method->rgctx_data[1].rgctxDataDummy;
+    if ((*(rgctxDataDummy + 294) & 1) != 0)
+      goto LABEL_4;
+  }
+  else
+  {
+    obj = (*method->rgctx_data->rgctxDataDummy)();
+    Next->obj = obj;
+    rgctxDataDummy = method->rgctx_data[1].rgctxDataDummy;
+    if ((*(rgctxDataDummy + 294) & 1) != 0)
+    {
+LABEL_4:
+      if (obj)
+        goto LABEL_5;
+      return 0;
+    }
+  }
+  sub_88B3F0(rgctxDataDummy);
+  if (!obj)
+    return 0;
+LABEL_5:
+  result = QueryInterface(obj, rgctxDataDummy);
+  if (!result)
+  {
+    sub_8FC2C0(*(*obj + 64), rgctxDataDummy, v9);
+    if ((v9[0] & 1) != 0)
+      v7 = v9[2];
+    else
+      v7 = v9 + 1;
+    v8 = sub_8C4940(v7);
+  }
+  return result;
 }
 
 // 0xf0d70
 s32 rbRetToRingBuf__TEXT_(s32 index, _TEXT *pBuf, _RING_BUF *pRingBuf) {
+  u8 *rgctxDataDummy;
+  Il2CppObject *v9;
+  struct _RING_BUF_array_array *ring_bufs;
+  dds3ModelFileTable_t_array *v12;
+  u64 *v13;
+  s32 Index_dds3ModelFileTable_t;
+  struct _RING_BUF_array_array *v15;
+  _RING_BUF_array *v17;
+  struct _RING_BUF_array_array *v20;
+  _RING_BUF_array *v22;
+  struct _RING_BUF_array_array *v24;
+  _RING_BUF_array *v26;
+
+  rgctxDataDummy = method->rgctx_data->rgctxDataDummy;
+  if ((rgctxDataDummy[294] & 1) == 0)
+    sub_88B3F0(method->rgctx_data->rgctxDataDummy, pBuf);
+  v9 = Allocate(rgctxDataDummy);
+  (*method->rgctx_data[1].rgctxDataDummy)();
+  v9[1].klass = pBuf;
+  if (!pBuf)
     return 0;
+  v12 = ring_bufs->m_Items[index];
+  v13 = Allocate(System_Predicate__RING_BUF_);
+  __ctor(
+    v13,
+    v9->rgctx_data[3].rgctxDataDummy);
+  Index_dds3ModelFileTable_t = FindIndex_dds3ModelFileTable_t_(v12, v13);
+  if (Index_dds3ModelFileTable_t != -1)
+  {
+    v15 = ring_bufs;
+    v17 = v15->m_Items[index];
+    if (v17->m_Items[Index_dds3ModelFileTable_t]->Next)
+      return 0;
+    v20 = ring_bufs;
+    v22 = v20->m_Items[index];
+    v22->m_Items[Index_dds3ModelFileTable_t]->Next = pRingBuf->Next;
+    v24 = ring_bufs;
+    v26 = v24->m_Items[index];
+    pRingBuf->Next = v26->m_Items[Index_dds3ModelFileTable_t];
+  }
+  return 1;
 }
 
 // 0x1557eb0
 void release_ringbufs(s32 index) {
-  struct rbRingBuf_StaticFields *static_fields;
   struct _RING_BUF_array_array *ring_bufs;
   s32 max_length;
   bool v6;
   u64 v7;
   _RING_BUF_array *v9;
   s64 v11;
-  struct rbRingBuf_StaticFields *v12;
   il2cpp_array_size_t v13;
 
-  static_fields = rbRingBuf->static_fields;
-  ring_bufs = static_fields->ring_bufs;
-  max_length = static_fields->ring_bufs->max_length;
+  max_length = ring_bufs->max_length;
   v6 = max_length > index;
   if (max_length >= 1)
   {
@@ -145,9 +228,7 @@ void release_ringbufs(s32 index) {
       v9 = ring_bufs->m_Items[index];
       v11 = v9 + 8 * v7++;
       *(*(v11 + 32) + 32LL) = 0;
-      v12 = rbRingBuf->static_fields;
-      ring_bufs = v12->ring_bufs;
-      v13 = v12->ring_bufs->max_length;
+      v13 = ring_bufs->max_length;
       v6 = v13 > index;
     }
     while (v7 < v13);

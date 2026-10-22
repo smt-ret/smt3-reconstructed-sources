@@ -47,17 +47,15 @@ void sdfDevConsDrawInit(sdfDevConsDrawCB_t *aCB, void *aPacketBuffer, s32 aBuffe
 
 // 0x17e5370
 sdfTexHandle_t *sdfDevConsGetFontHandle(void) {
-  struct sdfDevCons_StaticFields *static_fields;
   struct sdfDevCons_StaticFields **p_static_fields;
 
+LABEL_7:
   else
   {
-    p_static_fields = &sdfDevCons->static_fields;
-    static_fields = sdfDevCons->static_fields;
-    if (static_fields->alreadyInitDevCons)
-      return static_fields->sdfDebugFontHandle;
+    if (alreadyInitDevCons)
+      return sdfDebugFontHandle;
   }
-  static_fields->alreadyInitDevCons = 1;
+  alreadyInitDevCons = 1;
   return (*p_static_fields)->sdfDebugFontHandle;
 }
 
@@ -78,15 +76,12 @@ s32 sdfDevConsGetMode(sdfDevConsCB_tag *aHndl) {
 
 // 0x17e52c0
 void sdfDevConsInit(void) {
-  struct sdfDevCons_StaticFields *static_fields;
-
   else
   {
-    static_fields = sdfDevCons->static_fields;
-    if (static_fields->alreadyInitDevCons)
+    if (alreadyInitDevCons)
       return;
   }
-  static_fields->alreadyInitDevCons = 1;
+  alreadyInitDevCons = 1;
 }
 
 // 0x17e5490
@@ -153,9 +148,11 @@ void sdfDevConsUnlink(sdfDevConsCB_tag *aHndl) {
     prev->next = next;
     if (!next)
       return;
+    goto LABEL_9;
   }
   devConsTop = next;
   if (next)
+LABEL_9:
     next->prev = prev;
 }
 
@@ -224,13 +221,9 @@ void sdfDevCons_old__sdfDevConsClear(void) {
 
 // 0x17e5fb0
 void sdfDevCons_old__sdfDevConsClose(void) {
-  sdfDevCons_old_c *v2;
-  struct sdfDevCons_old_StaticFields *static_fields;
-
-  static_fields = v2->static_fields;
-  if (static_fields->devConsID != -1)
+  if (devConsID != -1)
   {
-    static_fields->devConsID = -1;
+    devConsID = -1;
   }
 }
 
@@ -246,18 +239,14 @@ void sdfDevCons_old__sdfDevConsLocate(s32 aLocX, s32 aLocY) {
 
 // 0x17e6050
 void sdfDevCons_old__sdfDevConsOpen(s32 aOfsX, s32 aOfsY, s32 aWidth, s32 aHeight) {
-  sdfDevCons_old_c *v5;
-  struct sdfDevCons_old_StaticFields *static_fields;
-
-  static_fields = v5->static_fields;
-  if (static_fields->devConsID != -1)
+LABEL_7:
+  if (devConsID != -1)
   {
-    static_fields->devConsID = -1;
-    static_fields = sdfDevCons_old->static_fields;
+    devConsID = -1;
   }
-  if (!static_fields->alreadyInitDevCons)
+  if (!alreadyInitDevCons)
   {
-    static_fields->alreadyInitDevCons = 1;
+    alreadyInitDevCons = 1;
   }
 }
 
@@ -306,11 +295,40 @@ void sdfDevSetPrintCB(sdfDevPrintCB_t *aCB, s32 aX, s32 aY, u32 aZ, s32 aAttr) {
   aCB->x = aX;
   aCB->y = aY;
   aCB->z = aZ;
+LABEL_7:
   aCB->attr = sdfDevConsColorTable->m_Items[aAttr];
 }
 
 // 0x17e59c0
 void *sdfDevVprintf(sdfDevPrintCB_t *aCB, char *aStr, void **LegacyParamArray) {
-    Draw(0, 0, 0, 0);
-    return 0;
+  f32 v7;
+  f32 v8;
+  u32 attr;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  s64 v15;
+  s64 v16;
+  TextManager_o *txtMgr;
+  System_String_o *v18;
+  s64 v20;
+  s64 v21;
+  UnityEngine_Color_o v22;
+
+  v20 = 0;
+  v21 = 0;
+  v7 = ((aCB->x - 28672) >> 3);
+  v8 = ((aCB->y - 30976) >> 2);
+  attr = aCB->attr;
+  v10 = BYTE2(attr);
+  v11 = BYTE1(attr);
+  v12 = attr;
+  sub_19EC630(&v20, v10 / 255.0, v11 / 255.0, v12 / 255.0, 1.0);
+  v15 = v20;
+  v16 = v21;
+  v18 = Format_5268784(aStr, LegacyParamArray);
+  *&v22.r = v15;
+  *&v22.b = v16;
+  Draw(txtMgr, v7, v8, v22, v18, 0);
+  return 0;
 }

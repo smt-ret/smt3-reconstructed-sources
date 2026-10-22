@@ -7,7 +7,7 @@ typedef struct effPCP_ThunderPoly_t effPCP_ThunderPoly_t;
 
 struct effPCPRadiateTBPart_tag {
     effPCP_ThunderPoly_t *pThunderPoly;
-    effEveBEDCutHandle_t hBEDCut[UNKNOWN_ARRAY_SIZE];
+    effEveBEDCutHandle_t *hBEDCut;
     f32 radian;
     f32 radius;
     f32 rotate;

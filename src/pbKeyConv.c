@@ -1,21 +1,16 @@
 #include "types.h"
 
 static s8 keyActMode;
-static u8 keyAct[UNKNOWN_ARRAY_SIZE];
+static u8 *keyAct;
 static s16 *pbMoveDir[4];
 
 // 0x14a2540
 u8 pbGetKeyAction(u8 press) {
-  pbKeyConv_c *v3;
-  struct pbKeyConv_StaticFields *static_fields;
   struct System_Byte_array *keyAct;
   u32 keyActMode;
   Il2CppArrayBounds *bounds;
   il2cpp_array_size_t length;
 
-  static_fields = v3->static_fields;
-  keyAct = static_fields->keyAct;
-  keyActMode = static_fields->keyActMode;
   bounds = keyAct->bounds;
   length = bounds[1].length;
   return keyAct->m_Items[press + length * keyActMode];
@@ -163,41 +158,33 @@ void pbInitKeyAction(void) {
 
 // 0x14a2790
 u8 pbRotLKeyAct(void) {
-  pbKeyConv_c *v2;
-  struct pbKeyConv_StaticFields *static_fields;
   s32 keyActMode;
   s32 v5;
   char v6;
   u8 result;
 
-  static_fields = v2->static_fields;
-  keyActMode = static_fields->keyActMode;
   v5 = keyActMode + 3;
   v6 = keyActMode + 6;
   if (v5 >= 0)
     v6 = v5;
   result = v5 - (v6 & 0xFC);
-  static_fields->keyActMode = result;
+  keyActMode = result;
   return result;
 }
 
 // 0x14a2700
 u8 pbRotRKeyAct(void) {
-  pbKeyConv_c *v2;
-  struct pbKeyConv_StaticFields *static_fields;
   s32 keyActMode;
   s32 v5;
   char v6;
   u8 result;
 
-  static_fields = v2->static_fields;
-  keyActMode = static_fields->keyActMode;
   v5 = keyActMode + 5;
   v6 = keyActMode + 8;
   if (v5 >= 0)
     v6 = v5;
   result = v5 - (v6 & 0xFC);
-  static_fields->keyActMode = result;
+  keyActMode = result;
   return result;
 }
 

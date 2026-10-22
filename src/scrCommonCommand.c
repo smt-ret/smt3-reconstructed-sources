@@ -106,12 +106,14 @@ s32 scrCommand_BIT_CHK(void) {
   {
     v4 = cfgGetBit(9u) == 0;
     {
+LABEL_11:
     }
   }
   else
   {
     IntPara = scrGetIntPara(0);
     v4 = evtBitCheck(IntPara);
+      goto LABEL_11;
   }
   scrSetIntReturnValue(v4);
   return 1;
@@ -126,12 +128,14 @@ s32 scrCommand_BIT_CHK2(void) {
   {
     v4 = cfgGetBit(9u) < 2;
     {
+LABEL_11:
     }
   }
   else
   {
     IntPara = scrGetIntPara(0);
     v4 = evtBitCheck(IntPara);
+      goto LABEL_11;
   }
   scrSetIntReturnValue(v4);
   return 1;
@@ -356,6 +360,7 @@ s32 scrCommand_FADE_IN(void) {
     v8 = 255;
     v9 = 255;
     v10 = 255;
+    goto LABEL_27;
   }
   if (!IntPara)
   {
@@ -363,6 +368,7 @@ s32 scrCommand_FADE_IN(void) {
     v8 = 0;
     v9 = 0;
     v10 = 0;
+LABEL_27:
     dds3FadeIn(v8, v9, v10, v7);
     return 0;
   }
@@ -389,6 +395,7 @@ s32 scrCommand_FADE_OUT(void) {
     v8 = 255;
     v9 = 255;
     v10 = 255;
+    goto LABEL_27;
   }
   if (!IntPara)
   {
@@ -396,6 +403,7 @@ s32 scrCommand_FADE_OUT(void) {
     v8 = 0;
     v9 = 0;
     v10 = 0;
+LABEL_27:
     dds3FadeOut(v8, v9, v10, v7);
     return 0;
   }
@@ -566,10 +574,11 @@ s32 scrCommand_MUL_BLUR_OFF(void) {
   s32 v5;
   s32 IntPara;
 
+LABEL_7:
   v3 = (NowName_SCR_RUN->klass->vtable._3_ToString.methodPtr)(
          NowName_SCR_RUN,
          NowName_SCR_RUN->klass->vtable._3_ToString.method);
-  if (IsNullOrEmpty(v3) || !Equals_5234480(v3, StringLiteral_21957))
+  if (IsNullOrEmpty(v3) || !Equals_5234480(v3, "e684_050"))
   {
     IntPara = scrGetIntPara(0);
     v5 = IntPara;
@@ -678,6 +687,8 @@ s32 scrCommand_PAD_PRESS(void) {
   }
   SDF_ASSERT(v5);
   if (!LODWORD(dds3PadMap->max_length))
+    goto LABEL_26;
+LABEL_18:
   v8 = dds3PadMap->m_Items[0];
   v9 = v8->m_Items[0];
   v11 = v9->m_Items[IntPara] != 0;
@@ -708,16 +719,46 @@ s32 scrCommand_PAD_TRIG(void) {
 
 // 0x15720a0
 s32 scrCommand_PUT(void) {
-    scrGetIntPara(0);
-    dds3Printf(0, 0);
-    return 0;
+  u64 *v3;
+  System_Object_array *v4;
+  s64 *v5;
+  s64 *v6;
+  s32 v10;
+  s32 IntPara;
+
+  IntPara = scrGetIntPara(0);
+  v3 = sub_8D3950(s32, &IntPara);
+  Write_2930400("put -> {0:D}\n", v3);
+  v4 = NewSpecific(object, 1u);
+  v10 = scrGetIntPara(0);
+  v5 = sub_8D3950(s32, &v10);
+  v6 = v5;
+  v4->m_Items[0] = v6;
+  dds3Printf("PUT -> %d\n", v4);
+  return 1;
 }
 
 // 0x1572210
 s32 scrCommand_PUTS(void) {
-    scrGetStrPara(0);
-    dds3Printf(0, 0);
-    return 0;
+  Il2CppObject *StrPara;
+  System_String_o *v4;
+  System_String_o *v5;
+  System_Object_array *v6;
+  s64 *v7;
+  s64 *v8;
+  s32 v12;
+
+  StrPara = scrGetStrPara(0);
+  Write_2930400("puts -> {0}\n", StrPara);
+  v4 = scrGetStrPara(0);
+  v5 = Concat_5221536("PUTSTR -> %s ", v4, "\n");
+  v12 = 0;
+  v6 = NewSpecific(object, 1u);
+  v7 = sub_8D3950(s32, &v12);
+  v8 = v7;
+  v6->m_Items[0] = v8;
+  dds3Printf(v5, v6);
+  return 1;
 }
 
 // 0x15736f0
@@ -829,7 +870,7 @@ s32 scrCommand_RND(void) {
   u32 RandIntA;
 
   IntPara = scrGetIntPara(0);
-  RandIntA = dds3GetRandIntA(IntPara, StringLiteral_416);
+  RandIntA = dds3GetRandIntA(IntPara, "");
   scrSetIntReturnValue(RandIntA + 1);
   return 1;
 }
@@ -896,20 +937,86 @@ s32 scrCommand_SCENE_FOG_PARA(void) {
 
 // 0x1573c00
 s32 scrCommand_SCENE_FOG_RGB(void) {
-    scrGetFloatPara(0);
-    scrGetIntPara(0);
-    dds3SetFogColor(0, (sdfVector4_t){0});
-    return 0;
+  s32 IntPara;
+  s64 v4;
+  u32 v5;
+  s64 v6;
+  s64 v8;
+  s64 v9;
+  UnityEngine_Vector4_o v10;
+
+  v8 = 0;
+  v9 = 0;
+  scrGetFloatPara(1);
+  sub_854930(&v8, 0);
+  scrGetFloatPara(2);
+  sub_854930(&v8, 1u);
+  scrGetFloatPara(3);
+  sub_854930(&v8, 2u);
+  sub_854930(&v8, 3u);
+  IntPara = scrGetIntPara(0);
+  v4 = v8;
+  v5 = IntPara;
+  v6 = v9;
+  *&v10.x = v4;
+  *&v10.z = v6;
+  dds3SetFogColor(v5, v10);
+  return 1;
 }
 
 // 0x1573890
 s32 scrCommand_SCENE_LIGHT_DIR(void) {
-    scrGetFloatPara(0);
-    sdfFabs(0);
-    dds3Printf(0, 0);
-    scrGetIntPara(0);
-    dds3SetLightDir(0, 0, (sdfVector4_t){0});
-    return 0;
+  f32 v3;
+  f32 v4;
+  f32 v7;
+  f32 v8;
+  f32 v10;
+  f32 v11;
+  s32 IntPara;
+  s64 v14;
+  u32 v15;
+  s64 v16;
+  System_Object_array *v18;
+  s64 v19;
+  s64 v20;
+  UnityEngine_Vector4_o v21;
+
+  v19 = 0;
+  v20 = 0;
+  scrGetFloatPara(1);
+  sub_854930(&v19, 0);
+  scrGetFloatPara(2);
+  sub_854930(&v19, 1u);
+  scrGetFloatPara(3);
+  sub_854930(&v19, 2u);
+  sub_854930(&v19, 3u);
+  sub_854710(&v19, 0);
+  v4 = v3;
+  if (sdfFabs(v4) > 0.01)
+    goto LABEL_29;
+  sub_854710(&v19, 1u);
+  v8 = v7;
+  if (sdfFabs(v8) > 0.01)
+    goto LABEL_29;
+  sub_854710(&v19, 2u);
+  v11 = v10;
+  if (sdfFabs(v11) <= 0.01)
+  {
+    v18 = Empty_string_();
+    dds3Printf("WARNING: SCENE_LIGHT_DIR length zero\n", v18);
+  }
+  else
+  {
+LABEL_29:
+    IntPara = scrGetIntPara(0);
+    v14 = v19;
+    v15 = IntPara;
+    v16 = v20;
+    *&v21.x = v14;
+    *&v21.z = v16;
+    dds3SetLightDir(v15, 0, v21);
+  }
+  return 1;
 }
 
 // 0x1573760
@@ -1034,7 +1141,7 @@ s32 scrCommand_SCR_RUN(void) {
           v24 = (NowName_SCR_RUN->klass->vtable._3_ToString.methodPtr)(
                   NowName_SCR_RUN,
                   NowName_SCR_RUN->klass->vtable._3_ToString.method);
-          v26 = Concat_5221536(StringLiteral_21955, v24, StringLiteral_441);
+          v26 = Concat_5221536("スクリプトラベル名:[", v24, "]");
           Log(v26, 0);
           priority = ScriptHandle->ProcessID->priority;
           v29 = scrGetIntPara(1);
@@ -1062,7 +1169,7 @@ s32 scrCommand_SCR_RUN(void) {
     }
     else
     {
-      Write(StringLiteral_21954, 0);
+      Write("※警告:SCR_RUN()このコマンドはプロセス型スクリプトでのみ有効です。\n", 0);
     }
   }
   return 1;
@@ -1094,12 +1201,24 @@ s32 scrCommand_SCR_STAT(void) {
 
 // 0x15734c0
 s32 scrCommand_SCR_TIME(void) {
-    scrGetIntPara(0);
-    IndexToProcess(0);
-    dds3ExistProcess(0);
-    dds3GetProcessRunTime(0);
-    scrSetIntReturnValue(0);
-    return 0;
+  u64 *v1;
+  s32 IntPara;
+  s32 v9;
+  dds3ProcessID_t_o *id;
+
+  v1 = Allocate(dds3ProcessID_t);
+  dds3ProcessID_t___ctor(v1);
+  id = v1;
+  IntPara = scrGetIntPara(0);
+  id = IndexToProcess(IntPara);
+  else if (dds3ExistProcess(&id))
+  {
+    goto LABEL_12;
+  }
+  v9 = 0;
+LABEL_24:
+  scrSetIntReturnValue(v9);
+  return 1;
 }
 
 // 0x1573290
@@ -1142,11 +1261,31 @@ s32 scrCommand_SEL_JMP(void) {
 
 // 0x1572bd0
 s32 scrCommand_SET_FOVY(void) {
-    scrGetFloatPara(0);
-    SDF_DEGtoRAD(0);
-    dds3Printf(0, 0);
-    dds3SetScreenFovy(0);
-    return 0;
+  f32 FloatPara;
+  f32 v5;
+  f32 v6;
+  System_Object_array *v7;
+  s64 *v8;
+  s64 *v9;
+  f32 v13;
+
+  FloatPara = scrGetFloatPara(0);
+  v5 = SDF_DEGtoRAD(FloatPara);
+  v6 = v5;
+  if (v5 <= 5.0 || v5 >= 180.0)
+  {
+    v13 = v5;
+    v7 = NewSpecific(object, 1u);
+    v8 = sub_8D3950(f32, &v13);
+    v9 = v8;
+    v7->m_Items[0] = v9;
+    dds3Printf("WARNING: SET_FOVY over = %f\n", v7);
+  }
+  else
+  {
+    dds3SetScreenFovy(v6);
+  }
+  return 1;
 }
 
 // 0x1573e50

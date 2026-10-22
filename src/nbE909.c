@@ -55,7 +55,7 @@ void nbUpdateEventProcessData(dds3ProcessID_t **id);
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 26)
     return 0;
-  Write(StringLiteral_21334, 0);
+  Write("カグツチ変身\n", 0);
   ed->data->stat &= ~8u;
   SetAuto(0);
   return 1;
@@ -63,17 +63,81 @@ s32 End(nbEventProcessData_t *ed) {
 
 // 0x16fbdf0
 s32 Model1Start(nbEventProcessData_t *ed) {
-    nbPanelAllHide();
-    nbSetOrderSide(0);
-    nbGetEventForm();
-    evtSetUnitMotion(0, 0, 0, 0, 0);
-    evtGetResorceData(0, 0);
-    nbAddSkillEffectKoukaPacket3(0, 0, 0, 0, 0);
-    evtBitCheck(0);
-    nbBgmFadeOut();
-    SetAuto(0);
-    SetLevel(0);
-    return 0;
+  nbFormation_t_o *v7;
+  struct System_Int16_array *count;
+  struct nbParty_t_array *party;
+  struct System_Int16_array *v13;
+  s16 v14;
+  struct System_Int16_array *v18;
+  struct nbParty_t_array *v19;
+  struct System_Int16_array *v21;
+  s16 v23;
+  struct System_Int16_array *v26;
+  struct nbParty_t_array *v27;
+  struct System_Int16_array *v29;
+  s16 v30;
+  struct System_Int16_array *v34;
+  struct nbParty_t_array *v35;
+  struct System_Int16_array *v37;
+  s16 v38;
+  struct System_Int16_array *v42;
+  struct nbParty_t_array *v43;
+  s64 partyindex;
+  struct System_Int16_array *v46;
+  s16 v48;
+  System_Byte_array *ResorceData;
+  u64 *v52;
+  System_String_o *v53;
+  s32 v57;
+  nbFormation_t_o *form;
+
+  form = 0;
+  nbPanelAllHide();
+  nbSetOrderSide(0);
+  form = nbGetEventForm();
+  v7 = form;
+  evtSetUnitMotion(&form->hunit, 17, 0, 0, 2);
+  party = ed->data->party;
+  v13 = party->m_Items[form->partyindex]->count;
+  v14 = v13->m_Items[4];
+  count->m_Items[4] = v14;
+  v18 = count;
+  v19 = ed->data->party;
+  v21 = v19->m_Items[v7->partyindex]->count;
+  v23 = v21->m_Items[5];
+  v18->m_Items[5] = v23;
+  v26 = count;
+  v27 = ed->data->party;
+  v29 = v27->m_Items[v7->partyindex]->count;
+  v30 = v29->m_Items[6];
+  v26->m_Items[6] = v30;
+  v34 = count;
+  v35 = ed->data->party;
+  v37 = v35->m_Items[v7->partyindex]->count;
+  v38 = v37->m_Items[7];
+  v34->m_Items[7] = v38;
+  v42 = count;
+  v43 = ed->data->party;
+  partyindex = v7->partyindex;
+  v46 = v43->m_Items[partyindex]->count;
+  v48 = v46->m_Items[8];
+  v42->m_Items[8] = v48;
+  ResorceData = evtGetResorceData(909, 1);
+  nbAddSkillEffectKoukaPacket3(0, 0, ResorceData, 2, &form);
+  if (!evtBitCheck(3087))
+  {
+    v57 = 264;
+    v52 = sub_8D3950(s32, &v57);
+    v53 = Format("/model/devil/boss/0x{0:x}.PB", v52, 0);
+    Model1Start_name = v53;
+    ed->file = 0;
+  }
+  nbBgmFadeOut();
+  ++ed->seq;
+  ed->seqtime = 0;
+  SetAuto(1);
+  SetLevel(0.5);
+  return 0;
 }
 
 // 0x16fc3f0
@@ -100,10 +164,29 @@ s32 Model1Wait(nbEventProcessData_t *ed) {
 
 // 0x16fc4f0
 s32 Model1Wait_2(nbEventProcessData_t *ed) {
+  u64 *v3;
+  s32 seqtime;
+  Il2CppObject *v5;
+  s32 v8;
+
+  v8 = 0;
+  v3 = sub_8D3950(s32, &v8);
+  seqtime = ed->seqtime;
+  v5 = v3;
+  if (seqtime == 10)
+  {
     nbReturnAllEnemyUnit();
-    evtBitCheck(0);
-    mdlPackDecode(0, 0, 0, 0, 0);
-    return 0;
+    seqtime = ed->seqtime;
+  }
+  if (seqtime >= 30)
+  {
+    if (!evtBitCheck(3087))
+    {
+      mdlPackDecode(1, 264, 0x101u, v5, 0, 0);
+    }
+    *&ed->seq = (ed->seq + 1);
+  }
+  return 0;
 }
 
 // 0x16fc5f0
@@ -266,14 +349,135 @@ fileHandle_t *fileLoad(char *filename) {
 
 // 0x16fcfc0
 void *nbE909Process_1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbCameraSetState(0);
-    nbSetEnemyFormation(0);
-    nbSetPlayerFormation(0, 0);
-    nbCameraBoss_Kagu_E909_Set();
-    nbCameraBoss_Kagu_E909_Run();
-    dds3PadAct(0, 0, 0);
-    effPadVibeFadeOUT(0, 0, 0);
-    nbUpdateEventProcessData(0);
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v5;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  struct nbE909_funcDelegate_array *func;
+  s64 seq;
+  s32 time;
+  s32 v19;
+  u8 v20;
+  u32 v21;
+  dds3ProcessID_t_o *v23[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ProcessData = dds3GetProcessData(&ida);
+  v5 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v23);
+      if ((v23[0] & 1) != 0)
+        v8 = v23[2];
+      else
+        v8 = v23 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  seq = v5->seq;
+  if (Invoke(func->m_Items[seq], v5))
+  {
+    ida->func_ans = -1;
     return 0;
+  }
+  if (!v5->time)
+  {
+    nbCameraSetState(0x17u);
+    nbSetEnemyFormation(&v5->data);
+    nbSetPlayerFormation(&v5->data, 0);
+    nbCameraBoss_Kagu_E909_Set();
+  }
+  nbCameraBoss_Kagu_E909_Run();
+  time = v5->time;
+  if (time <= 100)
+  {
+    if (time <= 40)
+    {
+      if (time == 20)
+      {
+        dds3PadAct(0, 0, 0);
+        v20 = 110;
+      }
+      else
+      {
+        if (time != 40)
+          goto LABEL_91;
+        dds3PadAct(0, 0, 0);
+        v20 = -106;
+      }
+    }
+    else
+    {
+      if (time != 60)
+      {
+        if (time != 80)
+        {
+          if (time != 100)
+            goto LABEL_91;
+          effPadVibeFadeOUT(0, 0, 0);
+          v19 = 40;
+          goto LABEL_51;
+        }
+        dds3PadAct(0, 0, 0);
+        v20 = -46;
+        v21 = 10;
+        goto LABEL_90;
+      }
+      dds3PadAct(0, 0, 0);
+      v20 = -66;
+    }
+    v21 = 7;
+  }
+  else
+  {
+    if (time <= 150)
+    {
+      if (time != 144)
+      {
+        if (time != 150)
+          goto LABEL_91;
+        dds3PadAct(0, 1u, 0xCu);
+        v20 = -36;
+        v21 = 12;
+        goto LABEL_90;
+      }
+      dds3PadAct(0, 1u, 5u);
+      v20 = -56;
+    }
+    else
+    {
+      if (time == 166)
+      {
+        dds3PadAct(0, 0, 0);
+        v20 = 120;
+        v21 = 60;
+        goto LABEL_90;
+      }
+      if (time != 202)
+      {
+        if (time != 207)
+          goto LABEL_91;
+        effPadVibeFadeOUT(0, 1u, 30);
+        v19 = 30;
+LABEL_51:
+        effPadVibeFadeOUT(1u, 0xFFu, v19);
+        goto LABEL_91;
+      }
+      dds3PadAct(0, 1u, 5u);
+      v20 = -1;
+    }
+    v21 = 5;
+  }
+LABEL_90:
+  dds3PadAct(1u, v20, v21);
+LABEL_91:
+  nbUpdateEventProcessData(&ida);
+  return 0;
 }

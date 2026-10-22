@@ -158,13 +158,40 @@ u32 dds3GetProcessStat(dds3ProcessID_t **id) {
 
 // 0x199c3b0
 void *dds3StartProcess(char *v1, s32 dDS3_PRIORITY_DRAW_PB, s32 v2, s32 v3, dds3ProcessFunc_t *drawExit, void *deleteExit, void *p) {
-    return 0;
+  s32 v9;
+
+  v9 = 0;
+  return sub_8D3950(s32, &v9);
 }
 
 // 0x199d180
 void fclCalcRotPos(s32 pBufX, s32 pBufY, s32 DistX, s32 DistY, s32 CenterX, s32 CenterY, f32 Angle) {
-    sdfCos(0);
-    sdfSin(0);
+  s32 v13;
+  f32 v14;
+  f32 v15;
+  f32 v16;
+  f32 v17;
+  s32 v18;
+  f32 v19;
+  s32 v20;
+  f32 v21;
+  s32 v22;
+
+  if (DistX >= 0)
+    v13 = DistX;
+  else
+    v13 = DistX + 1;
+  v14 = Angle * 0.017453;
+  v15 = (v13 >> 1);
+  v16 = DistY * 0.0;
+  v17 = sdfCos(v14);
+  v18 = ((v17 * v15) - (v16 * sdfSin(v14)));
+  v19 = sdfSin(v14);
+  v22 = CenterX + 2 * v18;
+  v20 = ((v19 * v15) + (v16 * sdfCos(v14)));
+  sub_8D3950(s32, &v22);
+  v21 = (v20 / 0.0) + CenterY;
+  sub_8D3950(f32, &v21);
 }
 
 // 0x199c240
@@ -194,20 +221,252 @@ void fclDrawParts_26855008(s32 X, s32 Y, u32 Z, u32 pCol, u8 TblNo, u16 PartsNo,
 
 // 0x199cf30
 void fclDrawSprite(s32 X, s32 Y, fclSprite_t *pSprite) {
+LABEL_7:
   if ((byte_3F5ABF1 & 1) == 0)
+    goto LABEL_16;
+LABEL_10:
     return;
+LABEL_11:
 }
 
 // 0x199d310
 void fclDrawSpriteAngleCore(s32 X, s32 Y, s32 W, s32 H, f32 Angle, u32 **pCol, fclSprite_t *pSprite, u8 FlipFlag, u8 AlphaFlag, u8 FilterFlag, u32 OtNo) {
-    sdfTexSetFilter(0, 0, 0);
-    sdf2DGetPrimPacketSize(0, 0);
-    sdfGrAllocPacketBuff(0);
-    sdf2DMakePrimPacketHeader_24943632(0, 0, 0, 0, 0);
-    sdf2DGetPrimPtr(0);
-    fclCalcRotPos(0, 0, 0, 0, 0, 0, 0);
-    sdf2DLinkTexPacket(0, 0, 0);
-    sdfDrawTagLink(0, 0);
+  u32 *v21;
+  struct sdfTexHandle_t_o *TexHandle;
+  sdfTexHandle_t_o *v23;
+  s32 v24;
+  s32 v26;
+  Il2CppObject *v28;
+  Il2CppObject *v29;
+  Il2CppObject *v30;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v33;
+  s64 *v34;
+  s32 v36;
+  s32 v37;
+  s32 v38;
+  s32 v39;
+  s32 v40;
+  s32 v41;
+  s32 v43;
+  s32 v44;
+  s32 v46;
+  s32 v47;
+  s32 v49;
+  s32 v50;
+  struct System_UInt16_array *UV;
+  s32 v53;
+  struct System_UInt16_array *v54;
+  s32 v56;
+  struct System_UInt16_array *v58;
+  s32 v60;
+  struct System_UInt16_array *v62;
+  s32 v64;
+  u64 *v66;
+  u64 *v68;
+  s64 v71;
+  s64 v74;
+  u32 max_length;
+  s64 monitor;
+  u32 v79;
+  u32 v83;
+  u32 v85;
+  u64 *v91;
+  s32 *v93;
+  Il2CppObject *v94;
+  sdfDrawTag_t_o *v96;
+  Il2CppClass *v97;
+  s64 v98;
+  char *v99;
+  s64 *v100;
+  u32 v107;
+  u32 v109;
+  u32 v111;
+  Il2CppObject *aPacket;
+  u8 v124[4];
+  s32 v125;
+  s32 v126;
+  s32 v127;
+  char v128[16];
+  char *v129;
+  s32 v130;
+  s32 v131;
+
+  v21 = NewSpecific(s32, 4u);
+  TexHandle = pSprite->TexHandle;
+  if (FilterFlag)
+  {
+    v23 = TexHandle;
+    v24 = 1;
+  }
+  else
+  {
+    v23 = TexHandle;
+    v24 = 0;
+  }
+  sdfTexSetFilter(v23, v24, 1);
+  v26 = sdf2DGetPrimPacketSize(3, 4);
+  v28 = sdfGrAllocPacketBuff(v26);
+  sdf2DMakePrimPacketHeader_24943632(v28, 348, 3, 0, 4);
+  v29 = sdf2DGetPrimPtr(v28);
+  v30 = v29;
+  aPacket = v28;
+  if (v29)
+  {
+    klass = v29->klass;
+    if (v29->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclShare_AnonymousClass)
+    {
+      sub_8FC2C0(klass->_1.element_class, fclShare_AnonymousClass, v128);
+      if ((v128[0] & 1) != 0)
+        v33 = v129;
+      else
+        v33 = &v128[1];
+      v34 = sub_8C4940(v33);
+    }
+  }
+  v36 = FCL_OFS_X + X;
+  v37 = FCL_OFS_Y + Y;
+  *v128 = v36 + 16 * W;
+  sub_8D3950(s32, v128);
+  v131 = v37 + 8 * H;
+  sub_8D3950(s32, &v131);
+  if (v36 >= 0)
+    v38 = v36;
+  else
+    v38 = v36 + 1;
+  v130 = -(v38 >> 1);
+  sub_8D3950(s32, &v130);
+  if (v37 >= 0)
+    v39 = v37;
+  else
+    v39 = v37 + 1;
+  v127 = -(v39 >> 1);
+  sub_8D3950(s32, &v127);
+  v126 = v36;
+  sub_8D3950(s32, &v126);
+  v125 = v37;
+  v40 = sub_8D3950(s32, &v125);
+  fclCalcRotPos(v40, v41, 0, 0, 0, 0, Angle);
+  fclCalcRotPos(v43, v44, 0, 0, 0, 0, Angle);
+  fclCalcRotPos(v46, v47, 0, 0, 0, 0, Angle);
+  fclCalcRotPos(v49, v50, 0, 0, 0, 0, Angle);
+  UV = pSprite->Base->UV;
+  v53 = UV->m_Items[0];
+  v21[8] = v53;
+  v54 = pSprite->Base->UV;
+  v56 = v54->m_Items[2];
+  v21[10] = v56;
+  v58 = pSprite->Base->UV;
+  v60 = v58->m_Items[1];
+  v21[9] = v60;
+  v62 = pSprite->Base->UV;
+  v64 = v62->m_Items[3];
+  v21[11] = v64;
+  v124[0] = FlipFlag;
+  v66 = sub_8D3950(qword_3F088F8, v124);
+  if (*il2cp::SizeOf(v66, bool))
+  {
+    *v128 = v36;
+    sub_8D3950(s32, v128);
+    v131 = 0;
+    sub_8D3950(s32, &v131);
+    v130 = 0;
+    sub_8D3950(s32, &v130);
+    v127 = 0;
+    sub_8D3950(s32, &v127);
+    v126 = 0;
+    sub_8D3950(s32, &v126);
+    v125 = 0;
+    sub_8D3950(s32, &v125);
+  }
+  v128[0] = FlipFlag;
+  v68 = sub_8D3950(qword_3F088F8, v128);
+  if (*il2cp::SizeOf(v68, bool))
+  {
+    *v128 = v37;
+    sub_8D3950(s32, v128);
+    v131 = 0;
+    sub_8D3950(s32, &v131);
+    v130 = 0;
+    sub_8D3950(s32, &v130);
+    v127 = 0;
+    sub_8D3950(s32, &v127);
+    v126 = 0;
+    sub_8D3950(s32, &v126);
+    v125 = 0;
+    sub_8D3950(s32, &v125);
+  }
+  if (pCol)
+  {
+    v71 = v30[1].klass;
+    il2cp::SizeOf(v71, s32);
+    il2cp::SizeOf(v30[2].monitor, s32);
+    il2cp::SizeOf(v30[4].klass, s32);
+    il2cp::SizeOf(v30[5].monitor, s32);
+    monitor = v30[1].monitor;
+    v79 = v21[6];
+    if (!v79)
+      goto LABEL_71;
+  }
+  else
+  {
+    v74 = v30[1].klass;
+    max_length = pSprite->Col->max_length;
+    il2cp::SizeOf(v74, s32);
+    v107 = pSprite->Col->max_length;
+    il2cp::SizeOf(v30[2].monitor, s32);
+    v109 = pSprite->Col->max_length;
+    il2cp::SizeOf(v30[4].klass, s32);
+    v111 = pSprite->Col->max_length;
+    il2cp::SizeOf(v30[5].monitor, s32);
+    monitor = v30[1].monitor;
+    v79 = v21[6];
+    if (!v79)
+    {
+LABEL_71:
+    }
+  }
+  il2cp::SizeOf(monitor, s32);
+  il2cp::SizeOf(v30[2].klass, s32);
+  il2cp::SizeOf(v30[3].klass, s32);
+  il2cp::SizeOf(v30[3].monitor, s32);
+  v83 = v21[6];
+  il2cp::SizeOf(v30[4].monitor, s32);
+  il2cp::SizeOf(v30[5].klass, s32);
+  v85 = v21[6];
+  il2cp::SizeOf(v30[6].klass, s32);
+  il2cp::SizeOf(v30[6].monitor, s32);
+  if (AlphaFlag == 2)
+  {
+      goto LABEL_92;
+  }
+  else
+  {
+      goto LABEL_92;
+  }
+LABEL_92:
+  v91 = Allocate(sdfDrawTag_t);
+  sdfDrawTag_t___ctor(v91);
+  v93 = il2cp::SizeOf(v91, s32);
+  v94 = sdfGrAllocPacketBuff(*v93);
+  v96 = v94;
+  if (v94)
+  {
+    v97 = v94->klass;
+    if (v94->klass->_2.typeHierarchyDepth < v98 || v97->_2.typeHierarchy[v98 - 1] != sdfDrawTag_t)
+    {
+      sub_8FC2C0(v97->_1.element_class, sdfDrawTag_t, v128);
+      if ((v128[0] & 1) != 0)
+        v99 = v129;
+      else
+        v99 = &v128[1];
+      v100 = sub_8C4940(v99);
+    }
+  }
+  sdf2DLinkTexPacket(v96, pSprite->TexHandle, 0);
+  sdfDrawTagLink(v96, aPacket);
 }
 
 // 0x199d170
@@ -218,7 +477,10 @@ void fclDrawSpriteCore(s32 X, s32 Y, s32 W, s32 H, u32 **pCol, fclSprite_t *pSpr
 // 0x199d040
 void fclDrawSpriteEx(s32 X, s32 Y, s32 W, s32 H, fclSprite_t *pSprite, u32 OtNo) {
   if ((byte_3F5ABF1 & 1) == 0)
+    goto LABEL_10;
+LABEL_6:
     return;
+LABEL_7:
 }
 
 // 0x199d100
@@ -233,7 +495,40 @@ s32 fclFileCallback(sdfFileCmdHandle_t *aHandle, s32 aCause, void *aBuffer, s32 
 
 // 0x199c710
 void fclFileLoad(char **pFileName, void **pBuf) {
-    sdfFileCmdReadFile(0, 0, 0, 0, 0);
+  u64 *v5;
+  s64 v6;
+  sdfFileCmdCallback_t_o *v7;
+  System_String_o *v8;
+  u64 *v10;
+  char *v11;
+  s64 *v12;
+  s32 v13;
+  u64 v14[3];
+
+  v5 = Allocate(fclShare_fclFileCallback_a);
+  v6 = Method_fclShare_fclFileCallback__;
+  v5[2] = *Method_fclShare_fclFileCallback__;
+  v7 = v5;
+  v5[4] = 0;
+  v5[5] = v6;
+  v8 = *pFileName;
+  v13 = 0;
+  v10 = sub_8D3950(s32, &v13);
+  else if (!v7)
+  {
+    goto LABEL_11;
+  }
+  if (v7->klass != sdfFileCmdCallback_t)
+  {
+    sub_8FC2C0(v7->klass->_1.element_class, sdfFileCmdCallback_t, v14);
+    if ((v14[0] & 1) != 0)
+      v11 = v14[2];
+    else
+      v11 = v14 + 1;
+    v12 = sub_8C4940(v11);
+  }
+LABEL_11:
+  sdfFileCmdReadFile(v8, v10, -1, v7, &pBuf->obj);
 }
 
 // 0x199c890
@@ -338,16 +633,20 @@ void fclSetSpriteEx(fclSprite_t *pSprite, fclSpriteBase_t *pSpriteBase, s32 X, s
   if (Base->W)
   {
     if (Base->H)
+      goto LABEL_14;
+    goto LABEL_8;
   }
   UV = Base->UV;
   Base->W = UV->m_Items[2];
   Base = pSprite->Base;
   if (!Base->H)
   {
+LABEL_8:
     v18 = Base->UV;
     Base->H = v18->m_Items[3];
     Base = pSprite->Base;
   }
+LABEL_14:
   v22 = Base->UV;
   v22->m_Items[2] += v22->m_Items[0];
   v24 = pSprite->Base->UV;

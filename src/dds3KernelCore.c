@@ -15,7 +15,7 @@ static s32 runninglistcnt;
 static dds3ProcessID_t *runprocess;
 static s8 trees[64];
 static s32 randlogidx;
-static char randlog[UNKNOWN_ARRAY_SIZE];
+static char *randlog;
 
 void AddProcessList(dds3ProcessID_t **setp);
 void ChangeProcessFlag(s32 change, dds3ProcessID_t **target, u32 flag, s32 type);
@@ -39,7 +39,6 @@ u32 sdfGetRandInt(sdfRandCB_t **aCB, u32 aLimit);
 // 0x17b8420
 void AddProcessList(dds3ProcessID_t **setp) {
   u32 v3;
-  dds3KernelCore_c *v4;
   struct dds3ProcessID_t_o *endinglistf;
   dds3ProcessID_t_o *v6;
   s32 v7;
@@ -58,6 +57,7 @@ void AddProcessList(dds3ProcessID_t **setp) {
       v6 = *setp;
       if (!endinglistf)
         break;
+LABEL_15:
       while (endinglistf->priority <= v6->priority)
       {
         endinglistf = endinglistf->next;
@@ -82,8 +82,10 @@ void AddProcessList(dds3ProcessID_t **setp) {
               p_endinglistl = &startinglistl;
               break;
             default:
+              goto LABEL_63;
           }
           *p_endinglistl = *setp;
+          goto LABEL_63;
         }
       }
       prev = endinglistf->prev;
@@ -91,8 +93,10 @@ void AddProcessList(dds3ProcessID_t **setp) {
       {
         prev->next = v6;
         (*setp)->prev = endinglistf->prev;
+LABEL_74:
         (*setp)->next = endinglistf;
         endinglistf->prev = *setp;
+        goto LABEL_75;
       }
       v13 = v6->flag & 0xF;
       switch (v13)
@@ -104,21 +108,25 @@ void AddProcessList(dds3ProcessID_t **setp) {
           p_endinglistf = &runninglistf;
           break;
         case 1:
-          p_endinglistf = v4->static_fields;
           break;
         default:
+LABEL_73:
           (*setp)->prev = 0;
+          goto LABEL_74;
       }
-      p_endinglistf->startinglistf = v6;
+      startinglistf = v6;
+      goto LABEL_73;
     case 2u:
       endinglistf = runninglistf;
       v6 = *setp;
       if (endinglistf)
+        goto LABEL_15;
       break;
     case 1u:
       endinglistf = startinglistf;
       v6 = *setp;
       if (endinglistf)
+        goto LABEL_15;
       break;
     default:
       return;
@@ -139,10 +147,14 @@ void AddProcessList(dds3ProcessID_t **setp) {
       p_runninglistl = &startinglistl;
       break;
     default:
+      goto LABEL_53;
   }
   *p_runninglistl = *setp;
+LABEL_53:
   (*setp)->prev = 0;
+LABEL_63:
   (*setp)->next = 0;
+LABEL_75:
   v17 = (*setp)->flag & 0xF;
   switch (v17)
   {
@@ -414,27 +426,36 @@ void DeleteProcessList(dds3ProcessID_t **setp) {
           v7 = *setp;
           v8 = (*setp)->next;
           if (v8)
+            goto LABEL_12;
+          goto LABEL_41;
         case 2u:
           v22 = v3->next;
           runninglistf = v22;
           v7 = *setp;
           v8 = (*setp)->next;
           if (v8)
+            goto LABEL_12;
+          goto LABEL_41;
         case 1u:
           v14 = v3->next;
           startinglistf = v14;
           v7 = *setp;
           v8 = (*setp)->next;
           if (v8)
+            goto LABEL_12;
+          goto LABEL_41;
       }
     }
     v7 = *setp;
     v8 = (*setp)->next;
     if (v8)
     {
+LABEL_12:
       v9 = v7->prev;
       p_prev = &v8->prev;
+      goto LABEL_13;
     }
+LABEL_41:
     v19 = v7->flag & 0xF;
     switch (v19)
     {
@@ -451,6 +472,7 @@ void DeleteProcessList(dds3ProcessID_t **setp) {
         p_prev = &startinglistl;
         break;
       default:
+LABEL_14:
         (*setp)->next = 0;
         (*setp)->prev = 0;
         v11 = (*setp)->flag & 0xF;
@@ -468,7 +490,9 @@ void DeleteProcessList(dds3ProcessID_t **setp) {
         }
         return;
     }
+LABEL_13:
     *p_prev = v9;
+    goto LABEL_14;
   }
 }
 
@@ -536,7 +560,7 @@ void KillProcess(dds3ProcessID_t **setp) {
   }
   DeleteProcessList(setp);
   name = (*setp)->name;
-  Write_2930400(StringLiteral_14726, &name->obj);
+  Write_2930400("shutdown {0}!!\n", &name->obj);
   v7 = *setp;
   shutdownfunc = (*setp)->shutdownfunc;
   if (shutdownfunc)
@@ -566,10 +590,12 @@ void KillProcess(dds3ProcessID_t **setp) {
             break;
           v11 = v11->sibling;
           if (!sibling)
+            goto LABEL_33;
         }
         if (sibling)
           v11->sibling = v9->sibling;
       }
+LABEL_33:
       (*setp)->parent = 0;
       (*setp)->sibling = 0;
     }
@@ -578,19 +604,252 @@ void KillProcess(dds3ProcessID_t **setp) {
 
 // 0x17b8c90
 void PadEi(void) {
+  s64 v2;
+  u64 v3;
+  s64 i;
+  struct System_Byte_array_array_array *dds3PadMap;
+  System_Byte_array_array *v9;
+  System_Byte_array *v11;
+  struct System_Byte_array_array_array *dds3PrivatePadMap;
+  System_Byte_array_array *v14;
+  u64 v15;
+  System_Byte_array *v17;
+  char v19;
+  struct System_Byte_array_array_array *v21;
+  System_Byte_array_array *v23;
+  System_Byte_array *v25;
+  struct System_Byte_array_array_array *v26;
+  System_Byte_array_array *v28;
+  System_Byte_array *v30;
+  char v31;
+  s64 v32;
+  u64 v37;
+  struct System_Byte_array_array_array *dds3PadAnalog;
+  System_Byte_array_array *v40;
+  System_Byte_array *v42;
+  struct System_Byte_array_array_array *dds3PrivatePadAnalog;
+  System_Byte_array_array *v45;
+  System_Byte_array *v46;
+  u8 v47;
+  struct System_Byte_array_array_array *v48;
+  System_Byte_array_array *v50;
+  System_Byte_array *v52;
+  struct System_Byte_array_array_array *v53;
+  System_Byte_array_array *v55;
+  System_Byte_array *v57;
+  u8 v59;
+  struct System_Byte_array_array *dds3PadAnalogMap;
+  struct System_Byte_array_array *dds3PrivatePadAnalogMap;
+  System_Byte_array *v65;
+  System_Byte_array *v67;
+  u8 v69;
+
+  v2 = 0;
+  do
+  {
+    v3 = v2;
+    for (i = 32; i != 48; ++i)
+    {
+      else
+      {
+        if (!LODWORD(dds3PadMap->max_length))
+        {
+LABEL_8:
+        }
+      }
+      v9 = dds3PadMap->m_Items[0];
+      v11 = v9->m_Items[v3];
+      v14 = dds3PrivatePadMap->m_Items[0];
+      v15 = i - 32;
+      v17 = v14->m_Items[v3];
+      v19 = *(&v17->obj.klass + i);
+      *(&v11->obj.klass + i) = v19;
+      v21 = dds3PadMap;
+      v23 = v21->m_Items[1];
+      v25 = v23->m_Items[v3];
+      v26 = dds3PrivatePadMap;
+      v28 = v26->m_Items[1];
+      v30 = v28->m_Items[v3];
+      v31 = *(&v30->obj.klass + i);
+      *(&v25->obj.klass + i) = v31;
+    }
+    v32 = 0;
+    do
+    {
+      v37 = v32;
+      v40 = dds3PadAnalog->m_Items[v3];
+      v42 = v40->m_Items[v37];
+      v45 = dds3PrivatePadAnalog->m_Items[v3];
+      v46 = v45->m_Items[v37];
+      v47 = v46->m_Items[0];
+      v42->m_Items[0] = v47;
+      v48 = dds3PadAnalog;
+      v50 = v48->m_Items[v3];
+      v52 = v50->m_Items[v37];
+      v53 = dds3PrivatePadAnalog;
+      v55 = v53->m_Items[v3];
+      v57 = v55->m_Items[v37];
+      v59 = v57->m_Items[1];
+      v52->m_Items[1] = v59;
+      v65 = dds3PadAnalogMap->m_Items[v3];
+      v67 = dds3PrivatePadAnalogMap->m_Items[v3];
+      v69 = v67->m_Items[v37];
+      v65->m_Items[v37] = v69;
+      v32 = 1;
+    }
+    while (!v37);
+    v2 = 1;
+  }
+  while (!v3);
 }
 
 // 0x17b91e0
 s32 RunProcess(dds3ProcessID_t **pro) {
-    PadEi();
-    EndProcess(0);
-    return 0;
+  dds3ProcessID_t_o *v3;
+  u64 v4;
+  dds3ProcessID_t_o *v5;
+  s32 v6;
+  s64 v7;
+  u64 v8;
+  s64 i;
+  struct System_Byte_array_array_array *dds3PadMap;
+  System_Byte_array_array *v12;
+  u64 v13;
+  System_Byte_array *v15;
+  struct System_Byte_array_array_array *v17;
+  System_Byte_array_array *v19;
+  System_Byte_array *v21;
+  struct System_Byte_array_array_array *dds3PadAnalog;
+  System_Byte_array_array *v25;
+  System_Byte_array *v26;
+  struct System_Byte_array_array_array *v27;
+  System_Byte_array_array *v28;
+  System_Byte_array *v29;
+  struct System_Byte_array_array *dds3PadAnalogMap;
+  System_Byte_array *v32;
+  struct System_Byte_array_array_array *v41;
+  System_Byte_array_array *v43;
+  System_Byte_array *v44;
+  struct System_Byte_array_array_array *v45;
+  System_Byte_array_array *v47;
+  System_Byte_array *v48;
+  struct System_Byte_array_array *v50;
+  System_Byte_array *v52;
+  System_Text_Encoding_o *ASCII;
+  System_Reflection_Assembly_o *v58;
+  char *v59;
+  s64 *v60;
+  dds3ProcessID_t_o *v61;
+  System_Text_Encoding_o *v62;
+  u64 v66[3];
+
+  v3 = *pro;
+  if (((*pro)->flag & 0x20) == 0)
+  {
+    *(*(v4 + 184) + 72LL) = v3;
+    if (((*pro)->flag & 0x10) != 0)
+    {
+      v7 = 0;
+      do
+      {
+        v8 = v7;
+        for (i = 32; i != 48; ++i)
+        {
+          else
+          {
+            if (!LODWORD(dds3PadMap->max_length))
+            {
+LABEL_21:
+            }
+          }
+          v12 = dds3PadMap->m_Items[0];
+          v13 = i - 32;
+          v15 = v12->m_Items[v8];
+          *(&v15->obj.klass + i) = 0;
+          v17 = dds3PadMap;
+          v19 = v17->m_Items[1];
+          v21 = v19->m_Items[v8];
+          *(&v21->obj.klass + i) = 0;
+        }
+        v25 = dds3PadAnalog->m_Items[v8];
+        v26 = v25->m_Items[0];
+        v26->m_Items[0] = 0;
+        v27 = dds3PadAnalog;
+        v28 = v27->m_Items[v8];
+        v29 = v28->m_Items[0];
+        v29->m_Items[1] = 0;
+        v32 = dds3PadAnalogMap->m_Items[v8];
+        v32->m_Items[0] = 0;
+        v41 = dds3PadAnalog;
+        v43 = v41->m_Items[v8];
+        v44 = v43->m_Items[1];
+        v44->m_Items[0] = 0;
+        v45 = dds3PadAnalog;
+        v47 = v45->m_Items[v8];
+        v48 = v47->m_Items[1];
+        v48->m_Items[1] = 0;
+        v50 = dds3PadAnalogMap;
+        v52 = v50->m_Items[v8];
+        v7 = 1;
+        v52->m_Items[1] = 0;
+      }
+      while (!v8);
+      v5 = *pro;
+      if (!(*pro)->processfunc)
+        goto LABEL_89;
+    }
+    else
+    {
+      PadEi(v4);
+      v5 = *pro;
+      if (!(*pro)->processfunc)
+        goto LABEL_89;
+    }
+    if (v5->func_ans != -1)
+    {
+      v5->func_ans = 0;
+      ASCII = get_ASCII();
+      (ASCII->klass[1]._1.byval_arg.data)(ASCII, (*pro)->name, *&ASCII->klass[1]._1.byval_arg.bits);
+      v58 = Assembly___Invoke(
+              (*pro)->processfunc,
+              *pro);
+      if (v58)
+      {
+        if (v58->klass != System_Func_dds3ProcessID_t__object_)
+        {
+          sub_8FC2C0(v58->klass->_1.element_class, System_Func_dds3ProcessID_t__object_, v66);
+          if ((v66[0] & 1) != 0)
+            v59 = v66[2];
+          else
+            v59 = v66 + 1;
+          v60 = sub_8C4940(v59);
+        }
+        (*pro)->processfunc = v58;
+      }
+      v61 = *pro;
+      if ((*pro)->func_ans == -1 && (v61->flag & 0xF) == 2)
+      {
+        v62 = get_ASCII();
+        (v62->klass[1]._1.byval_arg.data)(v62, (*pro)->name, *&v62->klass[1]._1.byval_arg.bits);
+        EndProcess(pro);
+        v6 = 0;
+        goto LABEL_93;
+      }
+      v61->func_ans = 0;
+      v5 = *pro;
+    }
+LABEL_89:
+    ++v5->runtime;
+    v6 = 1;
+LABEL_93:
+    runprocess = 0;
+    return v6;
+  }
+  return 1;
 }
 
 // 0x17b9890
 void RunningProcess(void) {
-  dds3KernelCore_c *v2;
-  struct dds3KernelCore_StaticFields *static_fields;
   struct dds3ProcessID_t_o *runninglistf;
   struct dds3ProcessID_t_o *endinglistf;
   bool v6;
@@ -601,12 +860,10 @@ void RunningProcess(void) {
   dds3ProcessID_t_o *pro;
 
   pro = 0;
-  static_fields = v2->static_fields;
-  runninglistf = static_fields->runninglistf;
-  endinglistf = static_fields->endinglistf;
   v6 = endinglistf == 0;
   if (runninglistf)
   {
+LABEL_9:
     if (!v6)
     {
       while (1)
@@ -619,6 +876,7 @@ void RunningProcess(void) {
             prev = endinglistf->prev;
             else if (!RunProcess(&pro))
             {
+LABEL_29:
               if (prev)
               {
                 endinglistf = prev->next;
@@ -628,33 +886,44 @@ void RunningProcess(void) {
               {
                 v6 = endinglistf == 0;
               }
+              goto LABEL_9;
             }
             endinglistf = pro->next;
             v6 = endinglistf == 0;
+            goto LABEL_9;
           }
           pro = runninglistf;
           v7 = runninglistf->prev;
             break;
           if (RunProcess(&pro))
+            goto LABEL_14;
+LABEL_17:
           if (v7)
           {
             runninglistf = v7->next;
             if (!runninglistf)
+              goto LABEL_51;
           }
           {
             if (!runninglistf)
             {
+LABEL_51:
               v6 = 0;
+              goto LABEL_52;
             }
           }
           else
           {
             if (!runninglistf)
+              goto LABEL_51;
           }
         }
         if (!RunProcess(&pro))
+          goto LABEL_17;
+LABEL_14:
         runninglistf = pro->next;
         if (!runninglistf)
+          goto LABEL_51;
       }
     }
     while (1)
@@ -665,6 +934,8 @@ void RunningProcess(void) {
         v12 = runninglistf->prev;
           break;
         if (RunProcess(&pro))
+          goto LABEL_40;
+LABEL_43:
         if (v12)
         {
           runninglistf = v12->next;
@@ -678,11 +949,14 @@ void RunningProcess(void) {
         }
       }
       if (!RunProcess(&pro))
+        goto LABEL_43;
+LABEL_40:
       runninglistf = pro->next;
       if (!runninglistf)
         return;
     }
   }
+LABEL_52:
   if (!v6 && endinglistf)
   {
     do
@@ -693,6 +967,8 @@ void RunningProcess(void) {
         v15 = endinglistf->prev;
           break;
         if (RunProcess(&pro))
+          goto LABEL_57;
+LABEL_60:
         if (v15)
         {
           endinglistf = v15->next;
@@ -710,6 +986,8 @@ void RunningProcess(void) {
         }
       }
       if (!RunProcess(&pro))
+        goto LABEL_60;
+LABEL_57:
       endinglistf = pro->next;
     }
     while (endinglistf);
@@ -721,39 +999,46 @@ void SetRandHistory(char *name, char *val) {
   struct System_String_array *v6;
   dds3KernelCore_c *v7;
   u64 v8;
-  struct dds3KernelCore_StaticFields *static_fields;
   s64 *v10;
   u32 *randlog;
-  dds3KernelCore_c *v15;
-  struct dds3KernelCore_StaticFields *v16;
   struct System_String_array *v17;
   s64 randlogidx;
   s64 *v19;
   s64 *v20;
 
-  else  v6 = NewSpecific(string, 0x1Cu);
+  else if (randlog)
+  {
+    goto LABEL_22;
+  }
+  v6 = NewSpecific(string, 0x1Cu);
   randlog = v6;
   v8 = 0;
   if ((v7->_2.bitflags2 & 2) != 0)
-  static_fields = v7->static_fields;
-  v10 = StringLiteral_14731;
-  randlog = static_fields->randlog;
-  if (!StringLiteral_14731)
+    goto LABEL_12;
+LABEL_13:
+  v10 = "---";
+  if (!"---")
+    goto LABEL_17;
+LABEL_14:
   while (1)
   {
-    *&randlog[2 * v8 + 8] = StringLiteral_14731;
+LABEL_17:
+    *&randlog[2 * v8 + 8] = "---";
     if (v8 == 27)
       break;
     ++v8;
-    v10 = StringLiteral_14731;
-    if (StringLiteral_14731)
+      goto LABEL_13;
+LABEL_12:
+      goto LABEL_13;
+    v10 = "---";
+    if ("---")
+      goto LABEL_14;
   }
+LABEL_22:
   if (!IsNullOrEmpty(name))
   {
-    v16 = v15->static_fields;
-    v17 = v16->randlog;
-    randlogidx = v16->randlogidx;
-    v19 = Concat_5221536(name, StringLiteral_84, val);
+    v17 = randlog;
+    v19 = Concat_5221536(name, ":", val);
     v20 = v19;
     v17->m_Items[randlogidx] = v20;
     randlogidx = (randlogidx + 1) % 28;
@@ -771,12 +1056,24 @@ void StartProcess(dds3ProcessID_t **setp) {
 
 // 0x17b8b40
 void StartingProcess(void) {
-    DeleteProcessList(0);
-    AddProcessList(0);
+  struct dds3ProcessID_t_o *startinglistf;
+  dds3ProcessID_t_o *setp;
+
+  setp = 0;
+  if (startinglistf)
+    goto LABEL_18;
 }
 
 // 0x17bb180
 void dds3DebugNowProcess(void) {
+  struct dds3ProcessID_t_o *runprocess;
+
+  else
+  {
+    if (runprocess)
+      goto LABEL_6;
+  }
+  Write("now process [NULL]\n", 0);
 }
 
 // 0x17bad60
@@ -791,12 +1088,47 @@ void dds3EndProcess(dds3ProcessID_t **id) {
 
 // 0x17b9d30
 void dds3EndingProcess(void) {
-    KillProcess(0);
+  struct dds3ProcessID_t_o *endinglistf;
+  dds3ProcessID_t_o *setp;
+
+  setp = 0;
+  else
+  {
+    if (endinglistf)
+      goto LABEL_6;
+  }
 }
 
 // 0x17baec0
 s32 dds3ExistProcess(dds3ProcessID_t **id) {
-    return 0;
+  struct dds3ProcessID_t_o *startinglistf;
+  struct dds3ProcessID_t_o *runninglistf;
+  struct dds3ProcessID_t_o *endinglistf;
+
+  else
+  {
+    if (startinglistf)
+      goto LABEL_6;
+  }
+LABEL_8:
+  else
+  {
+    if (runninglistf)
+      goto LABEL_11;
+  }
+LABEL_17:
+  if (endinglistf)
+  {
+LABEL_20:
+    while (endinglistf != *id)
+    {
+      endinglistf = endinglistf->next;
+      if (!endinglistf)
+        return 0;
+    }
+    return 1;
+  }
+  return 0;
 }
 
 // 0x17ba230
@@ -852,44 +1184,80 @@ u32 dds3GetProcessStat(dds3ProcessID_t **id) {
 
 // 0x17bb4a0
 u32 dds3GetRandA(char *name) {
-    sdfGetRand(0);
-    SetRandHistory(0, 0);
-    return 0;
+  System_String_o *v5;
+  u32 Rand;
+  sdfRandCB_t_o *aCB;
+
+  Rand = 0;
+  aCB = 0;
+  Rand = sdfGetRand(&aCB);
+  v5 = sub_818660(&Rand, "d8");
+  SetRandHistory(name, v5);
+  return Rand;
 }
 
 // 0x17bb7e0
 u32 dds3GetRandB(char *name) {
-    sdfGetRand(0);
-    SetRandHistory(0, 0);
-    return 0;
+  System_String_o *v5;
+  u32 Rand;
+
+  Rand = 0;
+  Rand = sdfGetRand(&dds3RandCB);
+  v5 = sub_818660(&Rand, "d8");
+  SetRandHistory(name, v5);
+  return Rand;
 }
 
 // 0x17bb8d0
 f32 dds3GetRandFloatA(char *name) {
-    sdfGetRandFloat(0);
-    SetRandHistory(0, 0);
-    return 0;
+  System_String_o *v5;
+  f32 RandFloat;
+  sdfRandCB_t_o *aCB;
+
+  RandFloat = 0.0;
+  aCB = 0;
+  RandFloat = sdfGetRandFloat(&aCB);
+  v5 = sub_4FDC70(&RandFloat, "f8");
+  SetRandHistory(name, v5);
+  return RandFloat;
 }
 
 // 0x17bb9a0
 f32 dds3GetRandFloatB(char *name) {
-    sdfGetRandFloat(0);
-    SetRandHistory(0, 0);
-    return 0;
+  System_String_o *v5;
+  f32 RandFloat;
+
+  RandFloat = 0.0;
+  RandFloat = sdfGetRandFloat(&dds3RandCB);
+  v5 = sub_4FDC70(&RandFloat, "f8");
+  SetRandHistory(name, v5);
+  return RandFloat;
 }
 
 // 0x17bba90
 u32 dds3GetRandIntA(u32 aLimit, char *name) {
-    sdfGetRandInt(0, 0);
-    SetRandHistory(0, 0);
-    return 0;
+  System_String_o *v7;
+  u32 RandInt;
+  sdfRandCB_t_o *aCB;
+
+  RandInt = 0;
+  aCB = 0;
+  RandInt = sdfGetRandInt(&aCB, aLimit);
+  v7 = sub_818660(&RandInt, "d8");
+  SetRandHistory(name, v7);
+  return RandInt;
 }
 
 // 0x17bbb70
 u32 dds3GetRandIntB(u32 aLimit, char *name) {
-    sdfGetRandInt(0, 0);
-    SetRandHistory(0, 0);
-    return 0;
+  System_String_o *v7;
+  u32 RandInt;
+
+  RandInt = 0;
+  RandInt = sdfGetRandInt(&dds3RandCB, aLimit);
+  v7 = sub_818660(&RandInt, "d8");
+  SetRandHistory(name, v7);
+  return RandInt;
 }
 
 // 0x17b9b90
@@ -966,10 +1334,12 @@ void dds3LinkProcess(dds3ProcessID_t **parent, dds3ProcessID_t **target) {
               break;
             child = child->sibling;
             if (!sibling)
+              goto LABEL_17;
           }
           if (sibling)
             child->sibling = v5->sibling;
         }
+LABEL_17:
         (*target)->parent = 0;
         (*target)->sibling = 0;
       }
@@ -1016,12 +1386,165 @@ void dds3ResetProcessFlag(dds3ProcessID_t **target, u32 flag, s32 type) {
 
 // 0x17bbc70
 dds3ProcessID_t *dds3SearchProcessID(s32 id) {
-    return 0;
+  dds3ProcessID_t_o *result;
+
+  else
+  {
+    result = startinglistf;
+    if (result)
+      goto LABEL_6;
+  }
+LABEL_8:
+  result = runninglistf;
+  if (!result)
+  {
+LABEL_13:
+    for (result = endinglistf; result; result = result->next)
+    {
+      if (result->id == id)
+        break;
+    }
+    return result;
+  }
+LABEL_11:
+  while (result->id != id)
+  {
+    result = result->next;
+    if (!result)
+      goto LABEL_13;
+  }
+  return result;
 }
 
 // 0x17ba530
 dds3ProcessID_t *dds3SearchProcessName(char *namestr) {
+  System_Text_Encoding_o *ASCII;
+  s64 v4;
+  u64 *v5;
+  u64 v7;
+  u32 *v8;
+  u64 *v9;
+  s64 v10;
+  u64 v35;
+  u64 v38;
+  s32 v39;
+  u64 *v40;
+  struct dds3ProcessID_t_o *startinglistf;
+  s64 v44;
+  struct System_Byte_array *name;
+  dds3ProcessID_t_o *endinglistf;
+  s64 v54;
+  s64 v55;
+  struct System_Byte_array *v57;
+
+  ASCII = get_ASCII();
+  v4 = (ASCII->klass->vtable._28_GetBytes.methodPtr)(ASCII, namestr, ASCII->klass->vtable._28_GetBytes.method);
+  v5 = NewSpecific(byte, 0x18u);
+  v8 = v5 + 3;
+  v7 = *(v5 + 6);
+  v9 = v5;
+  *(v5 + 32) = 0;
+  *(v5 + 33) = 0;
+  *(v5 + 34) = 0;
+  *(v5 + 35) = 0;
+  *(v5 + 36) = 0;
+  *(v5 + 37) = 0;
+  *(v5 + 38) = 0;
+  *(v5 + 39) = 0;
+  *(v5 + 40) = 0;
+  *(v5 + 41) = 0;
+  *(v5 + 42) = 0;
+  *(v5 + 43) = 0;
+  *(v5 + 44) = 0;
+  *(v5 + 45) = 0;
+  *(v5 + 46) = 0;
+  *(v5 + 47) = 0;
+  *(v5 + 48) = 0;
+  *(v5 + 49) = 0;
+  *(v5 + 50) = 0;
+  *(v5 + 51) = 0;
+  *(v5 + 52) = 0;
+  *(v5 + 53) = 0;
+  *(v5 + 54) = 0;
+  *(v5 + 55) = 0;
+  v10 = *(v4 + 24);
+  if (v10 >= 1)
+  {
+    v35 = 0;
+    do
+    {
+      *(v5 + v35 + 32) = *(v4 + 32 + v35);
+      LODWORD(v10) = *(v4 + 24);
+      ++v35;
+    }
+    while (v35 < v10);
+  }
+  v38 = 0;
+  v39 = 0;
+  v40 = v5 + 4;
+  if (!*v8)
+  {
+LABEL_62:
+  }
+  while (*(v40 + v38))
+  {
+    v39 += *(v40 + v38++);
+    if (v38 >= *v8)
+      goto LABEL_62;
+  }
+  else
+  {
+    if (!startinglistf)
+      goto LABEL_81;
+  }
+  do
+  {
+    if (startinglistf->namehash == v39)
+    {
+      v44 = 0;
+      while (1)
+      {
+        name = startinglistf->name;
+        if (*(v9 + v38 + v44 + 32) != name->m_Items[v38 + v44])
+          break;
+        --v44;
+        if (v38 + v44 == -1)
+          return startinglistf;
+      }
+    }
+    startinglistf = startinglistf->next;
+  }
+  while (startinglistf);
+LABEL_81:
+  else
+  {
+    startinglistf = runninglistf;
+    if (startinglistf)
+      goto LABEL_84;
+  }
+  if (!endinglistf)
     return 0;
+  v54 = v9 + v38 + 32;
+  do
+  {
+    if (endinglistf->namehash == v39)
+    {
+      v55 = 0;
+      while (1)
+      {
+        v57 = endinglistf->name;
+        if (*(v54 + v55) != v57->m_Items[v38 + v55])
+          break;
+        --v55;
+        if (v38 + v55 == -1)
+          return endinglistf;
+      }
+    }
+    endinglistf = endinglistf->next;
+    startinglistf = 0;
+  }
+  while (endinglistf);
+  return startinglistf;
 }
 
 // 0x17ba340
@@ -1038,6 +1561,7 @@ dds3ProcessID_t *dds3SearchProcessNumber(u32 type, s32 n) {
     result = endinglistf;
     if (n < 1)
       return result;
+LABEL_10:
     if (result)
     {
       v8 = 1;
@@ -1057,17 +1581,48 @@ dds3ProcessID_t *dds3SearchProcessNumber(u32 type, s32 n) {
     result = runninglistf;
     if (n < 1)
       return result;
+    goto LABEL_10;
   }
   if (v5 != 1)
     return 0;
   result = startinglistf;
   if (n >= 1)
+    goto LABEL_10;
   return result;
 }
 
 // 0x17bb010
 dds3ProcessID_t *dds3SearchProcessPriority(s32 priority) {
-    return 0;
+  s64 v2;
+  dds3ProcessID_t_o *result;
+
+  LODWORD(v2) = priority;
+  else
+  {
+    result = startinglistf;
+    if (result)
+      goto LABEL_6;
+  }
+LABEL_8:
+  result = runninglistf;
+  if (!result)
+  {
+LABEL_13:
+    for (result = endinglistf; result; result = result->next)
+    {
+      if (result->priority == v2)
+        break;
+    }
+    return result;
+  }
+LABEL_11:
+  while (result->priority != v2)
+  {
+    result = result->next;
+    if (!result)
+      goto LABEL_13;
+  }
+  return result;
 }
 
 // 0x17bb160
@@ -1117,6 +1672,10 @@ dds3ProcessID_t *dds3StartProcess(char *namestr, u32 priority, s32 starttimer, s
   v19 = 0;
   v18->namehash = 0;
   name = v18->name;
+  if (!LODWORD(name->max_length))
+  {
+LABEL_7:
+  }
   while (1)
   {
     name->m_Items[v19] = 0;
@@ -1125,6 +1684,7 @@ dds3ProcessID_t *dds3StartProcess(char *namestr, u32 priority, s32 starttimer, s
     ++v19;
     name = setp->name;
     if (v19 >= LODWORD(name->max_length))
+      goto LABEL_7;
   }
   Length = get_Length(namestr);
   v23 = setp;
@@ -1201,10 +1761,12 @@ void dds3UnlinkProcess(dds3ProcessID_t **target) {
             break;
           child = child->sibling;
           if (!sibling)
+            goto LABEL_11;
         }
         if (sibling)
           child->sibling = v2->sibling;
       }
+LABEL_11:
       (*target)->parent = 0;
       (*target)->sibling = 0;
     }

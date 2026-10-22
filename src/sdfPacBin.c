@@ -13,6 +13,7 @@ s32 GetIndex(u32 pac_magic_code, u8 **bData, s32 bPos) {
   s32 v8;
   u8 *i;
 
+LABEL_7:
   v7 = (bPos + 15) & 0xFFFFFFF0;
   v8 = v7 | 8;
   if ((v7 | 8) >= SLODWORD(bData->max_length))
@@ -60,14 +61,18 @@ u8 **GetPibArray(u8 **bData, s32 bPos) {
     {
       v9 = 0;
       max_length = v7;
+        goto LABEL_21;
       {
         do
         {
+LABEL_21:
+LABEL_23:
           max_length = (max_length + 63 - (max_length & 0x3F) + ToInt32(bData, max_length + 4, 0))
                      & 0xFFFFFFC0
                      | max_length & 0x3F;
           if (v9 == SEARCH_CODE_END)
           {
+LABEL_34:
             v13 = NewSpecific(byte, max_length - v7);
             Copy_3880080(bData, v7, v13, 0, *(v13 + 6), 0);
             return v13;
@@ -75,11 +80,14 @@ u8 **GetPibArray(u8 **bData, s32 bPos) {
           if ((max_length & 0x80000000) != 0)
           {
             max_length = bData->max_length;
+            goto LABEL_34;
           }
           v9 = ToUInt32(bData, max_length + 8, 0);
         }
       }
       if ((byte_3F5A759 & 1) == 0)
+        goto LABEL_22;
+      goto LABEL_23;
     }
   }
   return 0;
@@ -114,6 +122,8 @@ void MarkIndex(u32 pac_magic_code, u8 **bData, u8 mark) {
   v22 = &bData->m_Items[14];
   v6 = 0;
   v7 = 0;
+    goto LABEL_6;
+LABEL_7:
   v21 = v7;
   while (1)
   {
@@ -141,6 +151,8 @@ void MarkIndex(u32 pac_magic_code, u8 **bData, u8 mark) {
     v22[v11 + v12] = mark;
     v22[v11 + 1 + v12] = v21;
     if ((byte_3F5A759 & 1) == 0)
+      goto LABEL_28;
+LABEL_29:
     v7 = v21 + 1;
     v20 = v15 & 0x38;
     v6 = (ToInt32(bData, ((v10 + 15) & 0xFFFFFFF0) + v12 + 4, 0)
@@ -151,8 +163,12 @@ void MarkIndex(u32 pac_magic_code, u8 **bData, u8 mark) {
         + 7)
        & 0xFFFFFFC0
        | v20;
+      goto LABEL_7;
+LABEL_6:
+      goto LABEL_7;
     v21 = v7;
     if ((byte_3F5A75A & 1) == 0)
+      goto LABEL_8;
   }
 }
 

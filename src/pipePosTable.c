@@ -91,8 +91,8 @@ s32 pipeFileLoad(char *filename, tagPipePosTable **posPtr, tagPipeTable **tabPtr
   v11 = Allocate(fileHandle_t);
   fileHandle_t___ctor(v11);
   asset_bc = get_asset_bc();
-  v14 = Concat_5224608(StringLiteral_14724, filename);
-  FileByte = LoadFileByte(asset_bc, StringLiteral_19042, v14);
+  v14 = Concat_5224608("dds3data", filename);
+  FileByte = LoadFileByte(asset_bc, "pipe_common", v14);
   v17 = cnvPipeFileHeader(FileByte);
   *posPtr = cnvPipePosTable(FileByte, v17->posAddr, v17->posSize);
   *tabPtr = cnvPipeTable(FileByte, v17->emAddr, v17->emSize);

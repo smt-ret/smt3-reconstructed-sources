@@ -68,99 +68,126 @@ s32 Flow4_1(nbNegoProcessData_t **n) {
   {
     case 0x38u:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       flowmsg = (*n)->flowmsg;
       ekucyo = (*n)->ekucyo;
       v9 = flowmsg->m_Items[ekucyo];
       v10 = 141;
+      goto LABEL_101;
     case 0x59u:
       if (v4->pwork->id != 89)
+        goto LABEL_102;
       v4->waitframe = 15;
       v11 = (*n)->flowmsg;
       v12 = (*n)->ekucyo;
       v9 = v11->m_Items[v12];
       v10 = 140;
+      goto LABEL_101;
     case 0x68u:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v14 = (*n)->flowmsg;
       v15 = (*n)->ekucyo;
       v9 = v14->m_Items[v15];
       v10 = 129;
+      goto LABEL_101;
     case 0x69u:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v17 = (*n)->flowmsg;
       v18 = (*n)->ekucyo;
       v9 = v17->m_Items[v18];
       v10 = 130;
+      goto LABEL_101;
     case 0x6Au:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v20 = (*n)->flowmsg;
       v21 = (*n)->ekucyo;
       v9 = v20->m_Items[v21];
       v10 = 131;
+      goto LABEL_101;
     case 0x6Bu:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v23 = (*n)->flowmsg;
       v24 = (*n)->ekucyo;
       v9 = v23->m_Items[v24];
       v10 = 132;
+      goto LABEL_101;
     case 0x6Cu:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v26 = (*n)->flowmsg;
       v27 = (*n)->ekucyo;
       v9 = v26->m_Items[v27];
       v10 = 133;
+      goto LABEL_101;
     case 0x6Du:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v29 = (*n)->flowmsg;
       v30 = (*n)->ekucyo;
       v9 = v29->m_Items[v30];
       v10 = 134;
+      goto LABEL_101;
     case 0x6Eu:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v32 = (*n)->flowmsg;
       v33 = (*n)->ekucyo;
       v9 = v32->m_Items[v33];
       v10 = 135;
+      goto LABEL_101;
     case 0x6Fu:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v35 = (*n)->flowmsg;
       v36 = (*n)->ekucyo;
       v9 = v35->m_Items[v36];
       v10 = 136;
+      goto LABEL_101;
     case 0x70u:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v38 = (*n)->flowmsg;
       v39 = (*n)->ekucyo;
       v9 = v38->m_Items[v39];
       v10 = 137;
+      goto LABEL_101;
     case 0x71u:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v41 = (*n)->flowmsg;
       v42 = (*n)->ekucyo;
       v9 = v41->m_Items[v42];
       v10 = 138;
+      goto LABEL_101;
     case 0x9Au:
       if (v4->pwork->id != id)
+        goto LABEL_102;
       v4->waitframe = 15;
       v44 = (*n)->flowmsg;
       v45 = (*n)->ekucyo;
       v9 = v44->m_Items[v45];
       v10 = 139;
+LABEL_101:
       nbDispNegoMessage(n, v9, v10, 0);
       result = 2;
       break;
     default:
+LABEL_102:
       v4->waitframe = 15;
       v48 = (*n)->flowmsg;
       v49 = (*n)->ekucyo;
@@ -212,6 +239,7 @@ s32 Flow4_11(nbNegoProcessData_t **n) {
       v8 = (*n)->helpmsg;
       v10 = 5;
       v9 = n;
+      goto LABEL_27;
     case 0x40008u:
       v6 = (*n)->helpmsg;
       getmakka = (*n)->getmakka;
@@ -219,6 +247,7 @@ s32 Flow4_11(nbNegoProcessData_t **n) {
       v8 = (*n)->helpmsg;
       v9 = n;
       v10 = 3;
+LABEL_27:
       nbDispNegoMessage(v9, v8, v10, 0);
       break;
   }
@@ -256,7 +285,7 @@ s32 Flow4_2(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0x4000Cu);
   v4 = *n;
   nextkouho = v4->nextkouho;
-  RandIntA = dds3GetRandIntA(2u, StringLiteral_5298);
+  RandIntA = dds3GetRandIntA(2u, "4_2");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   return 0;
 }
@@ -278,7 +307,7 @@ s32 Flow4_4(nbNegoProcessData_t **n) {
   nbAddNegoIdKouho(n, 0x40007u);
   v4 = *n;
   nextkouho = v4->nextkouho;
-  RandIntA = dds3GetRandIntA(3u, StringLiteral_5299);
+  RandIntA = dds3GetRandIntA(3u, "4_4");
   v4->nextnegoid = nextkouho->m_Items[RandIntA];
   return 0;
 }

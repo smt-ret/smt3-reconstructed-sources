@@ -289,11 +289,239 @@ s32 nbCheckBattleSkillError1(s32 nskill) {
 
 // 0x157e3b0
 s32 nbCheckBattleSkillError2(s32 nskill, u32 select) {
-    nbGetMainProcessData();
-    nbGetUnitWorkFromFormindex(0);
-    nbGetPartyFromFormindex(0);
-    CheckHojo(0, 0, 0);
+  u32 *v5;
+  nbParty_t_array *v7;
+  s32 v10;
+  s32 v11;
+  s32 i;
+  s64 *UnitWorkFromFormindex;
+  s64 *PartyFromFormindex;
+  s64 *v18;
+  u32 *v20;
+  s64 *v21;
+  Il2CppClass **v23;
+  s32 result;
+  u64 v25;
+  struct datNormalSkill_t_array *v28;
+  u64 v30;
+  u64 v32;
+  struct datNormalSkill_t_array *tbl;
+  u64 v37;
+  u16 v38;
+  u64 v40;
+  u64 v42;
+  struct datNormalSkill_t_array *v45;
+  u64 v47;
+
+  v5 = NewSpecific(datUnitWork_t, 0x20u);
+  v7 = NewSpecific(nbParty_t, 0x20u);
+  else if ((nbGetMainProcessData()->stat & 0x8000000) != 0)
+  {
     return 0;
+  }
+  v10 = 0;
+  v11 = 0;
+  for (i = 0; i != 16; ++i)
+  {
+    if (((1 << i) & select) == 0)
+      continue;
+    else
+    {
+      UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(i);
+      if (!UnitWorkFromFormindex)
+        goto LABEL_21;
+    }
+    v18 = UnitWorkFromFormindex;
+    v20 = &v5[2 * v10++];
+    *(v20 + 4) = v18;
+LABEL_21:
+    else
+    {
+      PartyFromFormindex = nbGetPartyFromFormindex(i);
+      if (!PartyFromFormindex)
+        continue;
+    }
+    v21 = PartyFromFormindex;
+    v23 = &v7->obj.klass + v11++;
+    v23[4] = v21;
+  }
+  if (!v10)
+    return 0;
+  if (nskill <= 218)
+  {
+    if (nskill <= 70)
+    {
+      result = 0;
+      switch (nskill)
+      {
+        case '$':
+        case '%':
+        case '&':
+        case '\'':
+        case '(':
+        case ')':
+LABEL_55:
+          if (v10 < 1)
+            return 1;
+          v30 = 0;
+          while (1)
+          {
+            if (*(*&v5[2 * v30 + 8] + 22LL) < *(*&v5[2 * v30 + 8] + 24LL))
+              break;
+            ++v30;
+            result = 1;
+            if (v30 >= v10)
+              return result;
+          }
+          return 0;
+        case '*':
+LABEL_39:
+          if (v10 < 1)
+            return 1;
+          v25 = 0;
+          while (1)
+          {
+            if (*(*&v5[2 * v25 + 8] + 26LL) < *(*&v5[2 * v25 + 8] + 28LL))
+              break;
+            ++v25;
+            result = 1;
+            if (v25 >= v10)
+              return result;
+          }
+          return 0;
+        case '+':
+        case ',':
+        case '-':
+        case '.':
+        case '/':
+        case '0':
+LABEL_71:
+          if (v10 < 1)
+            return 1;
+          v37 = 0;
+          v38 = tbl->m_Items[nskill]->basstatus & 0xFFF;
+          break;
+        case '1':
+        case '2':
+          return result;
+        case '3':
+          goto LABEL_64;
+        default:
+          if ((nskill - 68) < 3)
+            goto LABEL_48;
+          return 0;
+      }
+      while (1)
+      {
+        if ((v38 & *(*&v5[2 * v37 + 8] + 30LL)) != 0)
+          break;
+        ++v37;
+        result = 1;
+        if (v37 >= v10)
+          return result;
+      }
+    }
+    else
+    {
+      result = 0;
+      switch (nskill)
+      {
+        case 'Q':
+        case '^':
+          goto LABEL_55;
+        case 'R':
+        case 'S':
+        case 'T':
+        case ']':
+          goto LABEL_39;
+        case 'U':
+        case 'V':
+        case '\\':
+          goto LABEL_64;
+        case 'W':
+        case 'Y':
+        case 'Z':
+        case '[':
+          return result;
+        case 'X':
+          goto LABEL_71;
+        default:
+          if (nskill != 218)
+            return result;
+          if (v10 < 1)
+            goto LABEL_99;
+          v42 = 0;
+          break;
+      }
+      while (1)
+      {
+        if (*(*&v5[2 * v42 + 8] + 22LL) < *(*&v5[2 * v42 + 8] + 24LL))
+          break;
+        if (++v42 >= v10)
+        {
+LABEL_99:
+          v45 = tbl;
+          if (v10 < 1)
+            return 1;
+          v47 = 0;
+          while (1)
+          {
+            if ((v45->m_Items[218]->basstatus & 0xFFF & *(*&v5[2 * v47 + 8] + 30LL)) != 0)
+              break;
+            ++v47;
+            result = 1;
+            if (v47 >= v10)
+              return result;
+          }
+          return 0;
+        }
+      }
+    }
+    return 0;
+  }
+  else if (nskill <= 240)
+  {
+    if (nskill != 224)
+    {
+      if ((nskill - 237) >= 4)
+        return 0;
+      goto LABEL_64;
+    }
+LABEL_48:
+    v28 = tbl;
+    return 4 * (CheckHojo(v7, v11, v28->m_Items[nskill]->hojotype) == 0);
+  }
+  else
+  {
+    if (nskill != 246 && nskill != 248)
+      return 0;
+LABEL_64:
+    if (v10 >= 1)
+    {
+      v32 = 0;
+      while (1)
+      {
+        if (*(*&v5[2 * v32 + 8] + 22LL) < *(*&v5[2 * v32 + 8] + 24LL))
+          break;
+        if (++v32 >= v10)
+        {
+          v40 = 0;
+          while (1)
+          {
+            if (*(*&v5[2 * v40 + 8] + 26LL) < *(*&v5[2 * v40 + 8] + 28LL))
+              break;
+            ++v40;
+            result = 1;
+            if (v40 >= v10)
+              return result;
+          }
+          return 0;
+        }
+      }
+      return 0;
+    }
+    return 1;
+  }
 }
 
 // 0x157eb70
@@ -324,10 +552,12 @@ s32 nbCheckBattleSkillError3(s32 nskill, u32 select) {
     {
       UnitWorkFromFormindex = nbGetUnitWorkFromFormindex(i);
       if (!UnitWorkFromFormindex)
+        goto LABEL_21;
     }
     v17 = UnitWorkFromFormindex;
     v19 = &v4[2 * v9++];
     *(v19 + 4) = v17;
+LABEL_21:
     else
     {
       PartyFromFormindex = nbGetPartyFromFormindex(i);
@@ -344,6 +574,7 @@ s32 nbCheckBattleSkillError3(s32 nskill, u32 select) {
   {
     if ((nskill - 52) >= 3 && (nskill & 0xFFFFFFFC) != 0x40)
       return 0;
+LABEL_38:
     if (CheckHojo(v6, v10, tbl->m_Items[nskill]->hojotype))
       return 0;
     else
@@ -352,6 +583,7 @@ s32 nbCheckBattleSkillError3(s32 nskill, u32 select) {
   else
   {
     if ((nskill - 203) < 4 || nskill == 276 || nskill == 265)
+      goto LABEL_38;
     return 0;
   }
 }
@@ -393,6 +625,7 @@ s32 nbCheckCampSkillError(s32 nskill, u32 select) {
   }
   while (v7 != 16);
   if ((nskill - 49) < 2)
+    goto LABEL_99;
   if ((nskill - 73) >= 4 && v8 == 1)
   {
     if ((*(v6[4] + 30LL) & 0xFFF) == 0x800)
@@ -400,6 +633,7 @@ s32 nbCheckCampSkillError(s32 nskill, u32 select) {
   }
   if (nskill <= 240)
   {
+LABEL_99:
     result = 0;
     switch (nskill)
     {
@@ -517,8 +751,10 @@ s32 nbCheckCampSkillError(s32 nskill, u32 select) {
       case 'U':
       case 'V':
       case '\\':
+        goto LABEL_64;
       default:
         if ((nskill - 237) <= 3)
+          goto LABEL_64;
         return 0;
     }
     while (1)
@@ -534,6 +770,7 @@ s32 nbCheckCampSkillError(s32 nskill, u32 select) {
   }
   if (nskill == 246 || nskill == 248)
   {
+LABEL_64:
     if (v8 >= 1)
     {
       v30 = 0;
@@ -569,13 +806,19 @@ void nbDispSkillErrorMessage(s32 err) {
 
   MainProcessData = nbGetMainProcessData();
   if (err == 4)
+    goto LABEL_14;
+LABEL_6:
   if (err == 2)
   {
     jyokyomsgid = MainProcessData->jyokyomsgid;
     v6 = 66;
+LABEL_18:
     nbDispMsgHelp(jyokyomsgid, v6, 3);
+    goto LABEL_19;
   }
   if ((err - 1) > 1)
     return;
+LABEL_19:
+LABEL_23:
   p2sdPlaySE(13);
 }

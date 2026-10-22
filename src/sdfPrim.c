@@ -29,8 +29,65 @@ void sdfDrawTagLink(sdfDrawTag_t *aTag, void *aPacket);
 
 // 0x17a6e60
 sdfDrawTag_t *sdfPrimAllocDrawTag(void *aAllocator) {
-    sdfDrawTagInit(0);
-    return 0;
+  u64 *v3;
+  char *v5;
+  s64 *v6;
+  Il2CppObject *v7;
+  s64 v8;
+  s32 v9;
+  Il2CppObject *v11;
+  sdfDrawTag_t_o *v13;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v16;
+  s64 *v17;
+  u64 v19[2];
+  char *v20;
+
+  v3 = Allocate(sdfDrawTag_t);
+  sdfDrawTag_t___ctor(v3);
+  if (aAllocator)
+  {
+    if (aAllocator->klass != sdfPrim_alloc_pDelegate)
+    {
+      sub_8FC2C0(aAllocator->klass->_1.element_class, sdfPrim_alloc_pDelegate, v19);
+      if ((v19[0] & 1) != 0)
+        v5 = v20;
+      else
+        v5 = v19 + 1;
+      v6 = sub_8C4940(v5);
+    }
+  }
+  else
+  {
+    v7 = Allocate(sdfPrim_alloc_pDelegate);
+    v8 = Method_sdfPacketBuff_sdfGrAllocPacketBuff__;
+    aAllocator = v7;
+    v7[1].klass = *Method_sdfPacketBuff_sdfGrAllocPacketBuff__;
+    v7[2].klass = 0;
+    v7[2].monitor = v8;
+  }
+  {
+  }
+  v9 = SizeOf_sdfMemRecord_t_(v3);
+  v11 = Invoke(aAllocator, v9);
+  v13 = v11;
+  if (v11)
+  {
+    klass = v11->klass;
+    if (v11->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfDrawTag_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, sdfDrawTag_t, v19);
+      if ((v19[0] & 1) != 0)
+        v16 = v20;
+      else
+        v16 = v19 + 1;
+      v17 = sub_8C4940(v16);
+    }
+  }
+  sdfDrawTagInit(v13);
+  return v13;
 }
 
 // 0x17a7d20
@@ -105,7 +162,58 @@ void sdfPrimLinkRect(sdfDrawTag_t *aTag, u32 aColor, u32 aPrim, s32 aX0, s32 aY0
 
 // 0x17a7420
 void sdfPrimLinkSimplePacket(sdfDrawTag_t *aTag, sdfPrim_aFuncDelegate *aFunc, s32 aPacketSize, void *aAllocator) {
-    sdfDrawTagLink(0, 0);
+  char *v9;
+  s64 *v10;
+  Il2CppObject *v11;
+  s64 v12;
+  Il2CppObject *v13;
+  Il2CppObject *v15;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v18;
+  s64 *v19;
+  u64 v21[2];
+  char *v22;
+
+  if (aAllocator)
+  {
+    if (aAllocator->klass != sdfPrim_alloc_pDelegate)
+    {
+      sub_8FC2C0(aAllocator->klass->_1.element_class, sdfPrim_alloc_pDelegate, v21);
+      if ((v21[0] & 1) != 0)
+        v9 = v22;
+      else
+        v9 = v21 + 1;
+      v10 = sub_8C4940(v9);
+    }
+  }
+  else
+  {
+    v11 = Allocate(sdfPrim_alloc_pDelegate);
+    v12 = Method_sdfPacketBuff_sdfGrAllocPacketBuff__;
+    aAllocator = v11;
+    v11[1].klass = *Method_sdfPacketBuff_sdfGrAllocPacketBuff__;
+    v11[2].klass = 0;
+    v11[2].monitor = v12;
+  }
+  v13 = Invoke(aAllocator, aPacketSize, *&aPacketSize);
+  v15 = v13;
+  if (v13)
+  {
+    klass = v13->klass;
+    if (v13->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != sdfPrimTransPacket_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, sdfPrimTransPacket_t, v21);
+      if ((v21[0] & 1) != 0)
+        v18 = v22;
+      else
+        v18 = v21 + 1;
+      v19 = sub_8C4940(v18);
+    }
+  }
+  Invoke(aFunc, v13);
+  sdfDrawTagLink(aTag, v15);
 }
 
 // 0x17a7d50

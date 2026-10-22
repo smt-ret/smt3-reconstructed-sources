@@ -11,5 +11,5 @@ struct effPCPBufuraIce_tag {
     f32 rot_y;
     f32 scale;
     u32 abgr;
-    effPartHandle_t hModel[UNKNOWN_ARRAY_SIZE];
+    effPartHandle_t *hModel;
 };

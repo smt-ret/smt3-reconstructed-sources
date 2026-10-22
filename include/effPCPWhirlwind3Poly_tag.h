@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 struct effPCPWhirlwind3Poly_tag {
     sdfMatrix4_t matrix;
     effPCPWhirlwind3PolyParam_t *param;
-    effPCPWhirlwind3PolyPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPWhirlwind3PolyPart_tag *pPart;
     f32 scale;
     u32 abgr;
     s32 frame_all;

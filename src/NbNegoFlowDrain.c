@@ -52,7 +52,7 @@ s32 Flow11_2(nbNegoProcessData_t **n) {
   datUnitWork_t_o **v16;
 
   nbAddNegoIdKouho(n, 0xB0003u);
-  RandIntA = dds3GetRandIntA(1u, StringLiteral_5300);
+  RandIntA = dds3GetRandIntA(1u, "11_2");
   v6 = *n;
   if (RandIntA)
   {
@@ -94,26 +94,172 @@ s32 Flow11_2(nbNegoProcessData_t **n) {
 
 // 0x533200
 s32 Flow11_3(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    nbClsNegoMessage(0);
-    nbPanelPartyShow();
-    nbMakeKaifukuPacket(0, 0, 0, 0, 0, 0, 0);
-    nbMakeDamagePacket(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    nbAddTimeListHp(0, 0, 0);
-    nbAddHitEffKoukaPacket(0, 0, 0, 0);
-    nbCheckKuisibariSkill(0);
-    nbAddSkillNamePacket(0, 0, 0);
-    nbSetKuisibariStop(0);
-    nbCheckKuisibari2Skill(0);
-    nbMakeDeadPacket(0, 0, 0, 0);
-    return 0;
+  nbActionProcessData_t_o *v3;
+  u64 *v7;
+  nbNegoProcessData_t_o *v9;
+  nbNegoProcessData_t_o *v10;
+  s32 v11;
+  s32 v12;
+  struct datUnitWork_t_o *ework;
+  s32 hp;
+  nbActionProcessData_t_o **p_actdata;
+  s32 eformindex;
+  s32 v17;
+  s32 v18;
+  s32 v19;
+  s32 v20;
+  s32 v22;
+  s32 uniqueid;
+  s32 v24;
+  s32 v25;
+  s32 v26;
+  nbActionProcessData_t_o **v27;
+  s32 pformindex;
+  s32 v29;
+  s32 v30;
+  s32 requestdata;
+
+  v3 = Allocate(nbActionProcessData_t);
+  nbActionProcessData_t___ctor(v3);
+  nbAddNegoIdKouho(n, 0xB0004u);
+  nbClsNegoMessage(n);
+  nbPanelPartyShow();
+  requestdata = (*n)->requestdata;
+  v7 = sub_8D3950(s32, &requestdata);
+  Write_2930400("drain = {0:D}\n", v7);
+  v9 = *n;
+  if ((*n)->requesthpmp)
+  {
+    nbMakeKaifukuPacket(15, v3->uniqueid, &v9->eform, 0, -1, v9->requestdata, 0);
+    nbMakeDamagePacket(
+      45,
+      v3->uniqueid,
+      &(*n)->pform,
+      3,
+      -1,
+      (*n)->requestdata,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0);
+    v10 = *n;
+    v11 = (*n)->requestdata;
+    if (v11 < 1)
+      v12 = 100;
+    else
+      v12 = 100 * v10->pwork->mp / v11;
+    v10->requestdata = v12;
+    goto LABEL_43;
+  }
+  ework = v9->ework;
+  hp = ework->hp;
+  LODWORD(ework) = ework->maxhp;
+  p_actdata = &v9->actdata;
+  eformindex = v9->eformindex;
+  v17 = v9->requestdata + hp;
+  v18 = ework - hp;
+  if (v17 <= ework)
+    v19 = v9->requestdata;
+  else
+    v19 = v18;
+  nbAddTimeListHp(p_actdata, eformindex, v19);
+  nbMakeKaifukuPacket(0, 0, &(*n)->eform, 0, (*n)->requestdata, -1, 0, 0);
+  nbAddHitEffKoukaPacket(0, 0, &(*n)->eform, 9, 0);
+  v20 = (*n)->requestdata;
+  if (nbCheckKuisibariSkill((*n)->pformindex, 0))
+  {
+    if (v20 >= 1)
+    {
+      v22 = (*n)->pwork->hp;
+      if (v20 >= v22)
+      {
+        uniqueid = v3->uniqueid;
+        v20 = v22 - 1;
+        v24 = 345;
+LABEL_34:
+        nbAddSkillNamePacket(45, uniqueid, v24);
+        nbSetKuisibariStop((*n)->pformindex, 0);
+      }
+    }
+  }
+  else
+  {
+    v25 = nbCheckKuisibari2Skill((*n)->pformindex, 0);
+    if (v20 >= 1)
+    {
+      if (v25)
+      {
+        v26 = (*n)->pwork->hp;
+        if (v20 >= v26)
+        {
+          uniqueid = v3->uniqueid;
+          v20 = v26 - 1;
+          v24 = 360;
+          goto LABEL_34;
+        }
+      }
+    }
+  }
+  v27 = &(*n)->actdata;
+  pformindex = (*n)->pformindex;
+  v29 = (*n)->pwork->hp;
+  if (v20 <= v29)
+    v30 = v20;
+  else
+    v30 = (*n)->pwork->hp;
+  nbAddTimeListHp(v27, pformindex, -v30);
+  nbMakeDamagePacket(
+    45,
+    v3->uniqueid,
+    &(*n)->pform,
+    3,
+    v20,
+    -1,
+    0,
+    0,
+    v20 >= v29,
+    0,
+    1,
+    0,
+    0);
+  if (v20 >= v29)
+    nbMakeDeadPacket(75, v3->uniqueid, &(*n)->pform, 0, 0);
+LABEL_43:
+  (*n)->waitframe = 20;
+  return 0;
 }
 
 // 0x533610
 s32 Flow11_4(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    nbPanelPartyHide();
-    return 0;
+  u64 *v5;
+  nbNegoProcessData_t_o *v6;
+  u32 *nextkouho;
+  u32 v8;
+  u32 *v10;
+  u16 hp;
+
+  nbAddNegoIdKouho(n, 0xB0006u);
+  nbAddNegoIdKouho(n, 0xB0005u);
+  nbPanelPartyHide();
+  hp = (*n)->pwork->hp;
+  v5 = sub_8D3950(ushort, &hp);
+  Write_2930400("pwork hp = {0:D}\n", v5);
+  v6 = *n;
+  nextkouho = v6->nextkouho;
+  v8 = nextkouho[6];
+  if (v6->pwork->hp)
+  {
+    v10 = nextkouho + 8;
+  }
+  else
+  {
+    v10 = nextkouho + 9;
+  }
+  v6->nextnegoid = *v10;
+  return 0;
 }
 
 // 0x5337b0
@@ -196,7 +342,7 @@ s32 Flow11_8(nbNegoProcessData_t **n) {
   s32 v9;
 
   nbAddNegoIdKouho(n, 0x60018u);
-  if (dds3GetRandIntA(2u, StringLiteral_5303))
+  if (dds3GetRandIntA(2u, "11_8"))
     v5 = 156;
   else
     v5 = 153;

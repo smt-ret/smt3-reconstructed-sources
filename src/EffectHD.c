@@ -75,6 +75,61 @@ void SetForm(EffectHD *this, nbFormation_t *form) {
 
 // 0xfe6660
 void SetLightAll(EffectHD *this, void *rootobj) {
+  struct sdf3DLight_t_array *dds3DirLights;
+  f32 z;
+  f32 v8;
+  f32 v9;
+  f32 v10;
+  f32 v11;
+  f32 v12;
+  f32 v13;
+  s32 v14;
+  System_WeakReference_o *Item;
+  s32 id_LightColor;
+  s32 id_ColorAmbient;
+  s32 id_LightVector;
+  UnityEngine_Vector4_o v21;
+  UnityEngine_Color_o v22;
+  UnityEngine_Color_o v23;
+  f32 y;
+  f32 x;
+
+  if (!dds3DirLights->max_length)
+    goto LABEL_8;
+LABEL_6:
+  x = dds3DirLights->m_Items[0]->color.x;
+  y = dds3DirLights->m_Items[0]->color.y;
+  z = dds3DirLights->m_Items[0]->color.z;
+  v8 = dds3DirLights->m_Items[0]->v.x;
+  v9 = dds3DirLights->m_Items[0]->v.y;
+  v10 = dds3Ambient.z;
+  v11 = dds3Ambient.x;
+  v12 = dds3Ambient.y;
+  v13 = dds3DirLights->m_Items[0]->v.z;
+  if (_get_Count(this->mat_list) >= 1)
+  {
+    v14 = 0;
+    do
+    {
+      Item = _get_Item(
+               this->mat_list,
+               v14);
+      *&v23.r = 0;
+      *&v23.b = 0;
+      sub_19EC630(&v23.r, x, y, z, 1.0);
+      SetColor_27247456(Item, id_LightColor, v23);
+      *&v22.r = 0;
+      *&v22.b = 0;
+      sub_19EC630(&v22.r, v11, v12, v10, 1.0);
+      SetColor_27247456(Item, id_ColorAmbient, v22);
+      *&v21.x = 0;
+      *&v21.z = 0;
+      sub_854690(&v21.x, -v8, v9, -v13, 0.0);
+      SetVector_27247776(Item, id_LightVector, v21);
+      ++v14;
+    }
+    while (v14 < _get_Count(this->mat_list));
+  }
 }
 
 // 0xfe6c50

@@ -85,22 +85,162 @@ void shpExit(void) {
 
 // 0x19a67e0
 u16 shpGetItemFromItemBox(s32 BoxNo) {
-    fclChkItemHearts(0);
-    FCL_RAND();
+  struct fclShopItemBox_t_array_array *fclShopItemBoxTbl;
+  il2cpp_array_size_t max_length;
+  u32 *v7;
+  s32 v8;
+  s32 v9;
+  s64 v10;
+  struct fclShopItemBox_t_array_array *v13;
+  u64 v14;
+  fclShopItemBox_t_array *v16;
+  s32 v18;
+  s8 v19;
+  s8 v20;
+  s32 Hearts;
+  bool v22;
+  fclShopItemBox_t_o *v23;
+  u32 *v25;
+  u32 *v26;
+  struct fclShopItemBox_t_array_array *v29;
+  fclShopItemBox_t_array *v31;
+  struct fclShopItemBox_t_array_array *v34;
+  fclShopItemBox_t_array *v36;
+  u32 v39;
+  u64 v40;
+  s32 v41;
+  s64 v43;
+  s64 v46;
+
+  else
+  {
+    if (!LODWORD(fclShopItemBoxTbl->max_length))
+      goto LABEL_6;
+  }
+  max_length = fclShopItemBoxTbl->m_Items[0]->max_length;
+  v7 = NewSpecific(fclShopItemBox_t, max_length);
+  if (max_length >= 1)
+  {
+    v8 = 0;
+    v9 = 0;
+    v10 = 4;
+    v46 = -max_length;
+    while (1)
+    {
+      v13 = fclShopItemBoxTbl;
+      v14 = v10 - 4;
+      v16 = v13->m_Items[BoxNo];
+      v18 = *(*(&v16->obj.klass + v10) + 18LL);
+      v19 = fclChkItemHearts(v18);
+      if (v19)
+        break;
+      if (v18)
+        goto LABEL_30;
+LABEL_52:
+      ++v10;
+      if (v46 + v10 == 4)
+        goto LABEL_55;
+    }
+    v20 = v19;
+    Hearts = cmbChkGetHearts(v20);
+    if (v18)
+      v22 = Hearts == 0;
+    else
+      v22 = 0;
+    if (!v22)
+      goto LABEL_52;
+LABEL_30:
+    v23 = Allocate(fclShopItemBox_t);
+    fclShopItemBox_t___ctor(v23);
+    v25 = &v7[2 * v9];
+    *(v25 + 4) = v23;
+    v26 = v25 + 8;
+    v29 = fclShopItemBoxTbl;
+    v31 = v29->m_Items[BoxNo];
+    v23->Rate = *(*(&v31->obj.klass + v10) + 16LL);
+    v34 = fclShopItemBoxTbl;
+    v36 = v34->m_Items[BoxNo];
+    *(*v26 + 18LL) = *(*(&v36->obj.klass + v10) + 18LL);
+    ++v9;
+    v8 += *(*v26 + 16LL);
+    goto LABEL_52;
+  }
+  v9 = 0;
+  v8 = 0;
+LABEL_55:
+  v39 = FCL_RAND();
+  if (v9 < 1)
     return 0;
+LABEL_58:
+  v40 = 0;
+  v41 = 0;
+  while (1)
+  {
+    v43 = *&v7[2 * v40 + 8];
+    v41 += *(v43 + 16);
+    if (v41 > (v39 % v8))
+      break;
+    if (++v40 >= v9)
+      return 0;
+  }
+  return *(v43 + 18);
 }
 
 // 0x19a9320
 void shpServiceTicket(void) {
-    fclClearSignal(0);
-    shpGetItemFromItemBox(0);
-    fclSetVal(0, 0);
-    evtBitCheck(0);
-    shpExit();
-    shpAddServiceTicket(0);
-    fclScriptStart(0, 0, 0);
-    SetButtonGuide(0, 0);
+  u64 *v4;
+  cmpCursorInfo_t_o *CursorInfo;
+  u16 ItemFromItemBox;
+  u16 v11;
+  u16 v13;
+  struct fclDataShop_t_o *GBWK;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  System_Byte_array *pScriptData;
+  dds3ProcessID_t_o **p_ScriptPID;
+  s32 PayTotal;
+
+  PayTotal = GBWK->PayTotal;
+  v4 = sub_8D3950(s32, &PayTotal);
+  Write_2930400("Total pay : {0:D}\n", v4);
+  CursorInfo = GBWK->CmdSelInfo->CursorInfo;
+  cmpMoveCursorListEnd(CursorInfo);
+  fclClearSignal(4);
+  fclClearSignal(5);
+  ItemFromItemBox = shpGetItemFromItemBox(0);
+  fclSetVal(4, ItemFromItemBox);
+  v11 = shpGetItemFromItemBox(1);
+  fclSetVal(5, v11);
+  v13 = shpGetItemFromItemBox(2);
+  fclSetVal(6, v13);
+  if (GBWK->Place == 1)
+  {
+    updated = evtBitCheck(2353);
+    if ((updated & 1) == 0)
+    {
+LABEL_23:
+      shpExit();
+      return;
+    }
+  }
+  if (GBWK->PayTotal >= 1000)
+  {
+    shpAddServiceTicket(1);
+    GBWK->ismsgend = 0;
+    GBWK->SeqInfo->MesFlag = 1;
+    SeqInfo = GBWK->SeqInfo;
+    pScriptData = GBWK->pScriptData;
+    p_ScriptPID = &GBWK->ScriptPID;
+    SeqInfo->MesPID = fclScriptStart(pScriptData, 11, p_ScriptPID);
+    GBWK->SeqInfo->Current = 10;
+    SetButtonGuide(10, 0);
+  }
+  else
+  {
+    updated = shpAddServiceTicket(0);
+    if (updated < 10)
+      goto LABEL_23;
     shpServiceTicketItem();
+  }
 }
 
 // 0x19a9200
@@ -122,58 +262,233 @@ void shpServiceTicketItem(void) {
 
 // 0x19aa450
 void *shpUpdate(dds3ProcessID_t *PID) {
-    fclChkDbgProcess();
-    dds3GetProcessData(0);
-    shpUpdatePanelMover();
-    fclChkSignal(0);
-    SetButtonGuide(0, 0);
-    shpUpdateSeqRoot();
-    shpUpdateSeqBuy();
-    shpUpdateSeqSell();
-    shpUpdateSeqTalk();
-    fclClearSignal(0);
-    fclSetVal(0, 0);
-    shpUpdateSeqBuyNums();
-    shpUpdateSeqSellNums();
-    shpUpdateSeqErr();
-    shpUpdateSeqConfirm(0);
-    shpUpdateSeqPay();
-    shpUpdateServiceTicket();
-    shpUpdateServiceTicketItem();
-    IsLoad(0, 0);
-    fclShopUpdateInit(0);
+  Il2CppObject *ProcessData;
+  fclShopInit_c *v6;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v10;
+  s64 *v11;
+  AssetBundleCtrl_o *asset_bc;
+  AssetBundleCtrl_o *v14;
+  AssetBundleCtrl_o *v19;
+  s8 Current;
+  fclShopInit_c *v25;
+  struct fclShopInit_StaticFields **p_static_fields;
+  struct fclDataShop_t_o *GBWK;
+  s32 EventEnd;
+  struct cmpSeqInfo_t_o *SeqInfo;
+  u8 Flag;
+  cmpSeqInfo_t_o *v32;
+  struct cmpSeqInfo_t_o *v34;
+  dds3ProcessID_t_o *v35;
+  u64 v36[3];
+
+  v35 = PID;
+  else if (fclChkDbgProcess())
+  {
     return 0;
+  }
+  ProcessData = dds3GetProcessData(&v35);
+  else
+  {
+    if (!ProcessData)
+      goto LABEL_20;
+  }
+  klass = ProcessData->klass;
+  if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != fclDataShop_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, fclDataShop_t, v36);
+    if ((v36[0] & 1) != 0)
+      v10 = v36[2];
+    else
+      v10 = v36 + 1;
+    v11 = sub_8C4940(v10);
+  }
+LABEL_20:
+  GBWK = ProcessData;
+  if (GBWK->Initialized)
+  {
+    if ((v6->_2.bitflags2 & 2) == 0)
+    {
+LABEL_47:
+      Current = GBWK->SeqInfo->Current;
+      shpUpdatePanelMover(v6);
+      if (fclChkSignal(1))
+      {
+        if ((GBWK->SeqInfo->Flag & 0x40) != 0)
+        {
+          v35->func_ans = -1;
+        }
+        else
+        {
+          EventEnd = GBWK->EventEnd;
+          if (EventEnd <= 9)
+          {
+            GBWK->EventEnd = EventEnd + 1;
+            if ((*p_static_fields)->GBWK->EventEnd >= 5)
+            {
+              SetButtonGuide(0, 0);
+            }
+          }
+          SeqInfo = GBWK->SeqInfo;
+          Flag = SeqInfo->Flag;
+          if ((Flag & 2) != 0)
+          {
+            if ((Flag & 1) != 0)
+            {
+              switch (SeqInfo->Current)
+              {
+                case 0:
+                  shpUpdateSeqRoot(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 1:
+                  shpUpdateSeqBuy(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 2:
+                  shpUpdateSeqSell(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 3:
+                  shpUpdateSeqTalk(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 4:
+                  if (cmpChkSeqInfo(SeqInfo) != 2)
+                    break;
+                  fclClearSignal(1);
+                  fclSetVal(1, 0);
+                  v34 = GBWK->SeqInfo;
+                  v34->Flag |= 0x10u;
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 5:
+                  shpUpdateSeqBuyNums(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 6:
+                  shpUpdateSeqSellNums(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 7:
+                  shpUpdateSeqErr(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 8:
+                  if (shpUpdateSeqConfirm(SeqInfo->Last != 5))
+                    break;
+                  return 0;
+                case 9:
+                  shpUpdateSeqPay(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 0xA:
+                  shpUpdateServiceTicket(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                case 0xB:
+                  shpUpdateServiceTicketItem(v25);
+                    goto LABEL_78;
+                  goto LABEL_76;
+                default:
+                  break;
+              }
+            }
+          }
+          {
+LABEL_76:
+          }
+LABEL_78:
+          v32 = GBWK->SeqInfo;
+          cmpUpdateSeqInfo(v32, Current);
+        }
+      }
+      return 0;
+    }
+LABEL_22:
+    goto LABEL_47;
+  }
+  asset_bc = get_asset_bc();
+  if (IsLoad(asset_bc, "e802"))
+  {
+    v14 = get_asset_bc();
+    if (IsLoad(v14, "f802"))
+    {
+      if (IsNullOrEmpty(VoiceName))
+        goto LABEL_43;
+      v19 = get_asset_bc();
+      if (IsLoad(v19, VoiceName))
+      {
+LABEL_43:
+        fclShopUpdateInit(GBWK);
+        GBWK->Initialized = 1;
+        if ((v6->_2.bitflags2 & 2) == 0)
+          goto LABEL_47;
+        goto LABEL_22;
+      }
+    }
+  }
+  return 0;
 }
 
 // 0x19aa370
 void shpUpdatePanelMover(void) {
-    DispInsfee(0);
+  u32 Current;
+  s32 v5;
+
+  Current = GBWK->SeqInfo->Current;
+  if (Current > 9 || ((1 << Current) & 0x360) == 0)
+  {
+    else
+    {
+      v5 = 0;
+    }
+  }
+  else
+  {
+    v5 = 1;
+  }
+  DispInsfee(v5);
 }
 
 // 0x19a6df0
 void shpUpdateSeqBuy(void) {
-    lstMoveCursor2(0, 0);
-    fclClearSignal(0);
-    fclScriptStart(0, 0, 0);
-    shpChkChoiceMax(0, 0, 0);
-    SetButtonGuide(0, 0);
-    fclChkItemHearts(0);
-    fclChkSignal(0);
+  u16 v4;
+  struct fclDataShop_t_o *GBWK;
+
+  v4 = cmpChkCommonInput(CMP_PE_NORMAL);
+  else
+  {
+    if (GBWK->ismsgend)
+      goto LABEL_9;
+  }
+  if (fclChkSignal(0))
+  {
+    GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(0, 0, 0, 0);
+    ButtonGuideDispSet("SHOP02", 0, 0, 90);
+  }
 }
 
 // 0x19a7a80
 void shpUpdateSeqBuyNums(void) {
-    fclClearSignal(0);
-    fclSetVal(0, 0);
-    fclScriptStart(0, 0, 0);
-    SetButtonGuide(0, 0);
-    shpChkChoiceMax(0, 0, 0);
-    shpCalcPayOfMoney(0, 0);
-    fclChkSignal(0);
+  u16 v5;
+  struct fclDataShop_t_o *GBWK;
+
+  v5 = cmpChkCommonInput(CMP_PE_NORMAL | 0x300);
+  else
+  {
+    if (GBWK->ismsgend)
+      goto LABEL_9;
+  }
+  if (fclChkSignal(0))
+  {
+    GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(0, 0, 0, 0);
+    ButtonGuideDispSet("SHOP03", 0, 0, 90);
+  }
 }
 
 // 0x19a86c0
@@ -205,6 +520,7 @@ s8 shpUpdateSeqConfirm(s8 Mode) {
       GBWK->SeqInfo->Current = 9;
       GBWK->SeqInfo->Change = -1;
       v15 = 9;
+      goto LABEL_53;
     }
     if (v8 == 1)
     {
@@ -230,6 +546,7 @@ s8 shpUpdateSeqConfirm(s8 Mode) {
         GBWK->SeqInfo->Change = 2;
         v15 = 5;
       }
+LABEL_53:
       SetButtonGuide(v15, 0);
     }
   }
@@ -326,7 +643,6 @@ void shpUpdateSeqPay(void) {
         ItemCnt = v26->SellItemList->ItemCnt;
         v28 = v26->ListWindow->CursorInfo;
         cmpChangeCursorListNums(ItemCnt, v28);
-        p_static_fields = &fclShopInit->static_fields;
         v31 = GBWK;
         if (v31->SellItemList->ItemCnt)
         {
@@ -363,6 +679,7 @@ void shpUpdateSeqPay(void) {
         IncVal = v21->IncVal;
         if (IncVal > PayMoney)
         {
+LABEL_32:
           if (Last == 5)
           {
             PayMoney = -PayMoney;
@@ -376,7 +693,8 @@ void shpUpdateSeqPay(void) {
             GBWK->PayTotal += GBWK->PayMoney;
           }
           GBWK->PayMoney = 0;
-          p2sdPlaySE_20173184(StringLiteral_8944);
+LABEL_126:
+          p2sdPlaySE_20173184("COMSE_SE05");
           return;
         }
       }
@@ -393,6 +711,7 @@ void shpUpdateSeqPay(void) {
         GBWK->PayTotal += GBWK->IncVal;
       }
       GBWK->PayMoney -= GBWK->IncVal;
+      goto LABEL_126;
     }
     if (Last == 5)
     {
@@ -464,6 +783,7 @@ void shpUpdateSeqRoot(void) {
       else
       {
         if (v4 != 32)
+          goto LABEL_52;
         v10 = GBWK->CmdSelInfo->CursorInfo;
         v11 = v10;
         v12 = 1;
@@ -494,6 +814,7 @@ void shpUpdateSeqRoot(void) {
             GBWK->SeqInfo->Current = 1;
             GBWK->SeqInfo->Change = 1;
             v29 = 1;
+            goto LABEL_101;
           case 1:
             SellItemList = GBWK->SellItemList;
             fclCreateItemListEx(SellItemList, 1);
@@ -514,7 +835,10 @@ void shpUpdateSeqRoot(void) {
             GBWK->SeqInfo->Current = 2;
             GBWK->SeqInfo->Change = 1;
             v29 = 2;
+LABEL_101:
             SetButtonGuide(v29, 0);
+              goto LABEL_55;
+            goto LABEL_53;
           case 2:
             fclSetVal(2, 1);
             GBWK->ismsgend = 0;
@@ -527,16 +851,24 @@ void shpUpdateSeqRoot(void) {
             GBWK->SeqInfo->Change = -1;
             GBWK->SeqInfo->Next = 0;
             v29 = 3;
+            goto LABEL_101;
           case 3:
+            goto LABEL_13;
           default:
+            goto LABEL_52;
         }
       }
       if (v4 == 2)
       {
+LABEL_13:
         shpServiceTicket();
+          goto LABEL_55;
+        goto LABEL_53;
       }
     }
+LABEL_52:
     {
+LABEL_55:
       if (!cmpChkPadPressUpDown())
       {
         v34 = GBWK->CmdSelInfo->CursorInfo;
@@ -547,6 +879,8 @@ void shpUpdateSeqRoot(void) {
       cmpPlaySE(v37);
       return;
     }
+LABEL_53:
+    goto LABEL_55;
   }
 }
 
@@ -580,6 +914,7 @@ void shpUpdateSeqSell(void) {
       else
       {
         if (v4 != 32)
+          goto LABEL_67;
         ListWindow = GBWK->ListWindow;
         v21 = 1;
       }
@@ -602,10 +937,16 @@ void shpUpdateSeqSell(void) {
             GBWK->SeqInfo->Current = 6;
             GBWK->SeqInfo->Change = 1;
             v16 = 6;
+LABEL_82:
             SetButtonGuide(v16, 0);
+              goto LABEL_68;
+LABEL_60:
+            goto LABEL_68;
           }
         }
         v4 = 0x8000;
+          goto LABEL_60;
+LABEL_68:
         lstMoveCursor2(GBWK->ListWindow, 0);
         CursorInfo = GBWK->ListWindow->CursorInfo;
         v27 = cmpDisablePadBitStop(CursorInfo, v4, 0x30u);
@@ -621,29 +962,38 @@ void shpUpdateSeqSell(void) {
         GBWK->SeqInfo->Current = 0;
         GBWK->SeqInfo->Change = 2;
         v16 = 0;
+        goto LABEL_82;
       }
     }
+LABEL_67:
+      goto LABEL_60;
+    goto LABEL_68;
   }
   if (fclChkSignal(0))
   {
     GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(StringLiteral_16452, 0, 0, 90);
+    ButtonGuideDispSet("SHOP05", 0, 0, 90);
   }
 }
 
 // 0x19a8020
 void shpUpdateSeqSellNums(void) {
-    shpChkChoiceMax(0, 0, 0);
-    shpCalcPayOfMoney(0, 0);
-    fclClearSignal(0);
-    fclScriptStart(0, 0, 0);
-    SetButtonGuide(0, 0);
-    fclSetVal(0, 0);
-    ButtonGuideDispOff();
-    fclChkSignal(0);
+  u16 v5;
+  struct fclDataShop_t_o *GBWK;
+
+  v5 = cmpChkCommonInput(CMP_PE_NORMAL | 0x300);
+  else
+  {
+    if (GBWK->ismsgend)
+      goto LABEL_9;
+  }
+  if (fclChkSignal(0))
+  {
+    GBWK->ismsgend = 1;
     FadeOutWindow();
-    ButtonGuideDispSet(0, 0, 0, 0);
+    ButtonGuideDispSet("SHOP06", 0, 0, 90);
+  }
 }
 
 // 0x19aa000

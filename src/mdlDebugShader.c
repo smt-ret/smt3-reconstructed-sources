@@ -27,11 +27,41 @@ void initBtlMenuObj(s32 x, s32 y, s32 w, s32 h, s32 idx);
 
 // 0xdfc420
 void *dds3ShaderEditorProcess(dds3ProcessID_t *aId) {
-    initBtlMenuObj(0, 0, 0, 0, 0);
-    PreBtlMenuObj(0);
-    DDS3_PAD2CHECK_REP(0);
-    btlDevPrintf(0, 0, 0, 0, 0, 0);
-    btlDrawTagLink(0, (bDrawText){0}, 0);
-    SetBtlMenuObj(0);
-    return 0;
+  struct System_String_array *shader_name;
+  s64 select_shader;
+  struct System_String_array *v17;
+  s64 v18;
+  System_String_o *v20;
+  bDrawText_o v22;
+
+  initBtlMenuObj(1380, 0, 540, 720, 0);
+  PreBtlMenuObj(0);
+  else if (DDS3_PAD2CHECK_REP(6))
+  {
+    goto LABEL_53;
+  }
+  if (!DDS3_PAD2CHECK_REP(7))
+  {
+    else if (DDS3_PAD2CHECK_REP(4))
+    {
+      goto LABEL_16;
+    }
+    if (DDS3_PAD2CHECK_REP(5))
+    {
+      ++select_shader;
+      if (select_shader < 3)
+        goto LABEL_40;
+      select_shader = 0;
+      goto LABEL_39;
+    }
+    DDS3_PAD2CHECK_REP(1);
+  }
+LABEL_53:
+  v17 = shader_name;
+  v18 = select_shader;
+  v20 = v17->m_Items[v18];
+  v22 = btlDevPrintf(0, 0, 0, 0, v20, 0);
+  btlDrawTagLink(&bsetText, v22, 0);
+  SetBtlMenuObj(0);
+  return 0;
 }

@@ -104,7 +104,7 @@ struct rstData_t {
     s16 AsignParam;
     s16 StartLevel;
     s16 LevelUpCnt;
-    fclSkillParam_t pEvent[UNKNOWN_ARRAY_SIZE];
+    fclSkillParam_t *pEvent;
     s8 EventNums;
     s8 EventOfs;
     u16 EventParam;
@@ -147,7 +147,7 @@ struct rstData_t {
     sdfMemHandle_t *ScriptMH;
     void *pScriptData;
     sdfMemHandle_t *MessageMH;
-    u8 pMessage[UNKNOWN_ARRAY_SIZE];
+    u8 *pMessage;
     s32 MessageWait;
     sdfTexHandle_t *TexHandle[1];
     u32 BgTimer;
@@ -164,7 +164,7 @@ struct fclEvoDevilParam_t {
     u16 DevilID;
     u16 MaxHP;
     u16 MaxMP;
-    s8 Param[UNKNOWN_ARRAY_SIZE];
+    s8 *Param;
 };
 
 struct fclEvoNeedFlag_t {
@@ -193,12 +193,12 @@ struct fclHearts_t {
     u8 Flag;
     s16 AisyoID;
     s16 MasterAisyoID;
-    s8 GrowParamTbl[UNKNOWN_ARRAY_SIZE];
-    s8 MasterGrowParamTbl[UNKNOWN_ARRAY_SIZE];
-    s8 AutoAsignParamTbl[UNKNOWN_ARRAY_SIZE];
+    s8 *GrowParamTbl;
+    s8 *MasterGrowParamTbl;
+    s8 *AutoAsignParamTbl;
     fclHeartsSplt_t *Split;
-    fclHeartsSkill_t Skill[UNKNOWN_ARRAY_SIZE];
-    u8 Event[UNKNOWN_ARRAY_SIZE];
+    fclHeartsSkill_t *Skill;
+    u8 *Event;
 };
 
 struct fclHeartsSplt_t {
@@ -223,8 +223,8 @@ struct rstMotionTbl_t {
 };
 
 struct fclSkill_t {
-    s8 GrowParamTbl[UNKNOWN_ARRAY_SIZE];
-    fclSkillParam_t Event[UNKNOWN_ARRAY_SIZE];
+    s8 *GrowParamTbl;
+    fclSkillParam_t *Event;
 };
 
 struct fclTensiChange_t {

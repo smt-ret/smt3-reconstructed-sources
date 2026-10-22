@@ -9,11 +9,11 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 
 struct effPCPRadiateThunder_tag {
     effPCPRadiateThunderParam_t *param;
-    effPCPRadiateThunderPart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effPCPRadiateThunderPart_tag *pPart;
     f32 scale;
     f32 height;
     u32 abgr;
-    effPartHandle_t *phAttach[UNKNOWN_ARRAY_SIZE];
+    effPartHandle_t **phAttach;
     sdfMemHandle_t *hAttachMem;
     sdfMemHandle_t *hMem;
 };

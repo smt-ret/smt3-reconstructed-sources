@@ -65,6 +65,7 @@ s32 Flow7_11(nbNegoProcessData_t **n) {
         break;
       default:
         v13 = 0;
+LABEL_19:
         questionmsg = v3->questionmsg;
         nbDispNegoMessage(n, questionmsg, v13, 0);
         return 0;
@@ -73,6 +74,7 @@ s32 Flow7_11(nbNegoProcessData_t **n) {
       v13 = v8;
     else
       v13 = v7;
+    goto LABEL_19;
   }
   v9 = v3->qtype;
   switch (v9)
@@ -81,20 +83,25 @@ s32 Flow7_11(nbNegoProcessData_t **n) {
       v10 = v3->qindex == 0;
       v11 = 30;
       v12 = 28;
+      goto LABEL_25;
     case 2:
       v10 = v3->qindex == 0;
       v11 = 38;
       v12 = 36;
+LABEL_25:
       if (v10)
         v15 = v12;
       else
         v15 = v11;
+      goto LABEL_29;
     case 1:
       v10 = v3->qindex == 0;
       v11 = 34;
       v12 = 32;
+      goto LABEL_25;
   }
   v15 = 0;
+LABEL_29:
   v16 = v3->questionmsg;
   nbDispNegoMessage(n, v16, v15, 1);
   nbAddNegoIdKouho(n, 0x70016u);
@@ -191,10 +198,12 @@ s32 Flow7_20(nbNegoProcessData_t **n) {
     nowselect = (*n)->nowselect;
     if ((*n)->pwork->level >= (*n)->ework->level)
     {
+LABEL_30:
       if (nowselect)
         v32 = 100 - v21;
       else
         v32 = v21;
+      goto LABEL_38;
     }
   }
   else
@@ -202,18 +211,21 @@ s32 Flow7_20(nbNegoProcessData_t **n) {
     if (type)
     {
       v32 = 50;
+      goto LABEL_38;
     }
     pwork = (*n)->pwork;
     Param = datGetParam(pwork, 1);
     v30 = datGetParam((*n)->ework, 1, 0);
     nowselect = (*n)->nowselect;
     if (Param >= v30)
+      goto LABEL_30;
   }
   if (nowselect)
     v32 = 100 - ritu2;
   else
     v32 = ritu2;
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5340);
+LABEL_38:
+  RandIntA = dds3GetRandIntA(0x64u, "7_20");
   v34 = *n;
   nextkouho = v34->nextkouho;
   v36 = nextkouho[6];
@@ -314,6 +326,8 @@ s32 Flow7_22(nbNegoProcessData_t **n) {
     v30 = v45->m_Items[v46];
     v31 = v26->qindex + 3LL;
     if (v31 < LODWORD(v30->max_length))
+      goto LABEL_53;
+    goto LABEL_52;
   }
   if (qtype == 2)
   {
@@ -332,10 +346,13 @@ s32 Flow7_22(nbNegoProcessData_t **n) {
     v30 = v67->m_Items[v68];
     v31 = v26->qindex + 7LL;
     if (v31 < LODWORD(v30->max_length))
+      goto LABEL_53;
+LABEL_52:
   }
   if (qtype != 1)
   {
     v28 = 0;
+    goto LABEL_73;
   }
   v13 = datNegoKotowariQuesInfo;
   v14 = v8->ekucyo;
@@ -352,14 +369,17 @@ s32 Flow7_22(nbNegoProcessData_t **n) {
   v30 = v25->m_Items[v27];
   v31 = v26->qindex + 5LL;
   if (v31 >= LODWORD(v30->max_length))
+    goto LABEL_52;
+LABEL_53:
   v49 = &v30->obj.klass + v31;
   v50 = v26->nowselect;
   v51 = v49[4];
+LABEL_73:
   if (((*n)->qtype - 1) <= 2)
   {
     datAddKotowariPoint(v28, 1);
   }
-  RandIntA = dds3GetRandIntA(0x64u, StringLiteral_5341);
+  RandIntA = dds3GetRandIntA(0x64u, "7_22");
   v71 = *n;
   nextkouho = v71->nextkouho;
   v73 = nextkouho[6];
@@ -402,32 +422,41 @@ s32 Flow7_23(nbNegoProcessData_t **n) {
         v10 = v9->nowselect == 0;
         v11 = 45;
         v12 = 43;
+        goto LABEL_23;
       case 1:
         v10 = v9->nowselect == 0;
         v11 = 51;
         v12 = 49;
+        goto LABEL_23;
       case 2:
         v10 = v9->nowselect == 0;
         v11 = 57;
         v12 = 55;
+        goto LABEL_23;
       case 3:
         v10 = v9->nowselect == 0;
         v11 = 63;
         v12 = 61;
+        goto LABEL_23;
       case 4:
         v10 = v9->nowselect == 0;
         v11 = 69;
         v12 = 67;
+LABEL_23:
         if (v10)
           v13 = v12;
         else
           v13 = v11;
         questionmsg = v9->questionmsg;
+          goto LABEL_27;
+        goto LABEL_17;
       default:
         v13 = 0;
         questionmsg = v9->questionmsg;
         {
+LABEL_17:
         }
+LABEL_27:
         nbDispNegoMessage(n, questionmsg, v13, 0);
         break;
     }
@@ -469,32 +498,41 @@ s32 Flow7_24(nbNegoProcessData_t **n) {
         v12 = v11->nowselect == 0;
         v13 = 46;
         v14 = 44;
+        goto LABEL_28;
       case 1:
         v12 = v11->nowselect == 0;
         v13 = 52;
         v14 = 50;
+        goto LABEL_28;
       case 2:
         v12 = v11->nowselect == 0;
         v13 = 58;
         v14 = 56;
+        goto LABEL_28;
       case 3:
         v12 = v11->nowselect == 0;
         v13 = 64;
         v14 = 62;
+        goto LABEL_28;
       case 4:
         v12 = v11->nowselect == 0;
         v13 = 70;
         v14 = 68;
+LABEL_28:
         if (v12)
           v15 = v14;
         else
           v15 = v13;
         questionmsg = v11->questionmsg;
+          goto LABEL_32;
+        goto LABEL_22;
       default:
         v15 = 0;
         questionmsg = v11->questionmsg;
         {
+LABEL_22:
         }
+LABEL_32:
         nbDispNegoMessage(n, questionmsg, v15, 0);
         break;
     }
@@ -583,14 +621,14 @@ s32 Flow7_3(nbNegoProcessData_t **n) {
   v13 = *n;
   if ((*n)->qtype)
   {
-    v13->qindex = dds3GetRandIntA(2u, StringLiteral_5339);
+    v13->qindex = dds3GetRandIntA(2u, "7_3");
     v14 = *n;
     nextkouho = v14->nextkouho;
     m_Items = &nextkouho->m_Items[1];
   }
   else
   {
-    v13->qindex = dds3GetRandIntA(5u, StringLiteral_5339);
+    v13->qindex = dds3GetRandIntA(5u, "7_3");
     v14 = *n;
     v18 = v14->nextkouho;
     m_Items = v18->m_Items;

@@ -1,0 +1,2040 @@
+{
+"C_Debug_status": {
+"currentKey": [
+16,
+true
+],
+"oldKey": [
+16,
+true
+],
+"oneShotKey": [
+16,
+true
+]
+},
+"ChangeTex": {
+"changePath": [
+37,
+true
+]
+},
+"CounterCtr": {
+"number": [
+10,
+false
+]
+},
+"SAVEDATA": {
+"SystemBuff": [
+8,
+true
+],
+"saveBuff": [
+20,
+false
+],
+"saveVer7": [
+20,
+false
+],
+"suspendBuff": [
+3,
+true
+],
+"suspendVer7": [
+32,
+true
+]
+},
+"SAVEDATA_GameFileInfo_tag": {
+"end_list": [
+7,
+true
+]
+},
+"SAVEDATA_dds3AdditionWork_tag": {
+"dummy": [
+5,
+true
+]
+},
+"SAVEDATA_dds3GlobalWork_tag": {
+"EventBit": [
+128,
+true
+],
+"FloatVariable": [
+256,
+true
+],
+"IntVariable": [
+256,
+true
+],
+"amap31": [
+32,
+true
+],
+"amapEX": [
+32,
+true
+],
+"boss_press00": [
+2,
+true
+],
+"boss_press01": [
+2,
+true
+],
+"boss_press02": [
+2,
+true
+],
+"boss_press03": [
+2,
+true
+],
+"boss_press04": [
+2,
+true
+],
+"boss_press05": [
+2,
+true
+],
+"boss_press06": [
+2,
+true
+],
+"boss_press07": [
+2,
+true
+],
+"boss_press08": [
+2,
+true
+],
+"boss_press09": [
+2,
+true
+],
+"boss_press10": [
+2,
+true
+],
+"boss_press11": [
+2,
+true
+],
+"boss_press12": [
+2,
+true
+],
+"boss_press13": [
+2,
+true
+],
+"boss_press14": [
+2,
+true
+],
+"boss_press15": [
+2,
+true
+],
+"boss_press16": [
+2,
+true
+],
+"boss_press17": [
+2,
+true
+],
+"boss_press18": [
+2,
+true
+],
+"boss_press19": [
+2,
+true
+],
+"boss_press20": [
+2,
+true
+],
+"boss_press21": [
+2,
+true
+],
+"boss_press22": [
+2,
+true
+],
+"boss_press23": [
+2,
+true
+],
+"boss_press24": [
+2,
+true
+],
+"boss_press25": [
+2,
+true
+],
+"boss_press26": [
+2,
+true
+],
+"boss_press27": [
+2,
+true
+],
+"boss_press28": [
+2,
+true
+],
+"boss_press29": [
+2,
+true
+],
+"boss_press30": [
+2,
+true
+],
+"boss_press31": [
+2,
+true
+],
+"boss_press32": [
+2,
+true
+],
+"boss_press33": [
+2,
+true
+],
+"boss_press34": [
+2,
+true
+],
+"boss_press35": [
+2,
+true
+],
+"boss_press36": [
+2,
+true
+],
+"boss_press37": [
+2,
+true
+],
+"boss_press38": [
+2,
+true
+],
+"boss_press39": [
+2,
+true
+],
+"cname_code00": [
+16,
+true
+],
+"cname_code01": [
+16,
+true
+],
+"cname_code02": [
+16,
+true
+],
+"cname_code03": [
+16,
+true
+],
+"cname_nums": [
+4,
+true
+],
+"config_data": [
+14,
+true
+],
+"fldSave": [
+32,
+false
+],
+"hearts": [
+64,
+true
+],
+"hearts_sk00": [
+12,
+true
+],
+"hearts_sk01": [
+12,
+true
+],
+"hearts_sk02": [
+12,
+true
+],
+"hearts_sk03": [
+12,
+true
+],
+"hearts_sk04": [
+12,
+true
+],
+"hearts_sk05": [
+12,
+true
+],
+"hearts_sk06": [
+12,
+true
+],
+"hearts_sk07": [
+12,
+true
+],
+"hearts_sk08": [
+12,
+true
+],
+"hearts_sk09": [
+12,
+true
+],
+"hearts_sk10": [
+12,
+true
+],
+"hearts_sk11": [
+12,
+true
+],
+"hearts_sk12": [
+12,
+true
+],
+"hearts_sk13": [
+12,
+true
+],
+"hearts_sk14": [
+12,
+true
+],
+"hearts_sk15": [
+12,
+true
+],
+"hearts_sk16": [
+12,
+true
+],
+"hearts_sk17": [
+12,
+true
+],
+"hearts_sk18": [
+12,
+true
+],
+"hearts_sk19": [
+12,
+true
+],
+"hearts_sk20": [
+12,
+true
+],
+"hearts_sk21": [
+12,
+true
+],
+"hearts_sk22": [
+12,
+true
+],
+"hearts_sk23": [
+12,
+true
+],
+"hearts_sk24": [
+12,
+true
+],
+"hearts_sk25": [
+12,
+true
+],
+"hearts_sk26": [
+12,
+true
+],
+"hearts_sk27": [
+12,
+true
+],
+"hearts_sk28": [
+12,
+true
+],
+"hearts_sk29": [
+12,
+true
+],
+"hearts_sk30": [
+12,
+true
+],
+"hearts_sk31": [
+12,
+true
+],
+"hearts_up_param00": [
+6,
+true
+],
+"hearts_up_param01": [
+6,
+true
+],
+"hearts_up_param02": [
+6,
+true
+],
+"hearts_up_param03": [
+6,
+true
+],
+"hearts_up_param04": [
+6,
+true
+],
+"hearts_up_param05": [
+6,
+true
+],
+"hearts_up_param06": [
+6,
+true
+],
+"hearts_up_param07": [
+6,
+true
+],
+"hearts_up_param08": [
+6,
+true
+],
+"hearts_up_param09": [
+6,
+true
+],
+"hearts_up_param10": [
+6,
+true
+],
+"hearts_up_param11": [
+6,
+true
+],
+"hearts_up_param12": [
+6,
+true
+],
+"hearts_up_param13": [
+6,
+true
+],
+"hearts_up_param14": [
+6,
+true
+],
+"hearts_up_param15": [
+6,
+true
+],
+"hearts_up_param16": [
+6,
+true
+],
+"hearts_up_param17": [
+6,
+true
+],
+"hearts_up_param18": [
+6,
+true
+],
+"hearts_up_param19": [
+6,
+true
+],
+"hearts_up_param20": [
+6,
+true
+],
+"hearts_up_param21": [
+6,
+true
+],
+"hearts_up_param22": [
+6,
+true
+],
+"hearts_up_param23": [
+6,
+true
+],
+"hearts_up_param24": [
+6,
+true
+],
+"hearts_up_param25": [
+6,
+true
+],
+"hearts_up_param26": [
+6,
+true
+],
+"hearts_up_param27": [
+6,
+true
+],
+"hearts_up_param28": [
+6,
+true
+],
+"hearts_up_param29": [
+6,
+true
+],
+"hearts_up_param30": [
+6,
+true
+],
+"hearts_up_param31": [
+6,
+true
+],
+"heartsskcnt": [
+64,
+true
+],
+"item": [
+160,
+true
+],
+"kotowari": [
+4,
+true
+],
+"name_code00": [
+16,
+true
+],
+"name_code01": [
+16,
+true
+],
+"name_code02": [
+16,
+true
+],
+"name_code03": [
+16,
+true
+],
+"name_nums00": [
+2,
+true
+],
+"name_nums01": [
+2,
+true
+],
+"name_nums02": [
+2,
+true
+],
+"name_nums03": [
+2,
+true
+],
+"negoques": [
+4,
+true
+],
+"stocklist": [
+16,
+true
+],
+"syakkincnt": [
+64,
+true
+],
+"unitwork": [
+16,
+false
+]
+},
+"SAVEDATA_dds3SystemVer7_tag": {
+"reserved": [
+276,
+true
+]
+},
+"SAVEDATA_dds3SystemWork_tag": {
+"dummy": [
+20,
+true
+]
+},
+"SAVEDATA_dds3WorkVer7_tag": {
+"amap31": [
+32,
+true
+],
+"amapEX": [
+32,
+true
+],
+"autoMapOpen": [
+36,
+true
+],
+"autoMapOpenEX": [
+2,
+true
+],
+"fldRunWork": [
+107,
+true
+],
+"reserved": [
+147,
+true
+]
+},
+"SAVEDATA_fclEncycRecord_tag": {
+"pelem": [
+184,
+false
+]
+},
+"SAVEDATA_fclencyceelem_tag": {
+"keiattr": [
+24,
+true
+],
+"keisyoskill": [
+24,
+true
+],
+"levelupparam": [
+6,
+true
+],
+"mitamaparam": [
+6,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+24,
+true
+],
+"skillparam": [
+6,
+true
+]
+},
+"SAVEDATA_fldAutoMapBuff31_tag": {
+"blkOpenFlg01": [
+32,
+true
+],
+"blkOpenFlg02": [
+32,
+true
+],
+"blkOpenFlg03": [
+32,
+true
+],
+"blkOpenFlg04": [
+32,
+true
+],
+"blkOpenFlg05": [
+32,
+true
+],
+"blkOpenFlg06": [
+32,
+true
+],
+"blkOpenFlg07": [
+32,
+true
+]
+},
+"SAVEDATA_fldAutoMapBuffEX_tag": {
+"blkOpenFlg01": [
+32,
+true
+]
+},
+"SAVEDATA_fldAutoMapBuff_tag": {
+"blkOpenFlg01": [
+32,
+true
+],
+"blkOpenFlg02": [
+32,
+true
+],
+"blkOpenFlg03": [
+32,
+true
+],
+"blkOpenFlg04": [
+32,
+true
+],
+"blkOpenFlg05": [
+32,
+true
+],
+"blkOpenFlg06": [
+32,
+true
+],
+"blkOpenFlg07": [
+32,
+true
+],
+"blkOpenFlg08": [
+32,
+true
+],
+"blkOpenFlg09": [
+32,
+true
+],
+"blkOpenFlg10": [
+32,
+true
+],
+"blkOpenFlg11": [
+32,
+true
+],
+"blkOpenFlg12": [
+32,
+true
+],
+"blkOpenFlg13": [
+32,
+true
+],
+"blkOpenFlg14": [
+32,
+true
+],
+"blkOpenFlg15": [
+32,
+true
+],
+"blkOpenFlg16": [
+32,
+true
+],
+"blkOpenFlg17": [
+32,
+true
+],
+"blkOpenFlg18": [
+32,
+true
+],
+"blkOpenFlg19": [
+32,
+true
+],
+"blkOpenFlg20": [
+32,
+true
+],
+"blkOpenFlg21": [
+32,
+true
+],
+"blkOpenFlg22": [
+32,
+true
+],
+"blkOpenFlg23": [
+32,
+true
+],
+"blkOpenFlg24": [
+32,
+true
+],
+"blkOpenFlg25": [
+32,
+true
+],
+"blkOpenFlg26": [
+32,
+true
+],
+"blkOpenFlg27": [
+32,
+true
+],
+"blkOpenFlg28": [
+32,
+true
+],
+"blkOpenFlg29": [
+32,
+true
+]
+},
+"SAVEDATA_fldSave_tag": {
+"PushBlock01": [
+32,
+false
+],
+"PushBlock02": [
+32,
+false
+],
+"PushBlock03": [
+32,
+false
+],
+"PushBlock04": [
+32,
+false
+],
+"PushBlock05": [
+32,
+false
+],
+"PushBlock06": [
+32,
+false
+],
+"PushBlock07": [
+32,
+false
+],
+"PushBlock08": [
+32,
+false
+],
+"PushBlock09": [
+32,
+false
+],
+"PushBlock10": [
+32,
+false
+],
+"PushBlock11": [
+32,
+false
+],
+"PushBlock12": [
+32,
+false
+],
+"PushBlock13": [
+32,
+false
+],
+"PushBlock14": [
+32,
+false
+],
+"PushBlock15": [
+32,
+false
+],
+"PushBlock16": [
+32,
+false
+],
+"PushBlock17": [
+32,
+false
+],
+"PushBlock18": [
+32,
+false
+],
+"PushBlock19": [
+32,
+false
+],
+"PushBlock20": [
+32,
+false
+],
+"PushBlock21": [
+32,
+false
+],
+"PushBlock22": [
+32,
+false
+],
+"PushBlock23": [
+32,
+false
+],
+"PushBlock24": [
+32,
+false
+],
+"PushBlock25": [
+32,
+false
+],
+"PushBlock26": [
+32,
+false
+],
+"PushBlock27": [
+32,
+false
+],
+"PushBlock28": [
+32,
+false
+],
+"PushBlock29": [
+32,
+false
+],
+"PushBlock30": [
+32,
+false
+],
+"PushBlock31": [
+32,
+false
+],
+"PushBlock32": [
+32,
+false
+],
+"PushBlock33": [
+32,
+false
+],
+"PushBlock34": [
+32,
+false
+],
+"PushBlock35": [
+32,
+false
+],
+"PushBlock36": [
+32,
+false
+],
+"PushBlock37": [
+32,
+false
+],
+"PushBlock38": [
+32,
+false
+],
+"PushBlock39": [
+32,
+false
+],
+"amap": [
+32,
+true
+],
+"pub": [
+11,
+true
+],
+"takara": [
+32,
+true
+],
+"takara2": [
+12,
+true
+]
+},
+"SoundCoroutine": {
+"bgmCoroutineList": [
+2,
+false
+]
+},
+"SoundManager": {
+"_3DSE_atandim": [
+32,
+true
+],
+"_channelBgmArray": [
+2,
+false
+],
+"_channelSeArray": [
+16,
+false
+],
+"_sourceBgmArray": [
+2,
+false
+],
+"_sourceSeArray": [
+16,
+false
+],
+"_sourceVoiceArray": [
+2,
+false
+]
+},
+"System_Collections_Stack": {
+"_array": [
+10,
+false
+]
+},
+"System_Exception": {
+"_stackTrace": [
+1,
+true
+]
+},
+"System_LocalDataStoreMgr": {
+"m_SlotInfoTable": [
+64,
+true
+]
+},
+"System_NumberFormatter": {
+"_cbuf": [
+8,
+true
+]
+},
+"System_Random": {
+"SeedArray": [
+56,
+true
+]
+},
+"System_TimeZoneInfo": {
+"adjustmentRules": [
+122,
+false
+]
+},
+"TMPro_MaterialReference": {
+"fontAsset": [
+16,
+false
+]
+},
+"TMPro_TMP_FontAsset": {
+"fontWeights": [
+10,
+false
+],
+"m_AtlasTextures": [
+1,
+false
+],
+"m_FontWeightTable": [
+10,
+false
+]
+},
+"TMPro_TMP_LineInfo": {
+"alignment": [
+16,
+true
+]
+},
+"TMPro_TMP_RichTextTagStack_Color32_": {
+"m_DefaultItem": [
+16,
+true
+],
+"m_Index": [
+16,
+false
+]
+},
+"TMPro_TMP_RichTextTagStack_FontWeight_": {
+"m_Index": [
+16,
+true
+]
+},
+"TMPro_TMP_RichTextTagStack_MaterialReference_": {
+"m_Index": [
+16,
+false
+]
+},
+"TMPro_TMP_RichTextTagStack_TMP_ColorGradient_": {
+"m_DefaultItem": [
+16,
+true
+]
+},
+"TMPro_TMP_RichTextTagStack_float_": {
+"m_DefaultItem": [
+10,
+true
+],
+"m_Index": [
+16,
+true
+]
+},
+"TMPro_TMP_RichTextTagStack_int_": {
+"m_Index": [
+16,
+false
+]
+},
+"TMPro_TMP_Text": {
+"m_cached_Ellipsis_Character": [
+4,
+true
+],
+"m_cached_TextElement": [
+8,
+false
+],
+"m_colorStack": [
+16,
+true
+],
+"m_currentMaterial": [
+32,
+false
+],
+"m_faceColor": [
+16,
+true
+],
+"m_fontSizeMax": [
+16,
+false
+],
+"m_htmlTag": [
+16,
+true
+],
+"m_inputSource": [
+8,
+false
+],
+"m_isCalculateSizeRequired": [
+128,
+true
+],
+"m_lastVisibleCharacterOfLine": [
+16,
+true
+],
+"m_materialReferenceIndexLookup": [
+16,
+false
+],
+"m_maxDescender": [
+16,
+true
+],
+"m_textAlignment": [
+4,
+true
+],
+"old_text": [
+16,
+true
+]
+},
+"TMPro_TMP_TextInfo": {
+"pageInfo": [
+4,
+false
+]
+},
+"TMPro_WordWrapState": {
+"baselineStack": [
+16,
+false
+],
+"colorGradientStack": [
+16,
+true
+],
+"colorStack": [
+16,
+true
+],
+"fontWeightStack": [
+16,
+true
+],
+"highlightColorStack": [
+16,
+true
+],
+"indentStack": [
+16,
+true
+],
+"strikethroughColorStack": [
+16,
+false
+],
+"styleStack": [
+16,
+true
+],
+"underlineColorStack": [
+16,
+true
+]
+},
+"TextManager": {
+"dmytext": [
+2,
+true
+],
+"fontsize": [
+7,
+true
+],
+"fonttype": [
+9,
+true
+],
+"game_objects": [
+5,
+false
+],
+"msgcount": [
+5,
+true
+],
+"sdfDevConsColorTable": [
+15,
+true
+]
+},
+"UnityEngine_Color32": {
+"r": [
+16,
+true
+]
+},
+"UnityEngine_Matrix4x4": {
+"m13": [
+256,
+true
+]
+},
+"UnityEngine_UI_MaskableGraphic": {
+"m_ShouldRecalculate": [
+4,
+true
+]
+},
+"UnityEngine_Vector2": {
+"y": [
+16,
+true
+]
+},
+"XRD773Unity_GraphicManager": {
+"commonmesh_mat": [
+32,
+false
+]
+},
+"basic_H_dds3Basic_t": {
+"pad": [
+3,
+true
+]
+},
+"basic_H_dds3WorldBasic_t": {
+"basicarray": [
+10000,
+false
+]
+},
+"camp_H_cmpCursorEff_t": {
+"Target": [
+2,
+false
+]
+},
+"camp_H_cmpCursorPos_t": {
+"Eff": [
+256,
+false
+]
+},
+"camp_H_cmpDataDH_t": {
+"BlurTimer": [
+64,
+true
+],
+"HeartsIcon": [
+64,
+false
+],
+"TexHandle": [
+3,
+false
+]
+},
+"dds3GlobalWork_H_dds3GlobalWork_t": {
+"EventBit": [
+128,
+true
+],
+"FloatVariable": [
+256,
+true
+],
+"IntVariable": [
+256,
+true
+],
+"boss_press": [
+40,
+false
+],
+"cname_code": [
+4,
+false
+],
+"cname_nums": [
+4,
+true
+],
+"config_data": [
+14,
+true
+],
+"hearts": [
+64,
+true
+],
+"hearts_sk": [
+32,
+false
+],
+"hearts_up_param": [
+32,
+false
+],
+"heartsskcnt": [
+64,
+true
+],
+"item": [
+160,
+true
+],
+"kotowari": [
+4,
+true
+],
+"name_code": [
+4,
+false
+],
+"name_nums": [
+4,
+false
+],
+"negoques": [
+4,
+true
+],
+"stocklist": [
+16,
+true
+],
+"syakkincnt": [
+64,
+true
+],
+"unitwork": [
+16,
+false
+]
+},
+"effect_H_billHandle_t": {
+"texture": [
+1,
+false
+]
+},
+"effect_H_dds3BillResource_tag": {
+"uv": [
+2,
+true
+]
+},
+"effect_H_dds3Effect_Blur_t": {
+"xy": [
+2,
+false
+]
+},
+"effect_H_dds3Effect_RippleBlur_t": {
+"pwork": [
+40,
+false
+]
+},
+"effect_H_effBTL_FieldBaseColorTable_t": {
+"light": [
+10,
+true
+]
+},
+"effect_H_effPCPBlinkMultiBlurParam_t": {
+"blink_abgr": [
+2,
+true
+]
+},
+"effect_H_effPCPMultiBlurExpParam_t": {
+"blink_abgr": [
+2,
+true
+]
+},
+"effect_H_effPCP_ThunderPolyParam_t": {
+"pos": [
+2,
+true
+]
+},
+"event_H_evtFrameList_t": {
+"list": [
+8,
+true
+]
+},
+"facility_H_fclCombSpirit_t": {
+"ParamType": [
+2,
+true
+]
+},
+"facility_H_fclEncycRecord_t": {
+"pelem": [
+185,
+false
+]
+},
+"facility_H_fclRagDevilParam_t": {
+"Param": [
+6,
+true
+],
+"Skill": [
+8,
+true
+]
+},
+"facility_H_fclRagDevil_t": {
+"Rate": [
+3,
+false
+]
+},
+"facility_H_fclRagItem_t": {
+"Rate": [
+3,
+false
+]
+},
+"facility_H_fclRagMitamaPack_t": {
+"Index": [
+4,
+false
+],
+"Per": [
+7,
+true
+]
+},
+"facility_H_fclRagSeireiPack_t": {
+"Index": [
+4,
+false
+],
+"Per": [
+7,
+true
+]
+},
+"facility_H_fclRag_t": {
+"EventBitPos": [
+1,
+true
+],
+"ItemPackID": [
+2,
+true
+],
+"MitamaPackID": [
+2,
+true
+],
+"SeireiPackID": [
+2,
+true
+]
+},
+"facility_H_fclRankTbl_t": {
+"Base": [
+31,
+false
+]
+},
+"facility_H_fclShopItemPack_t": {
+"ItemList": [
+32,
+false
+]
+},
+"facility_H_fclShopTbl_t": {
+"EventBitPos": [
+1,
+true
+],
+"ItemPackID": [
+2,
+true
+]
+},
+"facility_H_fclSpriteBase_t": {
+"UV": [
+4,
+true
+]
+},
+"facility_H_fclencyceelem_t": {
+"keiattr": [
+24,
+true
+],
+"keisyoskill": [
+24,
+true
+],
+"levelupparam": [
+6,
+true
+],
+"mitamaparam": [
+6,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+24,
+true
+],
+"skillparam": [
+6,
+true
+]
+},
+"field_H_DLCAmIcon_t": {
+"fldAmIcon": [
+1,
+false
+]
+},
+"field_H_GameFileInfo_t": {
+"autoMapOpen": [
+36,
+true
+],
+"autoMapOpenEX": [
+2,
+true
+],
+"end_list": [
+7,
+true
+],
+"verstr": [
+3,
+true
+]
+},
+"field_H_dds3AdditionWork_t": {
+"dummy": [
+5,
+true
+]
+},
+"field_H_dds3SystemWork_t": {
+"dlcflg": [
+8,
+true
+],
+"dummy": [
+20,
+true
+]
+},
+"field_H_fldAutoMapBuff31_t": {
+"blkOpenFlg": [
+8,
+false
+]
+},
+"field_H_fldAutoMapBuffEX_t": {
+"blkOpenFlg": [
+2,
+false
+]
+},
+"field_H_fldAutoMapBuff_t": {
+"blkOpenFlg": [
+30,
+false
+]
+},
+"field_H_fldBlockBuff_t": {
+"EanimeCngID": [
+16,
+true
+]
+},
+"field_H_fldGlobalWork_t": {
+"dmy6": [
+2,
+true
+]
+},
+"field_H_fldSave_t": {
+"PushBlock": [
+40,
+false
+],
+"pub": [
+11,
+true
+],
+"takara": [
+32,
+true
+],
+"takara2": [
+12,
+true
+]
+},
+"fileMngCb_tag": {
+"data": [
+4,
+false
+]
+},
+"fldRunSuspendData": {
+"doorname": [
+12,
+true
+]
+},
+"frFontTable_t": {
+"DestroyHandleList": [
+2,
+false
+],
+"GsClutAddr": [
+6,
+true
+],
+"pFont": [
+9,
+false
+]
+},
+"kernel_H_dds3AdminiData_t": {
+"FlagHistory": [
+8,
+true
+],
+"SequenceHistory": [
+8,
+true
+]
+},
+"kernel_H_dds3DrawEnv_t": {
+"ModelDrawEnv": [
+11,
+false
+]
+},
+"kernel_H_dds3ProcessID_t": {
+"name": [
+24,
+true
+],
+"workdata": [
+8,
+false
+]
+},
+"libsdf_H_sdf3DLightParallelPacket_t": {
+"color": [
+5,
+true
+],
+"normal": [
+3,
+true
+]
+},
+"libsdf_H_sdf3DLight_t": {
+"param": [
+4,
+true
+]
+},
+"libsdf_H_sdf3DViewportPacket_t": {
+"TM": [
+4,
+true
+],
+"cameraTm": [
+4,
+true
+],
+"hooter": [
+4,
+true
+]
+},
+"libsdf_H_sdfDrawTag_t": {
+"texPacket": [
+2,
+false
+]
+},
+"libsdf_H_sdfIVector2_t": {
+"pm": [
+2,
+true
+]
+},
+"libsdf_H_sdfIpuDecodeCb_t": {
+"pad": [
+2,
+true
+]
+},
+"libsdf_H_sdfModelDrawEnv_t": {
+"set": [
+4,
+false
+]
+},
+"libsdf_H_sdfRandCB_t": {
+"v": [
+4,
+true
+]
+},
+"manager_tag": {
+"pmesflow": [
+128,
+false
+]
+},
+"model_H_dds3ModelHandle_t": {
+"motions": [
+4,
+false
+]
+},
+"mviDebugCb_t": {
+"memData": [
+64,
+true
+]
+},
+"newdata_H_datDevilAIChk_s": {
+"check": [
+2,
+true
+]
+},
+"newdata_H_datDevilAI_s": {
+"aichk": [
+3,
+false
+],
+"aitable": [
+3,
+false
+]
+},
+"newdata_H_datDevilFormat_s": {
+"dropitem": [
+2,
+true
+],
+"droppoint": [
+2,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+8,
+true
+]
+},
+"newdata_H_datDevilNegoFormat_s": {
+"itema": [
+4,
+false
+],
+"itemb": [
+4,
+false
+],
+"stone": [
+4,
+false
+]
+},
+"newdata_H_datEncountFld_t": {
+"Encount1": [
+32,
+true
+],
+"Encount2": [
+32,
+true
+]
+},
+"newdata_H_datEncountPack_s": {
+"enctable": [
+4,
+false
+],
+"table1": [
+4,
+true
+]
+},
+"newdata_H_datEncountTbl_s": {
+"ritu": [
+12,
+false
+]
+},
+"newdata_H_datEncount_s": {
+"devil": [
+11,
+true
+]
+},
+"newdata_H_datInfoSelectTable_s": {
+"fieldno": [
+1,
+true
+],
+"flagcheck": [
+1,
+true
+]
+},
+"newdata_H_datInnenNegoTable_s": {
+"innen_motion": [
+3,
+false
+],
+"item": [
+6,
+false
+]
+},
+"newdata_H_datNegoSkill_s": {
+"killeraisyo": [
+4,
+false
+],
+"ngaisyo": [
+4,
+false
+],
+"rate": [
+4,
+true
+]
+},
+"newdata_H_datTakaraSagasiT_s": {
+"itemtbl": [
+8,
+false
+]
+},
+"newdata_H_datTakaraSagasi_s": {
+"tbl": [
+4,
+false
+]
+},
+"newdata_H_datUnitVisual_s": {
+"motion": [
+26,
+false
+]
+},
+"newdata_H_datUnitWork_s": {
+"fullnamecode": [
+8,
+true
+],
+"getdevilhearts": [
+4,
+true
+],
+"keiattr": [
+24,
+true
+],
+"keisyoskill": [
+24,
+true
+],
+"levelupparam": [
+6,
+true
+],
+"mitamaparam": [
+6,
+true
+],
+"namecode": [
+8,
+true
+],
+"param": [
+6,
+true
+],
+"skill": [
+24,
+true
+],
+"skillparam": [
+6,
+true
+]
+},
+"result2_H_fclSkill_t": {
+"Event": [
+24,
+false
+],
+"GrowParamTbl": [
+6,
+true
+]
+},
+"scr_H_scrProcessWork_s": {
+"Name": [
+24,
+true
+],
+"StackData": [
+28,
+false
+],
+"StackType": [
+28,
+true
+]
+},
+"sdfPadCb_t": {
+"actData": [
+2,
+true
+],
+"actDataBack": [
+2,
+true
+],
+"analog": [
+2,
+false
+],
+"press": [
+12,
+true
+]
+},
+"typeFLDAREABGMTBL": {
+"id0": [
+32,
+true
+],
+"id1": [
+32,
+true
+]
+},
+"typeFLDBGMTBL": {
+"Trans": [
+16,
+true
+]
+}
+}

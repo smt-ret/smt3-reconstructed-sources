@@ -38,25 +38,17 @@ void sdfCoreDrawScanOneSkinNodes(sdfModelRootNode_t *root, void *p) {
 
 // 0x17e4470
 void sdfCoreDrawSetFog(sdf3DFogPacket_t *fog) {
-  sdfCoreDraw_c *v3;
-  struct sdfCoreDraw_StaticFields *static_fields;
-
-  static_fields = v3->static_fields;
-  if (static_fields->corePktCurrFog != fog)
+  if (corePktCurrFog != fog)
   {
-    static_fields->corePktCurrFog = fog;
+    corePktCurrFog = fog;
   }
 }
 
 // 0x17e43d0
 void sdfCoreDrawSetLight(sdf3DLightParallelPacket_t *light) {
-  sdfCoreDraw_c *v3;
-  struct sdfCoreDraw_StaticFields *static_fields;
-
-  static_fields = v3->static_fields;
-  if (static_fields->corePktCurrLight != light)
+  if (corePktCurrLight != light)
   {
-    static_fields->corePktCurrLight = light;
+    corePktCurrLight = light;
   }
 }
 

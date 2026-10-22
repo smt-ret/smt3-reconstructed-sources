@@ -86,16 +86,16 @@ struct mdlManager_mdlFileLoadCb_t {
 static s32 id_anim;
 static void *ci;
 static dds3ModelFileKindTable_t *modelFileKindTable[7];
-static dds3ModelFileTableDef_t modelFileTable[UNKNOWN_ARRAY_SIZE];
+static dds3ModelFileTableDef_t *modelFileTable;
 static dds3ModelResrc_t *mdlResrcMajorList[8];
 static mdlLoadingTag_t *mdlLoadingMajorList[8];
 static s32 mdlDbSemaId;
 static char *mdlSetFileName_work_dir;
 static mdlManager_mdlFileItem_tag *mdlHddFileListHead;
 static sdfMemHandle_t *mdlHddFileIndexHandle;
-static dds3ModelFileIndex_t mdlHddFileIndex[UNKNOWN_ARRAY_SIZE];
+static dds3ModelFileIndex_t *mdlHddFileIndex;
 static sdfMemHandle_t *mdlHddFileTableHandle;
-static dds3ModelFileTable_t mdlHddFileTable[UNKNOWN_ARRAY_SIZE];
+static dds3ModelFileTable_t *mdlHddFileTable;
 static void *dante_btl_voice;
 
 void AddDanteGun(void *obj, FieldChrHD *fhdobj, evtUnitHandle_t *hunit);
@@ -243,16 +243,16 @@ void AddDanteGun(void *obj, FieldChrHD *fhdobj, evtUnitHandle_t *hunit) {
     {
       name = get_name(obj);
       v9 = 0;
-      if (op_Equality(name, StringLiteral_15283, 0))
+      if (op_Equality(name, "dante_e728", 0))
         v9 = (fhdobj->klass->vtable._6_GetGameObjectByName.methodPtr)(
                fhdobj,
-               StringLiteral_19046,
+               "ivory",
                fhdobj->klass->vtable._6_GetGameObjectByName.method);
       v10 = get_name(obj);
-      if (op_Equality(v10, StringLiteral_15390, 0))
+      if (op_Equality(v10, "dante_e729", 0))
         v9 = (fhdobj->klass->vtable._6_GetGameObjectByName.methodPtr)(
                fhdobj,
-               StringLiteral_19047,
+               "ivory (1)",
                fhdobj->klass->vtable._6_GetGameObjectByName.method);
       if (op_Inequality(v9, 0, 0))
       {
@@ -334,9 +334,11 @@ void *GetAnimator(void *obj) {
 
   Component_object = GetComponent_object_(obj);
   if (!op_Inequality(Component_object, 0, 0))
+    goto LABEL_11;
   monitor = Component_object[2].monitor;
   if (!op_Inequality(monitor, 0, 0))
   {
+LABEL_11:
     monitor = GetComponent_object_(obj);
     if (!op_Inequality(monitor, 0, 0))
     {
@@ -532,7 +534,50 @@ void UnlockAnim(void *obj) {
 
 // 0x19b8430
 s32 getframe_for_unity(void *anim, s32 index) {
-    return 0;
+  UnityEngine_GameObject_o *gameObject;
+  bool activeSelf;
+  s32 result;
+  UnityEngine_AnimatorClipInfo_array *CurrentAnimatorClipInfo;
+  UnityEngine_AnimatorClipInfo_array *v9;
+  UnityEngine_RuntimeAnimatorController_o *runtimeAnimatorController;
+  f32 v11;
+  s32 v12;
+  f32 v14;
+  f32 v16;
+  UnityEngine_AnimatorStateInfo_o v17;
+  UnityEngine_AnimatorStateInfo_o v18;
+
+  memset(&v18, 0, sizeof(v18));
+  gameObject = get_gameObject(anim);
+  activeSelf = get_activeSelf(gameObject);
+  result = 0;
+  if (activeSelf)
+  {
+    CurrentAnimatorClipInfo = GetCurrentAnimatorClipInfo(anim, index);
+    if (!CurrentAnimatorClipInfo->max_length)
+      return 0;
+    v9 = CurrentAnimatorClipInfo;
+    GetCurrentAnimatorStateInfo(&v17, anim, index);
+    v18 = v17;
+    GetCurrentAnimatorClipInfoCount(anim, index);
+    runtimeAnimatorController = get_runtimeAnimatorController(anim);
+    get_animationClips(runtimeAnimatorController);
+    if (!v9)
+      return 0;
+    if (v9->max_length
+      && (v11 = sub_85FB60(&v18), (v12 = (v11 * get_targetFrameRate())) != 0))
+    {
+      v14 = sub_85FB40(&v18);
+      v16 = v14;
+      GetInteger_8773456(anim, id_anim);
+      return fmodf(v16 * v12, v12);
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  return result;
 }
 
 // 0x19b7c20
@@ -554,10 +599,10 @@ s32 is_devil(void *obj) {
   if (get_Length(name) < 5)
     return -1;
   v9 = Substring_5248048(name, 0, 5);
-  v10 = Equals_5239888(v9, StringLiteral_19044, 5);
+  v10 = Equals_5239888(v9, "mothe", 5);
   result = 0;
   if (!v10)
-    return ~Equals_5239888(v9, StringLiteral_19045, 5) << 31 >> 31;
+    return ~Equals_5239888(v9, "devil", 5) << 31 >> 31;
   return result;
 }
 
@@ -588,6 +633,36 @@ s32 is_eventdevil(char *name) {
 
 // 0x19b6cd0
 void mdlAttachModelForUnity(dds3Basic_t **bas, s32 major, s32 minor) {
+  Il2CppObject *workdata;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  Il2CppClass *v11;
+  struct dds3ModelResrc_t_array *mdlResrcMajorList;
+  dds3ModelResrc_t_o *i;
+  char *v16;
+  s64 *v17;
+  u64 v18[3];
+
+  workdata = (*bas)->workdata;
+  klass = workdata->klass;
+  if (workdata->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+    || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3UnitObjectBasicWorkData_t)
+  {
+    sub_8FC2C0(klass->_1.element_class, dds3UnitObjectBasicWorkData_t, v18);
+    if ((v18[0] & 1) != 0)
+      v16 = v18[2];
+    else
+      v16 = v18 + 1;
+    v17 = sub_8C4940(v16);
+  }
+  v11 = workdata[2].klass;
+LABEL_9:
+  for (i = mdlResrcMajorList->m_Items[major]; i; i = i->next)
+  {
+    if (i->minor == minor)
+      break;
+  }
+  *(v11->_1.interfaceOffsets + 5) = i;
 }
 
 // 0x19ab920
@@ -624,6 +699,7 @@ s32 mdlChkMotionEndEx(dds3ModelHandle_t **aHandle, s32 aGroup) {
   motion = (*aHandle)->modelRoot->motion;
   if (!motion)
     return 2;
+LABEL_6:
   while (motion->userId != aGroup)
   {
     motion = motion->next;
@@ -701,27 +777,1568 @@ sdfMotionCtrlr_t *mdlCreateMotion(dds3ModelHandle_t **aHandle, s32 aGroup) {
 
 // 0x19b73b0
 void mdlDevilLoopMotionForUnity(void *h, s32 motion) {
-    GetAnimator(0);
-    ResetFlag(0, 0, 0);
-    Play(0, 0, 0);
+  UnityEngine_Component_o *transform;
+  UnityEngine_GameObject_o *gameObject;
+  UnityEngine_Component_o *Animator;
+  UnityEngine_GameObject_o *v10;
+  Il2CppObject *Component_object;
+  u64 *v13;
+  u64 *v16;
+  System_String_o *v18;
+  s32 v19;
+  s32 v20;
+
+  if (!op_Equality(h, 0, 0))
+  {
+    transform = get_transform(h, 0);
+    gameObject = get_gameObject(transform);
+    Animator = GetAnimator(gameObject);
+    if (!op_Equality(Animator, 0, 0))
+    {
+      v10 = get_gameObject(Animator);
+      Component_object = GetComponent_object_(v10);
+      if (op_Inequality(Component_object, 0, 0))
+        ResetFlag(Component_object, 0, 0);
+      v20 = motion;
+      v13 = sub_8D3950(s32, &v20);
+      Format("{0:D2}", v13, 0);
+      if (get_parameterCount(Animator))
+      {
+        SetInteger_8774000(Animator, id_anim, motion);
+      }
+      v19 = motion;
+      v16 = sub_8D3950(s32, &v19);
+      v18 = Format("b{0:D2}", v16, 0);
+      if (op_Inequality(Component_object, 0, 0))
+        Play(Component_object, v18, motion, 0, 0.0, 0, 0, 1, 3, 0);
+      else
+        Play_8777152(Animator, v18, 0, 0.0);
+    }
+  }
 }
 
 // 0x19b2c70
 void mdlEffectCreatePipeForUnity(s32 aMajor, s32 aMinor, mdlEffectResrcList_t **efc_res_list) {
-    LoadFileObject(0, 0, 0);
-    LoadFileByte(0, 0, 0);
-    mdlCreateEffectResrc_D3P(0, 0, 0);
+  u64 *v8;
+  AssetBundleCtrl_o *v9;
+  s64 *v10;
+  s64 *v11;
+  s64 v12;
+  s64 v13;
+  char *v14;
+  s64 *v15;
+  AssetBundleCtrl_o *asset_bc;
+  s64 *FileObject;
+  s64 *v19;
+  s64 v20;
+  s64 typeHierarchyDepth;
+  char *v22;
+  s64 *v23;
+  s64 v25;
+  s64 v26;
+  char *v27;
+  s64 *v28;
+  AssetBundleCtrl_o *v30;
+  System_Byte_array *v32;
+  AssetBundleCtrl_o *v33;
+  System_String_o *v34;
+  s64 *v35;
+  s64 v37;
+  s64 v38;
+  char *v39;
+  s64 *v40;
+  AssetBundleCtrl_o *v42;
+  System_Byte_array *FileByte;
+  System_Byte_array *v45;
+  u64 v46[2];
+  char *v47;
+
+  if (aMajor == 2)
+  {
+    if (aMinor == 33)
+    {
+      v8 = NewSpecific(UnityEngine_Texture, 1u);
+      asset_bc = get_asset_bc();
+      FileObject = LoadFileObject(asset_bc, "pipe_common", "dds3data/pipe/jewel1_t00.tga");
+      v19 = FileObject;
+      if (FileObject)
+      {
+        v20 = *FileObject;
+        if (*(*FileObject + 288) < typeHierarchyDepth
+          || *(*(v20 + 200) + 8 * typeHierarchyDepth - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v20 + 64), UnityEngine_Texture, v46);
+          if ((v46[0] & 1) != 0)
+            v22 = v47;
+          else
+            v22 = v46 + 1;
+          v23 = sub_8C4940(v22);
+        }
+        v37 = *v19;
+        if (*(*v19 + 288) < v38 || *(*(v37 + 200) + 8 * v38 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v37 + 64), UnityEngine_Texture, v46);
+          if ((v46[0] & 1) != 0)
+            v39 = v47;
+          else
+            v39 = v46 + 1;
+          v40 = sub_8C4940(v39);
+        }
+      }
+      v8[4] = v19;
+      v42 = get_asset_bc();
+      FileByte = LoadFileByte(v42, "pipe_common", "dds3data/pipe/jewel_lost.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &FileByte->obj, v8);
+      v33 = get_asset_bc();
+      v34 = "pipe_common";
+      v35 = &"dds3data/pipe/jewel_lost_2.D3P.bytes";
+    }
+    else
+    {
+      if (aMinor != 15)
+        return;
+      v8 = NewSpecific(UnityEngine_Texture, 1u);
+      v9 = get_asset_bc();
+      v10 = LoadFileObject(v9, "pipe_common", "dds3data/pipe/jewel1_t00.tga");
+      v11 = v10;
+      if (v10)
+      {
+        v12 = *v10;
+        if (*(*v10 + 288) < v13 || *(*(v12 + 200) + 8 * v13 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v12 + 64), UnityEngine_Texture, v46);
+          if ((v46[0] & 1) != 0)
+            v14 = v47;
+          else
+            v14 = v46 + 1;
+          v15 = sub_8C4940(v14);
+        }
+        v25 = *v11;
+        if (*(*v11 + 288) < v26 || *(*(v25 + 200) + 8 * v26 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v25 + 64), UnityEngine_Texture, v46);
+          if ((v46[0] & 1) != 0)
+            v27 = v47;
+          else
+            v27 = v46 + 1;
+          v28 = sub_8C4940(v27);
+        }
+      }
+      v8[4] = v11;
+      v30 = get_asset_bc();
+      v32 = LoadFileByte(v30, "pipe_common", "dds3data/pipe/jewel1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v32->obj, v8);
+      v33 = get_asset_bc();
+      v34 = "pipe_common";
+      v35 = &"dds3data/pipe/jewel1_2.D3P.bytes";
+    }
+    v45 = LoadFileByte(v33, v34, *v35);
+    mdlCreateEffectResrc_D3P(efc_res_list, &v45->obj, v8);
+  }
 }
 
 // 0x19ae5a0
 void mdlEffectCreateUnity(s32 aMajor, s32 aMinor, mdlEffectResrcList_t **efc_res_list, bool loadf) {
-    GetAkey(0);
-    LoadFileObject(0, 0, 0);
-    LoadFileByte(0, 0, 0);
-    mdlCreateEffectResrc_D3P(0, 0, 0);
-    billAlfRaitoSet(0);
-    billCutRaitoSet(0);
-    fpCutRaitoSet(0);
+  _BOOL4 v5;
+  bool v9;
+  System_String_o *Akey;
+  UnityEngine_Texture_array *v13;
+  AssetBundleCtrl_o *asset_bc;
+  s64 *FileObject;
+  s64 *v16;
+  s64 v17;
+  s64 typeHierarchyDepth;
+  char *v19;
+  s64 *v20;
+  s64 v22;
+  s64 v23;
+  char *v24;
+  s64 *v25;
+  AssetBundleCtrl_o *v27;
+  System_Byte_array *FileByte;
+  AssetBundleCtrl_o *v30;
+  System_Byte_array *v31;
+  AssetBundleCtrl_o *v32;
+  System_Byte_array *v33;
+  System_String_o *v34;
+  UnityEngine_Texture_array *v37;
+  AssetBundleCtrl_o *v38;
+  s64 *v39;
+  s64 *v40;
+  s64 v41;
+  s64 v42;
+  char *v43;
+  s64 *v44;
+  s64 v46;
+  s64 v47;
+  char *v48;
+  s64 *v49;
+  AssetBundleCtrl_o *v51;
+  System_Byte_array *v53;
+  AssetBundleCtrl_o *v54;
+  System_Byte_array *v55;
+  System_String_o *v56;
+  AssetBundleCtrl_o *v59;
+  System_Byte_array *v61;
+  System_String_o *v62;
+  AssetBundleCtrl_o *v65;
+  System_Byte_array *v67;
+  AssetBundleCtrl_o *v68;
+  System_Byte_array *v69;
+  AssetBundleCtrl_o *v70;
+  System_Byte_array *v71;
+  AssetBundleCtrl_o *v72;
+  System_Byte_array *v73;
+  AssetBundleCtrl_o *v74;
+  System_Byte_array *v75;
+  AssetBundleCtrl_o *v76;
+  System_Byte_array *v77;
+  AssetBundleCtrl_o *v78;
+  System_Byte_array *v79;
+  AssetBundleCtrl_o *v80;
+  System_Byte_array *v81;
+  AssetBundleCtrl_o *v82;
+  System_Byte_array *v83;
+  System_String_o *v84;
+  AssetBundleCtrl_o *v86;
+  System_Byte_array *v88;
+  System_String_o *v89;
+  AssetBundleCtrl_o *v91;
+  System_Byte_array *v93;
+  AssetBundleCtrl_o *v94;
+  System_Byte_array *v95;
+  AssetBundleCtrl_o *v96;
+  System_Byte_array *v97;
+  AssetBundleCtrl_o *v98;
+  System_Byte_array *v99;
+  System_String_o *v100;
+  AssetBundleCtrl_o *v102;
+  System_Byte_array *v104;
+  AssetBundleCtrl_o *v105;
+  System_Byte_array *v106;
+  AssetBundleCtrl_o *v107;
+  System_Byte_array *v108;
+  System_String_o *v109;
+  AssetBundleCtrl_o *v112;
+  System_Byte_array *v114;
+  AssetBundleCtrl_o *v115;
+  System_Byte_array *v116;
+  System_String_o *v117;
+  AssetBundleCtrl_o *v119;
+  System_Byte_array *v121;
+  AssetBundleCtrl_o *v122;
+  System_Byte_array *v123;
+  AssetBundleCtrl_o *v124;
+  System_Byte_array *v125;
+  System_String_o *v126;
+  AssetBundleCtrl_o *v128;
+  System_Byte_array *v130;
+  AssetBundleCtrl_o *v131;
+  System_Byte_array *v132;
+  AssetBundleCtrl_o *v133;
+  System_Byte_array *v134;
+  System_String_o *v135;
+  UnityEngine_Texture_array *v138;
+  AssetBundleCtrl_o *v139;
+  s64 *v140;
+  s64 *v141;
+  s64 v142;
+  s64 v143;
+  char *v144;
+  s64 *v145;
+  s64 v147;
+  s64 v148;
+  char *v149;
+  s64 *v150;
+  AssetBundleCtrl_o *v152;
+  System_Byte_array *v154;
+  AssetBundleCtrl_o *v155;
+  System_Byte_array *v156;
+  System_String_o *v157;
+  AssetBundleCtrl_o *v159;
+  System_Byte_array *v161;
+  System_String_o *v162;
+  UnityEngine_Texture_array *v165;
+  AssetBundleCtrl_o *v166;
+  s64 *v167;
+  s64 *v168;
+  s64 v169;
+  s64 v170;
+  char *v171;
+  s64 *v172;
+  s64 v174;
+  s64 v175;
+  char *v176;
+  s64 *v177;
+  AssetBundleCtrl_o *v179;
+  System_Byte_array *v181;
+  System_String_o *v182;
+  AssetBundleCtrl_o *v184;
+  System_Byte_array *v186;
+  AssetBundleCtrl_o *v187;
+  System_Byte_array *v188;
+  System_String_o *v189;
+  AssetBundleCtrl_o *v191;
+  System_Byte_array *v193;
+  System_String_o *v194;
+  AssetBundleCtrl_o *v196;
+  System_Byte_array *v198;
+  AssetBundleCtrl_o *v199;
+  System_Byte_array *v200;
+  AssetBundleCtrl_o *v201;
+  System_Byte_array *v202;
+  System_String_o *v203;
+  UnityEngine_Texture_array *v206;
+  AssetBundleCtrl_o *v207;
+  s64 *v208;
+  s64 *v209;
+  s64 v210;
+  s64 v211;
+  char *v212;
+  s64 *v213;
+  s64 v215;
+  s64 v216;
+  char *v217;
+  s64 *v218;
+  AssetBundleCtrl_o *v220;
+  System_Byte_array *v222;
+  System_String_o *v223;
+  AssetBundleCtrl_o *v225;
+  System_Byte_array *v227;
+  System_String_o *v228;
+  AssetBundleCtrl_o *v230;
+  System_Byte_array *v232;
+  System_String_o *v233;
+  UnityEngine_Texture_array *v236;
+  AssetBundleCtrl_o *v237;
+  s64 *v238;
+  s64 *v239;
+  s64 v240;
+  s64 v241;
+  char *v242;
+  s64 *v243;
+  s64 v245;
+  s64 v246;
+  char *v247;
+  s64 *v248;
+  AssetBundleCtrl_o *v250;
+  System_Byte_array *v252;
+  AssetBundleCtrl_o *v253;
+  System_Byte_array *v254;
+  System_String_o *v255;
+  UnityEngine_Texture_array *v258;
+  AssetBundleCtrl_o *v259;
+  s64 *v260;
+  s64 *v261;
+  s64 v262;
+  s64 v263;
+  char *v264;
+  s64 *v265;
+  s64 v267;
+  s64 v268;
+  char *v269;
+  s64 *v270;
+  AssetBundleCtrl_o *v272;
+  System_Byte_array *v274;
+  AssetBundleCtrl_o *v275;
+  System_Byte_array *v276;
+  System_String_o *v277;
+  AssetBundleCtrl_o *v279;
+  System_Byte_array *v281;
+  AssetBundleCtrl_o *v282;
+  System_Byte_array *v283;
+  System_String_o *v284;
+  UnityEngine_Texture_array *v287;
+  AssetBundleCtrl_o *v288;
+  s64 *v289;
+  s64 *v290;
+  s64 v291;
+  s64 v292;
+  char *v293;
+  s64 *v294;
+  s64 v296;
+  s64 v297;
+  char *v298;
+  s64 *v299;
+  AssetBundleCtrl_o *v301;
+  System_Byte_array *v303;
+  UnityEngine_Texture_array *v304;
+  AssetBundleCtrl_o *v305;
+  s64 *v306;
+  s64 *v307;
+  s64 v308;
+  s64 v309;
+  char *v310;
+  s64 *v311;
+  s64 v313;
+  s64 v314;
+  char *v315;
+  s64 *v316;
+  AssetBundleCtrl_o *v318;
+  System_Byte_array *v319;
+  System_String_o *v320;
+  UnityEngine_Texture_array *v323;
+  AssetBundleCtrl_o *v324;
+  s64 *v325;
+  s64 *v326;
+  s64 v327;
+  s64 v328;
+  char *v329;
+  s64 *v330;
+  s64 v332;
+  s64 v333;
+  char *v334;
+  s64 *v335;
+  AssetBundleCtrl_o *v337;
+  System_Byte_array *v339;
+  AssetBundleCtrl_o *v340;
+  System_Byte_array *v341;
+  System_String_o *v342;
+  UnityEngine_Texture_array *v345;
+  AssetBundleCtrl_o *v346;
+  s64 *v347;
+  s64 *v348;
+  s64 v349;
+  s64 v350;
+  char *v351;
+  s64 *v352;
+  s64 v354;
+  s64 v355;
+  char *v356;
+  s64 *v357;
+  AssetBundleCtrl_o *v359;
+  System_Byte_array *v361;
+  System_String_o *v362;
+  UnityEngine_Texture_array *v365;
+  AssetBundleCtrl_o *v366;
+  s64 *v367;
+  s64 *v368;
+  s64 v369;
+  s64 v370;
+  char *v371;
+  s64 *v372;
+  s64 v374;
+  s64 v375;
+  char *v376;
+  s64 *v377;
+  AssetBundleCtrl_o *v379;
+  System_Byte_array *v381;
+  System_String_o *v382;
+  UnityEngine_Texture_array *v385;
+  AssetBundleCtrl_o *v386;
+  s64 *v387;
+  s64 *v388;
+  s64 v389;
+  s64 v390;
+  char *v391;
+  s64 *v392;
+  s64 v394;
+  s64 v395;
+  char *v396;
+  s64 *v397;
+  AssetBundleCtrl_o *v399;
+  System_Byte_array *v401;
+  System_String_o *v402;
+  UnityEngine_Texture_array *v405;
+  AssetBundleCtrl_o *v406;
+  s64 *v407;
+  s64 *v408;
+  s64 v409;
+  s64 v410;
+  char *v411;
+  s64 *v412;
+  s64 v414;
+  s64 v415;
+  char *v416;
+  s64 *v417;
+  AssetBundleCtrl_o *v419;
+  System_Byte_array *v421;
+  System_String_o *v422;
+  AssetBundleCtrl_o *v424;
+  System_Byte_array *v426;
+  System_String_o *v427;
+  AssetBundleCtrl_o *v430;
+  System_Byte_array *v432;
+  AssetBundleCtrl_o *v433;
+  System_Byte_array *v434;
+  System_String_o *v435;
+  AssetBundleCtrl_o *v437;
+  System_Byte_array *v439;
+  AssetBundleCtrl_o *v440;
+  System_Byte_array *v441;
+  AssetBundleCtrl_o *v442;
+  System_Byte_array *v443;
+  AssetBundleCtrl_o *v444;
+  System_Byte_array *v445;
+  AssetBundleCtrl_o *v446;
+  System_Byte_array *v447;
+  System_String_o *v448;
+  AssetBundleCtrl_o *v450;
+  System_Byte_array *v452;
+  AssetBundleCtrl_o *v453;
+  System_Byte_array *v454;
+  AssetBundleCtrl_o *v455;
+  System_Byte_array *v456;
+  AssetBundleCtrl_o *v457;
+  System_Byte_array *v458;
+  AssetBundleCtrl_o *v459;
+  System_Byte_array *v460;
+  System_String_o *v461;
+  AssetBundleCtrl_o *v463;
+  System_Byte_array *v465;
+  AssetBundleCtrl_o *v466;
+  System_Byte_array *v467;
+  AssetBundleCtrl_o *v468;
+  System_Byte_array *v469;
+  AssetBundleCtrl_o *v470;
+  System_Byte_array *v471;
+  AssetBundleCtrl_o *v472;
+  System_Byte_array *v473;
+  System_String_o *v474;
+  AssetBundleCtrl_o *v476;
+  System_Byte_array *v478;
+  AssetBundleCtrl_o *v479;
+  System_Byte_array *v480;
+  AssetBundleCtrl_o *v481;
+  System_Byte_array *v482;
+  AssetBundleCtrl_o *v483;
+  System_Byte_array *v484;
+  AssetBundleCtrl_o *v485;
+  System_Byte_array *v486;
+  AssetBundleCtrl_o *v487;
+  System_Byte_array *v488;
+  AssetBundleCtrl_o *v489;
+  System_Byte_array *v490;
+  System_String_o *v491;
+  AssetBundleCtrl_o *v494;
+  System_Byte_array *v496;
+  AssetBundleCtrl_o *v497;
+  System_Byte_array *v498;
+  AssetBundleCtrl_o *v500;
+  System_Byte_array *v501;
+  System_String_o *v502;
+  AssetBundleCtrl_o *v504;
+  System_Byte_array *v506;
+  System_String_o *v507;
+  AssetBundleCtrl_o *v509;
+  System_Byte_array *v511;
+  System_String_o *v512;
+  AssetBundleCtrl_o *v514;
+  System_Byte_array *v516;
+  System_String_o *v517;
+  UnityEngine_Texture_array *v519;
+  AssetBundleCtrl_o *v520;
+  s64 *v521;
+  s64 *v522;
+  s64 v523;
+  s64 v524;
+  char *v525;
+  s64 *v526;
+  s64 v528;
+  s64 v529;
+  char *v530;
+  s64 *v531;
+  AssetBundleCtrl_o *v533;
+  System_Byte_array *v535;
+  AssetBundleCtrl_o *v536;
+  System_Byte_array *v537;
+  AssetBundleCtrl_o *v538;
+  System_Byte_array *v539;
+  System_String_o *v540;
+  UnityEngine_Texture_array *v542;
+  AssetBundleCtrl_o *v543;
+  s64 *v544;
+  s64 *v545;
+  s64 v546;
+  s64 v547;
+  char *v548;
+  s64 *v549;
+  s64 v551;
+  s64 v552;
+  char *v553;
+  s64 *v554;
+  AssetBundleCtrl_o *v556;
+  System_Byte_array *v558;
+  AssetBundleCtrl_o *v559;
+  System_Byte_array *v560;
+  System_String_o *v561;
+  AssetBundleCtrl_o *v563;
+  System_Byte_array *v565;
+  System_String_o *v566;
+  AssetBundleCtrl_o *v568;
+  System_Byte_array *v570;
+  System_String_o *v571;
+  AssetBundleCtrl_o *v573;
+  System_Byte_array *v575;
+  System_String_o *v576;
+  AssetBundleCtrl_o *v578;
+  System_Byte_array *v580;
+  u64 v581[2];
+  char *v582;
+  s32 v583;
+  _BOOL4 v584;
+
+  v5 = loadf;
+  v9 = aMajor == 1 || v5;
+  v584 = v5;
+  if (aMajor == 1 || v5)
+  {
+    v583 = aMajor;
+    Akey = GetAkey(aMinor);
+    if (Equals_5234480(Akey, "dvl0x03"))
+    {
+      v13 = NewSpecific(UnityEngine_Texture, 1u);
+      asset_bc = get_asset_bc();
+      FileObject = LoadFileObject(asset_bc, "battle", "dds3data/battle/dvleff/dvleff_0x03/AMATE0.tga");
+      v16 = FileObject;
+      if (FileObject)
+      {
+        v17 = *FileObject;
+        if (*(*FileObject + 288) < typeHierarchyDepth
+          || *(*(v17 + 200) + 8 * typeHierarchyDepth - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v17 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v19 = v582;
+          else
+            v19 = v581 + 1;
+          v20 = sub_8C4940(v19);
+        }
+        v22 = *v16;
+        if (*(*v16 + 288) < v23 || *(*(v22 + 200) + 8 * v23 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v22 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v24 = v582;
+          else
+            v24 = v581 + 1;
+          v25 = sub_8C4940(v24);
+        }
+      }
+      v13->m_Items[0] = v16;
+      v27 = get_asset_bc();
+      FileByte = LoadFileByte(v27, "battle", "dds3data/battle/dvleff/dvleff_0x03/AMATE0.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &FileByte->obj, v13);
+      v30 = get_asset_bc();
+      v31 = LoadFileByte(v30, "battle", "dds3data/battle/dvleff/dvleff_0x03/FPSE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v31->obj, 0);
+      v32 = get_asset_bc();
+      v33 = LoadFileByte(v32, "battle", "dds3data/battle/dvleff/dvleff_0x03/FPSE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v33->obj, 0);
+    }
+    v34 = GetAkey(aMinor);
+    if (Equals_5234480(v34, "dvl0x06"))
+    {
+      v37 = NewSpecific(UnityEngine_Texture, 1u);
+      v38 = get_asset_bc();
+      v39 = LoadFileObject(v38, "battle", "dds3data/battle/dvleff/dvleff_0x06/HORS.tga");
+      v40 = v39;
+      if (v39)
+      {
+        v41 = *v39;
+        if (*(*v39 + 288) < v42 || *(*(v41 + 200) + 8 * v42 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v41 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v43 = v582;
+          else
+            v43 = v581 + 1;
+          v44 = sub_8C4940(v43);
+        }
+        v46 = *v40;
+        if (*(*v40 + 288) < v47 || *(*(v46 + 200) + 8 * v47 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v46 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v48 = v582;
+          else
+            v48 = v581 + 1;
+          v49 = sub_8C4940(v48);
+        }
+      }
+      v37->m_Items[0] = v40;
+      v51 = get_asset_bc();
+      v53 = LoadFileByte(v51, "battle", "dds3data/battle/dvleff/dvleff_0x06/HORS.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v53->obj, v37);
+      v54 = get_asset_bc();
+      v55 = LoadFileByte(v54, "battle", "dds3data/battle/dvleff/dvleff_0x06/FPSE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v55->obj, 0);
+    }
+    v56 = GetAkey(aMinor);
+    if (Equals_5234480(v56, "dvl0x0a"))
+    {
+      billAlfRaitoSet(3.0);
+      billCutRaitoSet(35.0);
+      v59 = get_asset_bc();
+      v61 = LoadFileByte(v59, "battle", "dds3data/battle/dvleff/dvleff_0x0a/SATY.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v61->obj, 0);
+    }
+    v62 = GetAkey(aMinor);
+    if (Equals_5234480(v62, "dvl0x0e"))
+    {
+      billAlfRaitoSet(2.0);
+      v65 = get_asset_bc();
+      v67 = LoadFileByte(v65, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v67->obj, 0);
+      billAlfRaitoSet(2.0);
+      v68 = get_asset_bc();
+      v69 = LoadFileByte(v68, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v69->obj, 0);
+      billAlfRaitoSet(2.0);
+      v70 = get_asset_bc();
+      v71 = LoadFileByte(v70, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v71->obj, 0);
+      billAlfRaitoSet(2.0);
+      v72 = get_asset_bc();
+      v73 = LoadFileByte(v72, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v73->obj, 0);
+      billAlfRaitoSet(2.0);
+      v74 = get_asset_bc();
+      v75 = LoadFileByte(v74, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v75->obj, 0);
+      billAlfRaitoSet(2.0);
+      v76 = get_asset_bc();
+      v77 = LoadFileByte(v76, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO4.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v77->obj, 0);
+      billAlfRaitoSet(2.0);
+      v78 = get_asset_bc();
+      v79 = LoadFileByte(v78, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO5.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v79->obj, 0);
+      billAlfRaitoSet(2.0);
+      v80 = get_asset_bc();
+      v81 = LoadFileByte(v80, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO6.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v81->obj, 0);
+      billAlfRaitoSet(2.0);
+      v82 = get_asset_bc();
+      v83 = LoadFileByte(v82, "battle", "dds3data/battle/dvleff/dvleff_0x0e/KINTO5.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v83->obj, 0);
+    }
+    v84 = GetAkey(aMinor);
+    if (Equals_5234480(v84, "dvl0x24"))
+    {
+      v86 = get_asset_bc();
+      v88 = LoadFileByte(v86, "battle", "dds3data/battle/dvleff/dvleff_0x24/FRAME1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v88->obj, 0);
+    }
+    v89 = GetAkey(aMinor);
+    if (Equals_5234480(v89, "dvl0x25"))
+    {
+      v91 = get_asset_bc();
+      v93 = LoadFileByte(v91, "battle", "dds3data/battle/dvleff/dvleff_0x25/AQUA1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v93->obj, 0);
+      v94 = get_asset_bc();
+      v95 = LoadFileByte(v94, "battle", "dds3data/battle/dvleff/dvleff_0x25/AQUA2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v95->obj, 0);
+      v96 = get_asset_bc();
+      v97 = LoadFileByte(v96, "battle", "dds3data/battle/dvleff/dvleff_0x25/AQUA3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v97->obj, 0);
+      v98 = get_asset_bc();
+      v99 = LoadFileByte(v98, "battle", "dds3data/battle/dvleff/dvleff_0x25/AQUA4.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v99->obj, 0);
+    }
+    v100 = GetAkey(aMinor);
+    if (Equals_5234480(v100, "dvl0x26"))
+    {
+      v102 = get_asset_bc();
+      v104 = LoadFileByte(v102, "battle", "dds3data/battle/dvleff/dvleff_0x26/AEPOS3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v104->obj, 0);
+      v105 = get_asset_bc();
+      v106 = LoadFileByte(v105, "battle", "dds3data/battle/dvleff/dvleff_0x26/AEROS2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v106->obj, 0);
+      v107 = get_asset_bc();
+      v108 = LoadFileByte(v107, "battle", "dds3data/battle/dvleff/dvleff_0x26/AEROS4.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v108->obj, 0);
+    }
+    v109 = GetAkey(aMinor);
+    if (Equals_5234480(v109, "dvl0x27"))
+    {
+      billAlfRaitoSet(2.0);
+      v112 = get_asset_bc();
+      v114 = LoadFileByte(v112, "battle", "dds3data/battle/dvleff/dvleff_0x27/IWA.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v114->obj, 0);
+      billAlfRaitoSet(2.0);
+      v115 = get_asset_bc();
+      v116 = LoadFileByte(v115, "battle", "dds3data/battle/dvleff/dvleff_0x27/IWA1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v116->obj, 0);
+    }
+    v117 = GetAkey(aMinor);
+    if (Equals_5234480(v117, "dvl0x2c"))
+    {
+      v119 = get_asset_bc();
+      v121 = LoadFileByte(v119, "battle", "dds3data/battle/dvleff/dvleff_0x2c/IFREET.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v121->obj, 0);
+      v122 = get_asset_bc();
+      v123 = LoadFileByte(v122, "battle", "dds3data/battle/dvleff/dvleff_0x2c/IFREETM.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v123->obj, 0);
+      v124 = get_asset_bc();
+      v125 = LoadFileByte(v124, "battle", "dds3data/battle/dvleff/dvleff_0x2c/IFREETS.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v125->obj, 0);
+    }
+    v126 = GetAkey(aMinor);
+    if (Equals_5234480(v126, "dvl0x2f"))
+    {
+      v128 = get_asset_bc();
+      v130 = LoadFileByte(v128, "battle", "dds3data/battle/dvleff/dvleff_0x2f/JIN.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v130->obj, 0);
+      v131 = get_asset_bc();
+      v132 = LoadFileByte(v131, "battle", "dds3data/battle/dvleff/dvleff_0x2f/JINM.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v132->obj, 0);
+      v133 = get_asset_bc();
+      v134 = LoadFileByte(v133, "battle", "dds3data/battle/dvleff/dvleff_0x2f/JINS.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v134->obj, 0);
+    }
+    v135 = GetAkey(aMinor);
+    if (Equals_5234480(v135, "dvl0x3a"))
+    {
+      v138 = NewSpecific(UnityEngine_Texture, 1u);
+      v139 = get_asset_bc();
+      v140 = LoadFileObject(v139, "battle", "dds3data/battle/dvleff/dvleff_0x3a/RANTAN01.tga");
+      v141 = v140;
+      if (v140)
+      {
+        v142 = *v140;
+        if (*(*v140 + 288) < v143 || *(*(v142 + 200) + 8 * v143 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v142 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v144 = v582;
+          else
+            v144 = v581 + 1;
+          v145 = sub_8C4940(v144);
+        }
+        v147 = *v141;
+        if (*(*v141 + 288) < v148 || *(*(v147 + 200) + 8 * v148 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v147 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v149 = v582;
+          else
+            v149 = v581 + 1;
+          v150 = sub_8C4940(v149);
+        }
+      }
+      v138->m_Items[0] = v141;
+      v152 = get_asset_bc();
+      v154 = LoadFileByte(v152, "battle", "dds3data/battle/dvleff/dvleff_0x3a/RANTAN01.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v154->obj, v138);
+      v155 = get_asset_bc();
+      v156 = LoadFileByte(v155, "battle", "dds3data/battle/dvleff/dvleff_0x3a/RAN.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v156->obj, 0);
+    }
+    v157 = GetAkey(aMinor);
+    if (Equals_5234480(v157, "dvl0x3e"))
+    {
+      v159 = get_asset_bc();
+      v161 = LoadFileByte(v159, "battle", "dds3data/battle/dvleff/dvleff_0x3e/SOLONE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v161->obj, 0);
+    }
+    v162 = GetAkey(aMinor);
+    if (Equals_5234480(v162, "dvl0x5c"))
+    {
+      v165 = NewSpecific(UnityEngine_Texture, 1u);
+      v166 = get_asset_bc();
+      v167 = LoadFileObject(v166, "battle", "dds3data/battle/dvleff/dvleff_0x5c/KDAMA.tga");
+      v168 = v167;
+      if (v167)
+      {
+        v169 = *v167;
+        if (*(*v167 + 288) < v170 || *(*(v169 + 200) + 8 * v170 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v169 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v171 = v582;
+          else
+            v171 = v581 + 1;
+          v172 = sub_8C4940(v171);
+        }
+        v174 = *v168;
+        if (*(*v168 + 288) < v175 || *(*(v174 + 200) + 8 * v175 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v174 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v176 = v582;
+          else
+            v176 = v581 + 1;
+          v177 = sub_8C4940(v176);
+        }
+      }
+      v165->m_Items[0] = v168;
+      v179 = get_asset_bc();
+      v181 = LoadFileByte(v179, "battle", "dds3data/battle/dvleff/dvleff_0x5c/KDAMA.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v181->obj, v165);
+    }
+    v182 = GetAkey(aMinor);
+    if (Equals_5234480(v182, "dvl0x68"))
+    {
+      v184 = get_asset_bc();
+      v186 = LoadFileByte(v184, "battle", "dds3data/battle/dvleff/dvleff_0x68/MADA2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v186->obj, 0);
+      v187 = get_asset_bc();
+      v188 = LoadFileByte(v187, "battle", "dds3data/battle/dvleff/dvleff_0x68/MADA.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v188->obj, 0);
+    }
+    v189 = GetAkey(aMinor);
+    if (Equals_5234480(v189, "dvl0x6c"))
+    {
+      v191 = get_asset_bc();
+      v193 = LoadFileByte(v191, "battle", "dds3data/battle/dvleff/dvleff_0x6c/BAFOMET.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v193->obj, 0);
+    }
+    v194 = GetAkey(aMinor);
+    if (Equals_5234480(v194, "dvl0x6f"))
+    {
+      v196 = get_asset_bc();
+      v198 = LoadFileByte(v196, "battle", "dds3data/battle/dvleff/dvleff_0x6f/SLUTO.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v198->obj, 0);
+      v199 = get_asset_bc();
+      v200 = LoadFileByte(v199, "battle", "dds3data/battle/dvleff/dvleff_0x6f/SLUTO2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v200->obj, 0);
+      v201 = get_asset_bc();
+      v202 = LoadFileByte(v201, "battle", "dds3data/battle/dvleff/dvleff_0x6f/SLUTO3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v202->obj, 0);
+    }
+    v203 = GetAkey(aMinor);
+    if (Equals_5234480(v203, "dvl0x79"))
+    {
+      v206 = NewSpecific(UnityEngine_Texture, 1u);
+      v207 = get_asset_bc();
+      v208 = LoadFileObject(v207, "battle", "dds3data/battle/dvleff/dvleff_0x79/FRES.tga");
+      v209 = v208;
+      if (v208)
+      {
+        v210 = *v208;
+        if (*(*v208 + 288) < v211 || *(*(v210 + 200) + 8 * v211 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v210 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v212 = v582;
+          else
+            v212 = v581 + 1;
+          v213 = sub_8C4940(v212);
+        }
+        v215 = *v209;
+        if (*(*v209 + 288) < v216 || *(*(v215 + 200) + 8 * v216 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v215 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v217 = v582;
+          else
+            v217 = v581 + 1;
+          v218 = sub_8C4940(v217);
+        }
+      }
+      v206->m_Items[0] = v209;
+      v220 = get_asset_bc();
+      v222 = LoadFileByte(v220, "battle", "dds3data/battle/dvleff/dvleff_0x79/FRES.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v222->obj, v206);
+    }
+    v223 = GetAkey(aMinor);
+    if (Equals_5234480(v223, "dvl0x7e"))
+    {
+      v225 = get_asset_bc();
+      v227 = LoadFileByte(v225, "battle", "dds3data/battle/dvleff/dvleff_0x7e/TIN01.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v227->obj, 0);
+    }
+    v228 = GetAkey(aMinor);
+    if (Equals_5234480(v228, "dvl0x82"))
+    {
+      v230 = get_asset_bc();
+      v232 = LoadFileByte(v230, "battle", "dds3data/battle/dvleff/dvleff_0x82/CORO.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v232->obj, 0);
+    }
+    v233 = GetAkey(aMinor);
+    if (Equals_5234480(v233, "dvl0x84"))
+    {
+      v236 = NewSpecific(UnityEngine_Texture, 1u);
+      v237 = get_asset_bc();
+      v238 = LoadFileObject(v237, "battle", "dds3data/battle/dvleff/dvleff_0x84/SHADOW.tga");
+      v239 = v238;
+      if (v238)
+      {
+        v240 = *v238;
+        if (*(*v238 + 288) < v241 || *(*(v240 + 200) + 8 * v241 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v240 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v242 = v582;
+          else
+            v242 = v581 + 1;
+          v243 = sub_8C4940(v242);
+        }
+        v245 = *v239;
+        if (*(*v239 + 288) < v246 || *(*(v245 + 200) + 8 * v246 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v245 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v247 = v582;
+          else
+            v247 = v581 + 1;
+          v248 = sub_8C4940(v247);
+        }
+      }
+      v236->m_Items[0] = v239;
+      v250 = get_asset_bc();
+      v252 = LoadFileByte(v250, "battle", "dds3data/battle/dvleff/dvleff_0x84/SHADOW.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v252->obj, v236);
+      v253 = get_asset_bc();
+      v254 = LoadFileByte(v253, "battle", "dds3data/battle/dvleff/dvleff_0x84/SHADOW2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v254->obj, 0);
+    }
+    v255 = GetAkey(aMinor);
+    if (Equals_5234480(v255, "dvl0x88"))
+    {
+      v258 = NewSpecific(UnityEngine_Texture, 1u);
+      v259 = get_asset_bc();
+      v260 = LoadFileObject(v259, "battle", "dds3data/battle/dvleff/dvleff_0x88/MORYO.tga");
+      v261 = v260;
+      if (v260)
+      {
+        v262 = *v260;
+        if (*(*v260 + 288) < v263 || *(*(v262 + 200) + 8 * v263 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v262 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v264 = v582;
+          else
+            v264 = v581 + 1;
+          v265 = sub_8C4940(v264);
+        }
+        v267 = *v261;
+        if (*(*v261 + 288) < v268 || *(*(v267 + 200) + 8 * v268 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v267 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v269 = v582;
+          else
+            v269 = v581 + 1;
+          v270 = sub_8C4940(v269);
+        }
+      }
+      v258->m_Items[0] = v261;
+      v272 = get_asset_bc();
+      v274 = LoadFileByte(v272, "battle", "dds3data/battle/dvleff/dvleff_0x88/MORYO.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v274->obj, v258);
+      v275 = get_asset_bc();
+      v276 = LoadFileByte(v275, "battle", "dds3data/battle/dvleff/dvleff_0x88/MORYO2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v276->obj, 0);
+    }
+    v277 = GetAkey(aMinor);
+    if (Equals_5234480(v277, "dvl0x89"))
+    {
+      v279 = get_asset_bc();
+      v281 = LoadFileByte(v279, "battle", "dds3data/battle/dvleff/dvleff_0x89/WISP5.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v281->obj, 0);
+      v282 = get_asset_bc();
+      v283 = LoadFileByte(v282, "battle", "dds3data/battle/dvleff/dvleff_0x89/OPTION2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v283->obj, 0);
+    }
+    v284 = GetAkey(aMinor);
+    if (Equals_5234480(v284, "dvl0xb1"))
+    {
+      billAlfRaitoSet(2.0);
+      v287 = NewSpecific(UnityEngine_Texture, 1u);
+      v288 = get_asset_bc();
+      v289 = LoadFileObject(v288, "battle", "dds3data/battle/dvleff/dvleff_0xb1/RANTAN2.tga");
+      v290 = v289;
+      if (v289)
+      {
+        v291 = *v289;
+        if (*(*v289 + 288) < v292 || *(*(v291 + 200) + 8 * v292 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v291 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v293 = v582;
+          else
+            v293 = v581 + 1;
+          v294 = sub_8C4940(v293);
+        }
+        v296 = *v290;
+        if (*(*v290 + 288) < v297 || *(*(v296 + 200) + 8 * v297 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v296 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v298 = v582;
+          else
+            v298 = v581 + 1;
+          v299 = sub_8C4940(v298);
+        }
+      }
+      v287->m_Items[0] = v290;
+      v301 = get_asset_bc();
+      v303 = LoadFileByte(v301, "battle", "dds3data/battle/dvleff/dvleff_0xb1/SKUL.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v303->obj, v287);
+      billAlfRaitoSet(4.0);
+      v304 = NewSpecific(UnityEngine_Texture, 1u);
+      v305 = get_asset_bc();
+      v306 = LoadFileObject(v305, "battle", "dds3data/battle/dvleff/dvleff_0xb1/RANTAN2.tga");
+      v307 = v306;
+      if (v306)
+      {
+        v308 = *v306;
+        if (*(*v306 + 288) < v309 || *(*(v308 + 200) + 8 * v309 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v308 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v310 = v582;
+          else
+            v310 = v581 + 1;
+          v311 = sub_8C4940(v310);
+        }
+        v313 = *v307;
+        if (*(*v307 + 288) < v314 || *(*(v313 + 200) + 8 * v314 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v313 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v315 = v582;
+          else
+            v315 = v581 + 1;
+          v316 = sub_8C4940(v315);
+        }
+        if (!LODWORD(v304->max_length))
+        {
+LABEL_422:
+        }
+      }
+      else if (!LODWORD(v304->max_length))
+      {
+        goto LABEL_422;
+      }
+      v304->m_Items[0] = v307;
+      v318 = get_asset_bc();
+      v319 = LoadFileByte(v318, "battle", "dds3data/battle/dvleff/dvleff_0xb1/SKUL1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v319->obj, v304);
+    }
+    v320 = GetAkey(aMinor);
+    if (Equals_5234480(v320, "dvl0xb2"))
+    {
+      v323 = NewSpecific(UnityEngine_Texture, 1u);
+      v324 = get_asset_bc();
+      v325 = LoadFileObject(v324, "battle", "dds3data/battle/dvleff/dvleff_0xb2/PHANTOM.tga");
+      v326 = v325;
+      if (v325)
+      {
+        v327 = *v325;
+        if (*(*v325 + 288) < v328 || *(*(v327 + 200) + 8 * v328 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v327 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v329 = v582;
+          else
+            v329 = v581 + 1;
+          v330 = sub_8C4940(v329);
+        }
+        v332 = *v326;
+        if (*(*v326 + 288) < v333 || *(*(v332 + 200) + 8 * v333 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v332 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v334 = v582;
+          else
+            v334 = v581 + 1;
+          v335 = sub_8C4940(v334);
+        }
+      }
+      v323->m_Items[0] = v326;
+      v337 = get_asset_bc();
+      v339 = LoadFileByte(v337, "battle", "dds3data/battle/dvleff/dvleff_0xb2/PHANTOM.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v339->obj, v323);
+      v340 = get_asset_bc();
+      v341 = LoadFileByte(v340, "battle", "dds3data/battle/dvleff/dvleff_0xb2/PHOPT.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v341->obj, 0);
+    }
+    v342 = GetAkey(aMinor);
+    if (Equals_5234480(v342, "dvl0xc3"))
+    {
+      v345 = NewSpecific(UnityEngine_Texture, 1u);
+      v346 = get_asset_bc();
+      v347 = LoadFileObject(v346, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03.tga");
+      v348 = v347;
+      if (v347)
+      {
+        v349 = *v347;
+        if (*(*v347 + 288) < v350 || *(*(v349 + 200) + 8 * v350 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v349 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v351 = v582;
+          else
+            v351 = v581 + 1;
+          v352 = sub_8C4940(v351);
+        }
+        v354 = *v348;
+        if (*(*v348 + 288) < v355 || *(*(v354 + 200) + 8 * v355 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v354 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v356 = v582;
+          else
+            v356 = v581 + 1;
+          v357 = sub_8C4940(v356);
+        }
+      }
+      v345->m_Items[0] = v348;
+      v359 = get_asset_bc();
+      v361 = LoadFileByte(v359, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03B.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v361->obj, v345);
+    }
+    v362 = GetAkey(aMinor);
+    if (Equals_5234480(v362, "dvl0xc4"))
+    {
+      v365 = NewSpecific(UnityEngine_Texture, 1u);
+      v366 = get_asset_bc();
+      v367 = LoadFileObject(v366, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03.tga");
+      v368 = v367;
+      if (v367)
+      {
+        v369 = *v367;
+        if (*(*v367 + 288) < v370 || *(*(v369 + 200) + 8 * v370 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v369 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v371 = v582;
+          else
+            v371 = v581 + 1;
+          v372 = sub_8C4940(v371);
+        }
+        v374 = *v368;
+        if (*(*v368 + 288) < v375 || *(*(v374 + 200) + 8 * v375 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v374 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v376 = v582;
+          else
+            v376 = v581 + 1;
+          v377 = sub_8C4940(v376);
+        }
+      }
+      v365->m_Items[0] = v368;
+      v379 = get_asset_bc();
+      v381 = LoadFileByte(v379, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03B.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v381->obj, v365);
+    }
+    v382 = GetAkey(aMinor);
+    if (Equals_5234480(v382, "dvl0xc5"))
+    {
+      v385 = NewSpecific(UnityEngine_Texture, 1u);
+      v386 = get_asset_bc();
+      v387 = LoadFileObject(v386, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03.tga");
+      v388 = v387;
+      if (v387)
+      {
+        v389 = *v387;
+        if (*(*v387 + 288) < v390 || *(*(v389 + 200) + 8 * v390 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v389 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v391 = v582;
+          else
+            v391 = v581 + 1;
+          v392 = sub_8C4940(v391);
+        }
+        v394 = *v388;
+        if (*(*v388 + 288) < v395 || *(*(v394 + 200) + 8 * v395 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v394 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v396 = v582;
+          else
+            v396 = v581 + 1;
+          v397 = sub_8C4940(v396);
+        }
+      }
+      v385->m_Items[0] = v388;
+      v399 = get_asset_bc();
+      v401 = LoadFileByte(v399, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03B.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v401->obj, v385);
+    }
+    v402 = GetAkey(aMinor);
+    if (Equals_5234480(v402, "dvl0xc6"))
+    {
+      v405 = NewSpecific(UnityEngine_Texture, 1u);
+      v406 = get_asset_bc();
+      v407 = LoadFileObject(v406, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03.tga");
+      v408 = v407;
+      if (v407)
+      {
+        v409 = *v407;
+        if (*(*v407 + 288) < v410 || *(*(v409 + 200) + 8 * v410 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v409 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v411 = v582;
+          else
+            v411 = v581 + 1;
+          v412 = sub_8C4940(v411);
+        }
+        v414 = *v408;
+        if (*(*v408 + 288) < v415 || *(*(v414 + 200) + 8 * v415 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v414 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v416 = v582;
+          else
+            v416 = v581 + 1;
+          v417 = sub_8C4940(v416);
+        }
+      }
+      v405->m_Items[0] = v408;
+      v419 = get_asset_bc();
+      v421 = LoadFileByte(v419, "battle", "dds3data/battle/dvleff/dvleff_0xc5/SMOKE03B.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v421->obj, v405);
+    }
+    v422 = GetAkey(aMinor);
+    if (Equals_5234480(v422, "dvl0x100"))
+    {
+      v424 = get_asset_bc();
+      v426 = LoadFileByte(v424, "battle", "dds3data/battle/dvleff/dvleff_0x100/MIZUCHI.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v426->obj, 0);
+    }
+    v427 = GetAkey(aMinor);
+    if (Equals_5234480(v427, "dvl0x101"))
+    {
+      billAlfRaitoSet(0.75);
+      v430 = get_asset_bc();
+      v432 = LoadFileByte(v430, "battle", "dds3data/battle/dvleff/dvleff_0x101/SOPTION.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v432->obj, 0);
+      billAlfRaitoSet(0.75);
+      v433 = get_asset_bc();
+      v434 = LoadFileByte(v433, "battle", "dds3data/battle/dvleff/dvleff_0x101/SPECTOR.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v434->obj, 0);
+    }
+    v435 = GetAkey(aMinor);
+    if (Equals_5234480(v435, "dvl0x126"))
+    {
+      v437 = get_asset_bc();
+      v439 = LoadFileByte(v437, "battle", "dds3data/battle/dvleff/dvleff_0x126/d0x126_eff0.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v439->obj, 0);
+      v440 = get_asset_bc();
+      v441 = LoadFileByte(v440, "battle", "dds3data/battle/dvleff/dvleff_0x126/d0x126_eff1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v441->obj, 0);
+      v442 = get_asset_bc();
+      v443 = LoadFileByte(v442, "battle", "dds3data/battle/dvleff/dvleff_0x126/d0x126_eff2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v443->obj, 0);
+      v444 = get_asset_bc();
+      v445 = LoadFileByte(v444, "battle", "dds3data/battle/dvleff/dvleff_0x126/d0x126_eff3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v445->obj, 0);
+      v446 = get_asset_bc();
+      v447 = LoadFileByte(v446, "battle", "dds3data/battle/dvleff/dvleff_0x126/d0x126_eff4.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v447->obj, 0);
+    }
+    v448 = GetAkey(aMinor);
+    if (Equals_5234480(v448, "dvl0x127"))
+    {
+      v450 = get_asset_bc();
+      v452 = LoadFileByte(v450, "battle", "dds3data/battle/dvleff/dvleff_0x127/d0x127_eff0.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v452->obj, 0);
+      v453 = get_asset_bc();
+      v454 = LoadFileByte(v453, "battle", "dds3data/battle/dvleff/dvleff_0x127/d0x127_eff1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v454->obj, 0);
+      v455 = get_asset_bc();
+      v456 = LoadFileByte(v455, "battle", "dds3data/battle/dvleff/dvleff_0x127/d0x127_eff2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v456->obj, 0);
+      v457 = get_asset_bc();
+      v458 = LoadFileByte(v457, "battle", "dds3data/battle/dvleff/dvleff_0x127/d0x127_eff3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v458->obj, 0);
+      v459 = get_asset_bc();
+      v460 = LoadFileByte(v459, "battle", "dds3data/battle/dvleff/dvleff_0x127/d0x127_eff4.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v460->obj, 0);
+    }
+    v461 = GetAkey(aMinor);
+    if (Equals_5234480(v461, "dvl0x128"))
+    {
+      v463 = get_asset_bc();
+      v465 = LoadFileByte(v463, "battle", "dds3data/battle/dvleff/dvleff_0x128/d0x128_eff0.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v465->obj, 0);
+      v466 = get_asset_bc();
+      v467 = LoadFileByte(v466, "battle", "dds3data/battle/dvleff/dvleff_0x128/d0x128_eff1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v467->obj, 0);
+      v468 = get_asset_bc();
+      v469 = LoadFileByte(v468, "battle", "dds3data/battle/dvleff/dvleff_0x128/d0x128_eff2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v469->obj, 0);
+      v470 = get_asset_bc();
+      v471 = LoadFileByte(v470, "battle", "dds3data/battle/dvleff/dvleff_0x128/d0x128_eff3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v471->obj, 0);
+      v472 = get_asset_bc();
+      v473 = LoadFileByte(v472, "battle", "dds3data/battle/dvleff/dvleff_0x128/d0x128_eff4.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v473->obj, 0);
+    }
+    v474 = GetAkey(aMinor);
+    if (Equals_5234480(v474, "dvl0x108"))
+    {
+      v476 = get_asset_bc();
+      v478 = LoadFileByte(v476, "battle", "dds3data/battle/dvleff/dvleff_0x108/KAGCENT1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v478->obj, 0);
+      v479 = get_asset_bc();
+      v480 = LoadFileByte(v479, "battle", "dds3data/battle/dvleff/dvleff_0x108/FPS3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v480->obj, 0);
+      v481 = get_asset_bc();
+      v482 = LoadFileByte(v481, "battle", "dds3data/battle/dvleff/dvleff_0x108/FPSE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v482->obj, 0);
+      v483 = get_asset_bc();
+      v484 = LoadFileByte(v483, "battle", "dds3data/battle/dvleff/dvleff_0x108/KAG1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v484->obj, 0);
+      v485 = get_asset_bc();
+      v486 = LoadFileByte(v485, "battle", "dds3data/battle/dvleff/dvleff_0x108/ex1.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v486->obj, 0);
+      v487 = get_asset_bc();
+      v488 = LoadFileByte(v487, "battle", "dds3data/battle/dvleff/dvleff_0x108/ex2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v488->obj, 0);
+      v489 = get_asset_bc();
+      v490 = LoadFileByte(v489, "battle", "dds3data/battle/dvleff/dvleff_0x108/ex3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v490->obj, 0);
+    }
+    v491 = GetAkey(aMinor);
+    if (Equals_5234480(v491, "dvl0x125"))
+    {
+      fpCutRaitoSet(10);
+      v494 = get_asset_bc();
+      v496 = LoadFileByte(v494, "battle", "dds3data/battle/dvleff/dvleff_0x125/FPSE2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v496->obj, 0);
+      v497 = get_asset_bc();
+      v498 = LoadFileByte(v497, "battle", "dds3data/battle/dvleff/dvleff_0x125/FPSE2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v498->obj, 0);
+      billAlfRaitoSet(0.75);
+      v500 = get_asset_bc();
+      v501 = LoadFileByte(v500, "battle", "dds3data/battle/dvleff/dvleff_0x125/TEST2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v501->obj, 0);
+      fpCutRaitoSet(0);
+    }
+    v502 = GetAkey(aMinor);
+    if (Equals_5234480(v502, "dvl0x146"))
+    {
+      v504 = get_asset_bc();
+      v506 = LoadFileByte(v504, "battle", "dds3data/battle/dvleff/dvleff_0x146/eff0x146.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v506->obj, 0);
+    }
+    v507 = GetAkey(aMinor);
+    if (Equals_5234480(v507, "dvl0x147"))
+    {
+      v509 = get_asset_bc();
+      v511 = LoadFileByte(v509, "battle", "dds3data/battle/dvleff/dvleff_0x147/eff0x147.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v511->obj, 0);
+    }
+    v512 = GetAkey(aMinor);
+    if (Equals_5234480(v512, "dvl0x148"))
+    {
+      v514 = get_asset_bc();
+      v516 = LoadFileByte(v514, "battle", "dds3data/battle/dvleff/dvleff_0x148/eff0x148.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v516->obj, 0);
+    }
+    v517 = GetAkey(aMinor);
+    aMajor = v583;
+    if (Equals_5234480(v517, "dvl0x14a"))
+    {
+      v519 = NewSpecific(UnityEngine_Texture, 1u);
+      v520 = get_asset_bc();
+      v521 = LoadFileObject(v520, "battle", "dds3data/battle/dvleff/dvleff_0x14a/MASA0.tga");
+      v522 = v521;
+      if (v521)
+      {
+        v523 = *v521;
+        if (*(*v521 + 288) < v524 || *(*(v523 + 200) + 8 * v524 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v523 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v525 = v582;
+          else
+            v525 = v581 + 1;
+          v526 = sub_8C4940(v525);
+        }
+        v528 = *v522;
+        if (*(*v522 + 288) < v529 || *(*(v528 + 200) + 8 * v529 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v528 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v530 = v582;
+          else
+            v530 = v581 + 1;
+          v531 = sub_8C4940(v530);
+        }
+      }
+      v519->m_Items[0] = v522;
+      v533 = get_asset_bc();
+      v535 = LoadFileByte(v533, "battle", "dds3data/battle/dvleff/dvleff_0x14a/MASA0.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v535->obj, v519);
+      v536 = get_asset_bc();
+      v537 = LoadFileByte(v536, "battle", "dds3data/battle/dvleff/dvleff_0x14a/FPSE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v537->obj, 0);
+      v538 = get_asset_bc();
+      v539 = LoadFileByte(v538, "battle", "dds3data/battle/dvleff/dvleff_0x14a/FPSE2.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v539->obj, 0);
+    }
+  }
+  if (v584 || aMajor == 6 || aMajor == 1)
+  {
+    v540 = GetAkey(aMinor);
+    if (Equals_5234480(v540, "dvl0x150"))
+    {
+      v542 = NewSpecific(UnityEngine_Texture, 1u);
+      v543 = get_asset_bc();
+      v544 = LoadFileObject(v543, "battle", "dds3data/battle/dvleff/dvleff_0x150/RANTAN01.tga");
+      v545 = v544;
+      if (v544)
+      {
+        v546 = *v544;
+        if (*(*v544 + 288) < v547 || *(*(v546 + 200) + 8 * v547 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v546 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v548 = v582;
+          else
+            v548 = v581 + 1;
+          v549 = sub_8C4940(v548);
+        }
+        v551 = *v545;
+        if (*(*v545 + 288) < v552 || *(*(v551 + 200) + 8 * v552 - 8) != UnityEngine_Texture)
+        {
+          sub_8FC2C0(*(v551 + 64), UnityEngine_Texture, v581);
+          if ((v581[0] & 1) != 0)
+            v553 = v582;
+          else
+            v553 = v581 + 1;
+          v554 = sub_8C4940(v553);
+        }
+      }
+      v542->m_Items[0] = v545;
+      v556 = get_asset_bc();
+      v558 = LoadFileByte(v556, "battle", "dds3data/battle/dvleff/dvleff_0x150/RANTAN01.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v558->obj, v542);
+      v559 = get_asset_bc();
+      v560 = LoadFileByte(v559, "battle", "dds3data/battle/dvleff/dvleff_0x150/RAN.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v560->obj, 0);
+    }
+  }
+  if (v9)
+  {
+    v561 = GetAkey(aMinor);
+    if (Equals_5234480(v561, "dvl0x152"))
+    {
+      v563 = get_asset_bc();
+      v565 = LoadFileByte(v563, "battle", "dds3data/battle/dvleff/dvleff_0x152/KAGE.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v565->obj, 0);
+    }
+    v566 = GetAkey(aMinor);
+    if (Equals_5234480(v566, "dvl0x15e"))
+    {
+      v568 = get_asset_bc();
+      v570 = LoadFileByte(v568, "battle", "dds3data/battle/dvleff/dvleff_0x15e/FIRE07.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v570->obj, 0);
+    }
+    v571 = GetAkey(aMinor);
+    if (Equals_5234480(v571, "dvl0x160"))
+    {
+      v573 = get_asset_bc();
+      v575 = LoadFileByte(v573, "battle", "dds3data/battle/dvleff/dvleff_0x160/MOTHER3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v575->obj, 0);
+    }
+    v576 = GetAkey(aMinor);
+    if (Equals_5234480(v576, "dvl0xca"))
+    {
+      v578 = get_asset_bc();
+      v580 = LoadFileByte(v578, "battle", "dds3data/battle/dvleff/dvleff_0x160/MOTHER3.D3P.bytes");
+      mdlCreateEffectResrc_D3P(efc_res_list, &v580->obj, 0);
+    }
+  }
 }
 
 // 0x19b8e10
@@ -783,8 +2400,65 @@ s32 mdlFileLoad(s32 major, s32 minor, u32 regFlags, char *filename, mdlManager_m
 
 // 0x19b60f0
 void mdlFileLoadCallback(pacFileCb_t *pacHandle, void *data) {
-    mdlPackSet(0, 0, 0, 0);
-    pacFileHandleFree(0);
+  Il2CppObject *v4;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  s32 klass_low;
+  s32 v11;
+  sdfPacDecodeResrc_t_o **p_resrcHead;
+  u32 klass_high;
+  s64 v16;
+  s32 v17;
+  struct mdlLoadingTag_t_array *mdlLoadingMajorList;
+  mdlLoadingTag_t_o **p_next;
+  mdlLoadingTag_t_o *v22;
+  s32 minor;
+  mdlManager_mdlFileLoadCb_t_callbackDelegate_o *v24;
+  pacFileCb_t_o *monitor;
+  u64 v27[3];
+
+  v4 = data;
+  if (v4)
+  {
+    klass = v4->klass;
+    if (v4->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != mdlManager_mdlFileLoadCb_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, mdlManager_mdlFileLoadCb_t, v27);
+      if ((v27[0] & 1) != 0)
+        v8 = v27[2];
+      else
+        v8 = v27 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  v4[1].monitor = pacHandle;
+  klass_low = LOWORD(v4[1].klass);
+  v11 = WORD1(v4[1].klass);
+  p_resrcHead = &pacHandle->decodeCb->resrcHead;
+  klass_high = HIDWORD(v4[1].klass);
+  mdlPackSet(p_resrcHead, klass_low, v11, klass_high);
+  v16 = LOWORD(v4[1].klass);
+  v17 = WORD1(v4[1].klass);
+  p_next = &mdlLoadingMajorList->m_Items[v16];
+  do
+  {
+    v22 = *p_next;
+    if (!v22)
+      break;
+    minor = v22->minor;
+    p_next = &v22->next;
+  }
+  while (minor != v17);
+  v24 = v4[2].klass;
+  if (v24)
+  {
+    Invoke(v24, v4[2].monitor);
+    monitor = v4[1].monitor;
+    pacFileHandleFree(monitor);
+  }
 }
 
 // 0x19abfc0
@@ -818,9 +2492,12 @@ void mdlFree(dds3ModelHandle_t **aHandle) {
         break;
       mdlFreeEffect(v7);
       if (!effects)
+        goto LABEL_17;
     }
     mdlFreeEffect(v7);
   }
+LABEL_17:
+LABEL_21:
   v8 = *aHandle;
   blur = (*aHandle)->blur;
   if (blur)
@@ -919,7 +2596,61 @@ void mdlFreeMotionCtrlr(dds3ModelHandle_t **aHandle, sdfMotionCtrlr_t *aCtrlr) {
 
 // 0x19b3160
 void mdlFreeSub(void **pData) {
-    mdlFreeEffect(0);
+  Il2CppObject *v3;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v7;
+  s64 *v8;
+  dds3ModelEffectCtrlr_t_o *monitor;
+  dds3ModelEffectCtrlr_t_o *v10;
+  u64 *v11;
+  s64 i;
+  s64 v13;
+  UnityEngine_Object_o *v14;
+  u64 v15[3];
+
+  v3 = *pData;
+  if (*pData)
+  {
+    klass = v3->klass;
+    if (v3->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != dds3ModelHandle_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, dds3ModelHandle_t, v15);
+      if ((v15[0] & 1) != 0)
+        v7 = v15[2];
+      else
+        v7 = v15 + 1;
+      v8 = sub_8C4940(v7);
+    }
+    monitor = v3[3].monitor;
+    while (monitor)
+    {
+      while (1)
+      {
+        v10 = monitor;
+        monitor = monitor->next;
+          break;
+        mdlFreeEffect(v10);
+        if (!monitor)
+          goto LABEL_16;
+      }
+      mdlFreeEffect(v10);
+    }
+LABEL_16:
+    v11 = v3[5].monitor;
+    if (v11)
+    {
+      for (i = v11[2]; i; *(v13 + 24) = 0)
+      {
+        v13 = i;
+        i = *(i + 16);
+        v14 = *(v13 + 24);
+        Destroy_27360000(v14);
+      }
+      v3[5].monitor = 0;
+    }
+  }
 }
 
 // 0x19b4f30
@@ -929,6 +2660,7 @@ u32 mdlGetColor(dds3ModelHandle_t **aHandle) {
   v3 = *aHandle;
   if (!v3)
     return 0;
+LABEL_6:
   if (v3->modelRoot)
     return (*aHandle)->modelRoot->color;
   else
@@ -979,9 +2711,11 @@ sdfMotionCtrlr_t *mdlGetMotionCtrlr(dds3ModelHandle_t **aHandle, s32 aGroup) {
 s32 mdlGetMotionFrame(dds3ModelHandle_t **aHandle) {
   struct sdfMotionCtrlr_t_o *motion;
 
+LABEL_7:
   motion = (*aHandle)->modelRoot->motion;
   if (!motion)
     return 0;
+LABEL_10:
   while (motion->userId)
   {
     motion = motion->next;
@@ -998,6 +2732,7 @@ s32 mdlGetMotionFrameEx(dds3ModelHandle_t **aHandle, s32 aGroup) {
   motion = (*aHandle)->modelRoot->motion;
   if (!motion)
     return 0;
+LABEL_6:
   while (motion->userId != aGroup)
   {
     motion = motion->next;
@@ -1036,6 +2771,7 @@ s32 mdlGetMotionLengthEx(dds3ModelHandle_t **aHandle, s32 aGroup) {
   motion = (*aHandle)->modelRoot->motion;
   if (!motion)
     return 0;
+LABEL_6:
   while (motion->userId != aGroup)
   {
     motion = motion->next;
@@ -1047,8 +2783,50 @@ s32 mdlGetMotionLengthEx(dds3ModelHandle_t **aHandle, s32 aGroup) {
 
 // 0x19b42e0
 s32 mdlGetMotionLengthUnity(dds3ModelHandle_t *aHandle) {
-    GetAnimator(0);
+  struct sdfModelRootNode_t_o *modelRoot;
+  UnityEngine_Object_o *modelobj;
+  UnityEngine_GameObject_o *v6;
+  UnityEngine_Object_o *Animator;
+  UnityEngine_GameObject_o *gameObject;
+  UnityEngine_AnimatorClipInfo_array *CurrentAnimatorClipInfo;
+  UnityEngine_AnimatorClipInfo_array *v11;
+  UnityEngine_RuntimeAnimatorController_o *runtimeAnimatorController;
+  UnityEngine_AnimatorStateInfo_o v14;
+  UnityEngine_AnimatorStateInfo_o v15;
+
+  memset(&v15, 0, sizeof(v15));
+  if (!aHandle)
     return 0;
+  modelRoot = aHandle->modelRoot;
+  if (!modelRoot)
+    return 0;
+  modelobj = modelRoot->modelobj;
+  if (op_Equality(modelobj, 0, 0))
+    return 0;
+  v6 = aHandle->modelRoot->modelobj;
+  Animator = GetAnimator(v6);
+  if (op_Equality(Animator, 0, 0))
+    return 0;
+  gameObject = get_gameObject(Animator);
+  if (!get_activeSelf(gameObject))
+    return 0;
+  CurrentAnimatorClipInfo = GetCurrentAnimatorClipInfo(Animator, 0);
+  if (CurrentAnimatorClipInfo->max_length
+    && (v11 = CurrentAnimatorClipInfo,
+        GetCurrentAnimatorStateInfo(&v14, Animator, 0),
+        v15 = v14,
+        v11->max_length)
+    && (GetCurrentAnimatorClipInfoCount(Animator, 0),
+        runtimeAnimatorController = get_runtimeAnimatorController(Animator),
+        get_animationClips(runtimeAnimatorController),
+        v11->max_length))
+  {
+    return (sub_85FB60(&v15) * 30.0);
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 // 0x19b5a20
@@ -1082,6 +2860,7 @@ s32 mdlGetMotionNum(dds3ModelHandle_t **aHandle, s32 aGroup) {
   motion = (*aHandle)->modelRoot->motion;
   if (!motion)
     return -1;
+LABEL_6:
   result = -1;
   while (motion->userId != aGroup)
   {
@@ -1133,6 +2912,7 @@ s32 mdlGetNumOfCut(dds3ModelHandle_t **aHandle, s32 aGroup) {
   motion = (*aHandle)->modelRoot->motion;
   if (!motion)
     return 0;
+LABEL_6:
   while (motion->userId != aGroup)
   {
     motion = motion->next;
@@ -1160,7 +2940,10 @@ s32 mdlGetNumOfMinor(s32 aMajor) {
 
 // 0x19b4c10
 void mdlGetPosition(dds3ModelHandle_t **aHandle) {
-    SDF_VU0__LOADVECTOR((sdfVector4_t){0});
+  UnityEngine_Vector4_o v2;
+
+  sub_1A00880(&(*aHandle)->modelRoot->tm, 3u);
+  SDF_VU0__LOADVECTOR(v2);
 }
 
 // 0x19b4d00
@@ -1179,8 +2962,6 @@ void mdlGetScreenOffset(dds3ModelHandle_t **aHandle, sdfVector4_t aOfs) {
   f32 z;
   f32 y;
   f32 x;
-  dds3KernelDraw_c *v8;
-  struct dds3KernelDraw_StaticFields *static_fields;
   s64 v10;
   s64 v11;
   s64 v12;
@@ -1214,18 +2995,17 @@ void mdlGetScreenOffset(dds3ModelHandle_t **aHandle, sdfVector4_t aOfs) {
   z = aOfs.z;
   y = aOfs.y;
   x = aOfs.x;
-  static_fields = v8->static_fields;
-  v10 = *&static_fields->dds3CameraTM.m00;
-  v11 = *&static_fields->dds3CameraTM.m20;
-  v12 = *&static_fields->dds3CameraTM.m21;
-  *&v37.m01 = *&static_fields->dds3CameraTM.m01;
+  v10 = *&dds3CameraTM.m00;
+  v11 = *&dds3CameraTM.m20;
+  v12 = *&dds3CameraTM.m21;
+  *&v37.m01 = *&dds3CameraTM.m01;
   *&v37.m21 = v12;
   *&v37.m00 = v10;
   *&v37.m20 = v11;
-  v13 = *&static_fields->dds3CameraTM.m02;
-  v14 = *&static_fields->dds3CameraTM.m22;
-  v16 = *&static_fields->dds3CameraTM.m03;
-  v15 = *&static_fields->dds3CameraTM.m23;
+  v13 = *&dds3CameraTM.m02;
+  v14 = *&dds3CameraTM.m22;
+  v16 = *&dds3CameraTM.m03;
+  v15 = *&dds3CameraTM.m23;
   *&v37.m03 = v16;
   *&v37.m23 = v15;
   *&v37.m02 = v13;
@@ -1473,6 +3253,7 @@ void mdlLinkBlur(dds3ModelHandle_t **aHandle) {
       instants = v24;
       if (!v24)
         return;
+LABEL_6:
       while (1)
       {
         v9 = *(instants + 8);
@@ -1481,6 +3262,8 @@ void mdlLinkBlur(dds3ModelHandle_t **aHandle) {
         if (v9 == 1)
           break;
         *(instants + 8) = keepCount;
+          goto LABEL_8;
+LABEL_24:
         if (op_Inequality(gameObject, 0, 0))
         {
           v16 = keepCount - 1;
@@ -1523,10 +3306,14 @@ void mdlLinkBlur(dds3ModelHandle_t **aHandle) {
       *(instants + 3) = gameObject;
       keepCount = blur->keepCount;
       *(instants + 8) = keepCount;
+        goto LABEL_24;
+LABEL_8:
+      goto LABEL_24;
     }
   }
   instants = blur->instants;
   if (instants)
+    goto LABEL_6;
 }
 
 // 0x19b3620
@@ -1564,6 +3351,7 @@ void mdlLinkSub(dds3ModelHandle_t **aHandle, sdfModelOt_t **aModelOt, void *mode
     w = v30.w;
     if (camera_identity)
     {
+LABEL_9:
       transform = get_transform(MainCamera, 0);
       rotation = get_rotation(transform);
       v13 = rotation.x;
@@ -1578,6 +3366,8 @@ void mdlLinkSub(dds3ModelHandle_t **aHandle, sdfModelOt_t **aModelOt, void *mode
       v19 = *aHandle;
       stat = (*aHandle)->stat;
       if ((stat & 1) != 0)
+        goto LABEL_13;
+      goto LABEL_21;
     }
   }
   v13 = x;
@@ -1588,11 +3378,14 @@ void mdlLinkSub(dds3ModelHandle_t **aHandle, sdfModelOt_t **aModelOt, void *mode
   stat = (*aHandle)->stat;
   if ((stat & 1) != 0)
   {
+LABEL_13:
     for (aEffect = v19->effects; aEffect; aEffect = aEffect->next)
     {
       mdlLinkEffectOff(aHandle, &aEffect, 0);
     }
+    goto LABEL_38;
   }
+LABEL_21:
   if ((stat & 6) == 0)
   {
     effects = v19->effects;
@@ -1617,6 +3410,7 @@ void mdlLinkSub(dds3ModelHandle_t **aHandle, sdfModelOt_t **aModelOt, void *mode
       mdlLinkBlur(aHandle);
     }
   }
+LABEL_38:
   if (camera_identity)
   {
     v24 = get_transform(MainCamera, 0);
@@ -1681,28 +3475,33 @@ dds3ModelHandle_t *mdlLoad(s32 aMajor, s32 aMinor, u8 **byteData, s32 bPos) {
   _ctor(v15, 0);
   v14->effectResrcList = v15;
   if (aMajor == 1)
+    goto LABEL_9;
   if (aMajor == 7)
   {
     v9->modelRoot = sdfModelMakeUnity(0, byteData, bPos);
     v9->resrc->effectData = GetPibArray(byteData, bPos);
+    goto LABEL_44;
   }
   if (aMajor != 6)
   {
     if (aMajor != 2 || aMinor != 15 && aMinor != 33)
+      goto LABEL_44;
     PBname = GetPBname(aMinor);
-    v32 = Concat_5221536(StringLiteral_4874, PBname, StringLiteral_4739);
+    v32 = Concat_5221536("dds3data/dvl_pb/", PBname, ".bytes");
     bData = 0;
     if (aMinor == 33)
     {
-      v33 = &StringLiteral_19041;
+      v33 = &"dds3data/pipe/jewel_lost.PB.bytes";
     }
     else
     {
       if (aMinor != 15)
-      v33 = &StringLiteral_19040;
+        goto LABEL_36;
+      v33 = &"dds3data/pipe/jewel1.PB.bytes";
     }
     v32 = *v33;
-    sdfDevLoadFileUnity_25061072(v32, &bData, 0, StringLiteral_19042);
+LABEL_36:
+    sdfDevLoadFileUnity_25061072(v32, &bData, 0, "pipe_common");
     v35 = aHandle;
     v36 = bData;
     v35->modelRoot = sdfModelMakeUnity(0, v36, bPos);
@@ -1712,13 +3511,15 @@ dds3ModelHandle_t *mdlLoad(s32 aMajor, s32 aMinor, u8 **byteData, s32 bPos) {
     mdlEffectCreatePipeForUnity(2, aMinor, &effectResrcList);
     v28 = aHandle->resrc;
     v29 = effectResrcList;
+    goto LABEL_43;
   }
   if (aMinor == 336)
   {
+LABEL_9:
     v19 = convDLCDevilNumber(aMinor);
     Akey = GetAkey(v19);
     v21 = GetPBname(v19);
-    v22 = Concat_5221536(StringLiteral_4874, v21, StringLiteral_4739);
+    v22 = Concat_5221536("dds3data/dvl_pb/", v21, ".bytes");
     aTopPtr = 0;
     sdfDevLoadFileUnity_25061072(v22, &aTopPtr, 0, Akey);
     v24 = aTopPtr;
@@ -1730,8 +3531,10 @@ dds3ModelHandle_t *mdlLoad(s32 aMajor, s32 aMinor, u8 **byteData, s32 bPos) {
     mdlEffectCreateUnity(aMajor, v19, &efc_res_list, 0);
     v28 = aHandle->resrc;
     v29 = efc_res_list;
+LABEL_43:
     v28->effectResrcList = v29;
   }
+LABEL_44:
   mdlGenEffect(&aHandle, -1, -1);
   return aHandle;
 }
@@ -1784,16 +3587,23 @@ void mdlMotion(dds3ModelHandle_t **aHandle, s32 aGroup, s32 aNumber, s32 aType, 
     {
       motion = motion->next;
       if (!motion)
+        goto LABEL_6;
     }
     userId2 = motion->userId2;
     motions = (*aHandle)->motions;
     LOWORD(v18) = motion->userId2;
+    goto LABEL_12;
   }
+LABEL_6:
   v14 = mdlCreateMotion(aHandle, aGroup, *&aNumber);
   userId2 = v14->userId2;
   motion = v14;
   motions = (*aHandle)->motions;
   LOWORD(v18) = v14->userId2;
+  if (v14)
+  {
+LABEL_12:
+  }
   motions->m_Items[v18] = motion;
   if (!v18)
     (*aHandle)->motionCtrlr = motion;
@@ -1888,9 +3698,101 @@ void mdlPackDecode(s32 major, s32 minor, u32 regFlags, void *buff, s32 leng) {
 
 // 0x19b5cd0
 sdfPacDecodeResrc_t *mdlPackSet(sdfPacDecodeResrc_t **resrc, s32 major, s32 minor, u32 regFlags) {
-    sdfPacFreeResrc(0);
-    mdlRegistModelSet(0, 0, 0, 0);
-    return 0;
+  struct sdfPacStdBlockHeader_t_o *header;
+  u32 magicCode;
+  Il2CppObject *ptr;
+  Il2CppObject *v12;
+  sdfPacDecodeResrc_t_o *v13;
+  Il2CppClass *handle;
+  u64 *image;
+  s64 typeHierarchyDepth;
+  char *v17;
+  s64 *v18;
+  Il2CppClass *v19;
+  u64 *v20;
+  s64 v21;
+  char *v22;
+  s64 *v23;
+  Il2CppObject *v24;
+  Il2CppClass *klass;
+  s64 v26;
+  char *v27;
+  s64 *v28;
+  u64 v32[2];
+  char *v33;
+
+LABEL_7:
+  header = (*resrc)->header;
+  if (header->fileType == 1)
+  {
+    magicCode = header->magicCode;
+    else if (magicCode == 809650512)
+    {
+LABEL_11:
+      ptr = (*resrc)->ptr;
+      v12 = Allocate(mdlSetDef_t);
+      _ctor(v12, 0);
+      v12[3].monitor = ptr;
+      v13 = sdfPacFreeResrc(*resrc);
+      *resrc = v13;
+      if (v13->header->fileType == 9)
+      {
+        handle = v13->handle;
+        if (handle)
+        {
+          image = handle->_1.image;
+          if (*(handle->_1.image + 288) < typeHierarchyDepth
+            || *(image[25] + 8 * typeHierarchyDepth - 8) != sdfModelTexList_t)
+          {
+            sub_8FC2C0(image[8], sdfModelTexList_t, v32);
+            if ((v32[0] & 1) != 0)
+              v17 = v33;
+            else
+              v17 = v32 + 1;
+            v18 = sub_8C4940(v17);
+          }
+        }
+        v12[1].klass = handle;
+        v13 = sdfPacFreeResrc(*resrc);
+        *resrc = v13;
+      }
+      v19 = v13->handle;
+      if (v19)
+      {
+        v20 = v19->_1.image;
+        if (*(v19->_1.image + 288) < v21 || *(v20[25] + 8 * v21 - 8) != sdfMemHandle_t)
+        {
+          sub_8FC2C0(v20[8], sdfMemHandle_t, v32);
+          if ((v32[0] & 1) != 0)
+            v22 = v33;
+          else
+            v22 = v32 + 1;
+          v23 = sub_8C4940(v22);
+        }
+      }
+      v12[2].klass = v19;
+      v24 = (*resrc)->ptr;
+      if (v24)
+      {
+        klass = v24->klass;
+        if (v24->klass->_2.typeHierarchyDepth < v26
+          || klass->_2.typeHierarchy[v26 - 1] != sdfModelDef_t)
+        {
+          sub_8FC2C0(klass->_1.element_class, sdfModelDef_t, v32);
+          if ((v32[0] & 1) != 0)
+            v27 = v33;
+          else
+            v27 = v32 + 1;
+          v28 = sub_8C4940(v27);
+        }
+      }
+      v12[1].monitor = v24;
+      *resrc = sdfPacFreeResrc(*resrc);
+      mdlRegistModelSet(major, minor, regFlags, v12);
+      return *resrc;
+    }
+  }
+  return *resrc;
 }
 
 // 0x19b5cc0
@@ -1900,11 +3802,110 @@ sdfPacDecodeResrc_t *mdlPackSetOld(sdfPacDecodeResrc_t **resrc, s32 major, s32 m
 
 // 0x19acf20
 dds3ModelResrc_t *mdlPrepare(s32 aMajor, s32 aMinor, s32 aBlockMode) {
-    mdlWaitLoadEnd(0, 0);
-    StrRChr(0, 0);
-    mdlRegLoading(0, 0);
-    mdlFileLoad(0, 0, 0, 0, 0, 0);
-    return 0;
+  struct dds3ModelResrc_t_array *mdlResrcMajorList;
+  dds3ModelResrc_t_o *result;
+  struct mdlLoadingTag_t_array *mdlLoadingMajorList;
+  mdlLoadingTag_t_o *next;
+  struct dds3ModelFileKindTable_t_array *modelFileKindTable;
+  struct dds3ModelFileIndex_t_array *indexTable;
+  dds3ModelFileIndex_t_o *v20;
+  s64 major;
+  s64 minor;
+  struct dds3ModelFileTableDef_t_array *modelFileTable;
+  struct dds3ModelFileTable_t_array *fileTable;
+  dds3ModelFileTable_t_o *v28;
+  System_String_o *v31;
+  System_String_o *modelFile;
+  u64 *v40;
+  u64 *v41;
+
+LABEL_7:
+  result = mdlResrcMajorList->m_Items[aMajor];
+  if (!result)
+  {
+LABEL_15:
+    else if ((byte_3F5AC74 & 1) != 0)
+    {
+LABEL_19:
+      next = mdlLoadingMajorList->m_Items[aMajor];
+      if (next)
+      {
+        while (next->minor != aMinor)
+        {
+          next = next->next;
+          if (!next)
+            goto LABEL_27;
+        }
+        if (aBlockMode)
+        {
+          return mdlWaitLoadEnd(aMajor, aMinor, *&aBlockMode);
+        }
+        return 0;
+      }
+LABEL_27:
+      if ((aMajor & 0x80000000) == 0
+      {
+      }
+      indexTable = modelFileKindTable->m_Items[aMajor]->indexTable;
+      v20 = indexTable->m_Items[aMinor];
+      major = v20->major;
+      minor = v20->minor;
+      fileTable = modelFileTable->m_Items[major]->fileTable;
+      v28 = fileTable->m_Items[minor];
+      v31 = StrRChr(v28->modelFile, 0x2Eu);
+      if (v31)
+      {
+        LODWORD(v31) = (ci->klass->vtable._7_Compare.methodPtr)(
+                         ci,
+                         v31,
+                         ".PB",
+                         1,
+                         ci->klass->vtable._7_Compare.method) == 0;
+      }
+      else
+      {
+        mdlRegLoading(aMajor, aMinor);
+        if (v31)
+          goto LABEL_53;
+      }
+      v40 = Allocate(mdlManager_mdlTbMbAbLoadCb_t);
+      _ctor(v40, 0);
+      *(v40 + 6) = 0;
+      v40[2] = 0;
+      v41 = Allocate(mdlSetDef_t);
+      _ctor(v41, 0);
+      v40[4] = v41;
+      *(v40 + 8) = aMajor;
+      *(v40 + 9) = aMinor;
+      *(v40 + 6) = 257;
+      if (v28->motionFile)
+        *(v40 + 22) = 1;
+      if (v28->texFile)
+      {
+        *(v40 + 20) = 1;
+      }
+      *(v40 + 21) = 1;
+      if (v28->motionFile
+      {
+        if (!aBlockMode)
+          return 0;
+        goto LABEL_58;
+      }
+LABEL_57:
+      if (!aBlockMode)
+        return 0;
+LABEL_58:
+      return mdlWaitLoadEnd(aMajor, aMinor);
+    }
+    goto LABEL_19;
+  }
+  while (result->minor != aMinor)
+  {
+    result = result->next;
+    if (!result)
+      goto LABEL_15;
+  }
+  return result;
 }
 
 // 0x19b8ef0
@@ -1959,7 +3960,9 @@ void mdlRegist(s32 aMajor, s32 aMinor, s32 aFlag, sdfModelTexList_t **aTexList, 
   {
     v19 = mdlResrcMajorList;
     if (!v13)
+      goto LABEL_16;
   }
+LABEL_16:
   v19->m_Items[aMajor] = v13;
   *(v13 + 16) = aMajor;
   v13[2] = v18;
@@ -1992,8 +3995,19 @@ void mdlRegist(s32 aMajor, s32 aMinor, s32 aFlag, sdfModelTexList_t **aTexList, 
 
 // 0x19ab1b0
 void mdlRegistModelSet(s32 aMajor, s32 aMinor, s32 aFlag, mdlSetDef_t *aSet) {
-    mdlRegist(0, 0, 0, 0, 0, 0);
-    mdlRegistMotion(0, 0, 0, 0, 0, 0, 0, 0);
+  mdlRegist(aMajor, aMinor, aFlag, &aSet->texList, &aSet->modelDefPtr, &aSet->modelDefHandle);
+  if (aSet->playbookPtr)
+  {
+    mdlRegistMotion(aMajor, aMinor, aFlag, 0, 0, 0, &aSet->playbookPtr, &aSet->playbookHandle);
+  }
+  if (aSet->effectData)
+  {
+    else if ((byte_3F5AC73 & 1) != 0)
+    {
+      goto LABEL_16;
+    }
+    goto LABEL_16;
+  }
 }
 
 // 0x19ab5d0
@@ -2012,6 +4026,7 @@ void mdlRegistMotion(s32 aMajor, s32 aMinor, s32 aFlags, s32 aFirstMotion, s32 a
   v13 = aFirstMotion;
   v14 = aFlags;
   aResrc = 0;
+LABEL_7:
   for (i = mdlResrcMajorList->m_Items[aMajor]; i; i = i->next)
   {
     if (i->minor == aMinor)
@@ -2058,11 +4073,81 @@ dds3ModelResrc_t *mdlSearchResrc(s32 aMajor, s32 aMinor) {
 
 // 0x19ad790
 void mdlSetBlur(dds3ModelHandle_t **aHandle, s32 interval, s32 count, u32 startColor, u32 endColor) {
-    SDF_VU0__dds3ColorItoF(0);
-    SDF_VU0__STOREVECTOR(0);
+  dds3ModelHandle_t_o *v11;
+  struct dds3ModelBlurCb_t_o *blur;
+  struct dds3ModelBlurInstance_t_o *instants;
+  struct dds3ModelBlurInstance_t_o *v14;
+  UnityEngine_Object_o *modelobj;
+  u64 *v16;
+  s32 v17;
+  s32 v18;
+  s32 v19;
+  s32 v20;
+  s32 v21;
+  u64 v22;
+  s64 v23;
+  u64 v24;
+  s64 v25;
+
+LABEL_7:
+  v11 = *aHandle;
+  blur = (*aHandle)->blur;
+  if (blur)
+  {
+    instants = blur->instants;
+    if (instants)
+    {
+      do
+      {
+        v14 = instants;
+        instants = instants->next;
+        modelobj = v14->modelobj;
+        Destroy_27360000(modelobj);
+        v14->modelobj = 0;
+      }
+      while (instants);
+      v11 = *aHandle;
+    }
+    v11->blur = 0;
+  }
+  if (count >= 1)
+  {
+    v16 = Allocate(dds3ModelBlurCb_t);
+    _ctor(v16, 0);
+    *(v16 + 8) = 0;
+    v16[2] = 0;
+    v16[3] = 0;
+    v24 = 0;
+    v25 = 0;
+    sub_854690(&v24, 0.0, 0.0, 0.0, 0.0);
+    v18 = v25;
+    v17 = HIDWORD(v25);
+    *(v16 + 36) = v24;
+    *(v16 + 11) = v18;
+    *(v16 + 12) = v17;
+    v22 = 0;
+    v23 = 0;
+    sub_854690(&v22, 0.0, 0.0, 0.0, 0.0);
+    v20 = v23;
+    v19 = HIDWORD(v23);
+    *(v16 + 52) = v22;
+    *(v16 + 15) = v20;
+    *(v16 + 16) = v19;
+    (*aHandle)->blur = v16;
+    *(v16 + 12) = count;
+    *(v16 + 13) = count;
+    v21 = count * interval;
+    *(v16 + 15) = 1;
+    *(v16 + 14) = interval;
+    *(v16 + 8) = v21;
+    SDF_VU0__dds3ColorItoF(endColor);
+    SDF_VU0__STOREVECTOR((v16 + 36), 0);
     SDF_VU0__COPYVECTOR_A_TO_B();
+    SDF_VU0__dds3ColorItoF(startColor);
     SDF_VU0__SUBVECTOR();
-    SDF_VU0__SCALEVECTOR(0);
+    SDF_VU0__SCALEVECTOR(1.0 / v21);
+    SDF_VU0__STOREVECTOR((v16 + 52), 0);
+  }
 }
 
 // 0x19b5a40
@@ -2184,12 +4269,114 @@ void mdlSetLightUnity(dds3ModelHandle_t **HNDL, sdf3DLight_t **uLight, sdfVector
 
 // 0x19b6970
 void mdlSetMotionForUnity(dds3ModelHandle_t *mhdl, sdfPacDecodeResrc_t *resrc, s32 major, s32 minor, u32 regFlags) {
-    mdlPibGetMotionCount(0, 0);
-    SetsdfMotionPlayBook(0, 0);
+  sdfPacDecodeResrc_t_o *next;
+  sdfPacDecodeResrc_t_Fields *p_fields;
+  struct sdfPacStdBlockHeader_t_o *header;
+  u32 magicCode;
+  sdfPacDecodeResrc_t_o *v13;
+  struct sdfPacDecodeResrc_t_o *v14;
+  Il2CppObject *handle;
+  u64 *v16;
+  s64 *ptr;
+  Il2CppClass *v19;
+  s64 *Interface;
+  char *v21;
+  s64 *v22;
+  sdfMotionPlayBook_t_o *v24;
+  struct dds3ModelResrc_t_array *mdlResrcMajorList;
+  s64 v28;
+  s64 v29;
+  s32 v30;
+  s64 v31;
+  u64 v33[3];
+
+  next = resrc;
+  p_fields = &next->fields;
+  if (!next->next)
+  {
+LABEL_18:
+    handle = next->handle;
+    mdlPibGetMotionCount(handle, 0);
+    if (next->header->fileType == 8)
+      goto LABEL_25;
+LABEL_50:
+    next = next->next;
+    if (!next)
+      return;
+    while (1)
+    {
+      if (next->header->fileType != 8)
+        goto LABEL_50;
+LABEL_25:
+      v16 = Allocate(sdfMotionPlayBook_t);
+      sdfMotionPlayBook_t___ctor(v16);
+      ptr = next->ptr;
+      else if (!ptr)
+      {
+        goto LABEL_34;
+      }
+      Interface = QueryInterface(ptr, byte);
+      if (!Interface)
+      {
+        sub_8FC2C0(*(*ptr + 64), v19, v33);
+        if ((v33[0] & 1) != 0)
+          v21 = v33[2];
+        else
+          v21 = v33 + 1;
+        v22 = sub_8C4940(v21);
+      }
+LABEL_35:
+      v24 = SetsdfMotionPlayBook(Interface, 0);
+      if ((byte_3F5AC73 & 1) == 0)
+        goto LABEL_38;
+LABEL_39:
+      v28 = &mdlResrcMajorList->m_Items[major];
+      do
+      {
+        v29 = *v28;
+        v30 = *(*v28 + 34LL);
+        v28 = *v28 + 16LL;
+      }
+      while (v30 != minor);
+      v31 = *(v29 + 80);
+      *(*(v31 + 32) + 24LL) = v24;
+      mhdl->motionMajorNum = major;
+      mhdl->motionMinorNum = minor;
+    }
+  }
+  do
+  {
+    if ((byte_3F5AC8A & 1) == 0)
+      goto LABEL_10;
+LABEL_11:
+    header = next->header;
+    if (header->fileType == 1)
+    {
+      magicCode = header->magicCode;
+      if (magicCode == 809650512)
+        goto LABEL_18;
+    }
+    next = p_fields->next;
+    v13 = p_fields->next;
+    v14 = v13->next;
+    p_fields = &v13->fields;
+  }
+  while (v14);
+  if (next)
+    goto LABEL_18;
 }
 
 // 0x19b4810
 void mdlSetMotionSpeed(dds3ModelHandle_t **aHandle, f32 speed) {
+  struct sdfMotionCtrlr_t_o *motion;
+
+LABEL_7:
+  else
+  {
+    motion = (*aHandle)->modelRoot->motion;
+    if (motion)
+      goto LABEL_10;
+  }
 }
 
 // 0x19b49d0
@@ -2204,16 +4391,26 @@ void mdlSetMotionSpeedAnimator(void *mAnimator, f32 speed) {
       *&Component_GUILayer[1].monitor = speed;
       if (speed == 0.0)
         return;
+LABEL_14:
       set_keepAnimatorControllerStateOnDisable(mAnimator, 0);
       return;
     }
     set_speed(mAnimator, speed);
     if (speed != 0.0)
+      goto LABEL_14;
   }
 }
 
 // 0x19b4910
 void mdlSetMotionSpeedEx(dds3ModelHandle_t **aHandle, s32 aGroup, f32 speed) {
+  struct sdfMotionCtrlr_t_o *motion;
+
+  else
+  {
+    motion = (*aHandle)->modelRoot->motion;
+    if (motion)
+      goto LABEL_6;
+  }
 }
 
 // 0x19b87b0
@@ -2239,17 +4436,55 @@ void mdlSetMotionSpeedForUnity_26970048(void *obj, s32 layer, f32 speed) {
 
 // 0x19b4c40
 void mdlSetPosition(dds3ModelHandle_t **aHandle) {
+  dds3ModelHandle_t_o *v3;
+  UnityEngine_Vector4_o v4;
+
+  *&v4.x = 0;
+  *&v4.z = 0;
+  v3 = *aHandle;
+  else if (!v3)
+  {
+    return;
+  }
+  if (v3->modelRoot)
+  {
     SDF_VU0__VECTOR_W_SET_ONE();
-    SDF_VU0__STOREVECTOR(0);
+    *&v4.x = 0;
+    *&v4.z = 0;
+    SDF_VU0__STOREVECTOR(&v4);
+    sub_1A00AD0(&(*aHandle)->modelRoot->tm, 3u);
+  }
 }
 
 // 0x19b4d20
 void mdlSetRotate(dds3ModelHandle_t **aHandle) {
-    SDF_VU0__STOREVECTOR(0);
+  dds3ModelHandle_t_o *v3;
+  UnityEngine_Vector4_o v4;
+  UnityEngine_Vector4_o v5;
+  UnityEngine_Vector4_o p;
+
+  *&p.x = 0;
+  *&p.z = 0;
+  *&v5.x = 0;
+  *&v5.z = 0;
+  *&v4.x = 0;
+  *&v4.z = 0;
+  v3 = *aHandle;
+  else if (!v3)
+  {
+    return;
+  }
+  if (v3->modelRoot)
+  {
+    SDF_VU0__STOREVECTOR(&(*aHandle)->modelRoot->rotate, 0);
     ToMatrix();
-    SDF_VU0__STORE_ROW0(0);
-    SDF_VU0__STORE_ROW1(0);
-    SDF_VU0__STORE_ROW2(0);
+    SDF_VU0__STORE_ROW0(&p);
+    SDF_VU0__STORE_ROW1(&v5);
+    SDF_VU0__STORE_ROW2(&v4);
+    sub_1A00AD0(&(*aHandle)->modelRoot->tm, 0);
+    sub_1A00AD0(&(*aHandle)->modelRoot->tm, 1u);
+    sub_1A00AD0(&(*aHandle)->modelRoot->tm, 2u);
+  }
 }
 
 // 0x19b4e70
@@ -2291,8 +4526,8 @@ void mdlShow(dds3ModelHandle_t *mdl) {
     {
       SetActive(gameObject, 1, 0);
       name = get_name(gameObject);
-      if (Contains(name, StringLiteral_4811, 0)
-        || (v6 = get_name(gameObject), Contains(v6, StringLiteral_4812, 0)))
+      if (Contains(name, "raidou_e730", 0)
+        || (v6 = get_name(gameObject), Contains(v6, "dante_e730", 0)))
       {
         Component_object = GetComponent_object_(gameObject);
         if (op_Inequality(Component_object, 0, 0))
@@ -2341,13 +4576,138 @@ void mdlSmoothLoopMotion(dds3ModelHandle_t **aHandle, s32 aGroup, s32 aNumber, f
 
 // 0x19b7d80
 void mdlSmoothLoopMotionForUnity(evtUnitHandle_t **h, s32 layer, s32 motion, s32 before, s32 wait, bool btl) {
-    GetAnimator(0);
-    ResetFlag(0, 0, 0);
-    is_devil(0);
-    is_eventdevil(0);
-    fldProcCheckFlag(0);
-    PlayFrameControl(0, 0);
-    Play(0, 0, 0);
+  struct dds3Basic_t_o *Owner;
+  UnityEngine_Object_o *gameObject;
+  UnityEngine_Component_o *transform;
+  UnityEngine_GameObject_o *v17;
+  UnityEngine_Component_o *Animator;
+  UnityEngine_GameObject_o *v20;
+  Il2CppObject *Component_object;
+  struct dds3ModelHandle_t_o *Model;
+  u64 *v24;
+  u64 *v25;
+  System_String_o *v27;
+  char v28;
+  u64 *v29;
+  UnityEngine_GameObject_o *v30;
+  u64 *v34;
+  System_String_o *v35;
+  System_String_o *name;
+  s32 v38;
+  dds3Basic_t_o **p_Owner;
+  u64 *v43;
+  s32 v44;
+  s32 v45;
+  s32 v46;
+  s32 v47;
+  dds3Basic_t_o *basic;
+
+  basic = 0;
+  if (*h)
+  {
+    Owner = (*h)->Owner;
+    basic = Owner;
+    gameObject = Owner->gameObject;
+    if (!op_Equality(gameObject, 0, 0))
+      goto LABEL_18;
+    if (check_player(&basic))
+    {
+LABEL_18:
+      transform = get_transform(Owner->gameObject, 0);
+      v17 = get_gameObject(transform);
+      Animator = GetAnimator(v17);
+      if (!op_Equality(Animator, 0, 0))
+      {
+        v44 = before;
+        v45 = wait;
+        v20 = get_gameObject(Animator);
+        Component_object = GetComponent_object_(v20);
+        if (op_Inequality(Component_object, 0, 0))
+          ResetFlag(Component_object, layer, 0);
+        if (layer || (Model = (*h)->Model) == 0)
+        {
+          if (layer)
+          {
+            v47 = layer;
+            v24 = sub_8D3950(s32, &v47);
+            v46 = motion;
+            v25 = sub_8D3950(s32, &v46);
+            v27 = Format_5268592("{0:D2}_{1:D2}", v24, v25);
+            v28 = 1;
+            goto LABEL_30;
+          }
+        }
+        else
+        {
+          Model->motionMajorNum = 0;
+          (*h)->Model->motionMinorNum = motion;
+        }
+        v47 = motion;
+        v29 = sub_8D3950(s32, &v47);
+        v27 = Format("{0:D2}", v29, 0);
+        v28 = 0;
+LABEL_30:
+        v30 = Owner->gameObject;
+        if (v28 & 1 | (is_devil(v30) == -1))
+          goto LABEL_43;
+        if (get_parameterCount(Animator))
+        {
+          SetInteger_8774000(Animator, id_anim, motion);
+        }
+        v47 = motion;
+        v34 = sub_8D3950(s32, &v47);
+        v35 = Format("b{0:D2}", v34, 0);
+        name = (*h)->Owner->name;
+        v27 = v35;
+        if (is_eventdevil(name) == -1)
+        {
+          if (motion)
+            v38 = 3;
+          else
+            v38 = 1;
+        }
+        else
+        {
+LABEL_43:
+          v38 = 0;
+        }
+        p_Owner = &(*h)->Owner;
+        if (check_player(p_Owner))
+        {
+          if (!motion)
+          {
+            if (!fldProcCheckFlag(0x40u) && get_parameterCount(Animator))
+            {
+              SetInteger_8774000(Animator, id_anim, 0);
+            }
+          }
+          v47 = motion;
+          v43 = sub_8D3950(s32, &v47);
+          v27 = Format("{0:D2}", v43, 0);
+          if (((*h)->Flag & 1) != 0)
+            v38 = 3;
+          else
+            v38 |= 1u;
+        }
+        if (op_Inequality(Component_object, 0, 0))
+        {
+          if ((*h)->e723sp)
+          {
+            PlayFrameControl(Component_object, motion);
+            (*h)->e723sp = 0;
+          }
+          else
+          {
+            Play(Component_object, v27, motion, layer, 0.0, v44, v45, 1, v38, 0);
+          }
+        }
+        else
+        {
+          Play_8777152(Animator, v27, layer, 0.0);
+        }
+      }
+    }
+  }
 }
 
 // 0x19b3d10
@@ -2357,12 +4717,133 @@ void mdlSmoothSingleMotion(dds3ModelHandle_t **aHandle, s32 aGroup, s32 aNumber,
 
 // 0x19b7620
 void mdlSmoothSingleMotionForUnity(evtUnitHandle_t **h, s32 layer, s32 motion, s32 before, s32 wait, bool btl) {
-    GetAnimator(0);
-    ResetFlag(0, 0, 0);
-    is_devil(0);
-    fldProcCheckFlag(0);
-    PlayFrameControl(0, 0);
-    Play(0, 0, 0);
+  struct dds3Basic_t_o *Owner;
+  UnityEngine_Object_o *gameObject;
+  UnityEngine_Component_o *transform;
+  UnityEngine_GameObject_o *v17;
+  UnityEngine_Component_o *Animator;
+  UnityEngine_GameObject_o *v20;
+  Il2CppObject *Component_object;
+  struct dds3ModelHandle_t_o *Model;
+  u64 *v24;
+  u64 *v25;
+  System_String_o *v27;
+  s32 v28;
+  u64 *v29;
+  UnityEngine_GameObject_o *v30;
+  evtUnitHandle_t_o *v32;
+  s32 v33;
+  u64 *v35;
+  System_String_o *v36;
+  dds3Basic_t_o **p_Owner;
+  u64 *v41;
+  s32 v42;
+  s32 v43;
+  s32 v44;
+  s32 v45;
+  dds3Basic_t_o *basic;
+
+  basic = 0;
+  if (*h)
+  {
+    Owner = (*h)->Owner;
+    basic = Owner;
+    gameObject = Owner->gameObject;
+    if (!op_Equality(gameObject, 0, 0))
+      goto LABEL_18;
+    if (check_player(&basic))
+    {
+LABEL_18:
+      transform = get_transform(Owner->gameObject, 0);
+      v17 = get_gameObject(transform);
+      Animator = GetAnimator(v17);
+      if (!op_Equality(Animator, 0, 0))
+      {
+        v42 = before;
+        v43 = wait;
+        v20 = get_gameObject(Animator);
+        Component_object = GetComponent_object_(v20);
+        if (op_Inequality(Component_object, 0, 0))
+          ResetFlag(Component_object, layer, 0);
+        if (layer || (Model = (*h)->Model) == 0)
+        {
+          if (layer)
+          {
+            v45 = layer;
+            v24 = sub_8D3950(s32, &v45);
+            v44 = motion;
+            v25 = sub_8D3950(s32, &v44);
+            v27 = Format_5268592("{0:D2}_{1:D2}", v24, v25);
+            v28 = 1;
+            goto LABEL_30;
+          }
+        }
+        else
+        {
+          Model->motionMajorNum = 0;
+          (*h)->Model->motionMinorNum = motion;
+        }
+        v45 = motion;
+        v29 = sub_8D3950(s32, &v45);
+        v27 = Format("{0:D2}", v29, 0);
+        v28 = 0;
+LABEL_30:
+        v30 = Owner->gameObject;
+        if (((is_devil(v30) != -1) & ~v28) != 0)
+        {
+          SetInteger_8774000(Animator, id_anim, motion);
+          v45 = motion;
+          v35 = sub_8D3950(s32, &v45);
+          v36 = Format("b{0:D2}", v35, 0);
+          v32 = *h;
+          v27 = v36;
+          if (((*h)->Flag & 1) != 0)
+            v33 = 3;
+          else
+            v33 = 1;
+        }
+        else
+        {
+          v32 = *h;
+          v33 = 0;
+        }
+        p_Owner = &v32->Owner;
+        if (check_player(p_Owner))
+        {
+          if (!motion)
+          {
+            if (!fldProcCheckFlag(0x40u))
+            {
+              SetInteger_8774000(Animator, id_anim, 0);
+            }
+          }
+          v45 = motion;
+          v41 = sub_8D3950(s32, &v45);
+          v27 = Format("{0:D2}", v41, 0);
+          if (((*h)->Flag & 1) != 0)
+            v33 = 3;
+          else
+            v33 |= 1u;
+        }
+        if (op_Inequality(Component_object, 0, 0))
+        {
+          if ((*h)->e723sp)
+          {
+            PlayFrameControl(Component_object, motion);
+            (*h)->e723sp = 0;
+          }
+          else
+          {
+            Play(Component_object, v27, motion, layer, 0.0, v42, v43, 0, v33, 0);
+          }
+        }
+        else
+        {
+          Play_8777152(Animator, v27, layer, 0.0);
+        }
+      }
+    }
+  }
 }
 
 // 0x19abb40
@@ -2391,6 +4872,7 @@ void mdlUnRegist(s32 aMajor, s32 aMinor) {
   dds3ModelResrc_t_o *resrc_p;
 
   resrc_p = 0;
+LABEL_7:
   for (i = mdlResrcMajorList->m_Items[aMajor]; i; i = i->next)
   {
     if (i->minor == aMinor)
@@ -2402,7 +4884,35 @@ void mdlUnRegist(s32 aMajor, s32 aMinor) {
 
 // 0x19ac1e0
 void mdlUnRegistAll(void) {
-    mdlUnRegistResrc(0);
+  u64 v2;
+  struct dds3ModelResrc_t_array *mdlResrcMajorList;
+  u64 max_length_low;
+  dds3ModelResrc_t_o *next;
+  dds3ModelResrc_t_o *resrc_p;
+
+  resrc_p = 0;
+  v2 = 0;
+  {
+LABEL_6:
+  }
+  while (1)
+  {
+    max_length_low = LODWORD(mdlResrcMajorList->max_length);
+    if (v2 >= max_length_low)
+      break;
+    else if (v2 >= max_length_low)
+    {
+      goto LABEL_12;
+    }
+    next = mdlResrcMajorList->m_Items[v2];
+    for (resrc_p = next; next; resrc_p = next)
+    {
+      next = next->next;
+      mdlUnRegistResrc(&resrc_p);
+    }
+    ++v2;
+      goto LABEL_6;
+  }
 }
 
 // 0x19ac830
@@ -2412,6 +4922,7 @@ void mdlUnRegistMotion(s32 aMajor, s32 aMinor, s32 aGroup) {
   dds3ModelResrc_t_o *aResrc;
 
   aResrc = 0;
+LABEL_7:
   for (i = mdlResrcMajorList->m_Items[aMajor]; i; i = i->next)
   {
     if (i->minor == aMinor)
@@ -2442,6 +4953,7 @@ void mdlUnRegistResrc(dds3ModelResrc_t **resrc_p) {
       prev->next = next;
       if (!next)
       {
+LABEL_7:
         (*resrc_p)->autoFreeFlag = 0;
         v6 = *resrc_p;
         for (i = &(*resrc_p)->models; *i; i = &(*resrc_p)->models)
@@ -2460,8 +4972,10 @@ void mdlUnRegistResrc(dds3ModelResrc_t **resrc_p) {
       major = v3->major;
       mdlResrcMajorList->m_Items[major] = next;
       if (!next)
+        goto LABEL_7;
     }
     next[3] = prev;
+    goto LABEL_7;
   }
 }
 
@@ -2488,6 +5002,8 @@ void mdlUnRegistResrcMotion(dds3ModelResrc_t **aResrc, s32 aGroup) {
       {
         {
           if ((byte_3F5AC77 & 1) == 0)
+            goto LABEL_19;
+LABEL_20:
           motion = models->modelRoot->motion;
           if (motion)
           {
@@ -2495,24 +5011,33 @@ void mdlUnRegistResrcMotion(dds3ModelResrc_t **aResrc, s32 aGroup) {
             {
               motion = motion->next;
               if (!motion)
+                goto LABEL_23;
             }
             mdlFreeMotionCtrlr(&aHandle, motion);
             models = models->next;
             aHandle = models;
             if (!models)
             {
+LABEL_24:
               v7 = *aResrc;
+              goto LABEL_25;
             }
           }
           else
           {
+LABEL_23:
             models = models->next;
             aHandle = models;
             if (!models)
+              goto LABEL_24;
           }
         }
         if ((byte_3F5AC77 & 1) != 0)
+          goto LABEL_20;
+LABEL_19:
+        goto LABEL_20;
       }
+LABEL_25:
       v11 = v7->playbooks;
       v11->m_Items[aGroup]->ptr = 0;
       v13 = (*aResrc)->playbooks;
@@ -2564,6 +5089,9 @@ dds3ModelResrc_t *mdlWaitLoadEnd(s32 aMajor, s32 aMinor) {
   struct dds3ModelResrc_t_array *mdlResrcMajorList;
   dds3ModelResrc_t_o *result;
 
+    goto LABEL_6;
+LABEL_7:
+LABEL_27:
   for (result = mdlResrcMajorList->m_Items[aMajor]; result; result = result->next)
   {
     if (result->minor == aMinor)

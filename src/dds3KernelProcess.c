@@ -47,7 +47,6 @@ dds3ProcessFunc_t *dds3BasicMainProcess(dds3ProcessID_t *id) {
 // 0x14e4d20
 dds3ProcessFunc_t *dds3DrawFirstProcess(dds3ProcessID_t *id) {
   s64 dds3FrameID;
-  struct dds3KernelDraw_StaticFields *static_fields;
   struct dds3DrawEnv_t_array *dds3DrawEnv;
   sdf3DLight_t_array *dds3DirLights;
   f32 x;
@@ -58,16 +57,14 @@ dds3ProcessFunc_t *dds3DrawFirstProcess(dds3ProcessID_t *id) {
   struct dds3DrawEnv_t_array *v14;
   UnityEngine_Vector4_o v17;
 
+LABEL_7:
   dds3RunQuake();
   dds3SceneLightUpdateFirst();
-  static_fields = dds3KernelDraw->static_fields;
-  dds3DrawEnv = static_fields->dds3DrawEnv;
-  dds3DirLights = static_fields->dds3DirLights;
-  x = static_fields->dds3Ambient.x;
-  y = static_fields->dds3Ambient.y;
+  x = dds3Ambient.x;
+  y = dds3Ambient.y;
   DirLightPacket = dds3DrawEnv->m_Items[dds3FrameID]->DirLightPacket;
-  z = static_fields->dds3Ambient.z;
-  w = static_fields->dds3Ambient.w;
+  z = dds3Ambient.z;
+  w = dds3Ambient.w;
   v17.x = x;
   v17.y = y;
   v17.z = z;
@@ -92,6 +89,7 @@ dds3ProcessFunc_t *dds3DrawProcess(dds3ProcessID_t *id) {
 void *dds3FirstProcess(dds3ProcessID_t *id) {
   s32 dds3FrameID;
 
+LABEL_7:
   dds3InitDrawEnvSub(dds3FrameID);
   return 0;
 }

@@ -26,19 +26,19 @@ void Awake(fldTitleName *this) {
   tree = this->tree;
   this->b_start = 0;
   transform = get_transform(this, 0);
-  v5 = Find(transform, StringLiteral_16824, 0);
+  v5 = Find(transform, "fareain_2nd", 0);
   gameObject = get_gameObject(v5);
   v7 = gameObject;
   tree->m_Items[0] = v7;
   v9 = this->tree;
   v10 = get_transform(this, 0);
-  v11 = Find(v10, StringLiteral_16825, 0);
+  v11 = Find(v10, "fareain_1st", 0);
   v12 = get_gameObject(v11);
   v13 = v12;
   v9->m_Items[1] = v13;
   v15 = this->tree;
   v16 = get_transform(this, 0);
-  v17 = Find(v16, StringLiteral_16826, 0);
+  v17 = Find(v16, "fareain_1st_amara", 0);
   v18 = get_gameObject(v17);
   v19 = v18;
   v15->m_Items[2] = v19;
@@ -113,12 +113,12 @@ void SetSprite(fldTitleName *this, bool amara, void **a, void **b) {
     v16 = transform;
     if (op_Inequality(v16, 0, 0))
     {
-      v17 = Find(v16, StringLiteral_16827, 0);
+      v17 = Find(v16, "areaname", 0);
       Component_GUILayer = GetComponent_GUILayer_(v17);
       v19 = Component_GUILayer;
       set_sprite(Component_GUILayer, a->m_Items[0]);
       (v19->klass[2].vtable._0_Equals.methodPtr)(v19, v19->klass[2].vtable._0_Equals.method);
-      v21 = Find(v16, StringLiteral_16828, 0);
+      v21 = Find(v16, "areaname_g", 0);
       v22 = GetComponent_GUILayer_(v21);
       v23 = v22;
       set_sprite(v22, a->m_Items[0]);
@@ -129,7 +129,7 @@ void SetSprite(fldTitleName *this, bool amara, void **a, void **b) {
   {
     v25 = this->tree;
     v27 = get_transform(v25->m_Items[0], 0);
-    v28 = Find(v27, StringLiteral_16827, 0);
+    v28 = Find(v27, "areaname", 0);
     v29 = GetComponent_GUILayer_(v28);
     v30 = v29;
     set_sprite(v29, b->m_Items[0]);
@@ -152,6 +152,7 @@ void StartAnim(fldTitleName *this, bool in1st, s32 timer) {
     tree = this->tree;
     if (in1st)
     {
+LABEL_3:
       if (this->b_amara)
         v8 = 2;
       else
@@ -159,18 +160,21 @@ void StartAnim(fldTitleName *this, bool in1st, s32 timer) {
       v10 = tree->m_Items[v8];
       SetActive(v10, 1, 0);
       Component_object = GetComponent_object_(v10);
-      v12 = &StringLiteral_16825;
+      v12 = &"fareain_1st";
+      goto LABEL_15;
     }
   }
   else
   {
     tree = this->tree;
     if (in1st)
+      goto LABEL_3;
   }
   SetActive(tree->m_Items[0], 1, 0);
   v14 = this->tree;
   Component_object = GetComponent_object_(v14->m_Items[0]);
-  v12 = &StringLiteral_16824;
+  v12 = &"fareain_2nd";
+LABEL_15:
   v16 = *v12;
   this->animname = *v12;
   Play_8766576(Component_object, v16);

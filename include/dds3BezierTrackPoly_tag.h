@@ -13,11 +13,11 @@ struct dds3BezierTrackPoly_tag {
     s32 count;
     s32 current;
     s32 split;
-    sdfVector4_t pVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pVC[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pVertex;
+    u32 *pVC;
     sdfMat_t *pMat;
     sdfMemHandle_t *hMem;
-    sdfVector4_t pHeadVertex[UNKNOWN_ARRAY_SIZE];
-    u32 pHeadVC[UNKNOWN_ARRAY_SIZE];
-    XRD773Unity_CommonMesh pMesh[UNKNOWN_ARRAY_SIZE];
+    sdfVector4_t *pHeadVertex;
+    u32 *pHeadVC;
+    XRD773Unity_CommonMesh *pMesh;
 };

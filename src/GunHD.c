@@ -14,6 +14,32 @@ void SetEveUnit(GunHD *this, evtUnitHandle_t *hunit_tmp) {
 
 // 0x1148ae0
 void SetLightAll(GunHD *this) {
+  s32 v3;
+  System_WeakReference_o *Item;
+  UnityEngine_Vector4_o v7;
+  UnityEngine_Color_o v8;
+
+  *&v8.r = 0;
+  *&v8.b = 0;
+  *&v7.x = 0;
+  *&v7.z = 0;
+  sub_19EC630(&v8.r, this->l0_r, this->l0_g, this->l0_b, this->l0_a);
+  sub_854690(&v7.x, this->v0_x, this->v0_y, this->v0_z, 0.0);
+  if (_get_Count(this->mat_list) >= 1)
+  {
+    v3 = 0;
+    do
+    {
+      Item = _get_Item(
+               this->mat_list,
+               v3);
+      SetColor_27247456(Item, id_LightColor, v8);
+      SetVector_27247776(Item, id_LightVector, v7);
+      SetFloat_27246832(Item, id_ToonType, 8.0);
+      ++v3;
+    }
+    while (v3 < _get_Count(this->mat_list));
+  }
 }
 
 // 0x11489a0

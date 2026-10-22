@@ -36,13 +36,93 @@ s32 encChk(void) {
 
 // 0x103a900
 void *encDrawProc(dds3ProcessID_t *aProcId) {
-    FieldFilterOff(0);
-    dds3EffectEncountBlur();
-    dds3EffectEncountBlur1(0, 0);
-    dds3EffectEncountBlur2();
-    dds3EffectEncountBlur3(0);
-    FieldFilterOn(0);
+  fldEnc_c *v2;
+  s16 v5;
+  s32 v6;
+  struct fldEnc_StaticFields **p_static_fields;
+  struct fldEnc_StaticFields *v11;
+  f32 gencScale;
+  f32 gencArea;
+  s32 gencStageOutCnt;
+  s32 gencStageInnAlp;
+
+  if (!gencOn)
     return 0;
+  else if (gencMode)
+  {
+    goto LABEL_10;
+  }
+  v5 = *&v2->_2.bitflags1;
+  if ((v5 & 0x200) != 0)
+  {
+    v6 = v5 & 0x200;
+    if (gencIsRandomEncount)
+    {
+LABEL_17:
+      if (gencStageOutCnt != 1)
+        goto LABEL_33;
+LABEL_29:
+      FieldFilterOff(kernelObject);
+      goto LABEL_33;
+    }
+  }
+  else
+  {
+    v6 = 0;
+    if (gencIsRandomEncount)
+      goto LABEL_17;
+  }
+  if (!gencStageOutCnt)
+    goto LABEL_29;
+LABEL_33:
+  dds3EffectEncountBlur();
+  if (gencStageOutCnt >= 21)
+  {
+    gencScale = gencScale + 0.001;
+    (*p_static_fields)->gencArea = (*p_static_fields)->gencArea + -2.0;
+    v11 = *p_static_fields;
+    gencScale = v11->gencScale;
+    gencArea = v11->gencArea;
+    dds3EffectEncountBlur1(gencScale, gencArea);
+  }
+  else
+  {
+    if (gencStageOutCnt >= 41)
+      goto LABEL_58;
+  }
+  if (gencStageOutCnt < 21)
+  {
+      goto LABEL_62;
+    goto LABEL_55;
+  }
+LABEL_58:
+  dds3EffectEncountBlur2();
+  {
+LABEL_55:
+  }
+LABEL_62:
+  ++gencStageOutCnt;
+  if ((v2->_2.bitflags2 & 2) == 0)
+  {
+LABEL_63:
+    if (gencMode != 1)
+      return 0;
+    goto LABEL_64;
+  }
+LABEL_11:
+    goto LABEL_63;
+  if (gencMode != 1)
+    return 0;
+LABEL_64:
+  else
+  {
+    if (gencStageInnAlp >= 1)
+      goto LABEL_67;
+  }
+  FieldFilterOn(kernelObject);
+  gencOn = 0;
+  gencMode = 0;
+  return 0;
 }
 
 // 0x103af70
@@ -54,7 +134,7 @@ void encInitProcess(void) {
     v1,
     0,
     Method_fldEnc_encDrawProc__);
-  dds3StartProcess(StringLiteral_16608, 0x2B0Fu, 0, 1, v1, 0, 0, 0, 0, 0);
+  dds3StartProcess("encProc", 0x2B0Fu, 0, 1, v1, 0, 0, 0, 0, 0);
 }
 
 // 0x103a820
@@ -70,19 +150,17 @@ s32 encModeGet(void) {
 // 0x103ad60
 void encStart(bool bRandomEncount) {
   struct fldEnc_StaticFields **p_static_fields;
-  struct fldEnc_StaticFields *static_fields;
   XRD773Unity_GraphicManager_o *Instance;
   dds3Basic_t_o *basic;
 
   basic = 0;
+LABEL_7:
   else
   {
-    p_static_fields = &fldEnc->static_fields;
-    static_fields = fldEnc->static_fields;
-    if (static_fields->gencOn)
+    if (gencOn)
       return;
   }
-  static_fields->gencMode = 0;
+  gencMode = 0;
   (*p_static_fields)->gencStageOutCnt = 0;
   (*p_static_fields)->gencStageInnAlp = 128;
   (*p_static_fields)->gencScale = 1.02;

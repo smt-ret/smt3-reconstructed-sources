@@ -10,7 +10,7 @@ typedef struct sdfMemHandle_t sdfMemHandle_t;
 struct effMagaSmoke_tag {
     sdfMatrix4_t matrix;
     effMagaSmokeParam_t *param;
-    effMagaSmokePart_tag pPart[UNKNOWN_ARRAY_SIZE];
+    effMagaSmokePart_tag *pPart;
     u32 abgr;
     effMagatuhi_tag *pMagatuhi;
     sdfMemHandle_t *hMem;

@@ -18,5 +18,5 @@ struct sdfDevConsCB_tag {
     u8 attr;
     u8 tabwidth;
     sdfMemHandle_t *bufferHandle;
-    u8 bufferPtr[UNKNOWN_ARRAY_SIZE];
+    u8 *bufferPtr;
 };

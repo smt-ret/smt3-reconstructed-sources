@@ -22,6 +22,8 @@ u32 pbCheckMap(void) {
   bup = pbWk->bup;
   v6 = bup->pchar_num == 0;
   if (!LODWORD(bup->exit_pos->max_length))
+    goto LABEL_15;
+LABEL_11:
   return v6;
 }
 

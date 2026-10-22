@@ -27,7 +27,7 @@ void nbUpdateEventProcessData(dds3ProcessID_t **id);
 s32 End(nbEventProcessData_t *ed) {
   if (ed->seqtime < 211)
     return 0;
-  Write(StringLiteral_21338, 0);
+  Write("フォルネウス死亡\n", 0);
   nbDelAllKoukaPacketType(43);
   ed->data->endtype = 1;
   return 1;
@@ -55,10 +55,48 @@ s32 Test(nbEventProcessData_t *ed) {
 
 // 0x17034e0
 void *nbE913Process_1(dds3ProcessID_t *id) {
-    dds3GetProcessData(0);
-    nbCameraSetState(0);
-    nbCameraBoss_Foru_E913_Set();
+  Il2CppObject *ProcessData;
+  nbEventProcessData_t_o *v5;
+  Il2CppClass *klass;
+  s64 typeHierarchyDepth;
+  char *v8;
+  s64 *v9;
+  struct nbE913_funcDelegate_array *func;
+  s64 seq;
+  dds3ProcessID_t_o *v18[3];
+  dds3ProcessID_t_o *ida;
+
+  ida = id;
+  ProcessData = dds3GetProcessData(&ida);
+  v5 = ProcessData;
+  if (ProcessData)
+  {
+    klass = ProcessData->klass;
+    if (ProcessData->klass->_2.typeHierarchyDepth < typeHierarchyDepth
+      || klass->_2.typeHierarchy[typeHierarchyDepth - 1] != nbEventProcessData_t)
+    {
+      sub_8FC2C0(klass->_1.element_class, nbEventProcessData_t, v18);
+      if ((v18[0] & 1) != 0)
+        v8 = v18[2];
+      else
+        v8 = v18 + 1;
+      v9 = sub_8C4940(v8);
+    }
+  }
+  seq = v5->seq;
+  if (Invoke(func->m_Items[seq], v5))
+  {
+    ida->func_ans = -1;
+  }
+  else
+  {
+    if (!v5->time)
+    {
+      nbCameraSetState(0x17u);
+      nbCameraBoss_Foru_E913_Set();
+    }
     nbCameraBoss_Foru_E913_Run();
-    nbUpdateEventProcessData(0);
-    return 0;
+    nbUpdateEventProcessData(&ida);
+  }
+  return 0;
 }

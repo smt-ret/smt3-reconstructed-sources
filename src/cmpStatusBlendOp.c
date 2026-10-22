@@ -33,7 +33,6 @@ void Update(cmpStatusBlendOp *this) {
   f32 v7;
   f32 v8;
   UnityEngine_Material_o *v11;
-  struct ModelHD_StaticFields *static_fields;
   UnityEngine_Material_o *v13;
   s32 v14;
   UnityEngine_Material_o *v17;
@@ -58,52 +57,58 @@ void Update(cmpStatusBlendOp *this) {
     v8 = 0.25;
     if (StChrMinor != 87)
     {
+LABEL_11:
       if (StChrMinor == 51)
       {
         if (!evtBitCheck(3717))
         {
-          SetOverrideTag(this->material, StringLiteral_4782, StringLiteral_4783);
+          SetOverrideTag(this->material, "RenderType", "Transparent");
           material = this->material;
           SetInt_27247136(material, id_BlendOp, 0);
           SetInt_27247136(this->material, id_SrcBlend, 5);
-          static_fields = ModelHD->static_fields;
           v13 = this->material;
           v14 = 1;
+          goto LABEL_40;
         }
       }
       else if (StChrMinor == 37)
       {
-        SetOverrideTag(this->material, StringLiteral_4782, StringLiteral_4783);
+        SetOverrideTag(this->material, "RenderType", "Transparent");
         v11 = this->material;
         SetInt_27247136(v11, id_BlendOp, 0);
         SetInt_27247136(this->material, id_SrcBlend, 1);
-        static_fields = ModelHD->static_fields;
         v13 = this->material;
         v14 = 10;
-        SetInt_27247136(v13, static_fields->id_DstBlend, v14);
+LABEL_40:
+        SetInt_27247136(v13, id_DstBlend, v14);
         SetInt_27247136(this->material, id_ZWrite, 0);
-        DisableKeyword(this->material, StringLiteral_4784);
-        EnableKeyword(this->material, StringLiteral_4785);
-        DisableKeyword(this->material, StringLiteral_4786);
-        DisableKeyword(this->material, StringLiteral_4787);
+        DisableKeyword(this->material, "_ALPHATEST_ON");
+        EnableKeyword(this->material, "_ALPHABLEND_ON");
+        DisableKeyword(this->material, "_ALPHAPREMULTIPLY_ON");
+LABEL_41:
+        DisableKeyword(this->material, "_ALPHAMODULATE_ON");
         set_renderQueue(this->material, 3000);
         v32 = 100.0;
+LABEL_42:
         SetFloat_27246832(this->material, id_BlendPower, v7 * v32);
         v38 = this->material;
         p_id_RGB_Power = &id_RGB_Power;
         v22 = v38;
         v23 = *p_id_RGB_Power;
         v24 = v8;
+        goto LABEL_46;
       }
-      SetOverrideTag(this->material, StringLiteral_4782, StringLiteral_4783);
+LABEL_28:
+      SetOverrideTag(this->material, "RenderType", "Transparent");
       v27 = this->material;
       SetInt_27247136(v27, id_BlendOp, 0);
       SetInt_27247136(this->material, id_SrcBlend, 1);
       SetInt_27247136(this->material, id_DstBlend, 10);
       SetInt_27247136(this->material, id_ZWrite, 0);
-      DisableKeyword(this->material, StringLiteral_4784);
-      DisableKeyword(this->material, StringLiteral_4785);
-      EnableKeyword(this->material, StringLiteral_4786);
+      DisableKeyword(this->material, "_ALPHATEST_ON");
+      DisableKeyword(this->material, "_ALPHABLEND_ON");
+      EnableKeyword(this->material, "_ALPHAPREMULTIPLY_ON");
+      goto LABEL_41;
     }
   }
   else
@@ -111,33 +116,36 @@ void Update(cmpStatusBlendOp *this) {
     v7 = 1.0;
     v8 = 1.0;
     if (StChrMinor != 87)
+      goto LABEL_11;
   }
   if (!evtBitCheck(3717))
   {
-    SetOverrideTag(this->material, StringLiteral_4782, StringLiteral_4783);
+    SetOverrideTag(this->material, "RenderType", "Transparent");
     v30 = this->material;
     SetInt_27247136(v30, id_BlendOp, 0);
     SetInt_27247136(this->material, id_SrcBlend, 5);
     SetInt_27247136(this->material, id_DstBlend, 1);
     SetInt_27247136(this->material, id_ZWrite, 0);
-    DisableKeyword(this->material, StringLiteral_4784);
-    EnableKeyword(this->material, StringLiteral_4785);
-    DisableKeyword(this->material, StringLiteral_4786);
-    DisableKeyword(this->material, StringLiteral_4787);
+    DisableKeyword(this->material, "_ALPHATEST_ON");
+    EnableKeyword(this->material, "_ALPHABLEND_ON");
+    DisableKeyword(this->material, "_ALPHAPREMULTIPLY_ON");
+    DisableKeyword(this->material, "_ALPHAMODULATE_ON");
     set_renderQueue(this->material, 3000);
     v32 = 80.0;
+    goto LABEL_42;
   }
   if (!evtBitCheck(3717))
-  SetOverrideTag(this->material, StringLiteral_4782, StringLiteral_4783);
+    goto LABEL_28;
+  SetOverrideTag(this->material, "RenderType", "Transparent");
   v17 = this->material;
   SetInt_27247136(v17, id_BlendOp, 0);
   SetInt_27247136(this->material, id_SrcBlend, 1);
   SetInt_27247136(this->material, id_DstBlend, 10);
   SetInt_27247136(this->material, id_ZWrite, 0);
-  DisableKeyword(this->material, StringLiteral_4784);
-  DisableKeyword(this->material, StringLiteral_4785);
-  EnableKeyword(this->material, StringLiteral_4786);
-  DisableKeyword(this->material, StringLiteral_4787);
+  DisableKeyword(this->material, "_ALPHATEST_ON");
+  DisableKeyword(this->material, "_ALPHABLEND_ON");
+  EnableKeyword(this->material, "_ALPHAPREMULTIPLY_ON");
+  DisableKeyword(this->material, "_ALPHAMODULATE_ON");
   set_renderQueue(this->material, 3000);
   SetFloat_27246832(this->material, id_BlendPower, v7 * 100.0);
   v20 = this->material;
@@ -145,6 +153,7 @@ void Update(cmpStatusBlendOp *this) {
   v22 = v20;
   v23 = *v21;
   v24 = v8 + v8;
+LABEL_46:
   SetFloat_27246832(v22, v23, v24);
   this->st_minor = StChrMinor;
 }

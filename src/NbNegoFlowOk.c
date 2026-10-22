@@ -63,13 +63,19 @@ s32 Flow9_1(nbNegoProcessData_t **n) {
   }
   v10 = *n;
   if ((*n)->negoreqtype)
+    goto LABEL_37;
   if (v10->cnt6_36 < 2)
+    goto LABEL_37;
   if (v10->cnt6_37 != 1)
+    goto LABEL_37;
   if (!evtBitCheck(8))
+    goto LABEL_37;
   id = (*n)->ework->id;
   if (id == 92 || id == 97)
-  if (dds3GetRandIntA(0xAu, StringLiteral_5332) > 7)
+    goto LABEL_37;
+  if (dds3GetRandIntA(0xAu, "9_1") > 7)
   {
+LABEL_37:
     p_eform = &(*n)->eform;
     nbCameraSetTarget(p_eform);
     v12 = *n;
@@ -135,14 +141,17 @@ s32 Flow9_11(nbNegoProcessData_t **n) {
     case 5:
       nextkouho = v4->nextkouho;
       v7 = nextkouho->m_Items[0];
+      goto LABEL_23;
     case 2:
       v10 = v4->nextkouho;
-      RandIntA = dds3GetRandIntA(2u, StringLiteral_5333);
+      RandIntA = dds3GetRandIntA(2u, "9_11");
       v7 = v10->m_Items[RandIntA];
+      goto LABEL_23;
     case 3:
     case 4:
       v8 = v4->nextkouho;
       v7 = v8->m_Items[1];
+LABEL_23:
       v4->nextnegoid = v7;
       break;
     default:
@@ -279,6 +288,7 @@ s32 Flow9_16(nbNegoProcessData_t **n) {
         v3->getitem = nbGetNegoYaruStone(&v3->ework);
         v6 = *n;
         if ((*n)->getitem)
+          goto LABEL_33;
         v7 = 106;
       }
       else
@@ -286,9 +296,11 @@ s32 Flow9_16(nbNegoProcessData_t **n) {
         v3->getitem = nbGetNegoYaruItemA(&v3->ework);
         v6 = *n;
         if ((*n)->getitem)
+          goto LABEL_33;
         v7 = 6;
       }
       v6->getitem = v7;
+LABEL_33:
       getitem = (*n)->getitem;
       if (datCheckItemFull(getitem))
       {
@@ -408,6 +420,7 @@ s32 Flow9_20(nbNegoProcessData_t **n) {
       v10 = n;
       v11 = v16;
       v12 = 1;
+      goto LABEL_25;
     case 0:
       v5 = v3->flowmsg;
       v6 = v3->ekucyo;
@@ -416,6 +429,7 @@ s32 Flow9_20(nbNegoProcessData_t **n) {
       v10 = n;
       v11 = v8;
       v12 = 0;
+LABEL_25:
       nbDispNegoMessage(v10, v11, v9, v12);
       break;
   }
@@ -473,9 +487,39 @@ s32 Flow9_3(nbNegoProcessData_t **n) {
 
 // 0x547080
 s32 Flow9_4(nbNegoProcessData_t **n) {
-    nbAddNegoIdKouho(0, 0);
-    datGetPlayerLevel();
-    return 0;
+  u64 *v4;
+  Il2CppObject *v5;
+  u64 *v7;
+  s32 v8;
+  nbNegoProcessData_t_o *v9;
+  u32 *nextkouho;
+  u32 v11;
+  u32 *v13;
+  u16 v16[2];
+  s32 PlayerLevel;
+
+  nbAddNegoIdKouho(n, 0x90005u);
+  nbAddNegoIdKouho(n, 0x90009u);
+  PlayerLevel = datGetPlayerLevel();
+  v4 = sub_8D3950(s32, &PlayerLevel);
+  v16[0] = (*n)->ework->level;
+  v5 = v4;
+  v7 = sub_8D3950(ushort, v16);
+  Write_2930752("plv = {0:D}, elv = {1:D}\n", v5, v7, 0);
+  v8 = datGetPlayerLevel();
+  v9 = *n;
+  nextkouho = v9->nextkouho;
+  v11 = nextkouho[6];
+  if (v8 >= v9->ework->level)
+  {
+    v13 = nextkouho + 8;
+  }
+  else
+  {
+    v13 = nextkouho + 9;
+  }
+  v9->nextnegoid = *v13;
+  return 0;
 }
 
 // 0x547240

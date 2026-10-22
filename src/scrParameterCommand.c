@@ -233,9 +233,11 @@ s32 prm_NAKAMA_CHK_PIKUKO(void) {
     if (v4 >= 0xF)
     {
       v14 = 0;
+      goto LABEL_34;
     }
   }
   v14 = 1;
+LABEL_34:
   scrSetIntReturnValue(v14);
   return 1;
 }
@@ -309,11 +311,13 @@ s32 prm_PIKUKO_GETID(void) {
     if (v4 >= 0xF)
     {
       v10 = 0;
+      goto LABEL_30;
     }
   }
   v12 = DDS3_GBWK->unitwork;
   v14 = *(*(&v12->obj.klass + v2) + 20LL);
   v10 = v14;
+LABEL_30:
   scrSetIntReturnValue(v10);
   return 1;
 }

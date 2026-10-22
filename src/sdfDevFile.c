@@ -40,13 +40,13 @@ void *sdfDevLoadFileUnity(char *aFilename, void **aTopPtr, s32 aSizePtr, char *a
   AssetBundleCtrl_o *asset_bc;
   Il2CppObject *FileObject;
 
-  v9 = Concat_5271136(StringLiteral_21965, aFilename, StringLiteral_21966, akey);
+  v9 = Concat_5271136("sdfDevLoadFileUnity:file=", aFilename, " akey=", akey);
   Log(v9, 0);
   asset_bc = get_asset_bc();
   FileObject = LoadFileObject(asset_bc, akey, aFilename);
   if (!FileObject)
   {
-    Log(StringLiteral_21967, 0);
+    Log("sdfDevLoadFileUnity:null", 0);
   }
   *aTopPtr = FileObject;
   return FileObject;
@@ -67,7 +67,7 @@ sdfMemHandle_t *sdfDevLoadModel(char *aFilename, sdfModelDef_t **aModelDefPtr) {
 
   v4 = Allocate(sdfMemHandle_t);
   sdfMemHandle_t___ctor(v4);
-  Write_2930400(StringLiteral_21968, aFilename);
+  Write_2930400("{0} loading...\n", aFilename);
   return v4;
 }
 
@@ -77,7 +77,7 @@ sdfMemHandle_t *sdfDevLoadMotion(char *aFilename, sdfMotionPlayBook_t **aPlayBoo
 
   v4 = Allocate(sdfMemHandle_t);
   sdfMemHandle_t___ctor(v4);
-  Write_2930400(StringLiteral_21968, aFilename);
+  Write_2930400("{0} loading...\n", aFilename);
   return v4;
 }
 
@@ -90,7 +90,7 @@ sdfTexHandle_t *sdfDevLoadTex(char *aFilename) {
   sdfMemHandle_t___ctor(v3);
   v4 = Allocate(sdfTexHandle_t);
   sdfTexHandle_t___ctor(v4);
-  Write_2930400(StringLiteral_21968, aFilename);
+  Write_2930400("{0} loading...\n", aFilename);
   return v4;
 }
 
@@ -103,7 +103,7 @@ sdfModelTexList_t *sdfDevLoadTexList(char *aFilename) {
   sdfModelTexList_t___ctor(v3);
   v4 = Allocate(sdfMemHandle_t);
   sdfMemHandle_t___ctor(v4);
-  Write_2930400(StringLiteral_21968, aFilename);
+  Write_2930400("{0} loading...\n", aFilename);
   return v3;
 }
 

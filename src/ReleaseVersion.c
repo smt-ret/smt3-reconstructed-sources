@@ -12,7 +12,7 @@ void Start(ReleaseVersion *this) {
 
   Switch_JA = this->settingData->Switch_JA;
   Log(Switch_JA, 0);
-  v4 = StringLiteral_8856;
+  v4 = "Ver.";
   this->Platform = 1;
   settingData = this->settingData;
   VerText = this->VerText;

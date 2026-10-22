@@ -10,7 +10,7 @@ void OpenIME(SwitchIME *this, char *titleText, char *initText, s32 maxLength, s3
 void CloseIMECallback(ImeKeyboard *this) {
   Il2CppObject *v3;
 
-  v3 = StringLiteral_4915;
+  v3 = "IME:KeyboardClose";
   Log(v3, 0);
   this->_IsOpenIME_k__BackingField = 0;
 }
@@ -19,7 +19,7 @@ void CloseIMECallback(ImeKeyboard *this) {
 void InputCallbackAbort(ImeKeyboard *this, char *text) {
   Il2CppObject *v6;
 
-  v6 = Concat_5221536(StringLiteral_4918, text, StringLiteral_441);
+  v6 = Concat_5221536("IME:InputCallbackAbort=[", text, "]");
   Log(v6, 0);
   this->_IsCancel_k__BackingField = 1;
 }
@@ -28,7 +28,7 @@ void InputCallbackAbort(ImeKeyboard *this, char *text) {
 void InputCallbackCancel(ImeKeyboard *this, char *text) {
   Il2CppObject *v4;
 
-  v4 = StringLiteral_4917;
+  v4 = "IME:InputCallbackCancel";
   Log(v4, 0);
   this->_IsCancel_k__BackingField = 1;
 }
@@ -37,7 +37,7 @@ void InputCallbackCancel(ImeKeyboard *this, char *text) {
 void InputCallbackOK(ImeKeyboard *this, char *text) {
   Il2CppObject *v6;
 
-  v6 = Concat_5221536(StringLiteral_4916, text, StringLiteral_441);
+  v6 = Concat_5221536("IME:InputCallbackOK=[", text, "]");
   Log(v6, 0);
   this->_InputText_k__BackingField = text;
   MojiInput();

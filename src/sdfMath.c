@@ -133,6 +133,7 @@ f32 sdfCos(f32 aRadius) {
   if (v4 <= 0.5)
   {
     if (v4 >= -0.5)
+      goto LABEL_11;
     v6 = 1.0;
   }
   else
@@ -140,14 +141,19 @@ f32 sdfCos(f32 aRadius) {
     v6 = -1.0;
   }
   v4 = v4 + v6;
+LABEL_11:
   if (v4 > 0.25)
   {
+LABEL_14:
     v4 = v5 - v4;
+    goto LABEL_15;
   }
   if (v4 < -0.25)
   {
     v5 = -0.5;
+    goto LABEL_14;
   }
+LABEL_15:
   v7 = v4 * 4.0;
   return ((((v7 * 1.5708) + ((v7 * (v7 * v7)) * -0.64596)) + (((v7 * v7) * (v7 * (v7 * v7))) * 0.07969))
         + (((v7 * v7) * ((v7 * v7) * (v7 * (v7 * v7)))) * -0.0046738))
@@ -156,7 +162,13 @@ f32 sdfCos(f32 aRadius) {
 
 // 0x17960d0
 f32 sdfDivSqrt(f32 aBase, f32 aValue) {
-    return 0;
+  f32 v6;
+
+  else
+  {
+    v6 = sqrtf(aValue);
+  }
+  return aBase / v6;
 }
 
 // 0x1796850
@@ -176,6 +188,7 @@ f32 sdfSin(f32 aRadius) {
   if (v2 <= 0.5)
   {
     if (v2 >= -0.5)
+      goto LABEL_6;
     v4 = 1.0;
   }
   else
@@ -183,14 +196,19 @@ f32 sdfSin(f32 aRadius) {
     v4 = -1.0;
   }
   v2 = v2 + v4;
+LABEL_6:
   if (v2 > 0.25)
   {
+LABEL_9:
     v2 = v3 - v2;
+    goto LABEL_10;
   }
   if (v2 < -0.25)
   {
     v3 = -0.5;
+    goto LABEL_9;
   }
+LABEL_10:
   v5 = v2 * 4.0;
   return ((((v5 * 1.5708) + ((v5 * (v5 * v5)) * -0.64596)) + (((v5 * v5) * (v5 * (v5 * v5))) * 0.07969))
         + (((v5 * v5) * ((v5 * v5) * (v5 * (v5 * v5)))) * -0.0046738))
